@@ -1,0 +1,98 @@
+/**
+ * 
+ */
+package imago.gui;
+
+
+import java.awt.Container;
+
+import javax.swing.JPanel;
+
+import net.sci.image.Image;
+
+
+/**
+ * Displays a 2D or 3D image together with some widgets for modifying the view.
+ * The type of image representation is left to the sub-classes.
+ *  
+ * @author David Legland
+ *
+ */
+public abstract class ImageViewer extends JPanel {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	// ===================================================================
+	// Class variables
+
+	/**
+	 * The behavior of the zoom when the component is resized.
+	 */
+	public static enum ZoomMode {
+		FIXED,
+		FILL
+	}
+	
+
+	protected Image image;
+	
+	protected double zoom = 1;
+	
+	
+	// ===================================================================
+	// Constructor
+	
+	public ImageViewer(Image image) {
+		this.image = image;
+	}
+	
+	// ===================================================================
+	// General methods
+	
+	public Image getImage() {
+		return this.image;
+	}
+	
+	/**
+	 * Returns the instance of ImagoDocViewer that contains this Image view,
+	 * or null if no one is found.
+	 */
+	public ImagoDocViewer getViewer() {
+		Container container = this.getParent();
+		while (!(container instanceof ImagoDocViewer) && container != null) {
+			container = container.getParent();
+		}
+		return (ImagoDocViewer) container;
+	}	
+
+	// ===================================================================
+	// Tool management methods
+	
+	public abstract void setCurrentTool(ImagoTool tool);
+
+	public abstract ImagoTool getCurrentTool();
+	
+	// ===================================================================
+	// Display management methods
+	
+	public double getZoom() {
+		return this.zoom;
+	}
+	
+	public void setZoom(double zoom) {
+		this.zoom = zoom;
+	}
+
+
+	public void refreshDisplay(){
+//		System.out.println("refresh display");
+	}
+
+//	public void repaint() {
+//		super.repaint();
+//		System.out.println("repaint Image Viewer");
+//	}
+}

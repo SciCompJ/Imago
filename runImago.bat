@@ -1,0 +1,1 @@
+java -cp Imago.jar;lib/javaGeom.jar;lib/jipl.jar;lib/jcommon-1.0.17.jar;lib/jfreechart-1.0.14.jar;. imago.Imago
