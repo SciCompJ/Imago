@@ -5,7 +5,6 @@ package imago.gui;
 
 import imago.app.ImagoApp;
 import imago.app.ImagoDoc;
-import imago.gui.action.ImageUtils;
 
 import java.util.ArrayList;
 

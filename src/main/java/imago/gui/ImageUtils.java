@@ -1,10 +1,11 @@
 /**
  * 
  */
-package imago.gui.action;
+package imago.gui;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 
@@ -61,18 +62,18 @@ public class ImageUtils
 		{
 			return createAwtImage((BooleanArray2D) array, Color.RED, Color.WHITE);
 		}
-		else if (array instanceof UInt8Array2D)
-		{			
-			return createAwtImage((UInt8Array2D) array, lut);
-		} 
- 		else if (image.isColorImage())
- 		{
- 			return createAwtImageRGB8((UInt8Array) array);
- 		}
+//		else if (array instanceof UInt8Array2D)
+//		{			
+//			return createAwtImage((UInt8Array2D) array, lut);
+//		} 
  		else if (array instanceof ScalarArray2D)
  		{
  			double[] displayRange = image.getDisplayRange();
  			return createAwtImage((ScalarArray2D<?>) array, displayRange, lut);
+ 		}
+ 		else if (image.isColorImage())
+ 		{
+ 			return createAwtImageRGB8((UInt8Array) array);
  		}
 
  		return null;
@@ -270,16 +271,7 @@ public class ImageUtils
 		int sizeY = array.getSize(1);
 		
 		// Computes the color model
-		byte[] red = new byte[256];
-		byte[] green = new byte[256];
-		byte[] blue = new byte[256];
-		for(int i = 0; i < 256; i++) 
-		{
-			red[i] 		= (byte) colormap[i][0];
-			green[i] 	= (byte) colormap[i][1];
-			blue[i] 	= (byte) colormap[i][2];
-		}
-		IndexColorModel cm = new IndexColorModel(8, 256, red, green, blue);  
+		IndexColorModel cm = createIndexColorModel(colormap);  
 		
 		// compute slope for intensity conversions
 		double extent = displayRange[1] - displayRange[0];
@@ -303,6 +295,27 @@ public class ImageUtils
 		return bufImg;
 	}
 	
+	/**
+	 * Convert the colormap given as N-by-3 array into an IndexColorModel.
+	 * 
+	 * @param colormap the colormap as 256 array of 3 components
+	 * @return the corresponding IndexColorModel
+	 */
+	private final static IndexColorModel createIndexColorModel(int[][] colormap)
+	{
+		// Computes the color model
+		byte[] red = new byte[256];
+		byte[] green = new byte[256];
+		byte[] blue = new byte[256];
+		for(int i = 0; i < 256; i++) 
+		{
+			red[i] 		= (byte) colormap[i][0];
+			green[i] 	= (byte) colormap[i][1];
+			blue[i] 	= (byte) colormap[i][2];
+		}
+		IndexColorModel cm = new IndexColorModel(8, 256, red, green, blue);  
+		return cm;
+	}
 	public static final java.awt.image.BufferedImage createAwtImageRGB8(
 			UInt8Array array)
 	{

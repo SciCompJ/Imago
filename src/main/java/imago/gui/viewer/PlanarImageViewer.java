@@ -3,10 +3,10 @@
  */
 package imago.gui.viewer;
 
+import imago.gui.ImageUtils;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoTool;
-import imago.gui.action.ImageUtils;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -169,6 +169,7 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener 
 		imageDisplay.updateOffset();
 		this.awtImage = ImageUtils.createAwtImage(image, 0);
 		this.imageDisplay.setBufferedImage(this.awtImage);
+		this.imageDisplay.repaint();
 	}
 	
 	public void repaint() {

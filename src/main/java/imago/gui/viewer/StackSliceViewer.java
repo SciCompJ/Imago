@@ -21,10 +21,10 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import imago.app.ImagoDoc;
+import imago.gui.ImageUtils;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoTool;
-import imago.gui.action.ImageUtils;
 import net.sci.image.Image;
 
 

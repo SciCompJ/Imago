@@ -16,6 +16,9 @@ import imago.gui.action.file.OpenDemoImage;
 import imago.gui.action.file.OpenDemoStack;
 import imago.gui.action.file.OpenImageAction;
 import imago.gui.action.file.ReadTiffAction;
+import imago.gui.action.image.SetDataTypeDisplayRangeAction;
+import imago.gui.action.image.SetImageDisplayRangeAction;
+import imago.gui.action.image.SetManualDisplayRangeAction;
 import imago.gui.action.process.MiddleSliceImageAction;
 import imago.gui.tool.SelectionTool;
 
@@ -130,7 +133,7 @@ public class GuiBuilder
 		// addMenuItem(editMenu, new SetDisplayRangeUnitIntervalAction(frame,
 		// "setDisplayRangeUnitInterval"),
 		// "Set Display Range [0 ; 1]", isScalar || isVector);
-		editMenu.addSeparator();
+//		editMenu.addSeparator();
 
 		// Type conversion items
 		JMenu convertTypeMenu = new JMenu("Convert Type");
@@ -153,7 +156,7 @@ public class GuiBuilder
 		// // editMenu.add(colorMenu);
 		// addMenuItem(editMenu, new MetaImageOperatorAction(frame, "invert",
 		// new Inverter()), "Invert", isImage);
-		editMenu.addSeparator();
+//		editMenu.addSeparator();
 
 		// tool selection items
 		if (frame instanceof ImagoDocViewer)
@@ -197,6 +200,17 @@ public class GuiBuilder
 		boolean has2D = has2DImage(frame);
 
 		JMenu menu = new JMenu("Image");
+		
+		JMenu displayRangeMenu = new JMenu("Display Range");
+		addMenuItem(displayRangeMenu, new SetDataTypeDisplayRangeAction(frame, "setDataTypeDisplayRange"), "Set Data Type Display Range",
+				isImage);
+		addMenuItem(displayRangeMenu, new SetImageDisplayRangeAction(frame, "setImageDisplayRange"), "Set Image Display Range",
+				isImage);
+		addMenuItem(displayRangeMenu, new SetManualDisplayRangeAction(frame, "setManualDisplayRange"), "Set Manual Display Range",
+				isImage);
+		menu.add(displayRangeMenu);
+
+
 		JMenu geometryMenu = new JMenu("Geometry");
 		geometryMenu.setEnabled(isImage);
 		addMenuItem(geometryMenu, new ImageArrayOperatorAction(frame,
