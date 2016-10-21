@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+import net.sci.image.Image;
+
 /**
  * The main manager of the application. Contains a set of documents, and 
  * various global settings.
@@ -39,6 +41,17 @@ public class ImagoApp
 	
 	// =============================================================
 	// Management of documents
+
+	/**
+	 * Creates a new document from an image, and adds it to this app.
+	 */
+	public ImagoDoc addNewDocument(Image image)
+	{
+		// add the image document to GUI
+		ImagoDoc doc = new ImagoDoc(image);
+		this.addDocument(doc);
+		return doc;
+	}
 
 	public void addDocument(ImagoDoc doc)
 	{
@@ -80,7 +93,6 @@ public class ImagoApp
 			System.out.println(doc.getName());
 		}
 	}
-	
 	
 	public File getLastOpenFile()
 	{

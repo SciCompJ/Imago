@@ -98,38 +98,38 @@ public class ImagoGui {
 	}
 	
 	/** 
-	 * Creates a new document from an image, and adds it to the GUI 
+	 * Creates a new document from an image, adds it to the application, 
+	 * and returns a new frame associated to this document. 
 	 */
-	public ImagoDoc addNewDocument(Image image) {
-		// add the image document to GUI
-		ImagoDoc doc = new ImagoDoc(image);
-		this.app.addDocument(doc);
-		createDocumentFrame(doc);
-		return doc;
+	public ImagoDocViewer addNewDocument(Image image)
+	{
+		// create the document from image
+		ImagoDoc doc = this.app.addNewDocument(image);
+
+		// create the frame associated to the document
+		return createDocumentFrame(doc);
 	}
 
 	/** 
 	 * Creates a new document from an image, using settings given in parent 
 	 * document, and adds the new document to the GUI 
 	 */
-	public ImagoDoc addNewDocument(Image image, ImagoDoc parentDoc) {
+	public ImagoDocViewer addNewDocument(Image image, ImagoDoc parentDoc) {
 		// Create the new document, keeping the maximum of settings
-		ImagoDoc doc = new ImagoDoc(image);
-		doc.copyDisplaySettings(parentDoc);
+		ImagoDoc doc = new ImagoDoc(image, parentDoc);
 		
 		// add to document manager
 		this.app.addDocument(doc);
 		
 		// display in a new frame
-		createDocumentFrame(doc);
-		return doc;
+		return createDocumentFrame(doc);
 	}
 	
 	public ImagoApp getAppli() {
 		return this.app;
 	}
 	
-	public ImagoFrame createDocumentFrame(ImagoDoc doc) {
+	public ImagoDocViewer createDocumentFrame(ImagoDoc doc) {
 		ImagoDocViewer frame = new ImagoDocViewer(this, doc);
 		
 		this.frames.add(frame);

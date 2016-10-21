@@ -113,28 +113,9 @@ public class GuiBuilder
 	 */
 	private JMenu createEditMenu()
 	{
-
 		boolean isImage = hasImageDoc(frame);
-		boolean isColor = hasColorImage(frame);
-		boolean isScalar = hasScalarImage(frame);
-		boolean isVector = hasVectorImage(frame);
-
+		
 		JMenu editMenu = new JMenu("Edit");
-
-		// adjust display range items
-//		addMenuItem(editMenu, new SetImageDisplayRangeAction(frame,
-//				"setImageDisplayRange"), "Set Array<?> Display Range", isScalar
-//				|| isVector);
-//		addMenuItem(editMenu, new SetDataTypeDisplayRangeAction(frame,
-//				"setDataTypeDisplayRange"), "Set DataType Display Range",
-//				isScalar || isVector);
-//		addMenuItem(editMenu, new SetManualDisplayRangeAction(frame,
-//				"setManualDisplayRange"), "Set Manual Display Range", isScalar
-//				|| isVector);
-		// addMenuItem(editMenu, new SetDisplayRangeUnitIntervalAction(frame,
-		// "setDisplayRangeUnitInterval"),
-		// "Set Display Range [0 ; 1]", isScalar || isVector);
-//		editMenu.addSeparator();
 
 		// Type conversion items
 		JMenu convertTypeMenu = new JMenu("Convert Type");
@@ -197,18 +178,22 @@ public class GuiBuilder
 	private JMenu createImageMenu()
 	{
 		boolean isImage = hasImageDoc(frame);
-		boolean has3D = has3DImage(frame);
-		boolean has2D = has2DImage(frame);
+		boolean is3D = has3DImage(frame);
+		boolean isScalar = hasScalarImage(frame);
+		boolean isVector = hasVectorImage(frame);
 
 		JMenu menu = new JMenu("Image");
 		
 		JMenu displayRangeMenu = new JMenu("Display Range");
 		addMenuItem(displayRangeMenu, new SetDataTypeDisplayRangeAction(frame, "setDataTypeDisplayRange"), "Set Data Type Display Range",
-				isImage);
+				isScalar | isVector);
 		addMenuItem(displayRangeMenu, new SetImageDisplayRangeAction(frame, "setImageDisplayRange"), "Set Image Display Range",
-				isImage);
+				isScalar | isVector);
 		addMenuItem(displayRangeMenu, new SetManualDisplayRangeAction(frame, "setManualDisplayRange"), "Set Manual Display Range",
-				isImage);
+				isScalar | isVector);
+		// addMenuItem(editMenu, new SetDisplayRangeUnitIntervalAction(frame,
+		// "setDisplayRangeUnitInterval"),
+		// "Set Display Range [0 ; 1]", isScalar || isVector);
 		menu.add(displayRangeMenu);
 
 
@@ -217,7 +202,7 @@ public class GuiBuilder
 		addMenuItem(geometryMenu, new ImageArrayOperatorAction(frame,
 				"flipXFilter", new Flip(0)), "Flip Horizontal", isImage);
 		addMenuItem(geometryMenu, 
-				new MiddleSliceImageAction(frame, "middleSlice"), "Middle Slice", has3D);
+				new MiddleSliceImageAction(frame, "middleSlice"), "Middle Slice", is3D);
 		// addMenuItem(geometryMenu,
 		// new ImageOperatorAction(frame, "flipYFilter", new Flip(1)),
 		// "Flip Vertical", isImage);
@@ -234,7 +219,7 @@ public class GuiBuilder
 		menu.add(geometryMenu);
 
 		JMenu stackMenu = new JMenu("Stacks");
-		stackMenu.setEnabled(has3D);
+		stackMenu.setEnabled(is3D);
 
 //		addMenuItem(stackMenu, new StackSliceAction(frame, "stackSlice"),
 //				"Get Slice Stack", has3D);
@@ -315,7 +300,7 @@ public class GuiBuilder
 	 */
 	private JMenu createAnalyzeMenu()
 	{
-		boolean isImage = hasImageDoc(frame);
+		// boolean isImage = hasImageDoc(frame);
 		// boolean has3D = has3DImage(frame);
 		// boolean has2D = has2DImage(frame);
 

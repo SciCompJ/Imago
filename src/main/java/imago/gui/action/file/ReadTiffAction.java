@@ -3,9 +3,6 @@
  */
 package imago.gui.action.file;
 
-import imago.gui.ImagoAction;
-import imago.gui.ImagoFrame;
-
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +10,9 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import imago.gui.ImagoAction;
+import imago.gui.ImagoDocViewer;
+import imago.gui.ImagoFrame;
 import net.sci.image.Image;
 import net.sci.image.io.TiffImageReader;
 
@@ -21,7 +21,8 @@ import net.sci.image.io.TiffImageReader;
  * @author David Legland
  *
  */
-public class ReadTiffAction extends ImagoAction {
+public class ReadTiffAction extends ImagoAction
+{
 
 	/**
 	 * 
@@ -30,7 +31,8 @@ public class ReadTiffAction extends ImagoAction {
 
 	private JFileChooser openWindow = null;
 
-	public ReadTiffAction(ImagoFrame frame, String name) {
+	public ReadTiffAction(ImagoFrame frame, String name) 
+	{
 		super(frame, name);
 	}
 	
@@ -38,31 +40,45 @@ public class ReadTiffAction extends ImagoAction {
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		// create file dialog if it doesn't exist
-		if (openWindow == null) {
-			openWindow = new JFileChooser(".");
-			openWindow.setFileFilter(new FileNameExtensionFilter("TIFF files", "tif", "tiff"));
-		}
+	public void actionPerformed(ActionEvent evt)
+	{
+		// create file dialog uqsing last open path
+		String lastPath = getLastOpenPath();
+		openWindow = new JFileChooser(lastPath);
+		openWindow.setFileFilter(new FileNameExtensionFilter("TIFF files (*.tif, *.tiff)", "tif", "tiff"));
+
 
 		// Open dialog to choose the file
 		int ret = openWindow.showOpenDialog(this.frame);
-		if (ret != JFileChooser.APPROVE_OPTION) {
+		if (ret != JFileChooser.APPROVE_OPTION) 
+		{
 			return;
 		}
 
 		// Check the chosen file is state
 		File file = openWindow.getSelectedFile();
-		if (!file.isFile()) {
+		if (!file.isFile()) 
+		{
 			return;
 		}
 
+		// eventually keep path for future opening
+		String path = file.getPath();
+		lastPath = this.frame.getLastOpenPath();
+		if (lastPath == null || lastPath.isEmpty())
+		{
+			System.out.println("update frame path");
+			this.frame.setLastOpenPath(path);
+		}
+		
 		// Create a Tiff reader with the chosen file
 		TiffImageReader reader;
 		try 
 		{
 			reader = new TiffImageReader(file);
-		} catch (IOException ex) {
+		}
+		catch (IOException ex) 
+		{
 			System.err.println(ex);
 			return;
 		}
@@ -73,11 +89,13 @@ public class ReadTiffAction extends ImagoAction {
 		{
 			image = reader.readImage();
 			reader.close();
-		} catch (IOException ex)
+		} 
+		catch (IOException ex)
 		{
 			System.err.println(ex);
 			return;
-		} catch (Exception ex)
+		} 
+		catch (Exception ex)
 		{
 			System.err.println(ex);
 			return;
@@ -116,7 +134,19 @@ public class ReadTiffAction extends ImagoAction {
 		image.setName(file.getName());
 		
 		// add the image document to GUI
-		this.gui.addNewDocument(image); 
+		ImagoDocViewer frame = this.gui.addNewDocument(image);
+		frame.setLastOpenPath(path);
 	}
 
+	private String getLastOpenPath()
+	{
+		String path = ".";
+		path = this.frame.getLastOpenPath();
+		if (path == null || path.isEmpty())
+		{
+			path = ".";
+		}
+		
+		return path;
+	}
 }

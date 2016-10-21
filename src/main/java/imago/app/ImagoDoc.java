@@ -29,15 +29,40 @@ public class ImagoDoc
 	 */
 	Image image;
 	
+	/**
+	 * For 3D images, the index of the slice visible in document.
+	 */
 	int currentSliceIndex = 0;
 	
 	
 	// =============================================================
 	// Constructors
 	
+	/**
+	 * Initializes a new document for the given image
+	 * 
+	 * @param image
+	 *            the image that will be contained in the document
+	 */
 	public ImagoDoc(Image image) 
 	{
 		this(image.getName(), image);
+	}
+	
+	/**
+	 * Initializes a new document for the given image, keeping some settings from
+	 * the parent document.
+	 * 
+	 * @param image
+	 *            the image contained in the document
+	 * @param parent
+	 *            the parent document providing settings
+	 */
+	public ImagoDoc(Image image, ImagoDoc parent) 
+	{
+		this(image.getName(), image);
+		
+		copyDisplaySettings(parent);
 	}
 	
 	public ImagoDoc(String name, Image image) 
