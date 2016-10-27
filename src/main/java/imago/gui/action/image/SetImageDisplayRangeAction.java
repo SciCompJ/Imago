@@ -18,14 +18,15 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class SetImageDisplayRangeAction extends ImagoAction {
-
+public class SetImageDisplayRangeAction extends ImagoAction 
+{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public SetImageDisplayRangeAction(ImagoFrame frame, String name) {
+	public SetImageDisplayRangeAction(ImagoFrame frame, String name) 
+	{
 		super(frame, name);
 	}
 	
@@ -33,7 +34,8 @@ public class SetImageDisplayRangeAction extends ImagoAction {
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	@Override
-	public void actionPerformed(ActionEvent evt) {
+	public void actionPerformed(ActionEvent evt) 
+	{
 		System.out.println("choose image display extent");
 		
 		// get current frame

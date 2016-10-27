@@ -17,6 +17,7 @@ import imago.gui.action.file.OpenDemoImage;
 import imago.gui.action.file.OpenDemoStack;
 import imago.gui.action.file.OpenImageAction;
 import imago.gui.action.file.ReadTiffAction;
+import imago.gui.action.image.PrintImageTiffTagsAction;
 import imago.gui.action.image.SetDataTypeDisplayRangeAction;
 import imago.gui.action.image.SetImageDisplayRangeAction;
 import imago.gui.action.image.SetManualDisplayRangeAction;
@@ -229,6 +230,8 @@ public class GuiBuilder
 //		addMenuItem(menu, new DuplicateAction(frame, "Duplicate"), "Duplicate",
 //				isImage);
 
+		addMenuItem(menu, new PrintImageTiffTagsAction(frame,
+				"printImageTiffTags"), "Print TIFF Tags", isImage);
 		return menu;
 	}
 
