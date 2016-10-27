@@ -3,12 +3,6 @@
  */
 package imago.gui;
 
-import imago.app.ImagoDoc;
-import imago.gui.panel.StatusBar;
-import imago.gui.viewer.ImageDisplay;
-import imago.gui.viewer.PlanarImageViewer;
-import imago.gui.viewer.StackSliceViewer;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -16,6 +10,11 @@ import java.awt.Toolkit;
 
 import javax.swing.JPanel;
 
+import imago.app.ImagoDoc;
+import imago.gui.panel.StatusBar;
+import imago.gui.tool.DisplayCurrentValueTool;
+import imago.gui.viewer.PlanarImageViewer;
+import imago.gui.viewer.StackSliceViewer;
 import net.sci.image.Image;
 
 
@@ -28,7 +27,6 @@ import net.sci.image.Image;
  */
 public class ImagoDocViewer extends ImagoFrame
 {
-
 	// ===================================================================
 	// Static class variables
 
@@ -64,9 +62,8 @@ public class ImagoDocViewer extends ImagoFrame
 		updateTitle();
 		
 		// Initialize the current tool
-//		ImagoTool tool = new SelectionTool(this, "selection");
-//		ImagoTool tool = new SelectLineTool(this, "selectLine");
-//		this.imageView.setCurrentTool(tool);
+		ImagoTool tool = new DisplayCurrentValueTool(this, "showValue");
+		this.imageView.setCurrentTool(tool);
 		
 		putFrameMiddleScreen();
 	}
@@ -94,23 +91,6 @@ public class ImagoDocViewer extends ImagoFrame
 		mainPanel.add(imageView, BorderLayout.CENTER);
 		mainPanel.add(this.statusBar, BorderLayout.SOUTH);
 		
-		// Add listeners
-//		ImagoTool tool = new DisplayCurrentValueTool(this, "showValue");
-		ImageDisplay display = null;
-		if (image.getDimension() == 2) 
-		{
-			display = ((PlanarImageViewer) imageView).getImageDisplay(); 
-		}
-		else
-		{
-			display = ((StackSliceViewer) imageView).getImageDisplay(); 
-		}
-		if (display != null)
-		{
-//			display.addMouseListener(tool); 
-//			display.addMouseMotionListener(tool); 
-		}
-
 		this.setContentPane(mainPanel);
 	}
 	

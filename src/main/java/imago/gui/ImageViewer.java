@@ -18,8 +18,8 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public abstract class ImageViewer extends JPanel {
-
+public abstract class ImageViewer extends JPanel 
+{
 	/**
 	 * 
 	 */
@@ -31,12 +31,12 @@ public abstract class ImageViewer extends JPanel {
 	/**
 	 * The behavior of the zoom when the component is resized.
 	 */
-	public static enum ZoomMode {
+	public static enum ZoomMode 
+	{
 		FIXED,
 		FILL
 	}
 	
-
 	protected Image image;
 	
 	protected double zoom = 1;
@@ -45,14 +45,17 @@ public abstract class ImageViewer extends JPanel {
 	// ===================================================================
 	// Constructor
 	
-	public ImageViewer(Image image) {
+	public ImageViewer(Image image) 
+	{
 		this.image = image;
 	}
+	
 	
 	// ===================================================================
 	// General methods
 	
-	public Image getImage() {
+	public Image getImage() 
+	{
 		return this.image;
 	}
 	
@@ -60,14 +63,17 @@ public abstract class ImageViewer extends JPanel {
 	 * Returns the instance of ImagoDocViewer that contains this Image view,
 	 * or null if no one is found.
 	 */
-	public ImagoDocViewer getViewer() {
+	public ImagoDocViewer getViewer() 
+	{
 		Container container = this.getParent();
-		while (!(container instanceof ImagoDocViewer) && container != null) {
+		while (!(container instanceof ImagoDocViewer) && container != null) 
+		{
 			container = container.getParent();
 		}
 		return (ImagoDocViewer) container;
 	}	
 
+	
 	// ===================================================================
 	// Tool management methods
 	
@@ -75,19 +81,23 @@ public abstract class ImageViewer extends JPanel {
 
 	public abstract ImagoTool getCurrentTool();
 	
+	
 	// ===================================================================
 	// Display management methods
 	
-	public double getZoom() {
+	public double getZoom()
+	{
 		return this.zoom;
 	}
 	
-	public void setZoom(double zoom) {
+	public void setZoom(double zoom) 
+	{
 		this.zoom = zoom;
 	}
 
 
-	public void refreshDisplay(){
+	public void refreshDisplay()
+	{
 //		System.out.println("refresh display");
 	}
 

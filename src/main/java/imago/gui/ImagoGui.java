@@ -15,45 +15,13 @@ import net.sci.image.Image;
 
 /**
  * The GUI Manager, that create frames, stores the set of open frames, 
- * and keeps a reference to the application.
+ * and keeps a reference to the current application.
+ * 
  * @author David Legland
  *
  */
-public class ImagoGui {
-
-	// ===================================================================
-	// Static utility methods
-
-//	/**
-//	 * Creates a Java Buffered image that can be used to represent the given 
-//	 * Image.
-//	 * This functions automatically converts color palette images to true RGB
-//	 * images. 
-//	 */
-//	public static java.awt.image.BufferedImage createAwtImage(Image image) {
-//		// Extract data
-// 		int[][] lut = image.getColorMap();
-// 		Image imageData = image.getImage();
-// 		
-// 		// Check if needs to convert to true RGB
-// 		if (imageData instanceof Gray8Image2DBuffer && lut != null) {
-// 			return ((Gray8Image2DBuffer) imageData).getAsAwtImage(lut);
-// 		} else {
-// 			return imageData.getAsAwtImage();
-// 		}
-//	}
-//	
-//	/**
-//	 * Creates a Java Buffered image that can be used to represent the given 
-//	 * Image at the desired slice index.
-//	 * This functions automatically converts color palette images to true RGB
-//	 * images. 
-//	 */
-//	public static java.awt.image.BufferedImage buildAwtSliceImage(Image image, int sliceIndex) 
-//	{
-// 		return ImageUtils.createAwtImage(image, sliceIndex);
-//	}
-//	
+public class ImagoGui 
+{
 	// ===================================================================
 	// Class variables
 
@@ -73,12 +41,14 @@ public class ImagoGui {
 	// ===================================================================
 	// Constructor
 
-	public ImagoGui(ImagoApp app) {
+	public ImagoGui(ImagoApp app) 
+	{
 		this.app = app;
 		setupLookAndFeel();
 	}
 	
-	private void setupLookAndFeel() {
+	private void setupLookAndFeel()
+	{
 		// set up default font
 		UIManager.put("swing.boldMetal", Boolean.FALSE);
 		UIManager.put("ComboBox.background", 
@@ -89,8 +59,10 @@ public class ImagoGui {
 	// ===================================================================
 	// General methods
 
-	public void showEmptyFrame(boolean b) {
-		if (this.emptyFrame == null) {
+	public void showEmptyFrame(boolean b) 
+	{
+		if (this.emptyFrame == null) 
+		{
 			this.emptyFrame = new ImagoEmptyFrame(this);
 		}
 
@@ -114,7 +86,8 @@ public class ImagoGui {
 	 * Creates a new document from an image, using settings given in parent 
 	 * document, and adds the new document to the GUI 
 	 */
-	public ImagoDocViewer addNewDocument(Image image, ImagoDoc parentDoc) {
+	public ImagoDocViewer addNewDocument(Image image, ImagoDoc parentDoc)
+	{
 		// Create the new document, keeping the maximum of settings
 		ImagoDoc doc = new ImagoDoc(image, parentDoc);
 		
@@ -125,11 +98,13 @@ public class ImagoGui {
 		return createDocumentFrame(doc);
 	}
 	
-	public ImagoApp getAppli() {
+	public ImagoApp getAppli()
+	{
 		return this.app;
 	}
 	
-	public ImagoDocViewer createDocumentFrame(ImagoDoc doc) {
+	public ImagoDocViewer createDocumentFrame(ImagoDoc doc) 
+	{
 		ImagoDocViewer frame = new ImagoDocViewer(this, doc);
 		
 		this.frames.add(frame);
@@ -137,5 +112,4 @@ public class ImagoGui {
 		frame.setVisible(true);
 		return frame;
 	}
-	
  }

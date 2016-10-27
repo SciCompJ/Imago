@@ -31,13 +31,14 @@ import math.jg.geom2d.Point2D;
  * @author David Legland
  *
  */
-public class ImageDisplay extends JPanel {
-
+public class ImageDisplay extends JPanel
+{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
+	
 	// ===================================================================
 	// Class variables
 
@@ -52,7 +53,8 @@ public class ImageDisplay extends JPanel {
 	// ===================================================================
 	// Constructor
 	
-	public ImageDisplay(BufferedImage image) {
+	public ImageDisplay(BufferedImage image) 
+	{
 		this.image = image;
 		this.setBackground(Color.WHITE);
 	}
@@ -60,41 +62,50 @@ public class ImageDisplay extends JPanel {
 	// ===================================================================
 	// General methods
 
-	public BufferedImage getImage() {
+	public BufferedImage getImage() 
+	{
 		return this.image;
 	}
 	
-	public ImagoDocViewer getViewer() {
+	public ImagoDocViewer getViewer() 
+	{
 		Container container = this.getParent();
-		while (!(container instanceof ImagoDocViewer)) {
+		while (!(container instanceof ImagoDocViewer))
+		{
 			container = container.getParent();
 		}
 		return (ImagoDocViewer) container;
 	}
 	
+	
 	// ===================================================================
 	// Zoom management
 
-	public double getZoom() {
+	public double getZoom()
+	{
 		return this.zoom;
 	}
 	
-	public void setZoom(double zoom) {
+	public void setZoom(double zoom) 
+	{
 		this.zoom = zoom;
 	}
 
-	public BufferedImage getBufferedImage() {
+	public BufferedImage getBufferedImage() 
+	{
 		return image;
 	}
 
-	public void setBufferedImage(BufferedImage image) {
+	public void setBufferedImage(BufferedImage image) 
+	{
 		this.image = image;
 	}
 
 	// ===================================================================
 	// Display methods
 
-	public void refreshDisplay(){
+	public void refreshDisplay()
+	{
 //		System.out.println("ImageDisplay: refreshDisplay");
 		updateOffset();
 	}
@@ -104,7 +115,8 @@ public class ImageDisplay extends JPanel {
 //		System.out.println("ImageDisplay: repaint");
 //	}
 	
-	public Point2D displayToImage(Point point) {
+	public Point2D displayToImage(Point point) 
+	{
 		double x = (point.x - this.offsetX) / zoom;
 		double y = (point.y - this.offsetY) / zoom;
 		return new Point2D(x, y);
@@ -114,7 +126,8 @@ public class ImageDisplay extends JPanel {
 	 * @return the current offset no which image is displayed. Always greater
 	 *         than 0 for each coordinate.
 	 */
-	public Point getOffset() {
+	public Point getOffset() 
+	{
 		return new Point(this.offsetX, this.offsetY);
 	}
 
@@ -122,7 +135,8 @@ public class ImageDisplay extends JPanel {
 	 * Compute new offset such that image is either in center position, or at
 	 * left-most or top most position.
 	 */
-	protected void updateOffset() {
+	protected void updateOffset() 
+	{
 		Dimension dim0 = this.getSize();
 		Dimension dim = this.getDisplaySize();
 
@@ -130,17 +144,20 @@ public class ImageDisplay extends JPanel {
 		this.offsetY = (int) Math.max(0, Math.floor((dim0.height - dim.height) * .5));
 	}
 
-	public Dimension getPreferredSize() {
+	public Dimension getPreferredSize()
+	{
 		return getDisplaySize();
 	}
 	
-	public Dimension getDisplaySize() {
+	public Dimension getDisplaySize() 
+	{
 		int width = (int) Math.ceil(this.image.getWidth() * zoom);
 		int height = (int) Math.ceil(this.image.getHeight() * zoom);
 		return new Dimension(width, height);
 	}
 	
-	public void paintComponent(Graphics g) {
+	public void paintComponent(Graphics g) 
+	{
 //		System.out.println("ImageDisplay.paintComponent()");
 		Dimension dim = this.getDisplaySize();
 		g.drawImage(this.image, offsetX, offsetY, dim.width, dim.height, null);
