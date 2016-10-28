@@ -20,6 +20,7 @@ import net.sci.array.data.Array3D;
 import net.sci.array.data.IntArray;
 import net.sci.array.data.ScalarArray;
 import net.sci.array.data.VectorArray;
+import net.sci.array.data.color.RGB8Array;
 import net.sci.image.Image;
 
 /**
@@ -68,9 +69,11 @@ public class DisplayCurrentValueTool extends ImagoTool
 		Image image = imageView.getImage();
 		Array<?> img = image.getData();
 
-		// Coordinate of mouse cursor
+		// Coordinate of mouse cursor in panel corodinates
 		ImageDisplay display = (ImageDisplay) evt.getSource();
 		Point point = new Point(evt.getX(), evt.getY());
+		
+		// convert coordinates to image reference system
 		Point2D pos = display.displayToImage(point);
 		double x = pos.getX();
 		double y = pos.getY();
@@ -129,17 +132,17 @@ public class DisplayCurrentValueTool extends ImagoTool
 			}
 
 		} 
-//		else if (img instanceof RGB8Image)
-//		{
-//			// Case of RGB color images
-//			int[] rgb = ((RGB8Image) img).getRGB(inds);
-//			valueString = String.format("rgb=[%d,%d,%d]", rgb[0], rgb[1],
-//					rgb[2]);
-//
-//		} 
+		else if (img instanceof RGB8Array)
+		{
+			// Case of RGB color images
+			int[] rgb = ((RGB8Array) img).get(inds).getSamples();
+			valueString = String.format("rgb=[%d,%d,%d]", rgb[0], rgb[1], rgb[2]);
+
+		} 
 		else if (img instanceof VectorArray)
 		{
-			double[] values = ((VectorArray) img).getValues(inds);
+			// in case of Vector array, compute the norm of the pixel for display
+			double[] values = ((VectorArray<?>) img).getValues(inds);
 			double norm = 0;
 			for (int c = 0; c < values.length; c++)
 				norm += values[c] * values[c];

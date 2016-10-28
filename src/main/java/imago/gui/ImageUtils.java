@@ -5,16 +5,17 @@ package imago.gui;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 
 import net.sci.array.Array;
 import net.sci.array.Array.Cursor;
 import net.sci.array.data.UInt8Array;
+import net.sci.array.data.color.RGB8Array;
 import net.sci.array.data.scalar2d.BooleanArray2D;
 import net.sci.array.data.scalar2d.ScalarArray2D;
 import net.sci.array.data.scalar2d.UInt8Array2D;
+import net.sci.array.type.RGB8;
 import net.sci.image.Image;
 
 /**
@@ -62,63 +63,64 @@ public class ImageUtils
 		{
 			return createAwtImage((BooleanArray2D) array, Color.RED, Color.WHITE);
 		}
-//		else if (array instanceof UInt8Array2D)
-//		{			
-//			return createAwtImage((UInt8Array2D) array, lut);
-//		} 
  		else if (array instanceof ScalarArray2D)
  		{
  			double[] displayRange = image.getDisplayRange();
  			return createAwtImage((ScalarArray2D<?>) array, displayRange, lut);
  		}
+		else if (array instanceof RGB8Array)
+		{			
+			return createAwtImageRGB8((RGB8Array) array);
+		} 
  		else if (image.isColorImage())
  		{
+ 			System.err.println("Color images should implement RGB8Array interface");
  			return createAwtImageRGB8((UInt8Array) array);
  		}
 
  		return null;
 	}
 	
-	private static <T> Array<T> createArraySlice(Array<T> array, int sliceIndex)
-	{
-		// check validity of dimension number 
-		if (array.dimensionality() < 3)
-		{
-			throw new IllegalArgumentException("Requires an array with at least three dimensions");
-		}
-		
-		// check validity of slice index
-		int sizeZ = array.getSize(2);
-		if (sliceIndex < 0 || sliceIndex >= sizeZ)
-		{
-			throw new IllegalArgumentException(String.format("Slice index (%d) must be comprised between 0 and %d", sliceIndex, sizeZ-1));
-		}
-
-		// create new array for slice
-		int sizeX = array.getSize(0);
-		int sizeY = array.getSize(1);
-		Array<T> slice = array.newInstance(sizeX, sizeY);
-		
-		// create position cursors
-		int[] pos3d = new int[3];
-		pos3d[2] = sliceIndex;
-		int[] pos2d = new int[2];
-		
-		// iterate over slice pixels
-		for (int y = 0; y < sizeY; y++)
-		{
-			pos3d[1] = y; 
-			pos2d[1] = y;
-			for (int x = 0; x < sizeX; x++)
-			{
-				pos3d[0] = x; 
-				pos2d[0] = x;
-				slice.set(pos2d, array.get(pos3d));
-			}
-		}
-
-		return slice;
-	}
+//	private static <T> Array<T> createArraySlice(Array<T> array, int sliceIndex)
+//	{
+//		// check validity of dimension number 
+//		if (array.dimensionality() < 3)
+//		{
+//			throw new IllegalArgumentException("Requires an array with at least three dimensions");
+//		}
+//		
+//		// check validity of slice index
+//		int sizeZ = array.getSize(2);
+//		if (sliceIndex < 0 || sliceIndex >= sizeZ)
+//		{
+//			throw new IllegalArgumentException(String.format("Slice index (%d) must be comprised between 0 and %d", sliceIndex, sizeZ-1));
+//		}
+//
+//		// create new array for slice
+//		int sizeX = array.getSize(0);
+//		int sizeY = array.getSize(1);
+//		Array<T> slice = array.newInstance(sizeX, sizeY);
+//		
+//		// create position cursors
+//		int[] pos3d = new int[3];
+//		pos3d[2] = sliceIndex;
+//		int[] pos2d = new int[2];
+//		
+//		// iterate over slice pixels
+//		for (int y = 0; y < sizeY; y++)
+//		{
+//			pos3d[1] = y; 
+//			pos2d[1] = y;
+//			for (int x = 0; x < sizeX; x++)
+//			{
+//				pos3d[0] = x; 
+//				pos2d[0] = x;
+//				slice.set(pos2d, array.get(pos3d));
+//			}
+//		}
+//
+//		return slice;
+//	}
 	
 	private static <T> Array<T> createArraySlice(Array<T> array, int dim, int sliceIndex)
 	{
@@ -316,6 +318,7 @@ public class ImageUtils
 		IndexColorModel cm = new IndexColorModel(8, 256, red, green, blue);  
 		return cm;
 	}
+	
 	public static final java.awt.image.BufferedImage createAwtImageRGB8(
 			UInt8Array array)
 	{
@@ -338,6 +341,36 @@ public class ImageUtils
 				{
 					pos[2] = c;
 					raster.setSample(x, y, c, array.getInt(pos));
+				}
+			}
+		}
+		
+		return bufImg;
+	}
+
+	public static final java.awt.image.BufferedImage createAwtImageRGB8(
+			RGB8Array array)
+	{
+		int sizeX = array.getSize(0);
+		int sizeY = array.getSize(1);
+		
+		int type = java.awt.image.BufferedImage.TYPE_INT_RGB;
+		
+		BufferedImage bufImg = new BufferedImage(sizeX, sizeY, type);
+		WritableRaster raster = bufImg.getRaster();
+		
+		int[] pos = new int[3];
+		for (int y = 0; y < sizeY; y++)
+		{
+			pos[1] = y;
+			for (int x = 0; x < sizeX; x++)
+			{
+				pos[0] = x;
+				RGB8 rgb = array.get(pos);
+				for (int c = 0; c < 3; c++)
+				{
+					pos[2] = c;
+					raster.setSample(x, y, c, rgb.getSample(c));
 				}
 			}
 		}
