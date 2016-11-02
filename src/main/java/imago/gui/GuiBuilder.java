@@ -37,6 +37,7 @@ import net.sci.array.data.Array2D;
 import net.sci.array.data.Array3D;
 import net.sci.array.data.ScalarArray;
 import net.sci.array.process.PowerOfTwo;
+import net.sci.array.process.SobelGradient;
 import net.sci.array.process.Sqrt;
 import net.sci.array.process.shape.Flip;
 import net.sci.image.Image;
@@ -285,9 +286,8 @@ public class GuiBuilder
 		menu.addSeparator();
 		addMenuItem(menu, new ImageOperatorAction(frame, "sobelGradientNorm",
 				new SobelGradientNorm()), "Sobel Gradient Norm", isImage);
-		// addMenuItem(menu, new ImageOperatorAction(frame, "sobelGradient",
-		// new SobelGradient_Float()),
-		// "Sobel Gradient", isImage);
+		addMenuItem(menu, new ImageArrayOperatorAction(frame, "sobelGradient",
+				new SobelGradient()), "Sobel Gradient", isImage);
 		// addMenuItem(menu, new ImageOperatorAction(frame, "vectorNorm",
 		// new VectorImageNorm()),
 		// "Array<?> Norm", isImage);

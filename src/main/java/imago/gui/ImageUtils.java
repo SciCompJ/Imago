@@ -10,12 +10,15 @@ import java.awt.image.WritableRaster;
 
 import net.sci.array.Array;
 import net.sci.array.Array.Cursor;
+import net.sci.array.data.ScalarArray;
 import net.sci.array.data.UInt8Array;
+import net.sci.array.data.VectorArray;
 import net.sci.array.data.color.RGB8Array;
 import net.sci.array.data.scalar2d.BooleanArray2D;
 import net.sci.array.data.scalar2d.ScalarArray2D;
 import net.sci.array.data.scalar2d.UInt8Array2D;
 import net.sci.array.type.RGB8;
+import net.sci.array.type.Scalar;
 import net.sci.image.Image;
 
 /**
@@ -44,19 +47,7 @@ public class ImageUtils
 		}
 
 		// Ensure data is a planar image
-		Array<?> array = image.getData();
-		if (image.getDimension() > 2)
-		{
-			int nd = array.dimensionality();
-			if (image.isColorImage())
-			{
-				array = createArraySlice(array, nd - 2, sliceIndex);
-			}
-			else
-			{
-				array = createArraySlice(array, nd - 1, sliceIndex);
-			}
-		}
+		Array<?> array = getImageSlice(image, sliceIndex);
 
 		// Process array depending on its data type
 		if (array instanceof BooleanArray2D)
@@ -69,7 +60,7 @@ public class ImageUtils
  			return createAwtImage((ScalarArray2D<?>) array, displayRange, lut);
  		}
 		else if (array instanceof RGB8Array)
-		{			
+		{
 			return createAwtImageRGB8((RGB8Array) array);
 		} 
  		else if (image.isColorImage())
@@ -77,8 +68,41 @@ public class ImageUtils
  			System.err.println("Color images should implement RGB8Array interface");
  			return createAwtImageRGB8((UInt8Array) array);
  		}
+		else if (array instanceof VectorArray)
+		{
+			// Compute the norm of the vector
+			ScalarArray<?> norm = VectorArray.norm((VectorArray<?>) array);
+			double vMax = 0;
+			for (Scalar item : norm)
+			{
+				vMax = Math.max(vMax, item.getValue());
+			}
+			
+			// convert image of the norm to AWT image
+ 			return createAwtImage((ScalarArray2D<?>) norm, new double[]{0, vMax}, lut);
+		} 
 
  		return null;
+	}
+	
+	private static final Array<?> getImageSlice(Image image, int sliceIndex)
+	{
+		Array<?> array = image.getData();
+		if (image.getDimension() == 2)
+		{
+			return array;
+		}
+
+		int nd = array.dimensionality();
+		if (image.isColorImage())
+		{
+			array = createArraySlice(array, nd - 2, sliceIndex);
+		}
+		else
+		{
+			array = createArraySlice(array, nd - 1, sliceIndex);
+		}
+		return array;
 	}
 	
 //	private static <T> Array<T> createArraySlice(Array<T> array, int sliceIndex)
