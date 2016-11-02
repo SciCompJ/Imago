@@ -52,19 +52,23 @@ public class ImageUtils
 		// Process array depending on its data type
 		if (array instanceof BooleanArray2D)
 		{
+			// binary images are converted to bi-color images
 			return createAwtImage((BooleanArray2D) array, Color.RED, Color.WHITE);
 		}
  		else if (array instanceof ScalarArray2D)
  		{
+ 			// scalar images use display range and current LUT
  			double[] displayRange = image.getDisplayRange();
  			return createAwtImage((ScalarArray2D<?>) array, displayRange, lut);
  		}
 		else if (array instanceof RGB8Array)
 		{
+			// call the standard way for converting planar RGB images
 			return createAwtImageRGB8((RGB8Array) array);
 		} 
  		else if (image.isColorImage())
  		{
+ 			// obsolete, and should be removed
  			System.err.println("Color images should implement RGB8Array interface");
  			return createAwtImageRGB8((UInt8Array) array);
  		}
@@ -94,14 +98,7 @@ public class ImageUtils
 		}
 
 		int nd = array.dimensionality();
-		if (image.isColorImage())
-		{
-			array = createArraySlice(array, nd - 2, sliceIndex);
-		}
-		else
-		{
-			array = createArraySlice(array, nd - 1, sliceIndex);
-		}
+		array = createArraySlice(array, nd - 1, sliceIndex);
 		return array;
 	}
 	

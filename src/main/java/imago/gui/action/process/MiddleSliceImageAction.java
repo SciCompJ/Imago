@@ -42,13 +42,17 @@ public class MiddleSliceImageAction extends ImagoAction
 		ImagoDoc doc = ((ImagoDocViewer) this.frame).getDocument();
 		Image image = doc.getImage();
 
+		// check image dimensionality
 		if (image.getDimension() < 2)
 		{
 			System.err.println("Requires 3-dimensional image");
 			return;
 		}
 		
-		int index = (image.getSize(2) - 1) / 2;
+		// compute slice index
+		int index = Math.max((image.getSize(2)) / 2 - 1, 0);
+		
+		// compute resulting slice
 		Slicer filter = new Slicer(2, index);
 		Image result = image.apply(filter);
 				
