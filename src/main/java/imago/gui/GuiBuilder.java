@@ -3,6 +3,14 @@
  */
 package imago.gui;
 
+import java.awt.image.BufferedImage;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+
 import imago.app.ImagoDoc;
 import imago.gui.action.ImageArrayOperatorAction;
 import imago.gui.action.ImageOperatorAction;
@@ -22,20 +30,10 @@ import imago.gui.action.image.PrintImageTiffTagsAction;
 import imago.gui.action.image.SetDataTypeDisplayRangeAction;
 import imago.gui.action.image.SetImageDisplayRangeAction;
 import imago.gui.action.image.SetManualDisplayRangeAction;
+import imago.gui.action.image.SplitImageChannelsAction;
 import imago.gui.action.process.MiddleSliceImageAction;
 import imago.gui.tool.SelectionTool;
-
-import java.awt.image.BufferedImage;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-
 import net.sci.array.Array;
-import net.sci.array.data.Array2D;
-import net.sci.array.data.Array3D;
 import net.sci.array.data.ScalarArray;
 import net.sci.array.process.PowerOfTwo;
 import net.sci.array.process.SobelGradient;
@@ -117,7 +115,9 @@ public class GuiBuilder
 	private JMenu createEditMenu()
 	{
 		boolean isImage = hasImageDoc(frame);
-		
+		boolean isVector = hasVectorImage(frame);
+		boolean isColor = hasRGB8Image(frame);
+			
 		JMenu editMenu = new JMenu("Edit");
 
 		// Type conversion items
@@ -133,8 +133,8 @@ public class GuiBuilder
 
 		// Color conversion items
 		// JMenu colorMenu = new JMenu("Color");
-//		addMenuItem(editMenu, new SplitImageChannelsAction(frame,
-//				"splitChannels"), "Split Channels", isVector);
+		addMenuItem(editMenu, new SplitImageChannelsAction(frame,
+				"splitChannels"), "Split Channels", isVector || isColor);
 		// addMenuItem(editMenu, new MetaImageOperatorAction(frame,
 		// "colorToGray",
 		// new Gray8Converter()), "RGB -> Gray8", isColor);
@@ -396,8 +396,15 @@ public class GuiBuilder
 		if (doc == null)
 			return false;
 
-		//TODO: should be more generic (include COLOR and Complex images)
-		return doc.getImage().getType() == Image.Type.VECTOR;
+		switch(doc.getImage().getType())
+		{
+		case VECTOR:
+		case COLOR:
+		case COMPLEX:
+			return true;
+		default:
+			return false;
+		}
 	}
 
 	private final static boolean hasColorImage(ImagoFrame frame)
@@ -423,14 +430,8 @@ public class GuiBuilder
 		if (doc == null)
 			return false;
 
-		boolean is2D = false;
-		Array<?> img = doc.getImage().getData();
-		if (img instanceof Array2D) 
-		{
-			// TODO: should test image dimensions instead
-			is2D = true;
-		}
-		return is2D;
+		Array<?> array = doc.getImage().getData();
+		return array.dimensionality() == 2;
 	}
 
 	private final static boolean has3DImage(ImagoFrame frame)
@@ -443,14 +444,8 @@ public class GuiBuilder
 		if (doc == null)
 			return false;
 
-		boolean is3D = false;
-		Array<?> img = doc.getImage().getData();
-		if (img instanceof Array3D)
-		{
-			// TODO: should test image dimensions instead
-				is3D = true;
-		}
-		return is3D;
+		Array<?> array = doc.getImage().getData();
+		return array.dimensionality() == 3;
 	}
 
 	private final static boolean hasRGB8Image(ImagoFrame frame)
