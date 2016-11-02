@@ -7,6 +7,7 @@ import imago.app.ImagoDoc;
 import imago.gui.action.ImageArrayOperatorAction;
 import imago.gui.action.ImageOperatorAction;
 import imago.gui.action.SelectToolAction;
+import imago.gui.action.analyze.ImageHistogramAction;
 import imago.gui.action.edit.PrintDocumentListAction;
 import imago.gui.action.edit.ZoomInAction;
 import imago.gui.action.edit.ZoomOneAction;
@@ -303,14 +304,14 @@ public class GuiBuilder
 	 */
 	private JMenu createAnalyzeMenu()
 	{
-		// boolean isImage = hasImageDoc(frame);
+		 boolean isImage = hasImageDoc(frame);
 		// boolean has3D = has3DImage(frame);
 		// boolean has2D = has2DImage(frame);
 
 		JMenu menu = new JMenu("Analyze");
 
-//		addMenuItem(menu, new ImageHistogramAction(frame, "histogram"),
-//				"Histogram", isImage);
+		addMenuItem(menu, new ImageHistogramAction(frame, "histogram"),
+				"Histogram", isImage);
 //		addMenuItem(menu, new RGBJointHistogramsAction(frame,
 //				"rgbJointHistograms"), "RGB Joint Histograms",
 //				hasRGB8Image(frame));
