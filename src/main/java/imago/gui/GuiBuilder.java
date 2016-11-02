@@ -26,6 +26,7 @@ import imago.gui.action.file.OpenDemoImage;
 import imago.gui.action.file.OpenDemoStack;
 import imago.gui.action.file.OpenImageAction;
 import imago.gui.action.file.ReadTiffAction;
+import imago.gui.action.image.MergeChannelImagesAction;
 import imago.gui.action.image.PrintImageTiffTagsAction;
 import imago.gui.action.image.SetDataTypeDisplayRangeAction;
 import imago.gui.action.image.SetImageDisplayRangeAction;
@@ -135,6 +136,8 @@ public class GuiBuilder
 		// JMenu colorMenu = new JMenu("Color");
 		addMenuItem(editMenu, new SplitImageChannelsAction(frame,
 				"splitChannels"), "Split Channels", isVector || isColor);
+		addMenuItem(editMenu, new MergeChannelImagesAction(frame,
+				"mergeChannels"), "Merge Channels");
 		// addMenuItem(editMenu, new MetaImageOperatorAction(frame,
 		// "colorToGray",
 		// new Gray8Converter()), "RGB -> Gray8", isColor);

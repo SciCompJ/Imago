@@ -7,6 +7,7 @@ import imago.app.ImagoApp;
 import imago.app.ImagoDoc;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.swing.UIManager;
 
@@ -111,5 +112,19 @@ public class ImagoGui
 		
 		frame.setVisible(true);
 		return frame;
+	}
+	
+	public Collection<ImagoDocViewer> getDocumentViewers()
+	{
+		ArrayList<ImagoDocViewer> viewers = new ArrayList<ImagoDocViewer>(this.frames.size());
+		for (ImagoFrame frame : this.frames)
+		{
+			if (frame instanceof ImagoDocViewer)
+			{
+				viewers.add((ImagoDocViewer) frame);
+			}
+		}
+		
+		return viewers;
 	}
  }
