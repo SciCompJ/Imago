@@ -40,7 +40,7 @@ public class ImageOperatorAction extends ImagoAction
 	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	@Override
-	public void actionPerformed(ActionEvent arg0)
+	public void actionPerformed(ActionEvent evt)
 	{
 		// get current frame
 		ImagoDoc doc = ((ImagoDocViewer) this.frame).getDocument();

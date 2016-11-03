@@ -32,6 +32,7 @@ import imago.gui.action.image.SetDataTypeDisplayRangeAction;
 import imago.gui.action.image.SetImageDisplayRangeAction;
 import imago.gui.action.image.SetManualDisplayRangeAction;
 import imago.gui.action.image.SplitImageChannelsAction;
+import imago.gui.action.process.ImageOtsuThresholdAction;
 import imago.gui.action.process.MiddleSliceImageAction;
 import imago.gui.tool.SelectionTool;
 import net.sci.array.Array;
@@ -258,10 +259,12 @@ public class GuiBuilder
 				"PowerOfTwo", hasScalar);
 		
 		menu.addSeparator();
+		addMenuItem(menu, 
+				new ImageOtsuThresholdAction(frame, "otsuThreshold"),
+				"Otsu Threshold", hasScalar);
 		addMenuItem(menu,
 				new ImageOperatorAction(frame, "threshold", new ImageThreshold(20)),
 				"Threshold (20)", hasScalar);
-
 //		addMenuItem(menu, new BoxFilter2D11x11Action(frame, "boxFilter11x11"),
 //				"Box Filter 11x11", isImage);
 //		addMenuItem(menu, new BoxFilter3x3(frame, "boxFilter3x3"),
@@ -410,32 +413,32 @@ public class GuiBuilder
 		}
 	}
 
-	private final static boolean hasColorImage(ImagoFrame frame)
-	{
-		ImagoDoc doc = null;
-		if (frame instanceof ImagoDocViewer)
-		{
-			doc = ((ImagoDocViewer) frame).getDocument();
-		}
-		if (doc == null)
-			return false;
-
-		return doc.getImage().getType() == Image.Type.COLOR;
-	}
-
-	private final static boolean has2DImage(ImagoFrame frame)
-	{
-		ImagoDoc doc = null;
-		if (frame instanceof ImagoDocViewer)
-		{
-			doc = ((ImagoDocViewer) frame).getDocument();
-		}
-		if (doc == null)
-			return false;
-
-		Array<?> array = doc.getImage().getData();
-		return array.dimensionality() == 2;
-	}
+//	private final static boolean hasColorImage(ImagoFrame frame)
+//	{
+//		ImagoDoc doc = null;
+//		if (frame instanceof ImagoDocViewer)
+//		{
+//			doc = ((ImagoDocViewer) frame).getDocument();
+//		}
+//		if (doc == null)
+//			return false;
+//
+//		return doc.getImage().getType() == Image.Type.COLOR;
+//	}
+//
+//	private final static boolean has2DImage(ImagoFrame frame)
+//	{
+//		ImagoDoc doc = null;
+//		if (frame instanceof ImagoDocViewer)
+//		{
+//			doc = ((ImagoDocViewer) frame).getDocument();
+//		}
+//		if (doc == null)
+//			return false;
+//
+//		Array<?> array = doc.getImage().getData();
+//		return array.dimensionality() == 2;
+//	}
 
 	private final static boolean has3DImage(ImagoFrame frame)
 	{

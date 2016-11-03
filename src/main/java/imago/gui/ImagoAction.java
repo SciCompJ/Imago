@@ -10,8 +10,8 @@ import javax.swing.AbstractAction;
  * @author David Legland
  *
  */
-public abstract class ImagoAction extends AbstractAction {
-
+public abstract class ImagoAction extends AbstractAction 
+{
 	// ===================================================================
 	// class variables
 
@@ -26,13 +26,15 @@ public abstract class ImagoAction extends AbstractAction {
 
 	protected String name;
 	
-	protected ImagoAction(ImagoFrame frame, String name) {
+	protected ImagoAction(ImagoFrame frame, String name) 
+	{
 		this.frame = frame;
 		this.name = name;
 		this.gui = frame.gui;
 	}
 	
-	public String getName() {
+	public String getName() 
+	{
 		return this.name;
 	}
 }
