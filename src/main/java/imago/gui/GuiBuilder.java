@@ -32,6 +32,7 @@ import imago.gui.action.image.SetDataTypeDisplayRangeAction;
 import imago.gui.action.image.SetImageDisplayRangeAction;
 import imago.gui.action.image.SetManualDisplayRangeAction;
 import imago.gui.action.image.SplitImageChannelsAction;
+import imago.gui.action.process.BoxFilter3x3Float;
 import imago.gui.action.process.ImageOtsuThresholdAction;
 import imago.gui.action.process.MiddleSliceImageAction;
 import imago.gui.tool.SelectionTool;
@@ -271,8 +272,9 @@ public class GuiBuilder
 //				"Box Filter 3x3", isImage);
 //		addMenuItem(menu, new BoxFilterAction(frame, "boxFilter"), "Box Filter",
 //				isImage);
-//		addMenuItem(menu, new BoxFilter3x3Float(frame, "boxFilter3x3Float"),
-//				"Box Filter 3x3 (float)", isImage);
+		menu.addSeparator();
+		addMenuItem(menu, new BoxFilter3x3Float(frame, "boxFilter3x3Float"),
+				"Box Filter 3x3 (float)", hasScalar);
 
 //		menu.addSeparator();
 		// addMenuItem(menu, new ImageOperatorAction(frame,
