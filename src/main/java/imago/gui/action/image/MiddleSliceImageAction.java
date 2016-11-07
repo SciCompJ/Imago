@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.gui.action.process;
+package imago.gui.action.image;
 
 import imago.app.ImagoDoc;
 import imago.gui.ImagoAction;

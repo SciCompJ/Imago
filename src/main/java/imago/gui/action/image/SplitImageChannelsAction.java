@@ -38,7 +38,7 @@ public class SplitImageChannelsAction extends ImagoAction
 	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	@Override
-	public void actionPerformed(ActionEvent arg0)
+	public void actionPerformed(ActionEvent evt)
 	{
 		// Check type is image frame
 		if (!(frame instanceof ImagoDocViewer))

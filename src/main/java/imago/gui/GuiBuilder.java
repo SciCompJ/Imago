@@ -27,14 +27,16 @@ import imago.gui.action.file.OpenDemoStack;
 import imago.gui.action.file.OpenImageAction;
 import imago.gui.action.file.ReadTiffAction;
 import imago.gui.action.image.MergeChannelImagesAction;
+import imago.gui.action.image.MiddleSliceImageAction;
 import imago.gui.action.image.PrintImageTiffTagsAction;
 import imago.gui.action.image.SetDataTypeDisplayRangeAction;
 import imago.gui.action.image.SetImageDisplayRangeAction;
 import imago.gui.action.image.SetManualDisplayRangeAction;
 import imago.gui.action.image.SplitImageChannelsAction;
+import imago.gui.action.image.StackToVectorImageAction;
 import imago.gui.action.process.BoxFilter3x3Float;
+import imago.gui.action.process.BoxFilterAction;
 import imago.gui.action.process.ImageOtsuThresholdAction;
-import imago.gui.action.process.MiddleSliceImageAction;
 import imago.gui.tool.SelectionTool;
 import net.sci.array.Array;
 import net.sci.array.data.ScalarArray;
@@ -209,8 +211,6 @@ public class GuiBuilder
 		geometryMenu.setEnabled(isImage);
 		addMenuItem(geometryMenu, new ImageArrayOperatorAction(frame,
 				"flipXFilter", new Flip(0)), "Flip Horizontal", isImage);
-		addMenuItem(geometryMenu, 
-				new MiddleSliceImageAction(frame, "middleSlice"), "Middle Slice", is3D);
 		// addMenuItem(geometryMenu,
 		// new ImageOperatorAction(frame, "flipYFilter", new Flip(1)),
 		// "Flip Vertical", isImage);
@@ -229,10 +229,15 @@ public class GuiBuilder
 		JMenu stackMenu = new JMenu("Stacks");
 		stackMenu.setEnabled(is3D);
 
+		addMenuItem(stackMenu, 
+				new MiddleSliceImageAction(frame, "middleSlice"), "Middle Slice", is3D);
+		addMenuItem(stackMenu, new StackToVectorImageAction(frame, "stackToVector"),
+				"Stack To Vector", is3D);
+
 //		addMenuItem(stackMenu, new StackSliceAction(frame, "stackSlice"),
 //				"Get Slice Stack", has3D);
 //
-//		menu.add(stackMenu);
+		menu.add(stackMenu);
 //
 //		addMenuItem(menu, new DuplicateAction(frame, "Duplicate"), "Duplicate",
 //				isImage);
@@ -257,7 +262,7 @@ public class GuiBuilder
 				"Sqrt", hasScalar);
 		addMenuItem(menu,
 				new ImageArrayOperatorAction(frame, "powerOfTwo", new PowerOfTwo()),
-				"PowerOfTwo", hasScalar);
+				"Power Of Two", hasScalar);
 		
 		menu.addSeparator();
 		addMenuItem(menu, 
@@ -273,8 +278,10 @@ public class GuiBuilder
 //		addMenuItem(menu, new BoxFilterAction(frame, "boxFilter"), "Box Filter",
 //				isImage);
 		menu.addSeparator();
+		addMenuItem(menu, new BoxFilterAction(frame, "boxFilter"),
+				"Box Filter", hasScalar);
 		addMenuItem(menu, new BoxFilter3x3Float(frame, "boxFilter3x3Float"),
-				"Box Filter 3x3 (float)", hasScalar);
+				"Box Filter 2D 3x3 (float)", hasScalar);
 
 //		menu.addSeparator();
 		// addMenuItem(menu, new ImageOperatorAction(frame,

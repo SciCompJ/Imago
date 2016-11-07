@@ -9,7 +9,7 @@ import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 
 import net.sci.array.Array;
-import net.sci.array.Array.Cursor;
+import net.sci.array.Cursor;
 import net.sci.array.data.ScalarArray;
 import net.sci.array.data.UInt8Array;
 import net.sci.array.data.VectorArray;
