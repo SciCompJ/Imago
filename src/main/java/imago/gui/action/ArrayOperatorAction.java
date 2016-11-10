@@ -9,8 +9,9 @@ import imago.app.ImagoDoc;
 import imago.gui.ImagoAction;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
+import net.sci.array.Array;
+import net.sci.array.ArrayOperator;
 import net.sci.image.Image;
-import net.sci.image.ImageArrayOperator;
 
 /**
  * Encapsulates an operator on array.
@@ -18,7 +19,7 @@ import net.sci.image.ImageArrayOperator;
  * @author David Legland
  *
  */
-public class ImageArrayOperatorAction extends ImagoAction
+public class ArrayOperatorAction extends ImagoAction
 {
 
 	/**
@@ -26,9 +27,9 @@ public class ImageArrayOperatorAction extends ImagoAction
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private ImageArrayOperator operator;
+	private ArrayOperator operator;
 
-	public ImageArrayOperatorAction(ImagoFrame frame, String name, ImageArrayOperator op)
+	public ArrayOperatorAction(ImagoFrame frame, String name, ArrayOperator op)
 	{
 		super(frame, name);
 		this.operator = op;
@@ -47,12 +48,9 @@ public class ImageArrayOperatorAction extends ImagoAction
 		ImagoDoc doc = ((ImagoDocViewer) this.frame).getDocument();
 		Image image = doc.getImage();
 
-//		Array<?> data = image.getData();
-//		Array<?> data2 = operator.process(data);
-//		Image result = new Image(data2, image);
-
-		Image result = operator.createEmptyOutputImage(image);
-		operator.process(image, result);
+		Array<?> data = image.getData();
+		Array<?> data2 = operator.process(data);
+		Image result = new Image(data2, image);
 
 		// add the image document to GUI
 		this.gui.addNewDocument(result, doc);

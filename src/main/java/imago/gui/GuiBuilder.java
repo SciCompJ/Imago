@@ -12,6 +12,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import imago.app.ImagoDoc;
+import imago.gui.action.ArrayOperatorAction;
 import imago.gui.action.ImageArrayOperatorAction;
 import imago.gui.action.ImageOperatorAction;
 import imago.gui.action.SelectToolAction;
@@ -45,6 +46,7 @@ import net.sci.array.process.Sqrt;
 import net.sci.array.process.shape.Flip;
 import net.sci.image.Image;
 import net.sci.image.binary.FloodFillComponentLabeling;
+import net.sci.image.process.ImageInverter;
 import net.sci.image.process.ImageThreshold;
 import net.sci.image.process.RotationAroundCenter;
 import net.sci.image.process.SobelGradient;
@@ -123,6 +125,7 @@ public class GuiBuilder
 	private JMenu createEditMenu()
 	{
 		boolean isImage = hasImageDoc(frame);
+		boolean isScalar = hasScalarImage(frame);
 		boolean isVector = hasVectorImage(frame);
 		boolean isColor = hasRGB8Image(frame);
 			
@@ -149,9 +152,10 @@ public class GuiBuilder
 		// "colorToGray",
 		// new Gray8Converter()), "RGB -> Gray8", isColor);
 		// // editMenu.add(colorMenu);
-		// addMenuItem(editMenu, new MetaImageOperatorAction(frame, "invert",
-		// new Inverter()), "Invert", isImage);
-//		editMenu.addSeparator();
+		addMenuItem(editMenu, 
+				new ImageArrayOperatorAction(frame, "invert",
+				new ImageInverter()), "Invert", isScalar || isColor);
+		//		editMenu.addSeparator();
 
 		// tool selection items
 		if (frame instanceof ImagoDocViewer)
@@ -212,7 +216,7 @@ public class GuiBuilder
 
 		JMenu geometryMenu = new JMenu("Geometry");
 		geometryMenu.setEnabled(isImage);
-		addMenuItem(geometryMenu, new ImageArrayOperatorAction(frame,
+		addMenuItem(geometryMenu, new ArrayOperatorAction(frame,
 				"flipXFilter", new Flip(0)), "Flip Horizontal", isImage);
 		// new ImageOperatorAction(frame, "flipYFilter", new Flip(1)),
 		// "Flip Vertical", isImage);
@@ -223,7 +227,7 @@ public class GuiBuilder
 		// new ImageOperatorAction(frame, "rotation90", new Rotation90()),
 		// "Rotation 90", has2D);
 		 addMenuItem(geometryMenu,
-				 new ImageArrayOperatorAction(frame, "rotateImage", new RotationAroundCenter(30)),
+				 new ArrayOperatorAction(frame, "rotateImage", new RotationAroundCenter(30)),
 				 "Rotate Image", isImage);
 
 		menu.add(geometryMenu);
@@ -262,10 +266,10 @@ public class GuiBuilder
 
 		JMenu menu = new JMenu("Process");
 		addMenuItem(menu,
-				new ImageArrayOperatorAction(frame, "sqrt", new Sqrt()),
+				new ArrayOperatorAction(frame, "sqrt", new Sqrt()),
 				"Sqrt", isScalar);
 		addMenuItem(menu,
-				new ImageArrayOperatorAction(frame, "powerOfTwo", new PowerOfTwo()),
+				new ArrayOperatorAction(frame, "powerOfTwo", new PowerOfTwo()),
 				"Power Of Two", isScalar);
 		
 		menu.addSeparator();
