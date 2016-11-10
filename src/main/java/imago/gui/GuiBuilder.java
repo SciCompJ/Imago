@@ -41,12 +41,15 @@ import imago.gui.tool.SelectionTool;
 import net.sci.array.Array;
 import net.sci.array.data.ScalarArray;
 import net.sci.array.process.PowerOfTwo;
-import net.sci.array.process.SobelGradient;
 import net.sci.array.process.Sqrt;
 import net.sci.array.process.shape.Flip;
 import net.sci.image.Image;
+import net.sci.image.binary.FloodFillComponentLabeling;
 import net.sci.image.process.ImageThreshold;
+import net.sci.image.process.RotationAroundCenter;
+import net.sci.image.process.SobelGradient;
 import net.sci.image.process.SobelGradientNorm;
+import net.sci.image.process.VectorArrayNorm;
 
 /**
  * Setup the menu for a given frame.
@@ -211,7 +214,6 @@ public class GuiBuilder
 		geometryMenu.setEnabled(isImage);
 		addMenuItem(geometryMenu, new ImageArrayOperatorAction(frame,
 				"flipXFilter", new Flip(0)), "Flip Horizontal", isImage);
-		// addMenuItem(geometryMenu,
 		// new ImageOperatorAction(frame, "flipYFilter", new Flip(1)),
 		// "Flip Vertical", isImage);
 		// addMenuItem(geometryMenu,
@@ -220,9 +222,9 @@ public class GuiBuilder
 		// addMenuItem(geometryMenu,
 		// new ImageOperatorAction(frame, "rotation90", new Rotation90()),
 		// "Rotation 90", has2D);
-		// addMenuItem(geometryMenu,
-		// new ImageOperatorAction(frame, "rotateImage", new Rotation(30)),
-		// "Rotate Array<?>", isImage);
+		 addMenuItem(geometryMenu,
+				 new ImageArrayOperatorAction(frame, "rotateImage", new RotationAroundCenter(30)),
+				 "Rotate Image", isImage);
 
 		menu.add(geometryMenu);
 
@@ -252,25 +254,27 @@ public class GuiBuilder
 	 */
 	private JMenu createProcessMenu()
 	{
-		boolean isImage = hasImageDoc(frame);
-		boolean hasScalar = hasScalarImage(frame);
-		// boolean has2D = has2DImage(frame);
+//		boolean isImage = hasImageDoc(frame);
+		boolean is2D = has2DImage(frame);
+		boolean isScalar = hasScalarImage(frame);
+		boolean isVector = hasVectorImage(frame);
+		boolean isBinary = hasBinaryImage(frame);
 
 		JMenu menu = new JMenu("Process");
 		addMenuItem(menu,
 				new ImageArrayOperatorAction(frame, "sqrt", new Sqrt()),
-				"Sqrt", hasScalar);
+				"Sqrt", isScalar);
 		addMenuItem(menu,
 				new ImageArrayOperatorAction(frame, "powerOfTwo", new PowerOfTwo()),
-				"Power Of Two", hasScalar);
+				"Power Of Two", isScalar);
 		
 		menu.addSeparator();
 		addMenuItem(menu, 
 				new ImageOtsuThresholdAction(frame, "otsuThreshold"),
-				"Otsu Threshold", hasScalar);
+				"Otsu Threshold", isScalar);
 		addMenuItem(menu,
 				new ImageOperatorAction(frame, "threshold", new ImageThreshold(20)),
-				"Threshold (20)", hasScalar);
+				"Threshold (20)", isScalar);
 //		addMenuItem(menu, new BoxFilter2D11x11Action(frame, "boxFilter11x11"),
 //				"Box Filter 11x11", isImage);
 //		addMenuItem(menu, new BoxFilter3x3(frame, "boxFilter3x3"),
@@ -279,9 +283,9 @@ public class GuiBuilder
 //				isImage);
 		menu.addSeparator();
 		addMenuItem(menu, new BoxFilterAction(frame, "boxFilter"),
-				"Box Filter", hasScalar);
+				"Box Filter", isScalar);
 		addMenuItem(menu, new BoxFilter3x3Float(frame, "boxFilter3x3Float"),
-				"Box Filter 2D 3x3 (float)", hasScalar);
+				"Box Filter 2D 3x3 (float)", isScalar);
 
 //		menu.addSeparator();
 		// addMenuItem(menu, new ImageOperatorAction(frame,
@@ -301,15 +305,22 @@ public class GuiBuilder
 
 		menu.addSeparator();
 		addMenuItem(menu, new ImageOperatorAction(frame, "sobelGradientNorm",
-				new SobelGradientNorm()), "Sobel Gradient Norm", isImage);
+				new SobelGradientNorm()), "Sobel Gradient Norm", isScalar);
 		addMenuItem(menu, new ImageArrayOperatorAction(frame, "sobelGradient",
-				new SobelGradient()), "Sobel Gradient", isImage);
+				new SobelGradient()), "Sobel Gradient", isScalar);
+		addMenuItem(menu, new ImageArrayOperatorAction(frame, "vectorImageNorm",
+				new VectorArrayNorm()), "Vector Image Norm", isVector);
 		// addMenuItem(menu, new ImageOperatorAction(frame, "vectorNorm",
 		// new VectorImageNorm()),
 		// "Array<?> Norm", isImage);
 		// addMenuItem(menu, new ImageOperatorAction(frame, "vectorAngle",
 		// new VectorImageAngle()),
 		// "Array<?> Angle", isImage);
+
+		// operators specific to binary images
+		menu.addSeparator();
+		addMenuItem(menu, new ImageArrayOperatorAction(frame, "connectedComponentLabeling",
+				new FloodFillComponentLabeling()), "Connected Component Labeling", is2D && isBinary);
 
 		return menu;
 	}
@@ -434,20 +445,20 @@ public class GuiBuilder
 //
 //		return doc.getImage().getType() == Image.Type.COLOR;
 //	}
-//
-//	private final static boolean has2DImage(ImagoFrame frame)
-//	{
-//		ImagoDoc doc = null;
-//		if (frame instanceof ImagoDocViewer)
-//		{
-//			doc = ((ImagoDocViewer) frame).getDocument();
-//		}
-//		if (doc == null)
-//			return false;
-//
-//		Array<?> array = doc.getImage().getData();
-//		return array.dimensionality() == 2;
-//	}
+
+	private final static boolean has2DImage(ImagoFrame frame)
+	{
+		ImagoDoc doc = null;
+		if (frame instanceof ImagoDocViewer)
+		{
+			doc = ((ImagoDocViewer) frame).getDocument();
+		}
+		if (doc == null)
+			return false;
+
+		Array<?> array = doc.getImage().getData();
+		return array.dimensionality() == 2;
+	}
 
 	private final static boolean has3DImage(ImagoFrame frame)
 	{
@@ -474,5 +485,18 @@ public class GuiBuilder
 			return false;
 
 		return doc.getImage().getType() == Image.Type.COLOR;
+	}
+	
+	private final static boolean hasBinaryImage(ImagoFrame frame)
+	{
+		ImagoDoc doc = null;
+		if (frame instanceof ImagoDocViewer)
+		{
+			doc = ((ImagoDocViewer) frame).getDocument();
+		}
+		if (doc == null)
+			return false;
+
+		return doc.getImage().getType() == Image.Type.BINARY;
 	}
 }

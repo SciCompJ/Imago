@@ -114,6 +114,7 @@ public class ImagoDocViewer extends ImagoFrame
 	
 	public void updateTitle()
 	{
+		// image name
 		String name = this.image.getName();
 		if (name == null || name.isEmpty()) 
 		{
