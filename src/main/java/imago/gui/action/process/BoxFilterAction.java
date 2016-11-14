@@ -11,7 +11,7 @@ import imago.gui.ImagoAction;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import net.sci.array.Array;
-import net.sci.array.ArrayOperator;
+import net.sci.array.ArrayToArrayOperator;
 import net.sci.array.data.FloatArray;
 import net.sci.image.Image;
 
@@ -58,12 +58,10 @@ public class BoxFilterAction extends ImagoAction
 		{
 			gd.addNumericField("Radius dim. " + (d+1), 3, 0);
 		}
-//		gd.addNumericField("Vert. Size", 3, 0);
-//		gd.addCheckBox("Float Result", false);
-//		System.out.println("  show dialog");
 		gd.showDialog();
 		
-		if (gd.getOutput() == GenericDialog.Output.CANCEL) {
+		if (gd.getOutput() == GenericDialog.Output.CANCEL) 
+		{
 			return;
 		}
 		
@@ -73,14 +71,12 @@ public class BoxFilterAction extends ImagoAction
 		{
 			radiusList[d] = (int) gd.getNextNumber();
 		}
-//		int hSize = (int) gd.getNextNumber();
-//		int vSize = (int) gd.getNextNumber();
 		
 		// create result image with same size as input array
 		FloatArray output = FloatArray.create(array.getSize());
 
 		// create operator and apply
-		ArrayOperator filter = new net.sci.image.process.BoxFilter(radiusList);
+		ArrayToArrayOperator filter = new net.sci.image.process.BoxFilter(radiusList);
 		filter.process(array, output);
 		
 		Image result = new Image(output, image);

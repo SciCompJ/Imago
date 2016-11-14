@@ -45,7 +45,10 @@ import net.sci.array.process.PowerOfTwo;
 import net.sci.array.process.Sqrt;
 import net.sci.array.process.shape.Flip;
 import net.sci.image.Image;
+import net.sci.image.binary.ChamferWeights;
 import net.sci.image.binary.FloodFillComponentLabeling;
+import net.sci.image.binary.distmap.ChamferDistanceTransform2DFloat;
+import net.sci.image.binary.distmap.ChamferDistanceTransform2DShort;
 import net.sci.image.process.ImageInverter;
 import net.sci.image.process.ImageThreshold;
 import net.sci.image.process.RotationAroundCenter;
@@ -314,9 +317,6 @@ public class GuiBuilder
 				new SobelGradient()), "Sobel Gradient", isScalar);
 		addMenuItem(menu, new ImageArrayOperatorAction(frame, "vectorImageNorm",
 				new VectorArrayNorm()), "Vector Image Norm", isVector);
-		// addMenuItem(menu, new ImageOperatorAction(frame, "vectorNorm",
-		// new VectorImageNorm()),
-		// "Array<?> Norm", isImage);
 		// addMenuItem(menu, new ImageOperatorAction(frame, "vectorAngle",
 		// new VectorImageAngle()),
 		// "Array<?> Angle", isImage);
@@ -325,6 +325,12 @@ public class GuiBuilder
 		menu.addSeparator();
 		addMenuItem(menu, new ImageArrayOperatorAction(frame, "connectedComponentLabeling",
 				new FloodFillComponentLabeling()), "Connected Component Labeling", is2D && isBinary);
+		addMenuItem(menu, new ArrayOperatorAction(frame, "distanceMap2dShort",
+				new ChamferDistanceTransform2DShort(ChamferWeights.CHESSKNIGHT, false)),
+				"Distance Map", is2D && isBinary);
+		addMenuItem(menu, new ArrayOperatorAction(frame, "distanceMap2dFloat",
+				new ChamferDistanceTransform2DFloat(ChamferWeights.CHESSKNIGHT, false)),
+				"Distance Map (float)", is2D && isBinary);
 
 		return menu;
 	}
