@@ -18,7 +18,6 @@ import net.sci.array.data.scalar2d.BooleanArray2D;
 import net.sci.array.data.scalar2d.ScalarArray2D;
 import net.sci.array.data.scalar2d.UInt8Array2D;
 import net.sci.array.type.RGB8;
-import net.sci.array.type.Scalar;
 import net.sci.image.Image;
 
 /**
@@ -76,14 +75,15 @@ public class ImageUtils
 		{
 			// Compute the norm of the vector
 			ScalarArray<?> norm = VectorArray.norm((VectorArray<?>) array);
-			double vMax = 0;
-			for (Scalar item : norm)
-			{
-				vMax = Math.max(vMax, item.getValue());
-			}
+//			double vMax = 0;
+//			for (Scalar item : norm)
+//			{
+//				vMax = Math.max(vMax, item.getValue());
+//			}
 			
 			// convert image of the norm to AWT image
- 			return createAwtImage((ScalarArray2D<?>) norm, new double[]{0, vMax}, lut);
+			double[] displayRange = image.getDisplayRange();
+ 			return createAwtImage((ScalarArray2D<?>) norm, displayRange, lut);
 		} 
 
  		return null;

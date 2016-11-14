@@ -12,6 +12,7 @@ import net.sci.array.Array;
 import net.sci.array.data.ScalarArray;
 import net.sci.array.data.UInt16Array;
 import net.sci.array.data.UInt8Array;
+import net.sci.array.data.VectorArray;
 import net.sci.array.type.UInt16;
 import net.sci.image.Image;
 
@@ -43,23 +44,24 @@ public class SetDataTypeDisplayRangeAction extends ImagoAction {
 		ImagoDoc doc = ((ImagoDocViewer) this.frame).getDocument();
 		Image metaImage = doc.getImage();
 
-		Array<?> image = metaImage.getData();
-//		if (image instanceof VectorImage) {
-//			image = ((VectorImage) image).getNorm();
-//		}
-		
-		if (!(image instanceof ScalarArray))
+		Array<?> array = metaImage.getData();
+		if (array instanceof VectorArray) 
 		{
-			throw new IllegalArgumentException("Requires a scalar Image");
+			array = VectorArray.norm((VectorArray<?>) array);
 		}
-		ScalarArray<?> scalarImage = (ScalarArray<?>) image;
+		
+		if (!(array instanceof ScalarArray))
+		{
+			throw new IllegalArgumentException("Requires a scalar Array");
+		}
+		ScalarArray<?> scalarArray = (ScalarArray<?>) array;
 		
 		double[] extent = new double[]{0, 1};
-		if (scalarImage instanceof UInt8Array)
+		if (scalarArray instanceof UInt8Array)
 		{
 			extent = new double[]{0, 255};
 		}
-		else if (scalarImage instanceof UInt16Array)
+		else if (scalarArray instanceof UInt16Array)
 		{
 			extent = new double[]{0, UInt16.MAX_VALUE};
 		}

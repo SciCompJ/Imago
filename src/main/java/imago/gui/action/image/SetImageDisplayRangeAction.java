@@ -12,6 +12,7 @@ import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import net.sci.array.Array;
 import net.sci.array.data.ScalarArray;
+import net.sci.array.data.VectorArray;
 import net.sci.image.Image;
 
 /**
@@ -43,9 +44,10 @@ public class SetImageDisplayRangeAction extends ImagoAction
 		Image image = doc.getImage();
 
 		Array<?> array = image.getData();
-//		if (array instanceof VectorArray) {
-//			array = ((VectorArray) array).getNorm();
-//		}
+		if (array instanceof VectorArray) 
+		{
+			array = VectorArray.norm((VectorArray<?>) array);
+		}
 		
 		if (!(array instanceof ScalarArray))
 		{

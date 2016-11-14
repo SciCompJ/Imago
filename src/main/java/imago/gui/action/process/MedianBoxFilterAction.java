@@ -12,15 +12,15 @@ import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import net.sci.array.Array;
 import net.sci.image.Image;
-import net.sci.image.process.BoxFilter;
+import net.sci.image.process.MedianBoxFilter;
 
 /**
- * Applies box filtering on a multidimensional image.
+ * Applies median box filtering on a multidimensional image.
  * 
  * @author David Legland
  *
  */
-public class BoxFilterAction extends ImagoAction
+public class MedianBoxFilterAction extends ImagoAction
 {
 
 	/**
@@ -28,7 +28,7 @@ public class BoxFilterAction extends ImagoAction
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public BoxFilterAction(ImagoFrame frame, String name)
+	public MedianBoxFilterAction(ImagoFrame frame, String name)
 	{
 		super(frame, name);
 	}
@@ -42,7 +42,7 @@ public class BoxFilterAction extends ImagoAction
 	@Override
 	public void actionPerformed(ActionEvent arg0)
 	{
-		System.out.println("box filter (generic)");
+		System.out.println("median box filter (generic)");
 
 		// get current image data
 		ImagoDoc doc = ((ImagoDocViewer) this.frame).getDocument();
@@ -52,7 +52,7 @@ public class BoxFilterAction extends ImagoAction
 		int nd = array.dimensionality();
 		
 		
-		GenericDialog gd = new GenericDialog(this.frame, "Flat Blur");
+		GenericDialog gd = new GenericDialog(this.frame, "Median Filter");
 		for (int d = 0; d < nd; d++)
 		{
 			gd.addNumericField("Radius dim. " + (d+1), 3, 0);
@@ -70,13 +70,13 @@ public class BoxFilterAction extends ImagoAction
 		{
 			radiusList[d] = (int) gd.getNextNumber();
 		}
-
-		// create operator box filtering operator
-		BoxFilter filter = new BoxFilter(radiusList);
+		
+		// create median box operator
+		MedianBoxFilter filter = new MedianBoxFilter(radiusList);
 		
 		// apply operator on current image
 		Image result = filter.process(image);
-		result.setName(image.getName() + "-filt");
+		result.setName(image.getName() + "-medFilt");
 		
 		// add the image document to GUI
 		this.gui.addNewDocument(result);

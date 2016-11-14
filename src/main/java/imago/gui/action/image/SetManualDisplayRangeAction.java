@@ -11,6 +11,7 @@ import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import net.sci.array.Array;
 import net.sci.array.data.ScalarArray;
+import net.sci.array.data.VectorArray;
 import net.sci.image.Image;
 
 import java.awt.event.ActionEvent;
@@ -34,7 +35,7 @@ public class SetManualDisplayRangeAction extends ImagoAction {
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
+	public void actionPerformed(ActionEvent evt) {
 		System.out.println("set manual display range");
 		
 		// get current frame
@@ -42,9 +43,10 @@ public class SetManualDisplayRangeAction extends ImagoAction {
 		Image image = doc.getImage();
 
 		Array<?> array = image.getData();
-//		if (image instanceof VectorImage) {
-//			image = ((VectorImage) image).getNorm();
-//		}
+		if (array instanceof VectorArray) 
+		{
+			array = VectorArray.norm((VectorArray<?>) array);
+		}
 		
 		if (!(array instanceof ScalarArray))
 		{
@@ -58,9 +60,9 @@ public class SetManualDisplayRangeAction extends ImagoAction {
 		
 		// Create new dialog populated with widgets
 		GenericDialog gd = new GenericDialog(this.frame, "Set Display Range");
-		String labelMin = "Min value (" + extent[0] + ")";
+		String labelMin = String.format("Min value (%6.2f) ", extent[0]);
 		gd.addNumericField(labelMin, displayRange[0], 3, "Minimal value to display as black");
-		String labelMax = "Max value (" + extent[1] + ")";
+		String labelMax = String.format("Max value (%6.2f) ", extent[1]);
 		gd.addNumericField(labelMax, displayRange[1], 3, "Maximal value to display as white");
 		
 		// wait for user validation or cancellation

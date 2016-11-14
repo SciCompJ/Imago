@@ -38,6 +38,7 @@ import imago.gui.action.image.StackToVectorImageAction;
 import imago.gui.action.process.BoxFilter3x3Float;
 import imago.gui.action.process.BoxFilterAction;
 import imago.gui.action.process.ImageOtsuThresholdAction;
+import imago.gui.action.process.MedianBoxFilterAction;
 import imago.gui.tool.SelectionTool;
 import net.sci.array.Array;
 import net.sci.array.data.ScalarArray;
@@ -49,6 +50,7 @@ import net.sci.image.binary.ChamferWeights;
 import net.sci.image.binary.FloodFillComponentLabeling;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DFloat;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DShort;
+import net.sci.image.process.DynamicAdjustment;
 import net.sci.image.process.ImageInverter;
 import net.sci.image.process.ImageThreshold;
 import net.sci.image.process.RotationAroundCenter;
@@ -206,7 +208,7 @@ public class GuiBuilder
 		
 		JMenu displayRangeMenu = new JMenu("Display Range");
 		addMenuItem(displayRangeMenu, new SetDataTypeDisplayRangeAction(frame, "setDataTypeDisplayRange"), "Set Data Type Display Range",
-				isScalar | isVector);
+				isScalar);
 		addMenuItem(displayRangeMenu, new SetImageDisplayRangeAction(frame, "setImageDisplayRange"), "Set Image Display Range",
 				isScalar | isVector);
 		addMenuItem(displayRangeMenu, new SetManualDisplayRangeAction(frame, "setManualDisplayRange"), "Set Manual Display Range",
@@ -215,6 +217,10 @@ public class GuiBuilder
 		// "setDisplayRangeUnitInterval"),
 		// "Set Display Range [0 ; 1]", isScalar || isVector);
 		menu.add(displayRangeMenu);
+
+		addMenuItem(menu,
+				 new ArrayOperatorAction(frame, "adjustDynamic", new DynamicAdjustment(.01)),
+				 "Adjust Grayscale Dynamic", isScalar);
 
 
 		JMenu geometryMenu = new JMenu("Geometry");
@@ -282,27 +288,14 @@ public class GuiBuilder
 		addMenuItem(menu,
 				new ImageOperatorAction(frame, "threshold", new ImageThreshold(20)),
 				"Threshold (20)", isScalar);
-//		addMenuItem(menu, new BoxFilter2D11x11Action(frame, "boxFilter11x11"),
-//				"Box Filter 11x11", isImage);
-//		addMenuItem(menu, new BoxFilter3x3(frame, "boxFilter3x3"),
-//				"Box Filter 3x3", isImage);
-//		addMenuItem(menu, new BoxFilterAction(frame, "boxFilter"), "Box Filter",
-//				isImage);
+
 		menu.addSeparator();
 		addMenuItem(menu, new BoxFilterAction(frame, "boxFilter"),
 				"Box Filter", isScalar);
 		addMenuItem(menu, new BoxFilter3x3Float(frame, "boxFilter3x3Float"),
 				"Box Filter 2D 3x3 (float)", isScalar);
-
-//		menu.addSeparator();
-		// addMenuItem(menu, new ImageOperatorAction(frame,
-		// "medianFilter5x5scalar",
-		// new MedianFilterBox2D(5, 5)),
-		// "Median Filter 5x5 (int & float)", isImage);
-		// addMenuItem(menu, new ImageOperatorAction(frame,
-		// "medianFilter3x3scalar",
-		// new MedianFilter2D_3x3()),
-		// "Median Filter 3x3 (int & float)", isImage);
+		addMenuItem(menu, new MedianBoxFilterAction(frame, "medianFilter"),
+				"Median Filter", isScalar);
 		// addMenuItem(menu, new Dilation2D11x11Action(frame, "dilation11x11"),
 		// "Dilation 11x11", isImage);
 
