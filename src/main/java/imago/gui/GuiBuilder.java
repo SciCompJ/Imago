@@ -250,15 +250,15 @@ public class GuiBuilder
 		geometryMenu.setEnabled(isImage);
 		addMenuItem(geometryMenu, new ArrayOperatorAction(frame,
 				"flipXFilter", new Flip(0)), "Flip Horizontal", isImage);
-		// new ImageOperatorAction(frame, "flipYFilter", new Flip(1)),
-		// "Flip Vertical", isImage);
-		// addMenuItem(geometryMenu,
-		// new ImageOperatorAction(frame, "flipZFilter", new Flip(2)),
-		// "Flip Z", has3D);
+		addMenuItem(geometryMenu, new ArrayOperatorAction(frame,
+				"flipYFilter", new Flip(1)), "Flip Vertical", isImage);
+		addMenuItem(geometryMenu, new ArrayOperatorAction(frame,
+				"flipZFilter", new Flip(2)), "Flip Slices", is3D);
+		geometryMenu.addSeparator();
 		// addMenuItem(geometryMenu,
 		// new ImageOperatorAction(frame, "rotation90", new Rotation90()),
 		// "Rotation 90", has2D);
-		 addMenuItem(geometryMenu,
+		addMenuItem(geometryMenu,
 				 new ArrayOperatorAction(frame, "rotateImage", new RotationAroundCenter(30)),
 				 "Rotate Image", isImage);
 

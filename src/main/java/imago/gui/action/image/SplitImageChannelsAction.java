@@ -7,6 +7,7 @@ import imago.gui.ImagoAction;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import net.sci.array.Array;
+import net.sci.array.data.ScalarArray;
 import net.sci.array.data.UInt8Array;
 import net.sci.array.data.VectorArray;
 import net.sci.array.data.color.RGB8Array;
@@ -66,6 +67,17 @@ public class SplitImageChannelsAction extends ImagoAction
 		if (array instanceof RGB8Array)
 		{
 			channelNames = new String[] { "red", "green", "blue" };
+
+			int c = 0;
+			for (UInt8Array channel : RGB8Array.splitChannels((RGB8Array) array))
+			{
+				// create the image corresponding to current channel
+				Image channelImage = new Image(channel, image);
+				channelImage.setName(image.getName() + "(" + channelNames[c++] + ")");
+				
+				// add the image document to GUI
+				this.gui.addNewDocument(channelImage);
+			}
 		} 
 		else
 		{
@@ -74,18 +86,20 @@ public class SplitImageChannelsAction extends ImagoAction
 			{
 				channelNames[c] = "channel" + c;
 			}
+			
+			int c = 0;
+			for (ScalarArray<?> channel : VectorArray.splitChannels((VectorArray<?>) array))
+			{
+				// create the image corresponding to current channel
+				Image channelImage = new Image(channel, image);
+				channelImage.setName(image.getName() + "(" + channelNames[c++] + ")");
+				
+				// add the image document to GUI
+				this.gui.addNewDocument(channelImage);
+			}
 		}
 
-		int c = 0;
-		for (UInt8Array channel : RGB8Array.splitChannels((RGB8Array) array))
-		{
-			// create the image corresponding to current channel
-			Image channelImage = new Image(channel, image);
-			channelImage.setName(image.getName() + "(" + channelNames[c++] + ")");
-			
-			// add the image document to GUI
-			this.gui.addNewDocument(channelImage);
-		}
+		
 	}
 
 }

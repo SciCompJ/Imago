@@ -100,7 +100,5 @@ public class MergeChannelImagesAction extends ImagoAction
 
 		// add the image document to GUI
 		this.gui.addNewDocument(rgbImage);
-
 	}
-
 }
