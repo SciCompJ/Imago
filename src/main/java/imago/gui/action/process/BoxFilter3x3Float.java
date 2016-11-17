@@ -11,7 +11,7 @@ import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import net.sci.array.Array;
 import net.sci.array.ArrayToArrayOperator;
-import net.sci.array.data.FloatArray;
+import net.sci.array.data.Float32Array;
 import net.sci.image.Image;
 
 /**
@@ -48,7 +48,7 @@ public class BoxFilter3x3Float extends ImagoAction
 		Array<?> array = metaImage.getData();
 
 		// create result image with specified type
-		FloatArray output = FloatArray.create(array.getSize());
+		Float32Array output = Float32Array.create(array.getSize());
 
 		// create operator and apply
 		ArrayToArrayOperator filter = new net.sci.image.process.BoxFilter3x3();

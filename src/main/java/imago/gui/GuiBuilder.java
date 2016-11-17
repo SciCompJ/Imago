@@ -27,6 +27,12 @@ import imago.gui.action.file.OpenDemoImage;
 import imago.gui.action.file.OpenDemoStack;
 import imago.gui.action.file.OpenImageAction;
 import imago.gui.action.file.ReadTiffAction;
+import imago.gui.action.image.ConvertToFloat32ImageAction;
+import imago.gui.action.image.ConvertToFloat64ImageAction;
+import imago.gui.action.image.ConvertToInt16ImageAction;
+import imago.gui.action.image.ConvertToInt32ImageAction;
+import imago.gui.action.image.ConvertToUInt16ImageAction;
+import imago.gui.action.image.ConvertToUInt8ImageAction;
 import imago.gui.action.image.MergeChannelImagesAction;
 import imago.gui.action.image.MiddleSliceImageAction;
 import imago.gui.action.image.PrintImageTiffTagsAction;
@@ -47,7 +53,7 @@ import net.sci.array.process.Sqrt;
 import net.sci.array.process.shape.Flip;
 import net.sci.image.Image;
 import net.sci.image.binary.ChamferWeights;
-import net.sci.image.binary.FloodFillComponentLabeling;
+import net.sci.image.binary.FloodFillComponentLabeling2D;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DFloat;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DShort;
 import net.sci.image.process.DynamicAdjustment;
@@ -146,21 +152,39 @@ public class GuiBuilder
 		// "toFloat",
 		// new FloatConverter()), "Float", isImage);
 		// editMenu.add(convertTypeMenu);
+		addMenuItem(convertTypeMenu, new ConvertToUInt8ImageAction(frame, "convertToUInt8"),
+				"UInt8", isScalar);
+		addMenuItem(convertTypeMenu, new ConvertToUInt16ImageAction(frame, "convertToUInt16"),
+				"UInt16", isScalar);
+		convertTypeMenu.addSeparator();
+		addMenuItem(convertTypeMenu, new ConvertToInt16ImageAction(frame, "convertToInt16"),
+				"Int16", isScalar);
+		addMenuItem(convertTypeMenu, new ConvertToInt32ImageAction(frame, "convertToInt32"),
+				"Int32", isScalar);
+		convertTypeMenu.addSeparator();
+		addMenuItem(convertTypeMenu, new ConvertToFloat32ImageAction(frame, "convertToFloat32"),
+				"Float32", isImage);
+		addMenuItem(convertTypeMenu, new ConvertToFloat64ImageAction(frame, "convertToFloat64"),
+				"Float64", isImage);
+		editMenu.add(convertTypeMenu);
+
 
 		// Color conversion items
-		// JMenu colorMenu = new JMenu("Color");
-		addMenuItem(editMenu, new SplitImageChannelsAction(frame,
+		JMenu colorMenu = new JMenu("Color");
+		addMenuItem(colorMenu, new SplitImageChannelsAction(frame,
 				"splitChannels"), "Split Channels", isVector || isColor);
-		addMenuItem(editMenu, new MergeChannelImagesAction(frame,
+		addMenuItem(colorMenu, new MergeChannelImagesAction(frame,
 				"mergeChannels"), "Merge Channels");
 		// addMenuItem(editMenu, new MetaImageOperatorAction(frame,
 		// "colorToGray",
 		// new Gray8Converter()), "RGB -> Gray8", isColor);
-		// // editMenu.add(colorMenu);
+		editMenu.add(colorMenu);
+
+		editMenu.addSeparator();
 		addMenuItem(editMenu, 
 				new ImageArrayOperatorAction(frame, "invert",
 				new ImageInverter()), "Invert", isScalar || isColor);
-		//		editMenu.addSeparator();
+		editMenu.addSeparator();
 
 		// tool selection items
 		if (frame instanceof ImagoDocViewer)
@@ -221,7 +245,6 @@ public class GuiBuilder
 		addMenuItem(menu,
 				 new ArrayOperatorAction(frame, "adjustDynamic", new DynamicAdjustment(.01)),
 				 "Adjust Grayscale Dynamic", isScalar);
-
 
 		JMenu geometryMenu = new JMenu("Geometry");
 		geometryMenu.setEnabled(isImage);
@@ -317,7 +340,7 @@ public class GuiBuilder
 		// operators specific to binary images
 		menu.addSeparator();
 		addMenuItem(menu, new ImageArrayOperatorAction(frame, "connectedComponentLabeling",
-				new FloodFillComponentLabeling()), "Connected Component Labeling", is2D && isBinary);
+				new FloodFillComponentLabeling2D()), "Connected Component Labeling", is2D && isBinary);
 		addMenuItem(menu, new ArrayOperatorAction(frame, "distanceMap2dShort",
 				new ChamferDistanceTransform2DShort(ChamferWeights.CHESSKNIGHT, false)),
 				"Distance Map", is2D && isBinary);
