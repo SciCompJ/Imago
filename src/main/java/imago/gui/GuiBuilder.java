@@ -22,6 +22,7 @@ import imago.gui.action.edit.ZoomInAction;
 import imago.gui.action.edit.ZoomOneAction;
 import imago.gui.action.edit.ZoomOutAction;
 import imago.gui.action.file.CreateColorCubeStack;
+import imago.gui.action.file.CreateEmptyImageAction;
 import imago.gui.action.file.ImportMetaImageFileAction;
 import imago.gui.action.file.OpenDemoImage;
 import imago.gui.action.file.OpenDemoStack;
@@ -104,6 +105,8 @@ public class GuiBuilder
 	private JMenu createFileMenu()
 	{
 		JMenu fileMenu = new JMenu("File");
+		addMenuItem(fileMenu, new CreateEmptyImageAction(frame, "createEmptyImage"), 
+				"New...");
 		addMenuItem(fileMenu, new OpenImageAction(frame, "openImage"),
 				"Open...");
 		addMenuItem(fileMenu, new ReadTiffAction(frame, "readTiffImage"),

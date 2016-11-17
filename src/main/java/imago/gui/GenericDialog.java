@@ -65,6 +65,7 @@ public class GenericDialog extends JDialog implements ActionListener,
 		KeyListener, WindowListener {
 
 	// TODO: thinking about splitting GUI and model parts ?
+	// TODO: use composition instead of inheritance
 	
 	private static final int MAX_SLIDERS = 25;
 
