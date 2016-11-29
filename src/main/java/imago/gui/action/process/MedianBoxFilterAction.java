@@ -12,7 +12,7 @@ import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import net.sci.array.Array;
 import net.sci.image.Image;
-import net.sci.image.process.MedianBoxFilter;
+import net.sci.image.process.filter.MedianBoxFilter;
 
 /**
  * Applies median box filtering on a multidimensional image.

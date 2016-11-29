@@ -51,7 +51,7 @@ public class BoxFilter3x3Float extends ImagoAction
 		Float32Array output = Float32Array.create(array.getSize());
 
 		// create operator and apply
-		ArrayToArrayOperator filter = new net.sci.image.process.BoxFilter3x3();
+		ArrayToArrayOperator filter = new net.sci.image.process.filter.BoxFilter3x3();
 		filter.process(array, output);
 		Image result = new Image(output, metaImage);
 

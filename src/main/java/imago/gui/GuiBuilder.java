@@ -57,6 +57,9 @@ import net.sci.image.binary.ChamferWeights;
 import net.sci.image.binary.FloodFillComponentLabeling2D;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DFloat;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DShort;
+import net.sci.image.data.Connectivity2D;
+import net.sci.image.morphology.extrema.ExtremaType;
+import net.sci.image.morphology.extrema.RegionalExtrema2D;
 import net.sci.image.process.DynamicAdjustment;
 import net.sci.image.process.ImageInverter;
 import net.sci.image.process.ImageThreshold;
@@ -324,6 +327,10 @@ public class GuiBuilder
 				"Median Filter", isScalar);
 		// addMenuItem(menu, new Dilation2D11x11Action(frame, "dilation11x11"),
 		// "Dilation 11x11", isImage);
+		addMenuItem(menu, new ImageOperatorAction(frame, "regionalMin",
+				new RegionalExtrema2D(ExtremaType.MINIMA, Connectivity2D.C4)), "Regional Minima", isScalar);
+		addMenuItem(menu, new ImageOperatorAction(frame, "regionalMax",
+				new RegionalExtrema2D(ExtremaType.MAXIMA, Connectivity2D.C4)), "Regional Maxima", isScalar);
 
 //		menu.addSeparator();
 //		addMenuItem(menu, new ImageLogAction(frame, "imageLog"), "Array<?> Log",
