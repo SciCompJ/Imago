@@ -44,6 +44,7 @@ import imago.gui.action.image.SplitImageChannelsAction;
 import imago.gui.action.image.StackToVectorImageAction;
 import imago.gui.action.process.BoxFilter3x3Float;
 import imago.gui.action.process.BoxFilterAction;
+import imago.gui.action.process.BoxMinMaxFilterAction;
 import imago.gui.action.process.ImageOtsuThresholdAction;
 import imago.gui.action.process.MedianBoxFilterAction;
 import imago.gui.tool.SelectionTool;
@@ -325,8 +326,11 @@ public class GuiBuilder
 				"Box Filter 2D 3x3 (float)", isScalar);
 		addMenuItem(menu, new MedianBoxFilterAction(frame, "medianFilter"),
 				"Median Filter", isScalar);
+		addMenuItem(menu, new BoxMinMaxFilterAction(frame, "minMaxFilter"),
+				"Min/Max Filter", isScalar);
 		// addMenuItem(menu, new Dilation2D11x11Action(frame, "dilation11x11"),
 		// "Dilation 11x11", isImage);
+		menu.addSeparator();
 		addMenuItem(menu, new ImageOperatorAction(frame, "regionalMin",
 				new RegionalExtrema2D(ExtremaType.MINIMA, Connectivity2D.C4)), "Regional Minima", isScalar);
 		addMenuItem(menu, new ImageOperatorAction(frame, "regionalMax",
