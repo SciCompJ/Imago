@@ -297,7 +297,7 @@ public class GuiBuilder
 	 */
 	private JMenu createProcessMenu()
 	{
-//		boolean isImage = hasImageDoc(frame);
+		boolean isImage = hasImageDoc(frame);
 		boolean is2D = has2DImage(frame);
 		boolean isScalar = hasScalarImage(frame);
 		boolean isVector = hasVectorImage(frame);
@@ -321,7 +321,7 @@ public class GuiBuilder
 
 		menu.addSeparator();
 		addMenuItem(menu, new BoxFilterAction(frame, "boxFilter"),
-				"Box Filter", isScalar);
+				"Box Filter", isImage);
 		addMenuItem(menu, new BoxFilter3x3Float(frame, "boxFilter3x3Float"),
 				"Box Filter 2D 3x3 (float)", isScalar);
 		addMenuItem(menu, new MedianBoxFilterAction(frame, "medianFilter"),

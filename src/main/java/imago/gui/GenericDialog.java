@@ -6,6 +6,7 @@ package imago.gui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -60,14 +61,18 @@ import javax.swing.event.CaretListener;
  * @author David Legland
  * 
  */
-public class GenericDialog extends JDialog implements ActionListener,
-		AdjustmentListener, CaretListener, FocusListener, InputMethodListener,
-		KeyListener, WindowListener {
-
+public class GenericDialog
+		implements ActionListener, AdjustmentListener, CaretListener,
+		FocusListener, InputMethodListener, KeyListener, WindowListener
+{
 	// TODO: thinking about splitting GUI and model parts ?
-	// TODO: use composition instead of inheritance
+
 	
 	private static final int MAX_SLIDERS = 25;
+
+	
+	/** The dialog instance containing widgets */
+	private Dialog dialog;
 
 	public enum Output {
 		OK, CANCEL;
@@ -76,7 +81,8 @@ public class GenericDialog extends JDialog implements ActionListener,
 	
 	GridBagLayout gridLayout;
 	GridBagConstraints c;
-	
+	private boolean firstNumericField = true;
+		
 	private int currentRow = 0;
 
 	private int numericFieldIndex;
@@ -102,25 +108,21 @@ public class GenericDialog extends JDialog implements ActionListener,
     boolean updateWidgets = false;
    
 	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	/**
 	 * Creates a new GenericDialog, located with respect to parent frame, and
 	 * with given title.
 	 */
-	public GenericDialog (JFrame parent, String title) {
-		super(parent, title, true);
+	public GenericDialog (JFrame parent, String title) 
+	{
+		this.dialog = new JDialog(parent, title, true);
 		
 		// setup global layout
 		gridLayout = new GridBagLayout();
 		c = new GridBagConstraints();
-		setLayout(gridLayout);
+		this.dialog.setLayout(gridLayout);
 
 		// add some listeners
-		addKeyListener(this);
-		addWindowListener(this);
+		this.dialog.addKeyListener(this);
+		this.dialog.addWindowListener(this);
 		
 		// setup location
 		if (parent != null)
@@ -129,21 +131,23 @@ public class GenericDialog extends JDialog implements ActionListener,
 			Dimension dim = parent.getSize();
 			int x = pos.x + dim.width / 4;
 			int y = pos.y + dim.height / 4;
-			this.setLocation(x, y);
+			this.dialog.setLocation(x, y);
 		}
 	}
 	
 	/**
 	 * Kept for compatibility, but it is better to specify parent frame.
 	 */
-	public GenericDialog (String title) {
+	public GenericDialog (String title) 
+	{
 		this((JFrame) null, title);
 	}
 
 	/**
 	 * Adds a numeric field.
 	 */
-	public void addNumericField(String label, double defaultValue, int digits) {
+	public void addNumericField(String label, double defaultValue, int digits) 
+	{
 		addNumericField(label, defaultValue, digits, 6, null);
 	}
 
@@ -151,12 +155,14 @@ public class GenericDialog extends JDialog implements ActionListener,
 	 * Adds a numeric field.
 	 */
 	public void addNumericField(String label, double defaultValue, int digits, 
-			String tooltip) {
+			String tooltip) 
+	{
 		addNumericField(label, defaultValue, digits, 6, null);
 	}
 
 	public void addNumericField(String label, double defaultValue, int digits,
-			int columns, String units) {
+			int columns, String units)
+	{
 		addNumericField(label, defaultValue, digits, columns, units, null);
 	}
 		
@@ -169,12 +175,14 @@ public class GenericDialog extends JDialog implements ActionListener,
 	 * @param units			a string displayed to the right of the field
 	 */
 	public void addNumericField(String label, double defaultValue, int digits,
-			int columns, String units, String toolTip) {
+			int columns, String units, String toolTip) 
+	{
 		// creates the label widget
 		JLabel labelItem = new JLabel(formatLabel(label));
-		if (toolTip != null) {
-			labelItem.setToolTipText(toolTip);
-		}
+//		if (toolTip != null) 
+//		{
+//			labelItem.setToolTipText(toolTip);
+//		}
 		
 		c.gridx = 0;
 		c.gridy = currentRow;
@@ -185,11 +193,15 @@ public class GenericDialog extends JDialog implements ActionListener,
 //			c.insets = getInsets(5, 0, 3, 0);
 //		else
 //			c.insets = getInsets(0, 0, 3, 0);
-		c.insets = new Insets(5, 0, 3, 0);
+		if (firstNumericField)
+			c.insets = getInsets(5, 5, 3, 5);
+		else
+			c.insets = getInsets(0, 5, 3, 5);
 		gridLayout.setConstraints(labelItem, c);
-		add(labelItem);
+		this.dialog.add(labelItem);
 		
-		if (numericFields == null) {
+		if (numericFields == null) 
+		{
 			numericFields = new ArrayList<JTextField>(5);
 //			defaultValues = new Vector(5);
 //			defaultText = new Vector(5);
@@ -197,9 +209,10 @@ public class GenericDialog extends JDialog implements ActionListener,
 
 		String text = formatNumber(defaultValue, digits);
 		JTextField tf = createNumericTextField(text, columns);
-		if (toolTip != null) {
-			labelItem.setToolTipText(toolTip);
-		}
+//		if (toolTip != null) 
+//		{
+//			labelItem.setToolTipText(toolTip);
+//		}
 		
 		numericFields.add(tf);
 //		defaultValues.addElement(new Double(defaultValue));
@@ -209,18 +222,21 @@ public class GenericDialog extends JDialog implements ActionListener,
 		c.anchor = GridBagConstraints.WEST;
 		tf.setEditable(true);
 		
-		//if (firstNumericField) tf.selectAll();
-//		firstNumericField = false;
-		if (units == null || units.equals("")) {
+		if (firstNumericField) tf.selectAll();
+		firstNumericField = false;
+		if (units == null || units.equals("")) 
+		{
 			gridLayout.setConstraints(tf, c);
-			add(tf);
-		} else {
+			this.dialog.add(tf);
+		} 
+		else 
+		{
 			JPanel panel = new JPanel();
 			panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 			panel.add(tf);
 			panel.add(new JLabel(" " + units));
 			gridLayout.setConstraints(panel, c);
-			add(panel);
+			this.dialog.add(panel);
 		}
 //		if (Recorder.record || macro)
 //			saveLabel(tf, label);
@@ -232,7 +248,8 @@ public class GenericDialog extends JDialog implements ActionListener,
 	 * @param label			the label
 	 * @param defaultText		the text initially displayed
 	 */
-	public void addTextField(String label, String text) {
+	public void addTextField(String label, String text) 
+	{
 		addTextField(label, text, 8);
 	}
 
@@ -246,20 +263,25 @@ public class GenericDialog extends JDialog implements ActionListener,
 	 * @param columns
 	 *            width of the text field
 	 */
-	public void addTextField(String label, String text, int columns) {
+	public void addTextField(String label, String text, int columns) 
+	{
 		JLabel theLabel = new JLabel(formatLabel(label));
 
 		c.gridx = 0;
 		c.gridy = currentRow;
 		c.anchor = GridBagConstraints.EAST;
 		c.gridwidth = 1;
-		if (stringFields == null) {
+		if (stringFields == null) 
+		{
 			stringFields = new ArrayList<JTextField>(4);
-			c.insets = getInsets(5, 0, 5, 0);
-		} else
-			c.insets = getInsets(0, 0, 5, 0);
+			c.insets = getInsets(5, 5, 5, 5);
+		}
+		else
+		{
+			c.insets = getInsets(0, 5, 5, 5);
+		}
 		gridLayout.setConstraints(theLabel, c);
-		add(theLabel);
+		this.dialog.add(theLabel);
 
 //		boolean custom = customInsets;
 //		if (custom) {
@@ -279,7 +301,7 @@ public class GenericDialog extends JDialog implements ActionListener,
 		c.anchor = GridBagConstraints.WEST;
 		gridLayout.setConstraints(tf, c);
 		tf.setEditable(true);
-		add(tf);
+		this.dialog.add(tf);
 		stringFields.add(tf);
 
 		// if (Recorder.record || macro)
@@ -287,11 +309,13 @@ public class GenericDialog extends JDialog implements ActionListener,
 		currentRow++;
 	}
 
-	/** Adds a checkbox; does not make it recordable if isPreview is true.
+	/** 
+	 * Adds a checkbox; does not make it recordable if isPreview is true.
      * With isPreview true, the checkbox can be referred to as previewCheckbox
      * from hereon.
      */
-	public void addCheckBox(String label, boolean defaultValue) {
+	public void addCheckBox(String label, boolean defaultValue) 
+	{
 		// Creates the new check box
 		label = formatLabel(label);
 		JCheckBox cb = new JCheckBox(label);
@@ -300,11 +324,15 @@ public class GenericDialog extends JDialog implements ActionListener,
 		cb.addKeyListener(this);
 
 		// Configure layout depending on number of existing checkboxes
-		if (checkBoxes == null) {
+		if (checkBoxes == null)
+		{
 			checkBoxes = new ArrayList<JCheckBox>(4);
-			c.insets = getInsets(15, 20, 0, 0);
-		} else
-			c.insets = getInsets(0, 20, 0, 0);
+			c.insets = getInsets(15, 20, 0, 5);
+		} 
+		else
+		{
+			c.insets = getInsets(0, 20, 0, 5);
+		}
 		checkBoxes.add(cb);
 
 		// add checkbox to layout
@@ -313,7 +341,7 @@ public class GenericDialog extends JDialog implements ActionListener,
 		c.gridwidth = 2;
 		c.anchor = GridBagConstraints.WEST;
 		gridLayout.setConstraints(cb, c);
-		add(cb);
+		this.dialog.add(cb);
 		
 		// ij.IJ.write("addCheckbox: "+ y+" "+cbIndex);
 //		if (!isPreview && (Recorder.record || macro)) // preview checkbox is not
@@ -325,7 +353,8 @@ public class GenericDialog extends JDialog implements ActionListener,
 	/**
 	 * Adds a popup menu that contains different choices.
 	 */
-   public void addChoice(String label, String[] items, String defaultItem) {
+   public void addChoice(String label, String[] items, String defaultItem) 
+   {
    		String label2 = formatLabel(label);
 		JLabel theLabel = new JLabel(label2);
 		
@@ -334,14 +363,18 @@ public class GenericDialog extends JDialog implements ActionListener,
 		c.anchor = GridBagConstraints.EAST;
 		c.gridwidth = 1;
 
-		if (choices == null) {
+		if (choices == null)
+		{
 			choices = new ArrayList<JComboBox<String>>(4);
-			c.insets = getInsets(5, 0, 5, 0);
-		} else
-			c.insets = getInsets(0, 0, 5, 0);
+			c.insets = getInsets(5, 5, 5, 5);
+		} 
+		else
+		{
+			c.insets = getInsets(0, 5, 5, 5);
+		}
 		
 		gridLayout.setConstraints(theLabel, c);
-		add(theLabel);
+		this.dialog.add(theLabel);
 		
 		JComboBox<String> combo = new JComboBox<String>();
 		combo.addKeyListener(this);
@@ -354,7 +387,7 @@ public class GenericDialog extends JDialog implements ActionListener,
 		c.gridy = currentRow;
 		c.anchor = GridBagConstraints.WEST;
 		gridLayout.setConstraints(combo, c);
-		add(combo);
+		this.dialog.add(combo);
 
 		choices.add(combo);
 //		if (Recorder.record || macro)
@@ -372,13 +405,15 @@ public class GenericDialog extends JDialog implements ActionListener,
 	* @param defaultValue  the initial state of the slider
 	*/
 	public void addSlider(String label, double minValue, double maxValue,
-			double defaultValue) {
+			double defaultValue)
+	{
 		int columns = 4;
 		int digits = 0;
 		double scale = 1.0;
 
 		if ((maxValue - minValue) <= 5.0
-				&& (minValue != (int) minValue || maxValue != (int) maxValue || defaultValue != (int) defaultValue)) {
+				&& (minValue != (int) minValue || maxValue != (int) maxValue || defaultValue != (int) defaultValue))
+		{
 			scale = 20.0;
 			minValue *= scale;
 			maxValue *= scale;
@@ -393,12 +428,13 @@ public class GenericDialog extends JDialog implements ActionListener,
 		c.gridy = currentRow;
 		c.anchor = GridBagConstraints.EAST;
 		c.gridwidth = 1;
-		c.insets = new Insets(0, 0, 3, 0);
+		c.insets = new Insets(0, 5, 3, 5);
 		gridLayout.setConstraints(theLabel, c);
-		add(theLabel);
+		this.dialog.add(theLabel);
 		
-		if (scrollBars == null) {
-		scrollBars = new ArrayList<JScrollBar>(5);
+		if (scrollBars == null) 
+		{
+			scrollBars = new ArrayList<JScrollBar>(5);
 			sliderIndexes = new int[MAX_SLIDERS];
 			sliderScales = new double[MAX_SLIDERS];
 		}
@@ -411,7 +447,8 @@ public class GenericDialog extends JDialog implements ActionListener,
 		s.addAdjustmentListener(this);
 		s.setUnitIncrement(1);
 
-		if (numericFields==null) {
+		if (numericFields==null) 
+		{
 			numericFields = new ArrayList<JTextField>(5);
 //			defaultValues = new Vector(5);
 //			defaultText = new Vector(5);
@@ -433,8 +470,9 @@ public class GenericDialog extends JDialog implements ActionListener,
 		// Create an inner panel containing slider and numeric field 
 		JPanel panel = new JPanel();
 		GridBagLayout pgrid = new GridBagLayout();
-		GridBagConstraints pc  = new GridBagConstraints();
 		panel.setLayout(pgrid);
+
+		GridBagConstraints pc  = new GridBagConstraints();
 		// label
 		//pc.insets = new Insets(5, 0, 0, 0);
 		//pc.gridx = 0; pc.gridy = 0;
@@ -443,6 +481,7 @@ public class GenericDialog extends JDialog implements ActionListener,
 		//pgrid.setConstraints(theLabel, pc);
 		//panel.add(theLabel);
 		// slider
+		pc.insets = new Insets(5, 5, 0, 5);
 		pc.gridx = 0; pc.gridy = 0;
 		pc.gridwidth = 1;
 		pc.ipadx = 75;
@@ -452,7 +491,7 @@ public class GenericDialog extends JDialog implements ActionListener,
 		pc.ipadx = 0;  // reset
 		// text field
 		pc.gridx = 1;
-		pc.insets = new Insets(5, 5, 0, 0);
+		pc.insets = new Insets(5, 5, 0, 5);
 		pc.anchor = GridBagConstraints.EAST;
 		pgrid.setConstraints(tf, pc);
 		panel.add(tf);
@@ -464,7 +503,7 @@ public class GenericDialog extends JDialog implements ActionListener,
 		c.anchor = GridBagConstraints.WEST;
 		c.insets = new Insets(0, 0, 0, 0);
 		gridLayout.setConstraints(panel, c);
-		add(panel);
+		this.dialog.add(panel);
 		
 		currentRow++;
 //		if (Recorder.record || macro)
@@ -476,7 +515,8 @@ public class GenericDialog extends JDialog implements ActionListener,
 	/**
 	 * Cleanup a label in case some special characters were added.
 	 */
-	private String formatLabel(String label) {
+	private String formatLabel(String label)
+	{
 		String label2 = label;
 		if (label2.indexOf('_') != -1)
 			label2 = label2.replace('_', ' ');
@@ -486,7 +526,8 @@ public class GenericDialog extends JDialog implements ActionListener,
 	/**
 	 * Create text filed for numbers. Adds some pre-pressing on the number of columns.
 	 */
-	private JTextField createNumericTextField(String text, int columns) {
+	private JTextField createNumericTextField(String text, int columns) 
+	{
 //		if (IJ.isWindows())
 //			columns -= 2;
 		if (columns < 1)
@@ -495,7 +536,8 @@ public class GenericDialog extends JDialog implements ActionListener,
 		return createTextField(text, columns);
 	}
 	
-	private JTextField createTextField(String text, int columns) {
+	private JTextField createTextField(String text, int columns) 
+	{
 		JTextField tf = new JTextField(text, columns);		
 //		if (IJ.isLinux())
 //			tf.setBackground(Color.white);
@@ -508,25 +550,29 @@ public class GenericDialog extends JDialog implements ActionListener,
 		return tf;
 	}
 	
-    private static final String formatNumber(double value, int nDigits) {
+    private static final String formatNumber(double value, int nDigits)
+    {
 		String format = "%." + nDigits + "f";
 		return String.format(Locale.US, format, value);
 	}
 
 	/** Adds a message consisting of one or more lines of text. */
-    public void addMessage(String text) {
+    public void addMessage(String text) 
+    {
     	addMessage(text, null, null);
     }
 
     /** Adds a message consisting of one or more lines of text,
     	which will be displayed using the specified font. */
-    public void addMessage(String text, Font font) {
+    public void addMessage(String text, Font font) 
+    {
     	addMessage(text, font, null);
     }
     
     /** Adds a message consisting of one or more lines of text,
     	which will be displayed using the specified font and color. */
-    public void addMessage(String text, Font font, Color color) {
+    public void addMessage(String text, Font font, Color color)
+    {
     	// Creates a new label component
     	Component theLabel = null;
     	if (text.indexOf('\n')>=0)
@@ -547,7 +593,7 @@ public class GenericDialog extends JDialog implements ActionListener,
 		c.insets = getInsets(text.equals("") ? 0 : 10, 20, 0, 0);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		gridLayout.setConstraints(theLabel, c);
-		add(theLabel);
+		this.dialog.add(theLabel);
 
 		c.fill = GridBagConstraints.NONE;
 		currentRow++;
@@ -557,7 +603,8 @@ public class GenericDialog extends JDialog implements ActionListener,
 	/**
 	 * Helper functions that returns the insets of the next element to be added.
 	 */
-	private Insets getInsets(int top, int left, int bottom, int right) {
+	private Insets getInsets(int top, int left, int bottom, int right) 
+	{
 //		if (customInsets) {
 //			customInsets = false;
 //			return new Insets(topInset, leftInset, bottomInset, 0);
@@ -568,27 +615,31 @@ public class GenericDialog extends JDialog implements ActionListener,
 	/**
 	 * Shows the dialog.
 	 */
-	public void showDialog() {
+	public void showDialog() 
+	{
 		if (!buttonsCreated)
+		{
 			createButtonPanel();
-
+		}
+		
 		// computes optimal size of each subcomponent
-		pack();
+		this.dialog.pack();
 
 		// add some space to have a better visual impression
-		Dimension dim = this.getPreferredSize();
+		Dimension dim = this.dialog.getPreferredSize();
 		Dimension dim2 = new Dimension(dim.width + 20, dim.height + 20);
-		this.setPreferredSize(dim2);
-		this.setSize(dim2);
+		this.dialog.setPreferredSize(dim2);
+		this.dialog.setSize(dim2);
 		
-		setVisible(true);
+		this.dialog.setVisible(true);
 		resetCounters();
 	}
 	
 	/**
 	 * Adds OK and Cancel buttons at the bottom of the dialog.
 	 */
-	private void createButtonPanel() {
+	private void createButtonPanel() 
+	{
 		// Create buttons
 		okButton = addButton("OK");
 		cancelButton = addButton("Cancel");
@@ -606,13 +657,14 @@ public class GenericDialog extends JDialog implements ActionListener,
 		c.gridwidth = 2;
 		c.insets = new Insets(15, 0, 0, 0);
 		gridLayout.setConstraints(buttons, c);
-		add(buttons);
+		this.dialog.add(buttons);
 		
 		buttonsCreated = true;
 	}
 	
     /** Reset the counters before reading the dialog parameters */
-    private void resetCounters() {
+    private void resetCounters()
+    {
         numericFieldIndex = 0;        // prepare for readout
 		textFieldIndex = 0;
 		checkBoxIndex = 0;
@@ -626,7 +678,8 @@ public class GenericDialog extends JDialog implements ActionListener,
 	 * Adds a button and add this as action and key listener.
 	 * @param label
 	 */
-	private JButton addButton(String label) {
+	private JButton addButton(String label) 
+	{
 		JButton button = new JButton(label);
 		button.addActionListener(this);
 		button.addKeyListener(this);
@@ -634,18 +687,21 @@ public class GenericDialog extends JDialog implements ActionListener,
 	}
 	
 	/** Returns true if the user clicked on "Cancel". */
-    public boolean wasCanceled() {
+    public boolean wasCanceled() 
+    {
 //    	if (wasCanceled)
 //    		Macro.abort();
     	return output == Output.CANCEL;
     }
     
 	/** Returns true if the user has clicked on "OK" or a macro is running. */
-    public boolean wasOKed() {
+    public boolean wasOKed() 
+    {
     	return output == Output.OK;
     }
 
-    public Output getOutput() {
+    public Output getOutput() 
+    {
     	return output;
     }
 
@@ -654,8 +710,10 @@ public class GenericDialog extends JDialog implements ActionListener,
 	 * Returns the contents of the next numeric field, or NaN if the field does
 	 * not contain a number.
 	 */
-	public double getNextNumber() {
-		if (numericFields == null) {
+	public double getNextNumber()
+	{
+		if (numericFields == null) 
+		{
 			throw new RuntimeException("no Numeric Field was added");
 		}
 			
@@ -668,7 +726,8 @@ public class GenericDialog extends JDialog implements ActionListener,
 	}
 
   	/** Returns the contents of the next text field. */
-   public String getNextString() {
+   public String getNextString() 
+   {
 		if (stringFields == null)
 			return "";
 		
@@ -702,8 +761,10 @@ public class GenericDialog extends JDialog implements ActionListener,
 	 * Returns the contents of the next numeric field, or NaN if the field does
 	 * not contain a number.
 	 */
-	public boolean getNextBoolean() {
-		if (checkBoxes == null) {
+	public boolean getNextBoolean()
+	{
+		if (checkBoxes == null) 
+		{
 			throw new RuntimeException("no Check Box was added");
 		}
 			
@@ -716,8 +777,11 @@ public class GenericDialog extends JDialog implements ActionListener,
 		return state;
 	}
 
-  	/** Returns the selected item in the next popup menu. */
-    public String getNextChoice() {
+  	/** 
+  	 * Returns the selected item in the next popup menu. 
+  	 */
+    public String getNextChoice()
+    {
 		if (choices==null)
 			return "";
 		JComboBox<String> thisChoice = choices.get(comboBoxIndex);
@@ -735,8 +799,11 @@ public class GenericDialog extends JDialog implements ActionListener,
 		return item;
     }
     
-  	/** Returns the index of the selected item in the next popup menu. */
-    public int getNextChoiceIndex() {
+  	/**
+  	 *  Returns the index of the selected item in the next popup menu. 
+  	 */
+    public int getNextChoiceIndex() 
+    {
 		if (choices==null)
 			return -1;
 		JComboBox<String> thisChoice = choices.get(comboBoxIndex);
@@ -784,7 +851,7 @@ public class GenericDialog extends JDialog implements ActionListener,
 	public void windowClosing(WindowEvent arg0) {
 		wasCanceled = true; 
 		output = Output.CANCEL;
-		dispose(); 
+		this.dialog.dispose(); 
 	}
 
 	@Override
@@ -800,7 +867,8 @@ public class GenericDialog extends JDialog implements ActionListener,
 	public void windowOpened(WindowEvent arg0) {}
 
 	@Override
-	public void keyPressed(KeyEvent evt) {
+	public void keyPressed(KeyEvent evt) 
+	{
 		int keyCode = evt.getKeyCode(); 
 //		IJ.setKeyDown(keyCode);
 		
@@ -810,18 +878,18 @@ public class GenericDialog extends JDialog implements ActionListener,
 			output = Output.OK;
 //			if (IJ.isMacOSX() && IJ.isJava15())
 //				accessTextFields();
-			dispose();
+			this.dialog.dispose();
 		} else if (keyCode == KeyEvent.VK_ESCAPE) {
 			wasCanceled = true;
 			output = Output.CANCEL;
-			dispose();
+			this.dialog.dispose();
 //			IJ.resetEscape();
 		} else if (keyCode == KeyEvent.VK_W
 				&& (evt.getModifiers() & Toolkit.getDefaultToolkit()
 						.getMenuShortcutKeyMask()) != 0) {
 			wasCanceled = true;
 			output = Output.CANCEL;
-			dispose();
+			this.dialog.dispose();
 		}
 	}
 
@@ -851,10 +919,10 @@ public class GenericDialog extends JDialog implements ActionListener,
 		Object source = evt.getSource();
 		if (source == okButton) {
 			output = Output.OK;
-			dispose();
+			this.dialog.dispose();
 		} else if (source == cancelButton) {
 			output = Output.CANCEL;
-			dispose();
+			this.dialog.dispose();
 		}
 //		} else
 //            notifyListeners(evt);
@@ -896,13 +964,15 @@ public class GenericDialog extends JDialog implements ActionListener,
 		}
 	}
 
-	private static final double parseDouble(String text) {
+	private static final double parseDouble(String text) 
+	{
 		if (text == null || text.isEmpty()) return Double.NaN;
 		return Double.parseDouble(text);
 	}
 	
 	@Override
-	public synchronized void adjustmentValueChanged(AdjustmentEvent evt) {
+	public synchronized void adjustmentValueChanged(AdjustmentEvent evt) 
+	{
 		if (updateWidgets)
 			return;
 		
@@ -923,14 +993,15 @@ public class GenericDialog extends JDialog implements ActionListener,
 		}
 	}
 
-	public static final void main(String[] args) {
+	public static final void main(String[] args) 
+	{
 		System.out.println("start main");
 		 
 		GenericDialog gd = new GenericDialog("Dialog Example");
-		gd.addNumericField("Radius", 12.3, 2, "Size is given by 2 * radius + 1");
-		gd.addNumericField("Default Value", 0, 2);
-		gd.addTextField("New name", "Truc");
-		gd.addSlider("Slider", 0, 100, 37);
+		gd.addNumericField("Radius:", 12.3, 2, "Size is given by 2 * radius + 1");
+		gd.addNumericField("Default Value:", 0, 2);
+		gd.addTextField("New name:", "Truc");
+		gd.addSlider("Slider:", 0, 100, 37);
 		gd.addCheckBox("Show Result", true);
 		gd.showDialog();
 		
@@ -943,7 +1014,5 @@ public class GenericDialog extends JDialog implements ActionListener,
 		System.out.println("new name: " + gd.getNextString());
 		System.out.println("slider: " + gd.getNextNumber());
 		System.out.println("show result: " + gd.getNextBoolean());
-		
 	}
-
 }

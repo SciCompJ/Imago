@@ -13,6 +13,7 @@ import net.sci.array.Array;
 import net.sci.array.ArrayToArrayOperator;
 import net.sci.array.data.Float32Array;
 import net.sci.image.Image;
+import net.sci.image.process.filter.BoxFilter3x3;
 
 /**
  * @author David Legland
@@ -51,7 +52,7 @@ public class BoxFilter3x3Float extends ImagoAction
 		Float32Array output = Float32Array.create(array.getSize());
 
 		// create operator and apply
-		ArrayToArrayOperator filter = new net.sci.image.process.filter.BoxFilter3x3();
+		ArrayToArrayOperator filter = new BoxFilter3x3();
 		filter.process(array, output);
 		Image result = new Image(output, metaImage);
 
