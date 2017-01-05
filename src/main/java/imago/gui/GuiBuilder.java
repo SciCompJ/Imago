@@ -45,6 +45,7 @@ import imago.gui.action.image.StackToVectorImageAction;
 import imago.gui.action.process.BoxFilter3x3Float;
 import imago.gui.action.process.BoxFilterAction;
 import imago.gui.action.process.BoxMinMaxFilterAction;
+import imago.gui.action.process.ImageExtendedExtremaAction;
 import imago.gui.action.process.ImageMorphologicalReconstructionAction;
 import imago.gui.action.process.ImageOtsuThresholdAction;
 import imago.gui.action.process.MedianBoxFilterAction;
@@ -60,7 +61,7 @@ import net.sci.image.binary.FloodFillComponentLabeling2D;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DFloat;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DShort;
 import net.sci.image.data.Connectivity2D;
-import net.sci.image.morphology.extrema.ExtremaType;
+import net.sci.image.morphology.MinimaAndMaxima;
 import net.sci.image.morphology.extrema.RegionalExtrema2D;
 import net.sci.image.process.DynamicAdjustment;
 import net.sci.image.process.ImageInverter;
@@ -333,11 +334,13 @@ public class GuiBuilder
 		// "Dilation 11x11", isImage);
 		menu.addSeparator();
 		addMenuItem(menu, new ImageOperatorAction(frame, "regionalMin",
-				new RegionalExtrema2D(ExtremaType.MINIMA, Connectivity2D.C4)), 
+				new RegionalExtrema2D(MinimaAndMaxima.Type.MINIMA, Connectivity2D.C4)), 
 				"Regional Minima", isScalar);
 		addMenuItem(menu, new ImageOperatorAction(frame, "regionalMax",
-				new RegionalExtrema2D(ExtremaType.MAXIMA, Connectivity2D.C4)), 
+				new RegionalExtrema2D(MinimaAndMaxima.Type.MAXIMA, Connectivity2D.C4)), 
 				"Regional Maxima", isScalar);
+		addMenuItem(menu, new ImageExtendedExtremaAction(frame, "extendedExtrema"), 
+				"Extended Min./Max.", isScalar);
 		addMenuItem(menu, 
 				new ImageMorphologicalReconstructionAction(frame, "morphoRec"), 
 				"Morphological Reconstruction");
