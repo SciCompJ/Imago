@@ -45,6 +45,7 @@ import imago.gui.action.image.StackToVectorImageAction;
 import imago.gui.action.process.BoxFilter3x3Float;
 import imago.gui.action.process.BoxFilterAction;
 import imago.gui.action.process.BoxMinMaxFilterAction;
+import imago.gui.action.process.ImageMorphologicalReconstructionAction;
 import imago.gui.action.process.ImageOtsuThresholdAction;
 import imago.gui.action.process.MedianBoxFilterAction;
 import imago.gui.tool.SelectionTool;
@@ -332,9 +333,17 @@ public class GuiBuilder
 		// "Dilation 11x11", isImage);
 		menu.addSeparator();
 		addMenuItem(menu, new ImageOperatorAction(frame, "regionalMin",
-				new RegionalExtrema2D(ExtremaType.MINIMA, Connectivity2D.C4)), "Regional Minima", isScalar);
+				new RegionalExtrema2D(ExtremaType.MINIMA, Connectivity2D.C4)), 
+				"Regional Minima", isScalar);
 		addMenuItem(menu, new ImageOperatorAction(frame, "regionalMax",
-				new RegionalExtrema2D(ExtremaType.MAXIMA, Connectivity2D.C4)), "Regional Maxima", isScalar);
+				new RegionalExtrema2D(ExtremaType.MAXIMA, Connectivity2D.C4)), 
+				"Regional Maxima", isScalar);
+		addMenuItem(menu, 
+				new ImageMorphologicalReconstructionAction(frame, "morphoRec"), 
+				"Morphological Reconstruction");
+//		addMenuItem(menu, 
+//				new ImageMorphologicalReconstruction3DAction(frame, "morphoRec3d"), 
+//				"Morphological Reconstruction (3D)");
 
 //		menu.addSeparator();
 //		addMenuItem(menu, new ImageLogAction(frame, "imageLog"), "Array<?> Log",
