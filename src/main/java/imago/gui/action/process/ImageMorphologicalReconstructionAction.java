@@ -4,17 +4,13 @@
 package imago.gui.action.process;
 
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 
-import imago.app.ImagoDoc;
+import imago.app.ImagoApp;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoAction;
-import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import net.sci.array.Array;
-import net.sci.array.data.UInt8Array;
 import net.sci.image.Image;
 import net.sci.image.morphology.MorphologicalReconstruction;
 
@@ -49,27 +45,10 @@ public class ImageMorphologicalReconstructionAction extends ImagoAction
 	{
 		System.out.println("morphological reconstruction");
 
-		// TODO: try to make the following piece of code more generic
-		Collection<ImagoDocViewer> viewers = this.gui.getDocumentViewers();
-		HashMap<String, ImagoDoc> nameToDocMap = new HashMap<String, ImagoDoc>();
-		
-		ArrayList<String> imageNames = new ArrayList<String>(viewers.size());
-		for (ImagoDocViewer viewer : viewers)
-		{
-			ImagoDoc doc = viewer.getDocument(); 
-			if (doc == null) continue;
-			Image image = doc.getImage();
-			if (image == null) continue;
-			
-			// restrict the image selection to instance of UInt8 arrays
-			Array<?> data = image.getData();
-			if (data instanceof UInt8Array)
-			{
-				imageNames.add(doc.getName());
-				nameToDocMap.put(doc.getName(), doc);
-			}
-		}
-		
+		ImagoApp app = this.gui.getAppli();
+		Collection<String> imageNames = app.getImageDocumentNames();
+
+		// Case of no open document with image
 		if (imageNames.size() == 0)
 		{
 			return;
@@ -90,8 +69,8 @@ public class ImageMorphologicalReconstructionAction extends ImagoAction
 		}
 		
 		// parse dialog results
-		Image markerImage = nameToDocMap.get(gd.getNextChoice()).getImage();
-		Image maskImage = nameToDocMap.get(gd.getNextChoice()).getImage();
+		Image markerImage = app.getDocumentFromName(gd.getNextChoice()).getImage();
+		Image maskImage = app.getDocumentFromName(gd.getNextChoice()).getImage();
 
 		Array<?> marker = markerImage.getData();
 		Array<?> mask = maskImage.getData();
