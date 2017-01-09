@@ -49,6 +49,7 @@ import imago.gui.action.process.ImageExtendedExtremaAction;
 import imago.gui.action.process.ImageMorphologicalReconstructionAction;
 import imago.gui.action.process.ImageOtsuThresholdAction;
 import imago.gui.action.process.MedianBoxFilterAction;
+import imago.gui.action.process.MorphologicalFilteringAction;
 import imago.gui.tool.SelectionTool;
 import net.sci.array.Array;
 import net.sci.array.data.ScalarArray;
@@ -332,6 +333,9 @@ public class GuiBuilder
 				"Min/Max Filter", isScalar);
 		// addMenuItem(menu, new Dilation2D11x11Action(frame, "dilation11x11"),
 		// "Dilation 11x11", isImage);
+		menu.addSeparator();
+		addMenuItem(menu, new MorphologicalFilteringAction(frame, "Morphological Filtering"),
+				"Morphological Filtering", isScalar && is2D);
 		menu.addSeparator();
 		addMenuItem(menu, new ImageOperatorAction(frame, "regionalMin",
 				new RegionalExtrema2D(MinimaAndMaxima.Type.MINIMA, Connectivity2D.C4)), 
