@@ -45,6 +45,7 @@ import imago.gui.action.image.StackToVectorImageAction;
 import imago.gui.action.process.BoxFilter3x3Float;
 import imago.gui.action.process.BoxFilterAction;
 import imago.gui.action.process.BoxMinMaxFilterAction;
+import imago.gui.action.process.ColorImageBivariateHistogramsAction;
 import imago.gui.action.process.ImageExtendedExtremaAction;
 import imago.gui.action.process.ImageMorphologicalReconstructionAction;
 import imago.gui.action.process.ImageOtsuThresholdAction;
@@ -304,6 +305,7 @@ public class GuiBuilder
 		boolean is2D = has2DImage(frame);
 		boolean isScalar = hasScalarImage(frame);
 		boolean isVector = hasVectorImage(frame);
+		boolean isColor = hasRGB8Image(frame);
 		boolean isBinary = hasBinaryImage(frame);
 
 		JMenu menu = new JMenu("Process");
@@ -377,6 +379,11 @@ public class GuiBuilder
 		addMenuItem(menu, new ArrayOperatorAction(frame, "distanceMap2dFloat",
 				new ChamferDistanceTransform2DFloat(ChamferWeights.CHESSKNIGHT, false)),
 				"Distance Map (float)", is2D && isBinary);
+
+		menu.addSeparator();
+		addMenuItem(menu, 
+				new ColorImageBivariateHistogramsAction(frame, "bivarateHistograms"), 
+				"RGB to Color Histograms", isColor);
 
 		return menu;
 	}
