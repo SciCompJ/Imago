@@ -51,6 +51,7 @@ import imago.gui.tool.SelectionTool;
 import net.sci.array.Array;
 import net.sci.array.data.ScalarArray;
 import net.sci.array.process.PowerOfTwo;
+import net.sci.array.process.SobelGradient;
 import net.sci.array.process.Sqrt;
 import net.sci.array.process.shape.Flip;
 import net.sci.image.Image;
@@ -341,6 +342,8 @@ public class GuiBuilder
 //				isImage);
 
 		menu.addSeparator();
+		addMenuItem(menu, new ImageArrayOperatorAction(frame, "sobelGradient",
+				new SobelGradient()), "Sobel Gradient", isImage);
 		addMenuItem(menu, new ImageOperatorAction(frame, "sobelGradientNorm",
 				new SobelGradientNorm()), "Sobel Gradient Norm", isScalar);
 		addMenuItem(menu, new ImageArrayOperatorAction(frame, "sobelGradient",
