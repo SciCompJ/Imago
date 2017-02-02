@@ -45,8 +45,12 @@ import imago.gui.action.image.StackToVectorImageAction;
 import imago.gui.action.process.BoxFilter3x3Float;
 import imago.gui.action.process.BoxFilterAction;
 import imago.gui.action.process.BoxMinMaxFilterAction;
+import imago.gui.action.process.ColorImageBivariateHistogramsAction;
+import imago.gui.action.process.ImageExtendedExtremaAction;
+import imago.gui.action.process.ImageMorphologicalReconstructionAction;
 import imago.gui.action.process.ImageOtsuThresholdAction;
 import imago.gui.action.process.MedianBoxFilterAction;
+import imago.gui.action.process.MorphologicalFilteringAction;
 import imago.gui.tool.SelectionTool;
 import net.sci.array.Array;
 import net.sci.array.data.ScalarArray;
@@ -60,7 +64,7 @@ import net.sci.image.binary.FloodFillComponentLabeling2D;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DFloat;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DShort;
 import net.sci.image.data.Connectivity2D;
-import net.sci.image.morphology.extrema.ExtremaType;
+import net.sci.image.morphology.MinimaAndMaxima;
 import net.sci.image.morphology.extrema.RegionalExtrema2D;
 import net.sci.image.process.DynamicAdjustment;
 import net.sci.image.process.ImageInverter;
@@ -302,6 +306,7 @@ public class GuiBuilder
 		boolean is2D = has2DImage(frame);
 		boolean isScalar = hasScalarImage(frame);
 		boolean isVector = hasVectorImage(frame);
+		boolean isColor = hasRGB8Image(frame);
 		boolean isBinary = hasBinaryImage(frame);
 
 		JMenu menu = new JMenu("Process");
@@ -332,10 +337,23 @@ public class GuiBuilder
 		// addMenuItem(menu, new Dilation2D11x11Action(frame, "dilation11x11"),
 		// "Dilation 11x11", isImage);
 		menu.addSeparator();
+		addMenuItem(menu, new MorphologicalFilteringAction(frame, "Morphological Filtering"),
+				"Morphological Filtering", isScalar && is2D);
+		menu.addSeparator();
 		addMenuItem(menu, new ImageOperatorAction(frame, "regionalMin",
-				new RegionalExtrema2D(ExtremaType.MINIMA, Connectivity2D.C4)), "Regional Minima", isScalar);
+				new RegionalExtrema2D(MinimaAndMaxima.Type.MINIMA, Connectivity2D.C4)), 
+				"Regional Minima", isScalar);
 		addMenuItem(menu, new ImageOperatorAction(frame, "regionalMax",
-				new RegionalExtrema2D(ExtremaType.MAXIMA, Connectivity2D.C4)), "Regional Maxima", isScalar);
+				new RegionalExtrema2D(MinimaAndMaxima.Type.MAXIMA, Connectivity2D.C4)), 
+				"Regional Maxima", isScalar);
+		addMenuItem(menu, new ImageExtendedExtremaAction(frame, "extendedExtrema"), 
+				"Extended Min./Max.", isScalar);
+		addMenuItem(menu, 
+				new ImageMorphologicalReconstructionAction(frame, "morphoRec"), 
+				"Morphological Reconstruction");
+//		addMenuItem(menu, 
+//				new ImageMorphologicalReconstruction3DAction(frame, "morphoRec3d"), 
+//				"Morphological Reconstruction (3D)");
 
 //		menu.addSeparator();
 //		addMenuItem(menu, new ImageLogAction(frame, "imageLog"), "Array<?> Log",
@@ -364,6 +382,11 @@ public class GuiBuilder
 		addMenuItem(menu, new ArrayOperatorAction(frame, "distanceMap2dFloat",
 				new ChamferDistanceTransform2DFloat(ChamferWeights.CHESSKNIGHT, false)),
 				"Distance Map (float)", is2D && isBinary);
+
+		menu.addSeparator();
+		addMenuItem(menu, 
+				new ColorImageBivariateHistogramsAction(frame, "bivarateHistograms"), 
+				"RGB to Color Histograms", isColor);
 
 		return menu;
 	}

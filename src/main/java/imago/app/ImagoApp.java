@@ -83,6 +83,35 @@ public class ImagoApp
 	}
 
 	/**
+	 * Get the names of all open image documents.
+	 * 
+	 * @return the list of names of documents containing images.
+	 */
+	public Collection<String> getImageDocumentNames()
+	{
+		ArrayList<String> nameList = new ArrayList<String>(this.docs.size()); 
+		for (ImagoDoc doc : this.docs)
+		{
+			if (doc.getImage() != null)
+			{
+				nameList.add(doc.getName());
+			}
+		}
+		return nameList;
+	}
+	
+	public ImagoDoc getDocumentFromName(String docName)
+	{
+		for (ImagoDoc doc : this.docs)
+		{
+			if (doc.getName().equals(docName))
+				return doc;
+		}
+		
+		throw new IllegalArgumentException("App does not contain any document with name: " + docName);
+	}
+	
+	/**
 	 * Display the list of document lists on the console (for debugging).
 	 */
 	public void printDocumentList()
