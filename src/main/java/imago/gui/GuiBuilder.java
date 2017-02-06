@@ -17,6 +17,7 @@ import imago.gui.action.ImageArrayOperatorAction;
 import imago.gui.action.ImageOperatorAction;
 import imago.gui.action.SelectToolAction;
 import imago.gui.action.analyze.ImageHistogramAction;
+import imago.gui.action.analyze.ImageLineProfileDemoAction;
 import imago.gui.action.edit.PrintDocumentListAction;
 import imago.gui.action.edit.ZoomInAction;
 import imago.gui.action.edit.ZoomOneAction;
@@ -404,9 +405,9 @@ public class GuiBuilder
 //		addMenuItem(menu, new RGBJointHistogramsAction(frame,
 //				"rgbJointHistograms"), "RGB Joint Histograms",
 //				hasRGB8Image(frame));
-//		menu.addSeparator();
-//		addMenuItem(menu, new ImageLineProfileDemoAction(frame, "lineProfile"),
-//				"Line Profile", isImage);
+		menu.addSeparator();
+		addMenuItem(menu, new ImageLineProfileDemoAction(frame, "lineProfile"),
+				"Line Profile", isImage);
 
 		return menu;
 	}
