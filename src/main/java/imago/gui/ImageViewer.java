@@ -39,6 +39,13 @@ public abstract class ImageViewer extends JPanel
 	
 	protected Image image;
 	
+	/**
+	 * An instance of Image that can be used for preview, or null of no preview
+	 * is made for this viewer.
+	 */
+	protected Image previewImage = null;
+	
+
 	protected double zoom = 1;
 	
 	
@@ -53,12 +60,46 @@ public abstract class ImageViewer extends JPanel
 	
 	// ===================================================================
 	// General methods
+
+	/**
+	 * Returns the preview image if is it not null, or the image otherwise.
+	 * 
+	 * @return the preview image if is it not null, or the image otherwise.
+	 */
+	public Image getImageToDisplay() 
+	{
+		if (this.previewImage != null)
+		{
+			return this.previewImage;
+		}
+		return this.image;
+	}
 	
+	/**
+	 * @return the base image stored in this view
+	 */
 	public Image getImage() 
 	{
 		return this.image;
 	}
 	
+	/**
+	 * @return the previewImage
+	 */
+	public Image getPreviewImage()
+	{
+		return previewImage;
+	}
+
+
+	/**
+	 * @param previewImage the previewImage to set
+	 */
+	public void setPreviewImage(Image previewImage)
+	{
+		this.previewImage = previewImage;
+	}
+
 	/**
 	 * Returns the instance of ImagoDocViewer that contains this Image view,
 	 * or null if no one is found.
@@ -70,6 +111,7 @@ public abstract class ImageViewer extends JPanel
 		{
 			container = container.getParent();
 		}
+		
 		return (ImagoDocViewer) container;
 	}	
 
