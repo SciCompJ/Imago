@@ -56,7 +56,6 @@ import imago.gui.tool.SelectionTool;
 import net.sci.array.Array;
 import net.sci.array.data.ScalarArray;
 import net.sci.array.process.PowerOfTwo;
-import net.sci.array.process.SobelGradient;
 import net.sci.array.process.Sqrt;
 import net.sci.array.process.shape.Flip;
 import net.sci.image.Image;

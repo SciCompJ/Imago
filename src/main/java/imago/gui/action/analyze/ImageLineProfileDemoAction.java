@@ -21,6 +21,7 @@ import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import math.jg.geom2d.Point2D;
 import net.sci.array.Array;
+import net.sci.array.data.ScalarArray;
 import net.sci.array.data.color.RGB8Array2D;
 import net.sci.array.data.scalar2d.ScalarArray2D;
 import net.sci.array.data.vector.VectorArray2D;
@@ -68,9 +69,10 @@ public class ImageLineProfileDemoAction extends ImagoAction
         Point2D p2 = new Point2D(210, 180);
         
         DataTable table = null;
-        if (array instanceof ScalarArray2D)
+        if (array instanceof ScalarArray)
         {
-            table = intensityProfile((ScalarArray2D<?>) array, p1, p2, n);
+        	ScalarArray2D<?> array2d = ScalarArray2D.wrap((ScalarArray<?>) array);
+            table = intensityProfile(array2d, p1, p2, n);
             plotIntensityProfile(table);
         }
         else if (array instanceof RGB8Array2D)
