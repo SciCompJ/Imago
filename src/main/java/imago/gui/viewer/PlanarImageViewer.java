@@ -15,8 +15,7 @@ import javax.swing.JScrollPane;
 import imago.gui.ImageUtils;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoTool;
-import math.jg.geom2d.Shape2D;
-import math.jg.geom2d.line.LineSegment2D;
+import net.sci.geom.geom2d.Geometry2D;
 import net.sci.image.Image;
 
 
@@ -51,7 +50,7 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 	/**
 	 * The shape of the current selection, usually a polyline or a rectangle
 	 */
-	protected Shape2D selection = null;
+	protected Geometry2D selection = null;
 	
 	
 	// ===================================================================
@@ -66,7 +65,6 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 		}
 		
 		this.awtImage = ImageUtils.createAwtImage(image, 0);
-		this.selection = new LineSegment2D(10, 10, 210, 180);
 		
 		setupLayout();
 	}
@@ -98,12 +96,12 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 		return imageDisplay;
 	}
 
-	public Shape2D getSelection()
+	public Geometry2D getSelection()
 	{
 		return this.selection;
 	}
 	
-	public void setSelection(Shape2D shape)
+	public void setSelection(Geometry2D shape)
 	{
 		this.selection = shape;
 	}

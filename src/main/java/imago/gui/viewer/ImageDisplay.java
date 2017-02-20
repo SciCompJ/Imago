@@ -3,18 +3,24 @@
  */
 package imago.gui.viewer;
 
+import imago.app.shape.ImagoShape;
 import imago.gui.ImagoDocViewer;
+import net.sci.geom.Geometry;
+import net.sci.geom.geom2d.LineSegment2D;
+import net.sci.geom.geom2d.Point2D;
 
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.swing.JPanel;
 
-import math.jg.geom2d.Point2D;
 
 /**
  * A specialization of JPanel that displays a buffered AWT image.
@@ -44,6 +50,8 @@ public class ImageDisplay extends JPanel
 
 	BufferedImage image;
 	
+	Collection<ImagoShape> shapes = new ArrayList<ImagoShape>();
+	
 	double zoom = 1;
 	
 	int offsetX;
@@ -65,6 +73,21 @@ public class ImageDisplay extends JPanel
 	public BufferedImage getImage() 
 	{
 		return this.image;
+	}
+	
+    public Collection<ImagoShape> getShapes()
+    {
+        return shapes;
+    }
+    
+    public void setShapes(Collection<ImagoShape> newShapes)
+    {
+        this.shapes = newShapes;
+    }
+    
+	public void addShape(ImagoShape shape)
+	{
+	    this.shapes.add(shape);
 	}
 	
 	public ImagoDocViewer getViewer() 
@@ -115,15 +138,22 @@ public class ImageDisplay extends JPanel
 //		System.out.println("ImageDisplay: repaint");
 //	}
 	
-	public Point2D displayToImage(Point point) 
-	{
-		double x = (point.x - this.offsetX) / zoom;
-		double y = (point.y - this.offsetY) / zoom;
-		return new Point2D(x, y);
-	}
+    public Point2D displayToImage(Point point) 
+    {
+        double x = (point.x - this.offsetX) / zoom;
+        double y = (point.y - this.offsetY) / zoom;
+        return new Point2D(x, y);
+    }
+
+    public Point2D imageToDisplay(Point2D point) 
+    {
+        double x = point.getX() * zoom + this.offsetX;
+        double y = point.getY() * zoom + this.offsetY;
+        return new Point2D(x, y);
+    }
 
 	/**
-	 * @return the current offset no which image is displayed. Always greater
+	 * @return the current offset at which image is displayed. Always greater
 	 *         than 0 for each coordinate.
 	 */
 	public Point getOffset() 
@@ -156,18 +186,57 @@ public class ImageDisplay extends JPanel
 		return new Dimension(width, height);
 	}
 	
+	
+    // ===================================================================
+    // paint methods
+
 	public void paintComponent(Graphics g) 
 	{
-//		System.out.println("ImageDisplay.paintComponent()");
-		Dimension dim = this.getDisplaySize();
-		g.drawImage(this.image, offsetX, offsetY, dim.width, dim.height, null);
-		
-//		Graphics2D g2 = (Graphics2D) g;
-//		g2.translate(offsetX, offsetY);
-//		//g2.scale(zoom, zoom);
-//		g2.setColor(new Color(255, 0, 0));
-//		Shape rect = new Rectangle2D.Double(20 * zoom, 30 * zoom, 101 * zoom, 121 * zoom); 
-//		g2.draw(rect);
+	    paintImage(g);
+	    paintAnnotations(g);
 	}
 
+	private void paintImage(Graphics g)
+	{
+        Dimension dim = this.getDisplaySize();
+        g.drawImage(this.image, offsetX, offsetY, dim.width, dim.height, null);
+	}
+	
+    private void paintAnnotations(Graphics g)
+    {
+        Graphics2D g2 = (Graphics2D) g;
+        g2.translate(offsetX, offsetY);
+        //      //g2.scale(zoom, zoom);
+        //      g2.setColor(new Color(255, 0, 0));
+        //      Shape rect = new Rectangle2D.Double(20 * zoom, 30 * zoom, 101 * zoom, 121 * zoom); 
+        //      g2.draw(rect);
+        
+        for(ImagoShape shape : this.shapes)
+        {
+            g2.setColor(shape.getColor());
+            Geometry geom = shape.getGeometry();
+            if (geom instanceof Point2D)
+            {
+                Point2D point = (Point2D) geom;
+                int x = (int) (point.getX() * zoom);
+                int y = (int) (point.getY() * zoom);
+                g2.fillOval(x-2, y-2, 5, 5);
+            }
+            else if (geom instanceof LineSegment2D)
+            {
+                LineSegment2D line = (LineSegment2D) geom;
+                Point2D p1 = line.getP1();
+                int x1 = (int) (p1.getX() * zoom);
+                int y1 = (int) (p1.getY() * zoom);
+                Point2D p2 = line.getP2();
+                int x2 = (int) (p2.getX() * zoom);
+                int y2 = (int) (p2.getY() * zoom);
+                g2.drawLine(x1, y1, x2, y2);
+            }
+            else
+            {
+                System.out.println("can not handle geometry of class: " + geom.getClass());
+            }
+        }
+    }
 }

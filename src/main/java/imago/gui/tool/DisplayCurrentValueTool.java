@@ -13,7 +13,6 @@ import imago.gui.ImagoTool;
 import imago.gui.panel.StatusBar;
 import imago.gui.viewer.ImageDisplay;
 import imago.gui.viewer.StackSliceViewer;
-import math.jg.geom2d.Point2D;
 import net.sci.array.Array;
 import net.sci.array.data.Array2D;
 import net.sci.array.data.Array3D;
@@ -21,6 +20,7 @@ import net.sci.array.data.IntArray;
 import net.sci.array.data.ScalarArray;
 import net.sci.array.data.VectorArray;
 import net.sci.array.data.color.RGB8Array;
+import net.sci.geom.geom2d.Point2D;
 import net.sci.image.Image;
 
 /**

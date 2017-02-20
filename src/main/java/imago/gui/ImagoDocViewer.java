@@ -73,7 +73,11 @@ public class ImagoDocViewer extends ImagoFrame
 		// create the image viewer
 		if (image.getDimension() == 2) 
 		{
-			this.imageView = new PlanarImageViewer(image);
+		    PlanarImageViewer viewer = new PlanarImageViewer(image);
+
+			viewer.getImageDisplay().setShapes(doc.getShapes());
+
+			this.imageView = viewer;
 		}
 		else 
 		{
@@ -157,8 +161,48 @@ public class ImagoDocViewer extends ImagoFrame
 		return statusBar;
 	}
 
-	public void repaint() {
+
+	// ===================================================================
+	// Override some painting methods
+	
+//    public void update(Graphics g)
+//    {
+//        super.update(g);
+//        System.out.println("update Doc Viewer");
+//    }
+    
+//    public void paintComponents(Graphics g)
+//    {
+//        super.paintComponents(g);
+//        System.out.println("paint Components of Doc Viewer");
+//    }
+    
+//    public void paint(Graphics g)
+//    {
+////        System.out.println("paint Doc Viewer");
+//        super.paint(g);
+//        
+//        if (this.imageView instanceof PlanarImageViewer)
+//        {
+//            System.out.println("update planar viewer");
+//            
+//            PlanarImageViewer viewer = (PlanarImageViewer) this.imageView;
+//            ImageDisplay display = viewer.getImageDisplay(); 
+//            
+//            Point2D p1 = new Point2D(10, 10);
+//            Point2D p2 = new Point2D(200, 150);
+//            Point2D p1d = display.imageToDisplay(p1); 
+//            Point2D p2d = display.imageToDisplay(p2); 
+//            
+//            Graphics vg = viewer.getImageDisplay().getGraphics();
+//            
+//            vg.setColor(Color.BLUE);
+//            vg.drawLine((int) p1d.getX(), (int) p1d.getY(), (int) p2d.getX(), (int) p2d.getY());
+//        }
+//    }
+    
+//    public void repaint() {
+//		super.repaint();
 //		System.out.println("repaint Doc Viewer");
-		super.repaint();
-	}
+//	}
 }
