@@ -124,6 +124,8 @@ public class GuiBuilder
 				"readMetaImageFormat"), "Read MetaImage Format...");
 
 		JMenu demoMenu = new JMenu("Demo images");
+        addMenuItem(demoMenu, new OpenDemoImage(frame, "openDemoRice",
+                "files/rice.png"), "Rice");
 		addMenuItem(demoMenu, new OpenDemoImage(frame, "openDemoLena",
 				"files/lena_gray_512.bmp"), "Lena");
 		addMenuItem(demoMenu, new OpenDemoImage(frame, "openDemoSunflower",

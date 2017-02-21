@@ -78,30 +78,30 @@ public class DisplayCurrentValueTool extends ImagoTool
 		double x = pos.getX();
 		double y = pos.getY();
 
-		// Check mouse cursor is in image bounds
-		if (x < 0 || x > image.getSize(0) - 1)
-			return;
-		if (y < 0 || y > image.getSize(1) - 1)
-			return;
-
 		// convert to integer indices
-		int indx = (int) Math.floor(x);
-		int indy = (int) Math.floor(y);
+        int indx = (int) Math.round(x);
+        int indy = (int) Math.round(y);
 		int indz = 0;
+
+        // Check mouse cursor is in image bounds
+        if (indx < 0 || indx > image.getSize(0) - 1)
+            return;
+        if (indy < 0 || indy > image.getSize(1) - 1)
+            return;
 
 		// Create string for representing position
 		String posString = null;
 		if (img instanceof Array2D)
 		{
-			String format = "pos=(%d,%d)";
-			posString = String.format(format, indx, indy);
+            String format = "pos=(%.2f, %.2f)";
+            posString = String.format(Locale.ENGLISH, format, x, y);
 
 		}
 		else if (img instanceof Array3D)
 		{
 			indz = ((StackSliceViewer) imageView).getSliceIndex();
-			String format = "pos=(%d,%d,%d)";
-			posString = String.format(format, indx, indy, indz);
+			String format = "pos=(%.2f, %.2f, %d)";
+			posString = String.format(Locale.ENGLISH, format, x, y, indz);
 		}
 
 		// create the position array
@@ -157,7 +157,7 @@ public class DisplayCurrentValueTool extends ImagoTool
 
 		// Concatenate the information and update status bar
 		StatusBar statusBar = viewer.getStatusBar();
-		String format = "%1$s; %2$s";
+		String format = "%1$s %2$s";
 		String label = String.format(format, posString, valueString);
 		statusBar.setCursorLabel(label);
 	}

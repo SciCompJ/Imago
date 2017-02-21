@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import imago.app.shape.ImagoShape;
-import net.sci.geom.geom2d.Point2D;
 import net.sci.image.Image;
 
 
@@ -34,7 +33,7 @@ public class ImagoDoc
 	 */
 	Image image;
 	
-	Collection<ImagoShape> shapes;
+	Collection<ImagoShape> shapes = new ArrayList<ImagoShape>();
 	
 	/**
 	 * For 3D images, the index of the slice visible in document.
@@ -89,13 +88,16 @@ public class ImagoDoc
 		}
         
 //		  // used for testing display of shapes
-//        this.shapes = new ArrayList<ImagoShape>();
 //        this.shapes.add(new ImagoShape(new Point2D(10, 10)));
 //        this.shapes.add(new ImagoShape(new Point2D(20, 10)));
 //        this.shapes.add(new ImagoShape(new Point2D(10, 20)));
 //        this.shapes.add(new ImagoShape(new Point2D(20, 20)));
 //        this.shapes.add(new ImagoShape(new Point2D(30, 20)));
 //        this.shapes.add(new ImagoShape(new Point2D(40, 30)));
+//        Point2D p1 = new Point2D(40, 10);
+//        Point2D p2 = new Point2D(10, 30);
+//        LineSegment2D line = new LineSegment2D(p1, p2);
+//        this.shapes.add(new ImagoShape(line));
 	}
 	
 	// =============================================================
