@@ -18,6 +18,7 @@ import imago.gui.action.ImageOperatorAction;
 import imago.gui.action.SelectToolAction;
 import imago.gui.action.analyze.ImageHistogramAction;
 import imago.gui.action.analyze.ImageLineProfileDemoAction;
+import imago.gui.action.edit.DocClearShapesAction;
 import imago.gui.action.edit.PrintDocumentListAction;
 import imago.gui.action.edit.ZoomInAction;
 import imago.gui.action.edit.ZoomOneAction;
@@ -48,6 +49,7 @@ import imago.gui.action.process.BoxFilterAction;
 import imago.gui.action.process.BoxMinMaxFilterAction;
 import imago.gui.action.process.ColorImageBivariateHistogramsAction;
 import imago.gui.action.process.ImageExtendedExtremaAction;
+import imago.gui.action.process.ImageFindNonZeroPixelsAction;
 import imago.gui.action.process.ImageMorphologicalReconstructionAction;
 import imago.gui.action.process.ImageOtsuThresholdAction;
 import imago.gui.action.process.MedianBoxFilterAction;
@@ -228,6 +230,8 @@ public class GuiBuilder
 		// add utility
 		editMenu.addSeparator();
 		addMenuItem(editMenu, new PrintDocumentListAction(frame, "printDocumentList"), "Print Document List");
+        addMenuItem(editMenu, new DocClearShapesAction(frame, "docClearShapes"),
+                "Clear Shapes");
 		
 		return editMenu;
 	}
@@ -326,6 +330,8 @@ public class GuiBuilder
 		addMenuItem(menu,
 				new ImageOperatorAction(frame, "threshold", new ImageThreshold(20)),
 				"Threshold (20)", isScalar);
+        addMenuItem(menu, new ImageFindNonZeroPixelsAction(frame, "findNonZerosPixels"),
+                "Find Non-Zeros Elements", is2D && isScalar);
 
 		menu.addSeparator();
 		addMenuItem(menu, new BoxFilterAction(frame, "boxFilter"),

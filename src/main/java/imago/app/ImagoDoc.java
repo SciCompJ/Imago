@@ -86,20 +86,9 @@ public class ImagoDoc
 		{
 			this.currentSliceIndex = (int) Math.round(image.getSize(2) / 2);
 		}
-        
-//		  // used for testing display of shapes
-//        this.shapes.add(new ImagoShape(new Point2D(10, 10)));
-//        this.shapes.add(new ImagoShape(new Point2D(20, 10)));
-//        this.shapes.add(new ImagoShape(new Point2D(10, 20)));
-//        this.shapes.add(new ImagoShape(new Point2D(20, 20)));
-//        this.shapes.add(new ImagoShape(new Point2D(30, 20)));
-//        this.shapes.add(new ImagoShape(new Point2D(40, 30)));
-//        Point2D p1 = new Point2D(40, 10);
-//        Point2D p2 = new Point2D(10, 30);
-//        LineSegment2D line = new LineSegment2D(p1, p2);
-//        this.shapes.add(new ImagoShape(line));
 	}
 	
+
 	// =============================================================
 	// Accessors
 	
@@ -113,11 +102,6 @@ public class ImagoDoc
 		return this.image;
 	}
 
-	public Collection<ImagoShape> getShapes()
-	{
-	    return this.shapes;
-	}
-	
 	public int getCurrentSliceIndex() 
 	{
 		return currentSliceIndex;
@@ -128,7 +112,28 @@ public class ImagoDoc
 		this.currentSliceIndex = currentSliceIndex;
 	}
 
+
+    // =============================================================
+    // Management of shapes
+
+	public Collection<ImagoShape> getShapes()
+	{
+	    return this.shapes;
+	}
 	
+    public void addShape(ImagoShape shape)
+    {
+        this.shapes.add(shape);
+    }
+    
+    public void clearShapes()
+    {
+        this.shapes.clear();
+    }
+    
+	
+	    
+
 	// =============================================================
 	// General methods
 	
