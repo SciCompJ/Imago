@@ -18,6 +18,7 @@ import imago.gui.action.ImageOperatorAction;
 import imago.gui.action.SelectToolAction;
 import imago.gui.action.analyze.ImageHistogramAction;
 import imago.gui.action.analyze.ImageLineProfileDemoAction;
+import imago.gui.action.analyze.LabelImageCentroidsAction;
 import imago.gui.action.edit.DocClearShapesAction;
 import imago.gui.action.edit.PrintDocumentListAction;
 import imago.gui.action.edit.ZoomInAction;
@@ -56,6 +57,7 @@ import imago.gui.action.process.MedianBoxFilterAction;
 import imago.gui.action.process.MorphologicalFilteringAction;
 import imago.gui.tool.SelectionTool;
 import net.sci.array.Array;
+import net.sci.array.data.IntArray;
 import net.sci.array.data.ScalarArray;
 import net.sci.array.process.PowerOfTwo;
 import net.sci.array.process.Sqrt;
@@ -406,7 +408,8 @@ public class GuiBuilder
 	{
 		 boolean isImage = hasImageDoc(frame);
 		// boolean has3D = has3DImage(frame);
-		// boolean has2D = has2DImage(frame);
+         boolean has2D = has2DImage(frame);
+         boolean hasInt = hasIntegerImage(frame);
 
 		JMenu menu = new JMenu("Analyze");
 
@@ -419,6 +422,9 @@ public class GuiBuilder
 		addMenuItem(menu, new ImageLineProfileDemoAction(frame, "lineProfile"),
 				"Line Profile", isImage);
 
+        menu.addSeparator();
+        addMenuItem(menu, new LabelImageCentroidsAction(frame, "regionCentroids"),
+                "Regions Centroid", has2D && hasInt);
 		return menu;
 	}
 
@@ -467,7 +473,7 @@ public class GuiBuilder
 		return doc != null;
 	}
 
-	private final static boolean hasScalarImage(ImagoFrame frame)
+	private final static boolean hasIntegerImage(ImagoFrame frame)
 	{
 		ImagoDoc doc = null;
 		if (frame instanceof ImagoDocViewer)
@@ -477,16 +483,30 @@ public class GuiBuilder
 		if (doc == null)
 			return false;
 
-		boolean isScalar = false;
 		Array<?> img = doc.getImage().getData();
-		if (img instanceof ScalarArray<?>)
-		{
-			isScalar = true;
-		}
-		return isScalar;
+		return img instanceof IntArray<?>;
 	}
 
-	private final static boolean hasVectorImage(ImagoFrame frame)
+    private final static boolean hasScalarImage(ImagoFrame frame)
+    {
+        ImagoDoc doc = null;
+        if (frame instanceof ImagoDocViewer)
+        {
+            doc = ((ImagoDocViewer) frame).getDocument();
+        }
+        if (doc == null)
+            return false;
+
+        boolean isScalar = false;
+        Array<?> img = doc.getImage().getData();
+        if (img instanceof ScalarArray<?>)
+        {
+            isScalar = true;
+        }
+        return isScalar;
+    }
+
+    private final static boolean hasVectorImage(ImagoFrame frame)
 	{
 		ImagoDoc doc = null;
 		if (frame instanceof ImagoDocViewer)
