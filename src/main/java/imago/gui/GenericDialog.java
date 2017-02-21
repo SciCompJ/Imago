@@ -28,6 +28,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.Locale;
 
 import javax.swing.JButton;
@@ -353,47 +354,92 @@ public class GenericDialog
 	/**
 	 * Adds a popup menu that contains different choices.
 	 */
-   public void addChoice(String label, String[] items, String defaultItem) 
-   {
-   		String label2 = formatLabel(label);
-		JLabel theLabel = new JLabel(label2);
-		
-		c.gridx = 0;
-		c.gridy = currentRow;
-		c.anchor = GridBagConstraints.EAST;
-		c.gridwidth = 1;
-
-		if (choices == null)
-		{
-			choices = new ArrayList<JComboBox<String>>(4);
-			c.insets = getInsets(5, 5, 5, 5);
-		} 
-		else
-		{
-			c.insets = getInsets(0, 5, 5, 5);
-		}
-		
-		gridLayout.setConstraints(theLabel, c);
-		this.dialog.add(theLabel);
-		
-		JComboBox<String> combo = new JComboBox<String>();
-		combo.addKeyListener(this);
-//		thisChoice.addItemListener(this);
-		for (String item : items)
-			combo.addItem(item);
-		combo.setSelectedItem(defaultItem);
-		
-		c.gridx = 1;
-		c.gridy = currentRow;
-		c.anchor = GridBagConstraints.WEST;
-		gridLayout.setConstraints(combo, c);
-		this.dialog.add(combo);
-
-		choices.add(combo);
-//		if (Recorder.record || macro)
-//			saveLabel(thisChoice, label);
-		currentRow++;
+	public void addChoice(String label, String[] items, String defaultItem) 
+	{
+	    String label2 = formatLabel(label);
+	    JLabel theLabel = new JLabel(label2);
+	    
+	    c.gridx = 0;
+	    c.gridy = currentRow;
+	    c.anchor = GridBagConstraints.EAST;
+	    c.gridwidth = 1;
+	    
+	    if (choices == null)
+	    {
+	        choices = new ArrayList<JComboBox<String>>(4);
+	        c.insets = getInsets(5, 5, 5, 5);
+	    } 
+	    else
+	    {
+	        c.insets = getInsets(0, 5, 5, 5);
+	    }
+	    
+	    gridLayout.setConstraints(theLabel, c);
+	    this.dialog.add(theLabel);
+	    
+	    JComboBox<String> combo = new JComboBox<String>();
+	    combo.addKeyListener(this);
+	    //		thisChoice.addItemListener(this);
+	    for (String item : items)
+	        combo.addItem(item);
+	    combo.setSelectedItem(defaultItem);
+	    
+	    c.gridx = 1;
+	    c.gridy = currentRow;
+	    c.anchor = GridBagConstraints.WEST;
+	    gridLayout.setConstraints(combo, c);
+	    this.dialog.add(combo);
+	    
+	    choices.add(combo);
+	    //		if (Recorder.record || macro)
+	    //			saveLabel(thisChoice, label);
+	    currentRow++;
 	}
+
+	/**
+     * Adds a popup menu that contains different choices.
+     */
+    public <T extends Enum<T>> void addChoice(String label, EnumSet<T> items, T defaultItem) 
+    {
+        String label2 = formatLabel(label);
+        JLabel theLabel = new JLabel(label2);
+        
+        c.gridx = 0;
+        c.gridy = currentRow;
+        c.anchor = GridBagConstraints.EAST;
+        c.gridwidth = 1;
+        
+        if (choices == null)
+        {
+            choices = new ArrayList<JComboBox<String>>(4);
+            c.insets = getInsets(5, 5, 5, 5);
+        } 
+        else
+        {
+            c.insets = getInsets(0, 5, 5, 5);
+        }
+        
+        gridLayout.setConstraints(theLabel, c);
+        this.dialog.add(theLabel);
+        
+        JComboBox<String> combo = new JComboBox<String>();
+        combo.addKeyListener(this);
+        //      thisChoice.addItemListener(this);
+        for (T item : items)
+            combo.addItem(item.toString());
+        combo.setSelectedItem(defaultItem);
+        
+        c.gridx = 1;
+        c.gridy = currentRow;
+        c.anchor = GridBagConstraints.WEST;
+        gridLayout.setConstraints(combo, c);
+        this.dialog.add(combo);
+        
+        choices.add(combo);
+        //      if (Recorder.record || macro)
+        //          saveLabel(thisChoice, label);
+        currentRow++;
+    }
 
 	/**
 	* Adds a slider (scroll bar) to the dialog box.

@@ -27,6 +27,7 @@ import imago.gui.action.edit.ZoomOutAction;
 import imago.gui.action.file.CreateColorCubeStack;
 import imago.gui.action.file.CreateEmptyImageAction;
 import imago.gui.action.file.ImportMetaImageFileAction;
+import imago.gui.action.file.ImportRawDataAction;
 import imago.gui.action.file.OpenDemoImage;
 import imago.gui.action.file.OpenDemoStack;
 import imago.gui.action.file.OpenImageAction;
@@ -124,8 +125,10 @@ public class GuiBuilder
 				"Open...");
 		addMenuItem(fileMenu, new ReadTiffAction(frame, "readTiffImage"),
 				"Read TIFF...");
-		addMenuItem(fileMenu, new ImportMetaImageFileAction(frame,
-				"readMetaImageFormat"), "Read MetaImage Format...");
+        addMenuItem(fileMenu, new ImportMetaImageFileAction(frame,
+                "readMetaImageFormat"), "Read MetaImage Format...");
+        addMenuItem(fileMenu, new ImportRawDataAction(frame,
+                "importRawData"), "Import Raw Data...");
 
 		JMenu demoMenu = new JMenu("Demo images");
         addMenuItem(demoMenu, new OpenDemoImage(frame, "openDemoRice",
