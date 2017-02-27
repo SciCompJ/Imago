@@ -14,7 +14,7 @@ import net.sci.array.Array;
 import net.sci.array.data.Array2D;
 import net.sci.image.Image;
 import net.sci.image.morphology.MorphologicalFiltering.Operation;
-import net.sci.image.morphology.Strel;
+import net.sci.image.morphology.Strel2D;
 
 /**
  * Applies various types of morphological filtering on a multidimensional image.
@@ -25,7 +25,7 @@ import net.sci.image.morphology.Strel;
 public class MorphologicalFilteringAction extends ImagoAction
 {
 	Operation op = Operation.DILATION;
-	Strel.Shape shape = Strel.Shape.SQUARE;
+	Strel2D.Shape shape = Strel2D.Shape.SQUARE;
 	int radius = 2;
 	boolean showStrel;
 
@@ -65,7 +65,7 @@ public class MorphologicalFilteringAction extends ImagoAction
 		GenericDialog gd = new GenericDialog(this.frame, "Morphological Filter");
 		gd.addChoice("Operation", Operation.getAllLabels(), 
 				this.op.toString());
-		gd.addChoice("Element", Strel.Shape.getAllLabels(), 
+		gd.addChoice("Element", Strel2D.Shape.getAllLabels(), 
 				this.shape.toString());
 		gd.addNumericField("Radius (in pixels)", this.radius, 0);
 //		gd.addCheckbox("Show Element", false);
@@ -80,13 +80,13 @@ public class MorphologicalFilteringAction extends ImagoAction
 		// parse dialog results
 		// extract chosen parameters
 		this.op 		= Operation.fromLabel(gd.getNextChoice());
-		this.shape 		= Strel.Shape.fromLabel(gd.getNextChoice());
+		this.shape 		= Strel2D.Shape.fromLabel(gd.getNextChoice());
 		this.radius 	= (int) gd.getNextNumber();		
 //		this.showStrel 	= gd.getNextBoolean();
 //		this.previewing = gd.getPreviewCheckbox().getState();
 
 		// Create structuring element of the given shape and size
-		Strel strel = shape.fromRadius(radius);
+		Strel2D strel = shape.fromRadius(radius);
 		
 //		// add some listeners
 //		DefaultAlgoListener.monitor(strel);

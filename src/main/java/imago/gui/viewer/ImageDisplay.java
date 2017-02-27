@@ -6,8 +6,8 @@ package imago.gui.viewer;
 import imago.app.shape.ImagoShape;
 import imago.gui.ImagoDocViewer;
 import net.sci.geom.Geometry;
-import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
+import net.sci.geom.geom2d.line.LineSegment2D;
 
 import java.awt.Color;
 import java.awt.Container;
