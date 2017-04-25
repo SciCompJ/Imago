@@ -24,6 +24,7 @@ import imago.gui.action.edit.PrintDocumentListAction;
 import imago.gui.action.edit.ZoomInAction;
 import imago.gui.action.edit.ZoomOneAction;
 import imago.gui.action.edit.ZoomOutAction;
+import imago.gui.action.file.CloseFrameAction;
 import imago.gui.action.file.CreateColorCubeStack;
 import imago.gui.action.file.CreateEmptyImageAction;
 import imago.gui.action.file.ImportMetaImageFileAction;
@@ -31,6 +32,7 @@ import imago.gui.action.file.ImportRawDataAction;
 import imago.gui.action.file.OpenDemoImage;
 import imago.gui.action.file.OpenDemoStack;
 import imago.gui.action.file.OpenImageAction;
+import imago.gui.action.file.QuitAction;
 import imago.gui.action.file.ReadTiffAction;
 import imago.gui.action.image.ConvertToFloat32ImageAction;
 import imago.gui.action.image.ConvertToFloat64ImageAction;
@@ -147,7 +149,8 @@ public class GuiBuilder
 		fileMenu.add(demoMenu);
 
 		fileMenu.addSeparator();
-		fileMenu.add(new JMenuItem("Quit"));
+		addMenuItem(fileMenu, new CloseFrameAction(frame, "close"), "Close");
+		addMenuItem(fileMenu, new QuitAction(frame, "quit"), "Quit");
 		return fileMenu;
 	}
 

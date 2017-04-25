@@ -8,6 +8,7 @@ import imago.app.ImagoDoc;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import javax.swing.UIManager;
 
@@ -112,6 +113,26 @@ public class ImagoGui
 		
 		frame.setVisible(true);
 		return frame;
+	}
+	
+	public boolean addFrame(ImagoFrame frame)
+	{
+		return this.frames.add(frame);
+	}
+
+	public boolean removeFrame(ImagoFrame frame)
+	{
+		return this.frames.remove(frame);
+	}
+	
+	public Collection<ImagoFrame> getFrames()
+	{
+		return Collections.unmodifiableList(this.frames);
+	}
+
+	public void disposeEmptyFrame()
+	{
+		this.emptyFrame.dispose();
 	}
 	
 	public Collection<ImagoDocViewer> getDocumentViewers()
