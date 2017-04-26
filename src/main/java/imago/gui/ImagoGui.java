@@ -9,6 +9,8 @@ import imago.app.ImagoDoc;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.UIManager;
 
@@ -37,6 +39,17 @@ public class ImagoGui
 	 */
 	ArrayList<ImagoFrame> frames = new ArrayList<ImagoFrame>(5);
 	
+	/**
+     * The list of frames associated to each document.
+     * 
+     * Used to remove the document from the app instance when the last frame
+     * referring to a document is closed.
+     */
+	Map<String, ArrayList<ImagoFrame>> docFrames = new HashMap<>(); 
+	
+	/**
+	 * An empty frame without document, displayed at startup.
+	 */
 	ImagoFrame emptyFrame = null;
 	
 	
@@ -79,7 +92,7 @@ public class ImagoGui
 	{
 		// create the document from image
 		ImagoDoc doc = this.app.addNewDocument(image);
-
+		
 		// create the frame associated to the document
 		return createDocumentFrame(doc);
 	}
@@ -99,7 +112,7 @@ public class ImagoGui
 		// display in a new frame
 		return createDocumentFrame(doc);
 	}
-	
+		
 	public ImagoApp getAppli()
 	{
 		return this.app;
@@ -110,6 +123,19 @@ public class ImagoGui
 		ImagoDocViewer frame = new ImagoDocViewer(this, doc);
 		
 		this.frames.add(frame);
+		
+		// add the frame to the list of frames associated to the document
+		String docName = doc.getName();
+		if (docFrames.containsKey(docName))
+		{
+		    docFrames.get(docName).add(frame);
+		}
+		else
+		{
+		    ArrayList<ImagoFrame> frameList = new ArrayList<>(1);
+		    frameList.add(frame);
+		    docFrames.put(docName, frameList);
+		}
 		
 		frame.setVisible(true);
 		return frame;
@@ -125,7 +151,19 @@ public class ImagoGui
 		if (frame instanceof ImagoDocViewer)
 		{
 			ImagoDocViewer viewer = (ImagoDocViewer) frame;
-			app.removeDocument(viewer.getDocument());
+			ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+			ArrayList<ImagoFrame> frameList = docFrames.get(doc.getName());
+			if (!frameList.contains(frame))
+			{
+			    System.err.println("Warning: frame " + frame.getName() + " is not referenced by document " + doc.getName());
+			}
+			
+			frameList.remove(frame);
+			
+			if (frameList.size() == 0)
+			{
+			    app.removeDocument(viewer.getDocument());
+			}
 		}
 		return this.frames.remove(frame);
 	}
