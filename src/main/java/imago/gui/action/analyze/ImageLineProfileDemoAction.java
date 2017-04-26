@@ -15,17 +15,21 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import imago.gui.ImageViewer;
 import imago.gui.ImagoAction;
 import imago.gui.ImagoChartFrame;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
-import math.jg.geom2d.Point2D;
+import imago.gui.viewer.PlanarImageViewer;
+import net.sci.geom.geom2d.Point2D;
 import net.sci.array.Array;
 import net.sci.array.data.ScalarArray;
 import net.sci.array.data.color.RGB8Array2D;
 import net.sci.array.data.scalar2d.ScalarArray2D;
 import net.sci.array.data.vector.VectorArray2D;
 import net.sci.array.interp.LinearInterpolator2D;
+import net.sci.geom.geom2d.Geometry2D;
+import net.sci.geom.geom2d.line.LineSegment2D;
 import net.sci.image.Image;
 import net.sci.table.DataTable;
 
@@ -64,9 +68,25 @@ public class ImageLineProfileDemoAction extends ImagoAction
         Image meta = iframe.getDocument().getImage();
         Array<?> array = meta.getData();
         
+        ImageViewer viewer = iframe.getImageView();
+        if (!(viewer instanceof PlanarImageViewer))
+        {
+            System.out.println("requires an instance of planar image viewer");
+            return;
+        }
+        
+        PlanarImageViewer piv = (PlanarImageViewer) viewer;
+        Geometry2D selection = piv.getSelection();
+        if (!(selection instanceof LineSegment2D))
+        {
+            System.out.println("requires selection to be a line segment");
+            return;
+        }
+        
+        LineSegment2D line = (LineSegment2D) selection;
         int n = 200;
-        Point2D p1 = new Point2D(10, 10);
-        Point2D p2 = new Point2D(210, 180);
+        Point2D p1 = line.getP1();
+        Point2D p2 = line.getP2();
         
         DataTable table = null;
         if (array instanceof ScalarArray)

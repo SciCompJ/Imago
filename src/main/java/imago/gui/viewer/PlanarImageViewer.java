@@ -6,6 +6,8 @@ package imago.gui.viewer;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
@@ -16,6 +18,8 @@ import imago.gui.ImageUtils;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoTool;
 import net.sci.geom.geom2d.Geometry2D;
+import net.sci.geom.geom2d.Point2D;
+import net.sci.geom.geom2d.line.LineSegment2D;
 import net.sci.image.Image;
 
 
@@ -180,8 +184,54 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 	public void repaint()
 	{
 		super.repaint();
+		System.out.println("repaint");
+		if (this.imageDisplay != null)
+		{
+		    paintSelection(this.imageDisplay.getGraphics());
+		}
 	}
 
+    private void paintSelection(Graphics g)
+    {
+        // basic check to avoid errors
+        if (this.selection == null)
+        {
+            return;            
+        }
+     
+        System.out.println("paint selection");
+        
+        // convert to Graphics2D to have more drawing possibilities
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setColor(Color.YELLOW);
+        
+        if (this.selection instanceof Point2D)
+        {
+            Point2D point = (Point2D) this.selection;
+            point = this.imageDisplay.imageToDisplay(point);
+            int x = (int) point.getX();
+            int y = (int) point.getY();
+//                g2.fillOval(x-2, y-2, 5, 5);
+            g2.drawLine(x-2, y, x+2, y);
+            g2.drawLine(x, y-2, x, y+2);
+        }
+        else if (this.selection instanceof LineSegment2D)
+        {
+            LineSegment2D line = (LineSegment2D) this.selection;
+            Point2D p1 = this.imageDisplay.imageToDisplay(line.getP1());
+            int x1 = (int) p1.getX();
+            int y1 = (int) p1.getY();
+            Point2D p2 = this.imageDisplay.imageToDisplay(line.getP2());
+            int x2 = (int) p2.getX();
+            int y2 = (int) p2.getY();
+            g2.drawLine(x1, y1, x2, y2);
+        }
+        else
+        {
+            System.out.println("can not handle geometry of class: " + selection.getClass());
+        }
+
+    }
 	// ===================================================================
 	// Implementation of Component Listener
 

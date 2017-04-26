@@ -59,6 +59,7 @@ import imago.gui.action.process.ImageMorphologicalReconstructionAction;
 import imago.gui.action.process.ImageOtsuThresholdAction;
 import imago.gui.action.process.MedianBoxFilterAction;
 import imago.gui.action.process.MorphologicalFilteringAction;
+import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectionTool;
 import net.sci.array.Array;
 import net.sci.array.data.IntArray;
@@ -222,7 +223,8 @@ public class GuiBuilder
 					isImage);
 
 //			tool = new SelectLineTool(viewer, "selectLine");
-			addMenuItem(editMenu, new SelectToolAction(viewer, tool),
+			addMenuItem(editMenu, 
+			        new SelectToolAction(viewer, new SelectLineSegmentTool(viewer, "selectLineSegment")),
 					"Select Line", isImage);
 
 			editMenu.addSeparator();

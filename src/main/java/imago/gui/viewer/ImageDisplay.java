@@ -6,6 +6,7 @@ package imago.gui.viewer;
 import imago.app.shape.ImagoShape;
 import imago.gui.ImagoDocViewer;
 import net.sci.geom.Geometry;
+import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.line.LineSegment2D;
 
@@ -52,6 +53,11 @@ public class ImageDisplay extends JPanel
 	
 	Collection<ImagoShape> shapes = new ArrayList<ImagoShape>();
 	
+    /**
+     * The shape of the current selection, usually a polyline or a rectangle
+     */
+    protected Geometry2D selection = null;
+    
 	double zoom = 1;
 	
 	int offsetX;
@@ -90,6 +96,16 @@ public class ImageDisplay extends JPanel
 	    this.shapes.add(shape);
 	}
 	
+    public Geometry2D getSelection()
+    {
+        return this.selection;
+    }
+    
+    public void setSelection(Geometry2D shape)
+    {
+        this.selection = shape;
+    }
+    
 	public ImagoDocViewer getViewer() 
 	{
 		Container container = this.getParent();
@@ -210,6 +226,8 @@ public class ImageDisplay extends JPanel
 	{
 	    paintImage(g);
 	    paintAnnotations(g);
+	    
+	    paintSelection(g);
 	}
 
 	private void paintImage(Graphics g)
@@ -260,4 +278,46 @@ public class ImageDisplay extends JPanel
             }
         }
     }
+    
+    private void paintSelection(Graphics g)
+    {
+        // basic check to avoid errors
+        if (this.selection == null)
+        {
+            return;            
+        }
+     
+//        System.out.println("paint selection");
+        
+        // convert to Graphics2D to have more drawing possibilities
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setColor(Color.YELLOW);
+        
+        if (this.selection instanceof Point2D)
+        {
+            Point2D point = (Point2D) this.selection;
+            point = imageToDisplay(point);
+            int x = (int) point.getX();
+            int y = (int) point.getY();
+//                g2.fillOval(x-2, y-2, 5, 5);
+            g2.drawLine(x-2, y, x+2, y);
+            g2.drawLine(x, y-2, x, y+2);
+        }
+        else if (this.selection instanceof LineSegment2D)
+        {
+            LineSegment2D line = (LineSegment2D) this.selection;
+            Point2D p1 = imageToDisplay(line.getP1());
+            int x1 = (int) p1.getX();
+            int y1 = (int) p1.getY();
+            Point2D p2 = imageToDisplay(line.getP2());
+            int x2 = (int) p2.getX();
+            int y2 = (int) p2.getY();
+            g2.drawLine(x1, y1, x2, y2);
+        }
+        else
+        {
+            System.out.println("can not handle geometry of class: " + selection.getClass());
+        }
+    }
+    
 }
