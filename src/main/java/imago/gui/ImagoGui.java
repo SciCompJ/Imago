@@ -122,6 +122,11 @@ public class ImagoGui
 
 	public boolean removeFrame(ImagoFrame frame)
 	{
+		if (frame instanceof ImagoDocViewer)
+		{
+			ImagoDocViewer viewer = (ImagoDocViewer) frame;
+			app.removeDocument(viewer.getDocument());
+		}
 		return this.frames.remove(frame);
 	}
 	

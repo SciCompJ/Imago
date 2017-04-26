@@ -134,9 +134,9 @@ public class GuiBuilder
 
 		JMenu demoMenu = new JMenu("Demo images");
         addMenuItem(demoMenu, new OpenDemoImage(frame, "openDemoRice",
-                "files/rice.png"), "Rice");
+                "files/grains.png"), "Rice grains");
 		addMenuItem(demoMenu, new OpenDemoImage(frame, "openDemoLena",
-				"files/lena_gray_512.bmp"), "Lena");
+				"files/lena_gray_512.tif"), "Lena");
 		addMenuItem(demoMenu, new OpenDemoImage(frame, "openDemoSunflower",
 				"files/sunflower.png"), "Sunflower");
 		addMenuItem(demoMenu, new OpenDemoStack(frame, "openDemoStack"),
@@ -149,7 +149,7 @@ public class GuiBuilder
 		fileMenu.add(demoMenu);
 
 		fileMenu.addSeparator();
-		addMenuItem(fileMenu, new CloseFrameAction(frame, "close"), "Close");
+		addMenuItem(fileMenu, new CloseFrameAction(frame, "close"), "Close", !(frame instanceof ImagoEmptyFrame));
 		addMenuItem(fileMenu, new QuitAction(frame, "quit"), "Quit");
 		return fileMenu;
 	}
