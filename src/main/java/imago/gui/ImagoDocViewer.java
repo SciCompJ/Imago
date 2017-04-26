@@ -7,6 +7,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JPanel;
 
@@ -54,12 +56,26 @@ public class ImagoDocViewer extends ImagoFrame
 		this.doc = doc;
 		this.image = doc.getImage();
 
+		// create menu
 		GuiBuilder builder = new GuiBuilder(this);
 		builder.createMenuBar();
 		
+		// layout the frame
 		setupLayout();
 		doLayout();
 		updateTitle();
+		
+		// setup window listener
+		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        this.addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent evt)
+            {
+                gui.removeFrame(ImagoDocViewer.this);
+                ImagoDocViewer.this.dispose();
+            }           
+        });
 		
 		// Initialize the current tool
 		ImagoTool tool = new DisplayCurrentValueTool(this, "showValue");

@@ -3,18 +3,17 @@
  */
 package imago.gui;
 
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
- * The superclass of Imago frames. Makes reference to a GUI. 
+ * The superclass of all Imago frames. 
+ * Keeps a reference to the current ImagoGui instance.
+ * 
  * @author David Legland
  *
  */
-public abstract class ImagoFrame extends JFrame implements WindowListener 
+public abstract class ImagoFrame extends JFrame 
 {
 	/**
 	 * 
@@ -37,7 +36,7 @@ public abstract class ImagoFrame extends JFrame implements WindowListener
 	// Constructors
 
 	/**
-	 * Creates a new frame.
+	 * Creates a new frame by specifying the parent GUI.
 	 * 
 	 * @param gui
 	 */
@@ -47,9 +46,9 @@ public abstract class ImagoFrame extends JFrame implements WindowListener
 	}
 
 	/**
-	 * Creates a new frame.
+	 * Creates a new frame by specifying the parent frame.
 	 * 
-	 * @param gui
+	 * @param frame the parent frame
 	 */
 	protected ImagoFrame(ImagoFrame parent)
 	{
@@ -104,43 +103,5 @@ public abstract class ImagoFrame extends JFrame implements WindowListener
 	{
 		this.lastOpenPath = lastOpenPath;
 	}
-
 	
-	// ===================================================================
-	// Implementation of WindowListener
-
-	@Override
-	public void windowActivated(WindowEvent arg0)
-	{
-	}
-
-	@Override
-	public void windowClosed(WindowEvent arg0)
-	{
-	}
-
-	@Override
-	public void windowClosing(WindowEvent arg0)
-	{
-	}
-
-	@Override
-	public void windowDeactivated(WindowEvent arg0)
-	{
-	}
-
-	@Override
-	public void windowDeiconified(WindowEvent arg0)
-	{
-	}
-
-	@Override
-	public void windowIconified(WindowEvent arg0)
-	{
-	}
-
-	@Override
-	public void windowOpened(WindowEvent arg0)
-	{
-	}
 }

@@ -26,20 +26,21 @@ public class ImagoEmptyFrame extends ImagoFrame {
 	// ===================================================================
 	// Constructor
 
-	public ImagoEmptyFrame(ImagoGui gui) {
+	public ImagoEmptyFrame(ImagoGui gui) 
+	{
 		super(gui, "Image Frame");
 		
 		GuiBuilder builder = new GuiBuilder(this);
 		builder.createMenuBar();
 		
 		putFrameTopRight();
-		addWindowListener(this);
 	}
 	
 	/** 
 	 * Set up frame size depending on screen size
 	 */
-	private void putFrameTopRight() {
+	private void putFrameTopRight()
+	{
 		// Get screen size
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		
@@ -52,6 +53,4 @@ public class ImagoEmptyFrame extends ImagoFrame {
 		int posY = 50;
 		this.setLocation(posX, posY);
 	}
-
-
 }

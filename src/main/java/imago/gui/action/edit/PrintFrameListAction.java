@@ -5,9 +5,8 @@ package imago.gui.action.edit;
 
 import java.util.Collection;
 
-import imago.app.ImagoApp;
-import imago.app.ImagoDoc;
 import imago.gui.ImagoAction;
+import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 
 /**
@@ -39,7 +38,15 @@ public class PrintFrameListAction extends ImagoAction
 		System.out.println(String.format("Current GUI contains %d frames: ", nFrames));
 		for (ImagoFrame frame : frameList)
 		{
-			System.out.println("  " + frame.getName());
+		    if (frame instanceof ImagoDocViewer)
+		    {
+		        String docName = ((ImagoDocViewer)frame).getDocument().getName();
+                System.out.println("  frame: " + frame.getName() + ", doc: " + docName);
+		    }
+		    else
+		    {
+	            System.out.println("  frame: " + frame.getName());
+		    }
 		}
 	}
 

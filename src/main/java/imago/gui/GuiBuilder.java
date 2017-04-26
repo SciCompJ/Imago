@@ -21,6 +21,7 @@ import imago.gui.action.analyze.ImageLineProfileDemoAction;
 import imago.gui.action.analyze.LabelImageCentroidsAction;
 import imago.gui.action.edit.DocClearShapesAction;
 import imago.gui.action.edit.PrintDocumentListAction;
+import imago.gui.action.edit.PrintFrameListAction;
 import imago.gui.action.edit.ZoomInAction;
 import imago.gui.action.edit.ZoomOneAction;
 import imago.gui.action.edit.ZoomOutAction;
@@ -134,7 +135,7 @@ public class GuiBuilder
 
 		JMenu demoMenu = new JMenu("Demo images");
         addMenuItem(demoMenu, new OpenDemoImage(frame, "openDemoRice",
-                "files/grains.png"), "Rice grains");
+                "files/rice.png"), "Rice grains");
 		addMenuItem(demoMenu, new OpenDemoImage(frame, "openDemoLena",
 				"files/lena_gray_512.tif"), "Lena");
 		addMenuItem(demoMenu, new OpenDemoImage(frame, "openDemoSunflower",
@@ -237,7 +238,10 @@ public class GuiBuilder
 		
 		// add utility
 		editMenu.addSeparator();
-		addMenuItem(editMenu, new PrintDocumentListAction(frame, "printDocumentList"), "Print Document List");
+        addMenuItem(editMenu, new PrintFrameListAction(frame, "printFrameList"), 
+                "Print Frame List");
+        addMenuItem(editMenu, new PrintDocumentListAction(frame, "printDocumentList"), 
+                "Print Document List");
         addMenuItem(editMenu, new DocClearShapesAction(frame, "docClearShapes"),
                 "Clear Shapes");
 		
@@ -257,11 +261,13 @@ public class GuiBuilder
 		JMenu menu = new JMenu("Image");
 		
 		JMenu displayRangeMenu = new JMenu("Display Range");
-		addMenuItem(displayRangeMenu, new SetDataTypeDisplayRangeAction(frame, "setDataTypeDisplayRange"), "Set Data Type Display Range",
-				isScalar);
-		addMenuItem(displayRangeMenu, new SetImageDisplayRangeAction(frame, "setImageDisplayRange"), "Set Image Display Range",
+		addMenuItem(displayRangeMenu, new SetDataTypeDisplayRangeAction(frame, "setDataTypeDisplayRange"), 
+		        "Set Data Type Display Range", isScalar);
+		addMenuItem(displayRangeMenu, new SetImageDisplayRangeAction(frame, "setImageDisplayRange"), 
+		        "Set Image Display Range",
 				isScalar | isVector);
-		addMenuItem(displayRangeMenu, new SetManualDisplayRangeAction(frame, "setManualDisplayRange"), "Set Manual Display Range",
+		addMenuItem(displayRangeMenu, new SetManualDisplayRangeAction(frame, "setManualDisplayRange"), 
+		        "Set Manual Display Range",
 				isScalar | isVector);
 		// addMenuItem(editMenu, new SetDisplayRangeUnitIntervalAction(frame,
 		// "setDisplayRangeUnitInterval"),
