@@ -73,6 +73,7 @@ public class MedianBoxFilterAction extends ImagoAction
 		
 		// create median box operator
 		MedianBoxFilter filter = new MedianBoxFilter(radiusList);
+		filter.addAlgoListener((ImagoDocViewer) this.frame);
 		
 		// apply operator on current image
 		Image result = filter.process(image);

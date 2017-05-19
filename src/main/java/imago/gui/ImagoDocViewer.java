@@ -17,6 +17,8 @@ import imago.gui.panel.StatusBar;
 import imago.gui.tool.DisplayCurrentValueTool;
 import imago.gui.viewer.PlanarImageViewer;
 import imago.gui.viewer.StackSliceViewer;
+import net.sci.algo.AlgoEvent;
+import net.sci.algo.AlgoListener;
 import net.sci.image.Image;
 
 
@@ -27,7 +29,7 @@ import net.sci.image.Image;
  * @author David Legland
  * 
  */
-public class ImagoDocViewer extends ImagoFrame
+public class ImagoDocViewer extends ImagoFrame implements AlgoListener
 {
 	// ===================================================================
 	// Static class variables
@@ -177,48 +179,18 @@ public class ImagoDocViewer extends ImagoFrame
 		return statusBar;
 	}
 
+	@Override
+	public void algoProgressChanged(AlgoEvent evt)
+	{
+//		System.out.println("progress: " + evt.getCurrentProgress() + "/" + evt.getTotalProgress());
+		int progress = (int) (evt.getProgressRatio() * 100);
+		this.getStatusBar().setProgressBarPercent(progress);
+	}
 
-	// ===================================================================
-	// Override some painting methods
-	
-//    public void update(Graphics g)
-//    {
-//        super.update(g);
-//        System.out.println("update Doc Viewer");
-//    }
-    
-//    public void paintComponents(Graphics g)
-//    {
-//        super.paintComponents(g);
-//        System.out.println("paint Components of Doc Viewer");
-//    }
-    
-//    public void paint(Graphics g)
-//    {
-////        System.out.println("paint Doc Viewer");
-//        super.paint(g);
-//        
-//        if (this.imageView instanceof PlanarImageViewer)
-//        {
-//            System.out.println("update planar viewer");
-//            
-//            PlanarImageViewer viewer = (PlanarImageViewer) this.imageView;
-//            ImageDisplay display = viewer.getImageDisplay(); 
-//            
-//            Point2D p1 = new Point2D(10, 10);
-//            Point2D p2 = new Point2D(200, 150);
-//            Point2D p1d = display.imageToDisplay(p1); 
-//            Point2D p2d = display.imageToDisplay(p2); 
-//            
-//            Graphics vg = viewer.getImageDisplay().getGraphics();
-//            
-//            vg.setColor(Color.BLUE);
-//            vg.drawLine((int) p1d.getX(), (int) p1d.getY(), (int) p2d.getX(), (int) p2d.getY());
-//        }
-//    }
-    
-//    public void repaint() {
-//		super.repaint();
-//		System.out.println("repaint Doc Viewer");
-//	}
+	@Override
+	public void algoStatusChanged(AlgoEvent evt)
+	{
+		System.out.println("status: " + evt.getStatus());
+		this.getStatusBar().setCurrentStepLabel(evt.getStatus());
+	}
 }
