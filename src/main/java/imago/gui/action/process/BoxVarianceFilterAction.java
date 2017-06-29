@@ -3,24 +3,25 @@
  */
 package imago.gui.action.process;
 
-import java.awt.event.ActionEvent;
-
 import imago.app.ImagoDoc;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoAction;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
+
+import java.awt.event.ActionEvent;
+
 import net.sci.array.Array;
 import net.sci.image.Image;
-import net.sci.image.process.filter.MedianBoxFilter;
+import net.sci.image.process.filter.BoxVarianceFilter;
 
 /**
- * Applies median box filtering on a multidimensional image.
+ * Applies variance box filtering on a multidimensional image.
  * 
  * @author David Legland
  *
  */
-public class MedianBoxFilterAction extends ImagoAction
+public class BoxVarianceFilterAction extends ImagoAction
 {
 
 	/**
@@ -28,7 +29,7 @@ public class MedianBoxFilterAction extends ImagoAction
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public MedianBoxFilterAction(ImagoFrame frame, String name)
+	public BoxVarianceFilterAction(ImagoFrame frame, String name)
 	{
 		super(frame, name);
 	}
@@ -42,7 +43,7 @@ public class MedianBoxFilterAction extends ImagoAction
 	@Override
 	public void actionPerformed(ActionEvent arg0)
 	{
-		System.out.println("median box filter (generic)");
+		System.out.println("variance box filter (generic)");
 
 		// get current image data
 		ImagoDoc doc = ((ImagoDocViewer) this.frame).getDocument();
@@ -52,7 +53,7 @@ public class MedianBoxFilterAction extends ImagoAction
 		int nd = array.dimensionality();
 		
 		
-		GenericDialog gd = new GenericDialog(this.frame, "Median Filter");
+		GenericDialog gd = new GenericDialog(this.frame, "Variance Filter");
 		for (int d = 0; d < nd; d++)
 		{
 			gd.addNumericField("Radius dim. " + (d+1), 3, 0);
@@ -72,11 +73,11 @@ public class MedianBoxFilterAction extends ImagoAction
 		}
 		
 		// create median box operator
-		MedianBoxFilter filter = new MedianBoxFilter(radiusList);
+		BoxVarianceFilter filter = new BoxVarianceFilter(radiusList);
 		
 		// apply operator on current image
 		Image result = filter.process(image);
-		result.setName(image.getName() + "-medFilt");
+		result.setName(image.getName() + "-varianceFilt");
 		
 		// add the image document to GUI
 		this.gui.addNewDocument(result);
