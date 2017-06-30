@@ -52,12 +52,13 @@ import imago.gui.action.image.StackToVectorImageAction;
 import imago.gui.action.process.BoxFilter3x3Float;
 import imago.gui.action.process.BoxFilterAction;
 import imago.gui.action.process.BoxMinMaxFilterAction;
+import imago.gui.action.process.BoxVarianceFilterAction;
 import imago.gui.action.process.ColorImageBivariateHistogramsAction;
 import imago.gui.action.process.ImageExtendedExtremaAction;
 import imago.gui.action.process.ImageFindNonZeroPixelsAction;
 import imago.gui.action.process.ImageMorphologicalReconstructionAction;
 import imago.gui.action.process.ImageOtsuThresholdAction;
-import imago.gui.action.process.MedianBoxFilterAction;
+import imago.gui.action.process.BoxMedianFilterAction;
 import imago.gui.action.process.MorphologicalFilteringAction;
 import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectionTool;
@@ -354,10 +355,12 @@ public class GuiBuilder
 				"Box Filter", isImage);
 		addMenuItem(menu, new BoxFilter3x3Float(frame, "boxFilter3x3Float"),
 				"Box Filter 2D 3x3 (float)", isScalar);
-		addMenuItem(menu, new MedianBoxFilterAction(frame, "medianFilter"),
+		addMenuItem(menu, new BoxMedianFilterAction(frame, "medianFilter"),
 				"Median Filter", isScalar);
 		addMenuItem(menu, new BoxMinMaxFilterAction(frame, "minMaxFilter"),
 				"Min/Max Filter", isScalar);
+		addMenuItem(menu, new BoxVarianceFilterAction(frame, "boxVarianceFilter"),
+				"Variance Filter", isScalar);
 		// addMenuItem(menu, new Dilation2D11x11Action(frame, "dilation11x11"),
 		// "Dilation 11x11", isImage);
 		menu.addSeparator();
