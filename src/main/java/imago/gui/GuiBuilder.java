@@ -55,6 +55,7 @@ import imago.gui.action.process.BoxFilterAction;
 import imago.gui.action.process.BoxMinMaxFilterAction;
 import imago.gui.action.process.BoxVarianceFilterAction;
 import imago.gui.action.process.ColorImageBivariateHistogramsAction;
+import imago.gui.action.process.Image3DOrthoslicesImageAction;
 import imago.gui.action.process.ImageExtendedExtremaAction;
 import imago.gui.action.process.ImageFindNonZeroPixelsAction;
 import imago.gui.action.process.ImageMorphologicalReconstructionAction;
@@ -290,6 +291,9 @@ public class GuiBuilder
 				"flipYFilter", new Flip(1)), "Flip Vertical", isImage);
 		addMenuItem(geometryMenu, new ArrayOperatorAction(frame,
 				"flipZFilter", new Flip(2)), "Flip Slices", is3D);
+		geometryMenu.addSeparator();
+		addMenuItem(geometryMenu, new Image3DOrthoslicesImageAction(frame,
+				"orthoSlicesImage"), "Create OrthoSlices Image", is3D);
 		geometryMenu.addSeparator();
 		// addMenuItem(geometryMenu,
 		// new ImageOperatorAction(frame, "rotation90", new Rotation90()),
