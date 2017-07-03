@@ -9,6 +9,7 @@ import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.line.LineSegment2D;
+import net.sci.geom.geom2d.polygon.Polygon2D;
 
 import java.awt.Color;
 import java.awt.Container;
@@ -19,6 +20,7 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import javax.swing.JPanel;
 
@@ -251,30 +253,9 @@ public class ImageDisplay extends JPanel
         {
             g2.setColor(shape.getColor());
             Geometry geom = shape.getGeometry();
-            if (geom instanceof Point2D)
+            if (geom instanceof Geometry2D)
             {
-                Point2D point = (Point2D) geom;
-                point = imageToDisplay(point);
-                int x = (int) point.getX();
-                int y = (int) point.getY();
-//                g2.fillOval(x-2, y-2, 5, 5);
-                g2.drawLine(x-2, y, x+2, y);
-                g2.drawLine(x, y-2, x, y+2);
-            }
-            else if (geom instanceof LineSegment2D)
-            {
-                LineSegment2D line = (LineSegment2D) geom;
-                Point2D p1 = imageToDisplay(line.getP1());
-                int x1 = (int) p1.getX();
-                int y1 = (int) p1.getY();
-                Point2D p2 = imageToDisplay(line.getP2());
-                int x2 = (int) p2.getX();
-                int y2 = (int) p2.getY();
-                g2.drawLine(x1, y1, x2, y2);
-            }
-            else
-            {
-                System.out.println("can not handle geometry of class: " + geom.getClass());
+            	drawGeometry(g2, (Geometry2D) geom);
             }
         }
     }
@@ -293,26 +274,32 @@ public class ImageDisplay extends JPanel
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.YELLOW);
         
-        if (this.selection instanceof Point2D)
+        drawGeometry(g2, this.selection);
+    }
+    
+    /**
+	 * Draws a geometry on the specified graphics. Paint settings are assumed to be
+	 * already defined.
+	 * 
+	 * @param g2 the instance of Graphics2D to paint on
+	 * @param geom the geometry to draw
+	 */
+    private void drawGeometry(Graphics2D g2, Geometry2D geom)
+    {
+        if (geom instanceof Point2D)
         {
-            Point2D point = (Point2D) this.selection;
-            point = imageToDisplay(point);
-            int x = (int) point.getX();
-            int y = (int) point.getY();
-//                g2.fillOval(x-2, y-2, 5, 5);
-            g2.drawLine(x-2, y, x+2, y);
-            g2.drawLine(x, y-2, x, y+2);
+            Point2D point = (Point2D) geom;
+            drawPoint(g2, point);
         }
-        else if (this.selection instanceof LineSegment2D)
+        else if (geom instanceof LineSegment2D)
         {
-            LineSegment2D line = (LineSegment2D) this.selection;
-            Point2D p1 = imageToDisplay(line.getP1());
-            int x1 = (int) p1.getX();
-            int y1 = (int) p1.getY();
-            Point2D p2 = imageToDisplay(line.getP2());
-            int x2 = (int) p2.getX();
-            int y2 = (int) p2.getY();
-            g2.drawLine(x1, y1, x2, y2);
+            LineSegment2D line = (LineSegment2D) geom;
+            drawLineSegment(g2, line);
+        }
+        else if (geom instanceof Polygon2D)
+        {
+        	Polygon2D poly = (Polygon2D) geom;
+            drawPolygon(g2, poly);
         }
         else
         {
@@ -320,4 +307,71 @@ public class ImageDisplay extends JPanel
         }
     }
     
+    /**
+	 * Draws a point on the specified graphics. Paint settings are assumed to be
+	 * already defined.
+	 * 
+	 * @param g2 the instance of Graphics2D to paint on
+	 * @param point the point to draw
+	 */
+    private void drawPoint(Graphics2D g2, Point2D point)
+    {
+        point = imageToDisplay(point);
+        int x = (int) point.getX();
+        int y = (int) point.getY();
+        g2.drawLine(x-2, y, x+2, y);
+        g2.drawLine(x, y-2, x, y+2);
+    	
+    }
+    
+    /**
+	 * Draws a line segment on the specified graphics. Paint settings are assumed to be
+	 * already defined.
+	 * 
+	 * @param g2 the instance of Graphics2D to paint on
+	 * @param line the line segment to draw
+	 */
+    private void drawLineSegment(Graphics2D g2, LineSegment2D line)
+    {
+    	Point2D p1 = imageToDisplay(line.getP1());
+        int x1 = (int) p1.getX();
+        int y1 = (int) p1.getY();
+        Point2D p2 = imageToDisplay(line.getP2());
+        int x2 = (int) p2.getX();
+        int y2 = (int) p2.getY();
+        g2.drawLine(x1, y1, x2, y2);
+    }
+    
+    /**
+	 * Draws a polygon on the specified graphics. Paint settings are assumed to be
+	 * already defined.
+	 * 
+	 * @param g2 the instance of Graphics2D to paint on
+	 * @param poly the polygon to draw
+	 */
+    private void drawPolygon(Graphics2D g2, Polygon2D poly)
+    {
+    	// check size
+    	int nv = poly.vertices().size();
+    	if (nv < 2)
+    	{
+    		return;
+    	}
+    
+    	// convert polygon into integer coords in display space
+    	int[] px = new int[nv];
+    	int[] py = new int[nv];
+
+    	Iterator<Point2D> iter = poly.vertices().iterator();
+    	for (int i = 0; i < nv; i++)
+    	{
+    		Point2D point = iter.next();
+    		point = imageToDisplay(point);
+    		px[i] = (int) point.getX();
+    		py[i] = (int) point.getY();
+    	}
+
+    	// display the polygon
+        g2.drawPolygon(px, py, nv);
+    }    
 }
