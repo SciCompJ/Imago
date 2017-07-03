@@ -137,7 +137,7 @@ public class GuiBuilder
 
 		JMenu demoMenu = new JMenu("Demo images");
         addMenuItem(demoMenu, new OpenDemoImage(frame, "openDemoRice",
-                "files/rice.png"), "Rice grains");
+                "files/grains.png"), "Rice grains");
 		addMenuItem(demoMenu, new OpenDemoImage(frame, "openDemoLena",
 				"files/lena_gray_512.tif"), "Lena");
 		addMenuItem(demoMenu, new OpenDemoImage(frame, "openDemoSunflower",
