@@ -37,30 +37,35 @@ public class OpenImageAction extends ImagoAction {
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
+	public void actionPerformed(ActionEvent evt) 
+	{
 		// create file dialog if it doesn't exist
-		if (openWindow == null) {
+		if (openWindow == null)
+		{
 			openWindow = new JFileChooser(".");
-//			openWindow.setFileFilter(fileFilter);
+			// openWindow.setFileFilter(fileFilter);
 		}
 
 		// Open dialog to choose the file
 		int ret = openWindow.showOpenDialog(this.frame);
-		if (ret != JFileChooser.APPROVE_OPTION) {
+		if (ret != JFileChooser.APPROVE_OPTION)
+		{
 			return;
 		}
 
 		// Check the chosen file is state
 		File file = openWindow.getSelectedFile();
-		if (!file.isFile()) {
+		if (!file.isFile())
+		{
 			return;
 		}
-	
+
 		Image image;
 		try
 		{
 			image = Image.readImage(file);
-		} catch (IOException ex)
+		} 
+		catch (IOException ex)
 		{
 			ex.printStackTrace(System.err);
 			// custom title, error icon
@@ -68,7 +73,8 @@ public class OpenImageAction extends ImagoAction {
 					"Could not read the image.", "Image I/O Error",
 					JOptionPane.ERROR_MESSAGE);
 			return;
-		} catch (Exception ex)
+		}
+		catch (Exception ex)
 		{
 			JOptionPane.showMessageDialog(this.frame,
 					"Could not read the image.", "Image I/O Error",
