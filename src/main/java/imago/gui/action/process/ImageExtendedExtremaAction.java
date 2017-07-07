@@ -68,7 +68,7 @@ public class ImageExtendedExtremaAction extends ImagoAction
 		double maxValue = 255;
 		if (!(array instanceof UInt8Array))
 		{
-			double[] range = ((ScalarArray<?>) array).getValueRange();
+			double[] range = ((ScalarArray<?>) array).valueRange();
 			maxValue = range[1] - range[0];
 		}
 

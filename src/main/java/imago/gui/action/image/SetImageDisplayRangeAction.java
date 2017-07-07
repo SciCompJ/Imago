@@ -56,7 +56,7 @@ public class SetImageDisplayRangeAction extends ImagoAction
 		ScalarArray<?> scalarArray = (ScalarArray<?>) array;
 		
 		// Compute min and max values within the array 
-		double[] extent = scalarArray.getValueRange();
+		double[] extent = scalarArray.valueRange();
 		System.out.println("Array value range: [" + extent[0] + " ; " + extent[1] + "]");
 		
 		image.setDisplayRange(extent);

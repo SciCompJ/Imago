@@ -55,7 +55,7 @@ public class SetManualDisplayRangeAction extends ImagoAction {
 		ScalarArray<?> scalarArray = (ScalarArray<?>) array;
 		
 		// Compute min and max values within the array 
-		double[] extent = scalarArray.getValueRange();
+		double[] extent = scalarArray.valueRange();
 		double[] displayRange = image.getDisplayRange();
 		
 		// Create new dialog populated with widgets
