@@ -28,6 +28,7 @@ import imago.gui.action.file.OpenDemoStack;
 import imago.gui.action.file.OpenImageAction;
 import imago.gui.action.file.QuitAction;
 import imago.gui.action.file.ReadTiffAction;
+import imago.gui.action.image.ConvertRGB8ToUInt8ImageAction;
 import imago.gui.action.image.ConvertToFloat32ImageAction;
 import imago.gui.action.image.ConvertToFloat64ImageAction;
 import imago.gui.action.image.ConvertToInt16ImageAction;
@@ -203,6 +204,9 @@ public class GuiBuilder
 
 		// Color conversion items
 		JMenu colorMenu = new JMenu("Color");
+		// editMenu.add(convertTypeMenu);
+		addMenuItem(colorMenu, new ConvertRGB8ToUInt8ImageAction(frame, "convertRGB8ToUInt8"),
+				"Convert to UInt8", isColor);
 		addMenuItem(colorMenu, new SplitImageChannelsAction(frame,
 				"splitChannels"), "Split Channels", isVector || isColor);
 		addMenuItem(colorMenu, new MergeChannelImagesAction(frame,
