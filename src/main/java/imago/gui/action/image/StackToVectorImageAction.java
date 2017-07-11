@@ -12,6 +12,8 @@ import imago.gui.ImagoFrame;
 import net.sci.array.Array;
 import net.sci.array.data.ScalarArray;
 import net.sci.array.data.VectorArray;
+import net.sci.array.data.scalar3d.ScalarArray3D;
+import net.sci.array.data.vector.VectorArray2D;
 import net.sci.image.Image;
 
 
@@ -59,7 +61,7 @@ public class StackToVectorImageAction extends ImagoAction
 			return;
 		}
 
-		VectorArray<?> vectArray = VectorArray.fromStack((ScalarArray<?>) array);
+		VectorArray<?> vectArray = VectorArray2D.fromStack((ScalarArray3D<?>) array);
 		Image result = new Image(vectArray, image);
 				
 		// add the image document to GUI
