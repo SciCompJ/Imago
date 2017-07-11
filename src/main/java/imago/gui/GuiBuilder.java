@@ -13,6 +13,7 @@ import imago.gui.action.analyze.ImageLineProfileDemoAction;
 import imago.gui.action.analyze.LabelImageBoundingBoxesAction;
 import imago.gui.action.analyze.LabelImageCentroidsAction;
 import imago.gui.action.edit.DocClearShapesAction;
+import imago.gui.action.edit.ImageFillDiskAction;
 import imago.gui.action.edit.PrintDocumentListAction;
 import imago.gui.action.edit.PrintFrameListAction;
 import imago.gui.action.edit.ZoomInAction;
@@ -202,6 +203,13 @@ public class GuiBuilder
 		editMenu.add(convertTypeMenu);
 
 
+		// submenu for creation of phantoms
+        JMenu phantomMenu = new JMenu("Phantoms");
+        addMenuItem(phantomMenu, new ImageFillDiskAction(frame, "imageFillDisk"), 
+                "Create Disk...");
+        editMenu.add(phantomMenu);
+
+        
 		// Color conversion items
 		JMenu colorMenu = new JMenu("Color");
 		// editMenu.add(convertTypeMenu);
