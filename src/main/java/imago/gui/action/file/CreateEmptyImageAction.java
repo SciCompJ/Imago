@@ -9,7 +9,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImagoAction;
 import imago.gui.ImagoFrame;
 import net.sci.array.Array;
-import net.sci.array.data.BooleanArray;
+import net.sci.array.data.BinaryArray;
 import net.sci.array.data.Float32Array;
 import net.sci.array.data.Float64Array;
 import net.sci.array.data.Int32Array;
@@ -87,7 +87,7 @@ public class CreateEmptyImageAction extends ImagoAction
 		switch (typeIndex)
 		{
 		case 0: 
-			array = BooleanArray.create(dims); break;
+			array = BinaryArray.create(dims); break;
 		case 1: array = UInt8Array.create(dims); break;
 		case 2: array = UInt16Array.create(dims); break;
 		case 3: array = Int32Array.create(dims); break;
