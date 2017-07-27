@@ -51,8 +51,8 @@ public class ImageMeanValueAction extends ImagoAction
         if (!(frame instanceof ImagoDocViewer))
             return;
         ImagoDocViewer iframe = (ImagoDocViewer) frame;
-        Image image = iframe.getDocument().getImage();
-        Array<?> array = image.getData();
+        Image meta = iframe.getDocument().getImage();
+        Array<?> array = meta.getData();
         
         ImageViewer viewer = iframe.getImageView();
         if (!(viewer instanceof PlanarImageViewer))
