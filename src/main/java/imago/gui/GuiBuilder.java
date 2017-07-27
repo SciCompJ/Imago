@@ -3,6 +3,14 @@
  */
 package imago.gui;
 
+import java.awt.image.BufferedImage;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+
 import imago.app.ImagoDoc;
 import imago.gui.action.ArrayOperatorAction;
 import imago.gui.action.ImageArrayOperatorAction;
@@ -10,6 +18,7 @@ import imago.gui.action.ImageOperatorAction;
 import imago.gui.action.SelectToolAction;
 import imago.gui.action.analyze.ImageHistogramAction;
 import imago.gui.action.analyze.ImageLineProfileDemoAction;
+import imago.gui.action.analyze.ImageMeanValueAction;
 import imago.gui.action.analyze.LabelImageBoundingBoxesAction;
 import imago.gui.action.analyze.LabelImageCentroidsAction;
 import imago.gui.action.edit.DocClearShapesAction;
@@ -59,16 +68,8 @@ import imago.gui.action.process.ImageMorphologicalReconstructionAction;
 import imago.gui.action.process.ImageOtsuThresholdAction;
 import imago.gui.action.process.MorphologicalFilteringAction;
 import imago.gui.tool.SelectLineSegmentTool;
+import imago.gui.tool.SelectPolygonTool;
 import imago.gui.tool.SelectionTool;
-
-import java.awt.image.BufferedImage;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-
 import net.sci.array.Array;
 import net.sci.array.data.IntArray;
 import net.sci.array.data.ScalarArray;
@@ -241,9 +242,12 @@ public class GuiBuilder
 					isImage);
 
 //			tool = new SelectLineTool(viewer, "selectLine");
-			addMenuItem(editMenu, 
-			        new SelectToolAction(viewer, new SelectLineSegmentTool(viewer, "selectLineSegment")),
-					"Select Line", isImage);
+            addMenuItem(editMenu, 
+                    new SelectToolAction(viewer, new SelectLineSegmentTool(viewer, "selectLineSegment")),
+                    "Select Line", isImage);
+            addMenuItem(editMenu, 
+                    new SelectToolAction(viewer, new SelectPolygonTool(viewer, "selectPolygon")),
+                    "Select Polygon", isImage);
 
 			editMenu.addSeparator();
 		}
@@ -415,7 +419,7 @@ public class GuiBuilder
 				new ImageKillBordersAction(frame, "killBorders"), 
 				"Kill Borders", isScalar && (is2D || is3D));
 		menu.add(morphologyMenu);
-		
+
 		// operators specific to binary images
 		JMenu binaryMenu = new JMenu("Binary Images");
 		addMenuItem(binaryMenu, new ImageArrayOperatorAction(frame, "connectedComponentLabeling",
@@ -427,11 +431,6 @@ public class GuiBuilder
 				new ChamferDistanceTransform2DFloat(ChamferWeights2D.CHESSKNIGHT, false)),
 				"Distance Map (float)", is2D && isBinary);
 		menu.add(binaryMenu);
-
-		
-//		addMenuItem(menu, 
-//				new ImageMorphologicalReconstruction3DAction(frame, "morphoRec3d"), 
-//				"Morphological Reconstruction (3D)");
 
 		menu.addSeparator();
 
@@ -466,6 +465,8 @@ public class GuiBuilder
 
 		addMenuItem(menu, new ImageHistogramAction(frame, "histogram"),
 				"Histogram", isImage);
+        addMenuItem(menu, new ImageMeanValueAction(frame, "meanValue"),
+                "Mean Value", isImage);
 //		addMenuItem(menu, new RGBJointHistogramsAction(frame,
 //				"rgbJointHistograms"), "RGB Joint Histograms",
 //				hasRGB8Image(frame));
