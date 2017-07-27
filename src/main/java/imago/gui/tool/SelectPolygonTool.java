@@ -108,6 +108,13 @@ public class SelectPolygonTool extends ImagoTool
         
         // creates a new polygon for selection
         Polygon2D poly = new SimplePolygon2D(selectedPoints);
+        
+        // if new polygon is created, ensures signed area > 0
+        if (doubleClick)
+        {
+           if (poly.signedArea() < 0) poly = poly.complement();
+        }
+
         display.setSelection(poly);
         PlanarImageViewer piv = (PlanarImageViewer) this.viewer.getImageView();
         piv.setSelection(poly);

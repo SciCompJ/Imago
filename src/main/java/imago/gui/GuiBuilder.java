@@ -23,6 +23,7 @@ import imago.gui.action.analyze.LabelImageBoundingBoxesAction;
 import imago.gui.action.analyze.LabelImageCentroidsAction;
 import imago.gui.action.edit.DocClearShapesAction;
 import imago.gui.action.edit.ImageFillDiskAction;
+import imago.gui.action.edit.ImageSelectionToDistanceMapAction;
 import imago.gui.action.edit.ImageSelectionToMaskAction;
 import imago.gui.action.edit.PrintDocumentListAction;
 import imago.gui.action.edit.PrintFrameListAction;
@@ -211,6 +212,8 @@ public class GuiBuilder
                 "Create Disk...");
         addMenuItem(phantomMenu, new ImageSelectionToMaskAction(frame, "imageSelectionToMask"), 
                 "Selection To Mask");
+        addMenuItem(phantomMenu, new ImageSelectionToDistanceMapAction(frame, "imageSelectionToDistanceMap"), 
+                "Selection To Distance Map");
         editMenu.add(phantomMenu);
 
         
