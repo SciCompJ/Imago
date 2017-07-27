@@ -116,33 +116,9 @@ public class SelectLineSegmentTool extends ImagoTool
         if ((this.viewer.getImageView() instanceof PlanarImageViewer))
         {
             LineSegment2D line = new LineSegment2D(new Point2D(x1, y1), new Point2D(x, y));
-            
-//            PlanarImageViewer piv = (PlanarImageViewer) this.viewer.getImageView();
             display.setSelection(line);
             this.viewer.repaint();
         }  
-        
-
-//        // check point is within image bounds
-//        Image image = this.viewer.getImageView().getImage();
-//        int sizeX = image.getSize(0);
-//        int sizeY = image.getSize(1);
-//        if (x < -.5 || x > sizeX - .5)
-//        {
-//            return;
-//        }
-//        if (y < -.5 || y > sizeY - .5)
-//        {
-//            return;
-//        }
-//        
-//        Point2D p0 = display.imageToDisplay(new Point2D(this.x1, this.y1));
-//        int x0 = (int) p0.getX(); 
-//        int y0 = (int) p0.getY();
-        
-//        display.repaint();
-//        display.getGraphics().setColor(Color.YELLOW);
-//        display.getGraphics().drawLine(x0, y0, evt.getX(), evt.getY());
     }
 
 }
