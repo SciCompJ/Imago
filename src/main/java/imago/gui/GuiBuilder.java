@@ -23,6 +23,7 @@ import imago.gui.action.analyze.LabelImageBoundingBoxesAction;
 import imago.gui.action.analyze.LabelImageCentroidsAction;
 import imago.gui.action.edit.DocClearShapesAction;
 import imago.gui.action.edit.ImageFillDiskAction;
+import imago.gui.action.edit.ImageSelectionToMaskAction;
 import imago.gui.action.edit.PrintDocumentListAction;
 import imago.gui.action.edit.PrintFrameListAction;
 import imago.gui.action.edit.ZoomInAction;
@@ -208,6 +209,8 @@ public class GuiBuilder
         JMenu phantomMenu = new JMenu("Phantoms");
         addMenuItem(phantomMenu, new ImageFillDiskAction(frame, "imageFillDisk"), 
                 "Create Disk...");
+        addMenuItem(phantomMenu, new ImageSelectionToMaskAction(frame, "imageSelectionToMask"), 
+                "Selection To Mask");
         editMenu.add(phantomMenu);
 
         
