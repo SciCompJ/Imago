@@ -3,14 +3,6 @@
  */
 package imago.gui.viewer;
 
-import imago.app.shape.ImagoShape;
-import imago.gui.ImagoDocViewer;
-import net.sci.geom.Geometry;
-import net.sci.geom.geom2d.Geometry2D;
-import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.geom2d.line.LineSegment2D;
-import net.sci.geom.geom2d.polygon.Polygon2D;
-
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -23,6 +15,16 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import javax.swing.JPanel;
+
+import imago.app.shape.ImagoShape;
+import imago.gui.ImagoDocViewer;
+import net.sci.geom.Geometry;
+import net.sci.geom.geom2d.Geometry2D;
+import net.sci.geom.geom2d.Point2D;
+import net.sci.geom.geom2d.curve.Ellipse2D;
+import net.sci.geom.geom2d.line.LineSegment2D;
+import net.sci.geom.geom2d.polygon.Polygon2D;
+import net.sci.geom.geom2d.polygon.Polyline2D;
 
 
 /**
@@ -301,8 +303,18 @@ public class ImageDisplay extends JPanel
         	Polygon2D poly = (Polygon2D) geom;
             drawPolygon(g2, poly);
         }
+        else if (geom instanceof Ellipse2D)
+        {
+            Polyline2D poly = ((Ellipse2D) geom).asPolyline(120);
+            drawPolyline(g2, poly);
+        }
         else
         {
+            // basic check to avoid errors
+            if (this.selection == null)
+            {
+                throw new RuntimeException("Geometry should not be null");
+            }
             System.out.println("can not handle geometry of class: " + selection.getClass());
         }
     }
@@ -342,6 +354,42 @@ public class ImageDisplay extends JPanel
         g2.drawLine(x1, y1, x2, y2);
     }
     
+    /**
+     * Draws a polygon on the specified graphics. Paint settings are assumed to be
+     * already defined.
+     * 
+     * @param g2 the instance of Graphics2D to paint on
+     * @param poly the polygon to draw
+     */
+    private void drawPolyline(Graphics2D g2, Polyline2D poly)
+    {
+        // check size
+        int nv = poly.vertices().size();
+        if (nv < 2)
+        {
+            return;
+        }
+    
+        // convert polygon into integer coords in display space
+        int[] px = new int[nv];
+        int[] py = new int[nv];
+
+        Iterator<Point2D> iter = poly.vertices().iterator();
+        for (int i = 0; i < nv; i++)
+        {
+            Point2D point = iter.next();
+            point = imageToDisplay(point);
+            px[i] = (int) point.getX();
+            py[i] = (int) point.getY();
+        }
+
+        // display the polygon
+        if (poly.isClosed())
+            g2.drawPolygon(px, py, nv);
+        else
+            g2.drawPolyline(px, py, nv);
+    }    
+
     /**
 	 * Draws a polygon on the specified graphics. Paint settings are assumed to be
 	 * already defined.

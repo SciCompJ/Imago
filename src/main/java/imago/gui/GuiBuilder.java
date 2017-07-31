@@ -21,6 +21,7 @@ import imago.gui.action.analyze.ImageLineProfileDemoAction;
 import imago.gui.action.analyze.ImageMeanValueAction;
 import imago.gui.action.analyze.LabelImageBoundingBoxesAction;
 import imago.gui.action.analyze.LabelImageCentroidsAction;
+import imago.gui.action.analyze.LabelImageInertiaEllipsesAction;
 import imago.gui.action.edit.DocClearShapesAction;
 import imago.gui.action.edit.ImageFillDiskAction;
 import imago.gui.action.edit.ImageSelectionToDistanceMapAction;
@@ -481,10 +482,12 @@ public class GuiBuilder
 				"Line Profile", isImage);
 
         menu.addSeparator();
-        addMenuItem(menu, new LabelImageCentroidsAction(frame, "regionCentroids"),
-                "Regions Centroid", has2D && hasInt);
         addMenuItem(menu, new LabelImageBoundingBoxesAction(frame, "boundingBoxes"),
                 "Bounding Boxes", has2D && hasInt);
+        addMenuItem(menu, new LabelImageCentroidsAction(frame, "regionCentroids"),
+                "Regions Centroid", has2D && hasInt);
+        addMenuItem(menu, new LabelImageInertiaEllipsesAction(frame, "regionEllipses"),
+                "Regions Inertia Ellipses", has2D && hasInt);
 		return menu;
 	}
 
