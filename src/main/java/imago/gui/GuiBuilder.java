@@ -36,6 +36,7 @@ import imago.gui.action.file.CreateColorCubeStack;
 import imago.gui.action.file.CreateEmptyImageAction;
 import imago.gui.action.file.ImportMetaImageFileAction;
 import imago.gui.action.file.ImportRawDataAction;
+import imago.gui.action.file.ImportVgiImageAction;
 import imago.gui.action.file.OpenDemoImage;
 import imago.gui.action.file.OpenDemoStack;
 import imago.gui.action.file.OpenImageAction;
@@ -141,12 +142,9 @@ public class GuiBuilder
 				"Open...");
 		addMenuItem(fileMenu, new ReadTiffAction(frame, "readTiffImage"),
 				"Read TIFF...");
-        addMenuItem(fileMenu, new ImportMetaImageFileAction(frame,
-                "readMetaImageFormat"), "Read MetaImage Format...");
-        addMenuItem(fileMenu, new ImportRawDataAction(frame,
-                "importRawData"), "Import Raw Data...");
 
-		JMenu demoMenu = new JMenu("Demo images");
+		// Import demo images
+		JMenu demoMenu = new JMenu("Open Demo Image");
         addMenuItem(demoMenu, new OpenDemoImage(frame, "openDemoRice",
                 "files/grains.png"), "Rice grains");
 		addMenuItem(demoMenu, new OpenDemoImage(frame, "openDemoLena",
@@ -157,10 +155,20 @@ public class GuiBuilder
 				"Demo Stack");
 		addMenuItem(demoMenu, new CreateColorCubeStack(frame,
 				"createDemoColorCube"), "3D Color Cube");
-//
+        fileMenu.add(demoMenu);
+
+		// Import less common file formats
+		JMenu fileImportMenu = new JMenu("Import");
+		addMenuItem(fileImportMenu, new ImportRawDataAction(frame,
+		        "importRawData"), "Raw Data...");
+		addMenuItem(fileImportMenu, new ImportMetaImageFileAction(frame,
+		        "readMetaImageFormat"), "MetaImage Data...");
+		addMenuItem(fileImportMenu, new ImportVgiImageAction(frame,
+		        "importVgiImage"), "VGI Image...");
+		fileMenu.add(fileImportMenu);
+
 //		addMenuItem(demoMenu, new CreateWhiteNoiseImageAction(frame,
 //				"createWhiteNoiseImage"), "White Noise Array<?>");
-		fileMenu.add(demoMenu);
 
 		fileMenu.addSeparator();
 		addMenuItem(fileMenu, new CloseFrameAction(frame, "close"), "Close", !(frame instanceof ImagoEmptyFrame));
