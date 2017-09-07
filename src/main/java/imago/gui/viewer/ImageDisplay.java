@@ -23,7 +23,7 @@ import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.curve.Ellipse2D;
 import net.sci.geom.geom2d.line.LineSegment2D;
-import net.sci.geom.geom2d.polygon.Polygon2D;
+import net.sci.geom.geom2d.polygon.PolygonalDomain2D;
 import net.sci.geom.geom2d.polygon.Polyline2D;
 
 
@@ -298,9 +298,9 @@ public class ImageDisplay extends JPanel
             LineSegment2D line = (LineSegment2D) geom;
             drawLineSegment(g2, line);
         }
-        else if (geom instanceof Polygon2D)
+        else if (geom instanceof PolygonalDomain2D)
         {
-        	Polygon2D poly = (Polygon2D) geom;
+        	PolygonalDomain2D poly = (PolygonalDomain2D) geom;
             drawPolygon(g2, poly);
         }
         else if (geom instanceof Ellipse2D)
@@ -397,7 +397,7 @@ public class ImageDisplay extends JPanel
 	 * @param g2 the instance of Graphics2D to paint on
 	 * @param poly the polygon to draw
 	 */
-    private void drawPolygon(Graphics2D g2, Polygon2D poly)
+    private void drawPolygon(Graphics2D g2, PolygonalDomain2D poly)
     {
     	// check size
     	int nv = poly.vertices().size();

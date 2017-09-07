@@ -15,7 +15,7 @@ import net.sci.array.Array;
 import net.sci.array.data.scalar2d.BinaryArray2D;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.geom2d.polygon.SimplePolygon2D;
+import net.sci.geom.geom2d.polygon.Polygon2D;
 import net.sci.image.Image;
 
 /**
@@ -74,13 +74,13 @@ public class ImageSelectionToMaskAction extends ImagoAction
 		
         PlanarImageViewer piv = (PlanarImageViewer) viewer;
         Geometry2D selection = piv.getSelection();
-        if (!(selection instanceof SimplePolygon2D))
+        if (!(selection instanceof Polygon2D))
         {
             System.out.println("requires selection to be a simple polygon");
             return;
         }
         
-        SimplePolygon2D poly = (SimplePolygon2D) selection;
+        Polygon2D poly = (Polygon2D) selection;
 		
         // manage clockwise and counter-clockwise polygons
         boolean clockWise = poly.signedArea() < 0;

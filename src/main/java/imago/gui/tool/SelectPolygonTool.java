@@ -107,7 +107,7 @@ public class SelectPolygonTool extends ImagoTool
         }
         
         // creates a new polygon for selection
-        Polygon2D poly = new SimplePolygon2D(selectedPoints);
+        Polygon2D poly = Polygon2D.create(selectedPoints);
         
         // if new polygon is created, ensures signed area > 0
         if (doubleClick)
