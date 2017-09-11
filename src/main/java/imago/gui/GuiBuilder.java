@@ -24,6 +24,7 @@ import imago.gui.action.analyze.LabelImageCentroidsAction;
 import imago.gui.action.analyze.LabelImageInertiaEllipsesAction;
 import imago.gui.action.edit.DocClearShapesAction;
 import imago.gui.action.edit.ImageFillDiskAction;
+import imago.gui.action.edit.ImageFillEllipseAction;
 import imago.gui.action.edit.ImageSelectionToDistanceMapAction;
 import imago.gui.action.edit.ImageSelectionToMaskAction;
 import imago.gui.action.edit.PrintDocumentListAction;
@@ -218,7 +219,9 @@ public class GuiBuilder
 		// submenu for creation of phantoms
         JMenu phantomMenu = new JMenu("Phantoms");
         addMenuItem(phantomMenu, new ImageFillDiskAction(frame, "imageFillDisk"), 
-                "Create Disk...");
+                "Fill Disk...");
+        addMenuItem(phantomMenu, new ImageFillEllipseAction(frame, "imageFillEllipse"), 
+                "Fill Ellipse...");
         addMenuItem(phantomMenu, new ImageSelectionToMaskAction(frame, "imageSelectionToMask"), 
                 "Selection To Mask");
         addMenuItem(phantomMenu, new ImageSelectionToDistanceMapAction(frame, "imageSelectionToDistanceMap"), 
