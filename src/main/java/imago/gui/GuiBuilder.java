@@ -19,11 +19,13 @@ import imago.gui.action.SelectToolAction;
 import imago.gui.action.analyze.ImageHistogramAction;
 import imago.gui.action.analyze.ImageLineProfileDemoAction;
 import imago.gui.action.analyze.ImageMeanValueAction;
+import imago.gui.action.analyze.ImageRoiHistogramAction;
 import imago.gui.action.analyze.LabelImageBoundingBoxesAction;
 import imago.gui.action.analyze.LabelImageCentroidsAction;
 import imago.gui.action.analyze.LabelImageInertiaEllipsesAction;
 import imago.gui.action.edit.DocClearShapesAction;
 import imago.gui.action.edit.ImageFillDiskAction;
+import imago.gui.action.edit.ImageFillEllipseAction;
 import imago.gui.action.edit.ImageSelectionToDistanceMapAction;
 import imago.gui.action.edit.ImageSelectionToMaskAction;
 import imago.gui.action.edit.PrintDocumentListAction;
@@ -218,7 +220,9 @@ public class GuiBuilder
 		// submenu for creation of phantoms
         JMenu phantomMenu = new JMenu("Phantoms");
         addMenuItem(phantomMenu, new ImageFillDiskAction(frame, "imageFillDisk"), 
-                "Create Disk...");
+                "Fill Disk...");
+        addMenuItem(phantomMenu, new ImageFillEllipseAction(frame, "imageFillEllipse"), 
+                "Fill Ellipse...");
         addMenuItem(phantomMenu, new ImageSelectionToMaskAction(frame, "imageSelectionToMask"), 
                 "Selection To Mask");
         addMenuItem(phantomMenu, new ImageSelectionToDistanceMapAction(frame, "imageSelectionToDistanceMap"), 
@@ -480,6 +484,8 @@ public class GuiBuilder
 
 		addMenuItem(menu, new ImageHistogramAction(frame, "histogram"),
 				"Histogram", isImage);
+		addMenuItem(menu, new ImageRoiHistogramAction(frame, "roiHistogram"),
+				"ROI Histogram", isImage && has2D);
         addMenuItem(menu, new ImageMeanValueAction(frame, "meanValue"),
                 "Mean Value", isImage);
 //		addMenuItem(menu, new RGBJointHistogramsAction(frame,
