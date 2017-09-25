@@ -38,6 +38,7 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
 
 	// ===================================================================
 	// Class variables
@@ -52,7 +53,7 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
 	// ===================================================================
 	// Constructor
 
-	public ImagoDocViewer(ImagoGui gui, ImagoDoc doc) 
+    public ImagoDocViewer(ImagoGui gui, ImagoDoc doc) 
 	{
 		super(gui, "Image Frame");
 		this.doc = doc;
@@ -62,6 +63,12 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
 		GuiBuilder builder = new GuiBuilder(this);
 		builder.createMenuBar();
 		
+        // Create a status bar
+        this.statusBar = new StatusBar();
+
+		// create default viewer for image
+		createDefaultImageViewer();
+        
 		// layout the frame
 		setupLayout();
 		doLayout();
@@ -85,28 +92,31 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
 		
 		putFrameMiddleScreen();
 	}
+    
+    private void createDefaultImageViewer()
+    {
+        // create the image viewer
+        if (image.getDimension() == 2) 
+        {
+            PlanarImageViewer viewer = new PlanarImageViewer(image);
 
-	private void setupLayout() 
+            viewer.getImageDisplay().setShapes(doc.getShapes());
+
+            this.imageView = viewer;
+        }
+        else 
+        {
+            StackSliceViewer sliceViewer = new StackSliceViewer(image);
+            sliceViewer.setSliceIndex(this.doc.getCurrentSliceIndex());
+            this.imageView = sliceViewer;
+//          OrthoSlicesViewer sliceViewer = new OrthoSlicesViewer(image);
+////            sliceViewer.setSliceIndex(this.doc.getCurrentSliceIndex());
+//            this.imageView = sliceViewer;
+        }
+    }
+
+    private void setupLayout() 
 	{
-		// create the image viewer
-		if (image.getDimension() == 2) 
-		{
-		    PlanarImageViewer viewer = new PlanarImageViewer(image);
-
-			viewer.getImageDisplay().setShapes(doc.getShapes());
-
-			this.imageView = viewer;
-		}
-		else 
-		{
-			StackSliceViewer sliceViewer = new StackSliceViewer(image);
-			sliceViewer.setSliceIndex(this.doc.getCurrentSliceIndex());
-			this.imageView = sliceViewer;
-		}
-		
-		// Create a status bar
-		this.statusBar = new StatusBar();
-
 		// put into global layout
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		mainPanel.setBackground(Color.GREEN);
@@ -130,6 +140,7 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
 		int posY = (screenSize.height - height) / 4;
 		this.setLocation(posX, posY);
 	}
+	
 	
 	// ===================================================================
 	// General methods
@@ -174,6 +185,30 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
 		return this.imageView;
 	}
 	
+	/**
+	 * Updates the view to the image stored in document.
+	 * @param view the new view to the image.
+	 */
+    public void setImageView(ImageViewer view)
+    {
+        System.out.println("update image view");
+        ImagoTool currentTool = null;
+        
+        if (this.imageView != null)
+        {
+            currentTool = this.imageView.getCurrentTool();
+        }
+        
+        this.imageView = view;
+        setupLayout();
+        doLayout();
+        
+        if (currentTool != null)
+        {
+            this.imageView.setCurrentTool(currentTool);
+        }
+    }
+    
 	public StatusBar getStatusBar () 
 	{
 		return statusBar;

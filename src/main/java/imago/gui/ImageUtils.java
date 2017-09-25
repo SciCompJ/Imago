@@ -9,7 +9,6 @@ import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 
 import net.sci.array.Array;
-import net.sci.array.Cursor;
 import net.sci.array.data.ScalarArray;
 import net.sci.array.data.UInt8Array;
 import net.sci.array.data.VectorArray;
@@ -19,6 +18,7 @@ import net.sci.array.data.scalar2d.ScalarArray2D;
 import net.sci.array.data.scalar2d.UInt8Array2D;
 import net.sci.array.type.RGB8;
 import net.sci.image.Image;
+import net.sci.image.process.shape.ImageSlicer;
 
 /**
  * Collection of methods for managing images.
@@ -38,6 +38,13 @@ public class ImageUtils
 
 	public static final java.awt.image.BufferedImage createAwtImage(Image image, int sliceIndex)
 	{
+	    // extract specified slice from image
+	    Image image2d = ImageSlicer.slice2d(image, 0, 1, new int[]{0, 0, sliceIndex});
+	    return createAwtImage(image2d);
+	}
+	
+	public static final java.awt.image.BufferedImage createAwtImage(Image image)
+	{
 		// extract LUT from image, or create one otherwise
 		int[][] lut = image.getColorMap();
 		if (lut == null)
@@ -45,9 +52,8 @@ public class ImageUtils
 			lut = createGrayLut(); 
 		}
 
-		// Ensure data is a planar image
-		Array<?> array = getImageSlice(image, sliceIndex);
-
+		Array<?> array = image.getData();
+		
 		// Process array depending on its data type
 		if (array instanceof BinaryArray2D)
 		{
@@ -75,11 +81,6 @@ public class ImageUtils
 		{
 			// Compute the norm of the vector
 			ScalarArray<?> norm = VectorArray.norm((VectorArray<?>) array);
-//			double vMax = 0;
-//			for (Scalar item : norm)
-//			{
-//				vMax = Math.max(vMax, item.getValue());
-//			}
 			
 			// convert image of the norm to AWT image
 			double[] displayRange = image.getDisplayRange();
@@ -89,121 +90,6 @@ public class ImageUtils
  		return null;
 	}
 	
-	private static final Array<?> getImageSlice(Image image, int sliceIndex)
-	{
-		Array<?> array = image.getData();
-		if (image.getDimension() == 2)
-		{
-			return array;
-		}
-
-		int nd = array.dimensionality();
-		array = createArraySlice(array, nd - 1, sliceIndex);
-		return array;
-	}
-	
-//	private static <T> Array<T> createArraySlice(Array<T> array, int sliceIndex)
-//	{
-//		// check validity of dimension number 
-//		if (array.dimensionality() < 3)
-//		{
-//			throw new IllegalArgumentException("Requires an array with at least three dimensions");
-//		}
-//		
-//		// check validity of slice index
-//		int sizeZ = array.getSize(2);
-//		if (sliceIndex < 0 || sliceIndex >= sizeZ)
-//		{
-//			throw new IllegalArgumentException(String.format("Slice index (%d) must be comprised between 0 and %d", sliceIndex, sizeZ-1));
-//		}
-//
-//		// create new array for slice
-//		int sizeX = array.getSize(0);
-//		int sizeY = array.getSize(1);
-//		Array<T> slice = array.newInstance(sizeX, sizeY);
-//		
-//		// create position cursors
-//		int[] pos3d = new int[3];
-//		pos3d[2] = sliceIndex;
-//		int[] pos2d = new int[2];
-//		
-//		// iterate over slice pixels
-//		for (int y = 0; y < sizeY; y++)
-//		{
-//			pos3d[1] = y; 
-//			pos2d[1] = y;
-//			for (int x = 0; x < sizeX; x++)
-//			{
-//				pos3d[0] = x; 
-//				pos2d[0] = x;
-//				slice.set(pos2d, array.get(pos3d));
-//			}
-//		}
-//
-//		return slice;
-//	}
-	
-	private static <T> Array<T> createArraySlice(Array<T> array, int dim, int sliceIndex)
-	{
-		// check validity of dimension number 
-		if (array.dimensionality() < 3)
-		{
-			throw new IllegalArgumentException("Requires an array with at least three dimensions");
-		}
-		
-		// check validity of slice index
-		int sizeZ = array.getSize(dim);
-		if (sliceIndex < 0 || sliceIndex >= sizeZ)
-		{
-			throw new IllegalArgumentException(String.format("Slice index (%d) must be comprised between 0 and %d", sliceIndex, sizeZ-1));
-		}
-
-		// infos of initial array
-		int nd = array.dimensionality();
-		int[] dims = array.getSize();
-		
-		// create new array for slice
-		int nd2 = nd - 1;
-		int[] dims2 = new int[nd2];
-		for (int d = 0; d < dim; d++)
-		{
-			dims2[d] = dims[d];
-		}
-		for (int d = dim; d < nd2; d++)
-		{
-			dims2[d] = dims[d+1];
-		}
-		
-		Array<T> slice = array.newInstance(dims2);
-		
-		// create position cursors
-		int[] pos0 = new int[nd];
-		pos0[dim] = sliceIndex;
-		int[] pos2;
-		
-		// iterate over slice pixels
-		Cursor cursor = slice.getCursor();
-		while (cursor.hasNext())
-		{
-			// get current position on slice
-			cursor.forward();
-			pos2 = cursor.getPosition();
-			
-			// convert position on slice to position in original array
-			for (int d = 0; d < dim; d++)
-			{
-				pos0[d] = pos2[d];
-			}
-			for (int d = dim; d < nd2; d++)
-			{
-				pos0[d+1] = pos2[d];
-			}
-			
-			slice.set(pos2, array.get(pos0));
-		}
-
-		return slice;
-	}
 	
 	public static final java.awt.image.BufferedImage createAwtImage(UInt8Array2D array, int[][] lut)
 	{

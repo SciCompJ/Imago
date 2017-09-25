@@ -53,6 +53,7 @@ import imago.gui.action.image.ConvertToUInt16ImageAction;
 import imago.gui.action.image.ConvertToUInt8ImageAction;
 import imago.gui.action.image.Image3DGetSliceAction;
 import imago.gui.action.image.Image3DOrthoslicesImageAction;
+import imago.gui.action.image.Image3DSetOrthoSlicesDisplayAction;
 import imago.gui.action.image.MergeChannelImagesAction;
 import imago.gui.action.image.MiddleSliceImageAction;
 import imago.gui.action.image.PrintImageTiffTagsAction;
@@ -349,7 +350,10 @@ public class GuiBuilder
                 "getSlice2dImage"), "Extract Slice...", is3D);
         addMenuItem(stackMenu, new Image3DOrthoslicesImageAction(frame,
                 "orthoSlicesImage"), "Create OrthoSlices Image...", is3D);
-        geometryMenu.addSeparator();
+        stackMenu.addSeparator();
+        addMenuItem(stackMenu, new Image3DSetOrthoSlicesDisplayAction(frame,
+                "setOrthoSlicesView"), "Set Orthoslices Display", is3D);
+        stackMenu.addSeparator();
 		addMenuItem(stackMenu, new StackToVectorImageAction(frame, "stackToVector"),
 				"Stack To Vector", is3D);
 

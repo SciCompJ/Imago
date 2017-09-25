@@ -90,7 +90,7 @@ public class DisplayCurrentValueTool extends ImagoTool
             return;
 
 		// Create string for representing position
-		String posString = null;
+		String posString = "";
 		if (img instanceof Array2D)
 		{
             String format = "pos=(%.2f, %.2f)";
@@ -99,9 +99,12 @@ public class DisplayCurrentValueTool extends ImagoTool
 		}
 		else if (img instanceof Array3D)
 		{
-			indz = ((StackSliceViewer) imageView).getSliceIndex();
-			String format = "pos=(%.2f, %.2f, %d)";
-			posString = String.format(Locale.ENGLISH, format, x, y, indz);
+		    if (imageView instanceof StackSliceViewer)
+		    {
+    			indz = ((StackSliceViewer) imageView).getSliceIndex();
+    			String format = "pos=(%.2f, %.2f, %d)";
+    			posString = String.format(Locale.ENGLISH, format, x, y, indz);
+		    }
 		}
 
 		// create the position array
