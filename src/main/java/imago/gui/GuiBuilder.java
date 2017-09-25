@@ -51,6 +51,8 @@ import imago.gui.action.image.ConvertToInt16ImageAction;
 import imago.gui.action.image.ConvertToInt32ImageAction;
 import imago.gui.action.image.ConvertToUInt16ImageAction;
 import imago.gui.action.image.ConvertToUInt8ImageAction;
+import imago.gui.action.image.Image3DGetSliceAction;
+import imago.gui.action.image.Image3DOrthoslicesImageAction;
 import imago.gui.action.image.MergeChannelImagesAction;
 import imago.gui.action.image.MiddleSliceImageAction;
 import imago.gui.action.image.PrintImageTiffTagsAction;
@@ -65,7 +67,6 @@ import imago.gui.action.process.BoxMedianFilterAction;
 import imago.gui.action.process.BoxMinMaxFilterAction;
 import imago.gui.action.process.BoxVarianceFilterAction;
 import imago.gui.action.process.ColorImageBivariateHistogramsAction;
-import imago.gui.action.process.Image3DOrthoslicesImageAction;
 import imago.gui.action.process.ImageExtendedExtremaAction;
 import imago.gui.action.process.ImageFillHolesAction;
 import imago.gui.action.process.ImageFindNonZeroPixelsAction;
@@ -330,9 +331,6 @@ public class GuiBuilder
 		addMenuItem(geometryMenu, new ArrayOperatorAction(frame,
 				"flipZFilter", new Flip(2)), "Flip Slices", is3D);
 		geometryMenu.addSeparator();
-		addMenuItem(geometryMenu, new Image3DOrthoslicesImageAction(frame,
-				"orthoSlicesImage"), "Create OrthoSlices Image", is3D);
-		geometryMenu.addSeparator();
 		// addMenuItem(geometryMenu,
 		// new ImageOperatorAction(frame, "rotation90", new Rotation90()),
 		// "Rotation 90", has2D);
@@ -347,6 +345,11 @@ public class GuiBuilder
 
 		addMenuItem(stackMenu, 
 				new MiddleSliceImageAction(frame, "middleSlice"), "Middle Slice", is3D);
+        addMenuItem(stackMenu, new Image3DGetSliceAction(frame,
+                "getSlice2dImage"), "Extract Slice...", is3D);
+        addMenuItem(stackMenu, new Image3DOrthoslicesImageAction(frame,
+                "orthoSlicesImage"), "Create OrthoSlices Image...", is3D);
+        geometryMenu.addSeparator();
 		addMenuItem(stackMenu, new StackToVectorImageAction(frame, "stackToVector"),
 				"Stack To Vector", is3D);
 

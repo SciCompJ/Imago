@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.gui.action.process;
+package imago.gui.action.image;
 
 import imago.app.ImagoDoc;
 import imago.gui.GenericDialog;
@@ -16,7 +16,7 @@ import net.sci.array.process.shape.Slicer;
 import net.sci.image.Image;
 
 /**
- * Applies box filtering on a multidimensional image.
+ * Converts a 3D image into a mosaic image containing three orthogonal slices.
  * 
  * @author David Legland
  *
@@ -52,7 +52,7 @@ public class Image3DOrthoslicesImageAction extends ImagoAction
 
 		int nd = array.dimensionality();
 		
-		GenericDialog gd = new GenericDialog(this.frame, "Flat Blur");
+		GenericDialog gd = new GenericDialog(this.frame, "Create orthoslice Image");
 		for (int d = 0; d < nd; d++)
 		{
 			gd.addNumericField("Ref. pos. " + (d+1), 3, 0);
