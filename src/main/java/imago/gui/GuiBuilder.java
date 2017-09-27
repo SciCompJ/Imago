@@ -51,6 +51,7 @@ import imago.gui.action.image.ConvertToInt16ImageAction;
 import imago.gui.action.image.ConvertToInt32ImageAction;
 import imago.gui.action.image.ConvertToUInt16ImageAction;
 import imago.gui.action.image.ConvertToUInt8ImageAction;
+import imago.gui.action.image.ExtractChannelFromColorImageAction;
 import imago.gui.action.image.Image3DGetSliceAction;
 import imago.gui.action.image.Image3DOrthoslicesImageAction;
 import imago.gui.action.image.Image3DSetOrthoSlicesDisplayAction;
@@ -241,6 +242,8 @@ public class GuiBuilder
 				"splitChannels"), "Split Channels", isVector || isColor);
 		addMenuItem(colorMenu, new MergeChannelImagesAction(frame,
 				"mergeChannels"), "Merge Channels");
+        addMenuItem(colorMenu, new ExtractChannelFromColorImageAction(frame,
+                "extractChannel"), "Extract Channel...", isColor);
 		// addMenuItem(editMenu, new MetaImageOperatorAction(frame,
 		// "colorToGray",
 		// new Gray8Converter()), "RGB -> Gray8", isColor);
