@@ -64,7 +64,7 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 			throw new IllegalArgumentException("Requires a planar image as input");
 		}
 		
-		this.awtImage = ImageUtils.createAwtImage(image, 0);
+		this.awtImage = ImageUtils.createAwtImage(image);
 		
 		setupLayout();
 	}
@@ -172,7 +172,7 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 		imageDisplay.updateOffset();
 		Image image = this.getImageToDisplay();
 		
-		this.awtImage = ImageUtils.createAwtImage(image, 0);
+		this.awtImage = ImageUtils.createAwtImage(image);
 		this.imageDisplay.setBufferedImage(this.awtImage);
 		this.imageDisplay.repaint();
 	}

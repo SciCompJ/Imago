@@ -19,6 +19,7 @@ import net.sci.array.data.Array3D;
 import net.sci.array.data.IntArray;
 import net.sci.array.data.ScalarArray;
 import net.sci.array.data.VectorArray;
+import net.sci.array.data.color.RGB16Array;
 import net.sci.array.data.color.RGB8Array;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.image.Image;
@@ -135,13 +136,20 @@ public class DisplayCurrentValueTool extends ImagoTool
 			}
 
 		} 
-		else if (img instanceof RGB8Array)
-		{
-			// Case of RGB color images
-			int[] rgb = ((RGB8Array) img).get(inds).getSamples();
-			valueString = String.format("rgb=[%d,%d,%d]", rgb[0], rgb[1], rgb[2]);
+        else if (img instanceof RGB8Array)
+        {
+            // Case of RGB color images
+            int[] rgb = ((RGB8Array) img).get(inds).getSamples();
+            valueString = String.format("rgb=[%d,%d,%d]", rgb[0], rgb[1], rgb[2]);
 
-		} 
+        } 
+        else if (img instanceof RGB16Array)
+        {
+            // Case of RGB color images
+            int[] rgb = ((RGB16Array) img).get(inds).getSamples();
+            valueString = String.format("rgb=[%d,%d,%d]", rgb[0], rgb[1], rgb[2]);
+
+        } 
 		else if (img instanceof VectorArray)
 		{
 			// in case of Vector array, compute the norm of the pixel for display

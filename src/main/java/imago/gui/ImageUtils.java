@@ -12,10 +12,12 @@ import net.sci.array.Array;
 import net.sci.array.data.ScalarArray;
 import net.sci.array.data.UInt8Array;
 import net.sci.array.data.VectorArray;
+import net.sci.array.data.color.RGB16Array;
 import net.sci.array.data.color.RGB8Array;
 import net.sci.array.data.scalar2d.BinaryArray2D;
 import net.sci.array.data.scalar2d.ScalarArray2D;
 import net.sci.array.data.scalar2d.UInt8Array2D;
+import net.sci.array.type.RGB16;
 import net.sci.array.type.RGB8;
 import net.sci.image.Image;
 import net.sci.image.process.shape.ImageSlicer;
@@ -66,11 +68,16 @@ public class ImageUtils
  			double[] displayRange = image.getDisplayRange();
  			return createAwtImage((ScalarArray2D<?>) array, displayRange, lut);
  		}
-		else if (array instanceof RGB8Array)
-		{
-			// call the standard way for converting planar RGB images
-			return createAwtImageRGB8((RGB8Array) array);
-		} 
+        else if (array instanceof RGB8Array)
+        {
+            // call the standard way for converting planar RGB images
+            return createAwtImageRGB8((RGB8Array) array);
+        } 
+        else if (array instanceof RGB16Array)
+        {
+            // call the standard way for converting planar RGB16 images
+            return createAwtImageRGB16((RGB16Array) array);
+        } 
  		else if (image.isColorImage())
  		{
  			// obsolete, and should be removed
@@ -255,34 +262,71 @@ public class ImageUtils
 		return bufImg;
 	}
 
-	public static final java.awt.image.BufferedImage createAwtImageRGB8(
-			RGB8Array array)
-	{
-		int sizeX = array.getSize(0);
-		int sizeY = array.getSize(1);
-		
-		int type = java.awt.image.BufferedImage.TYPE_INT_RGB;
-		
-		BufferedImage bufImg = new BufferedImage(sizeX, sizeY, type);
-		WritableRaster raster = bufImg.getRaster();
-		
-		int[] pos = new int[3];
-		for (int y = 0; y < sizeY; y++)
-		{
-			pos[1] = y;
-			for (int x = 0; x < sizeX; x++)
-			{
-				pos[0] = x;
-				RGB8 rgb = array.get(pos);
-				for (int c = 0; c < 3; c++)
-				{
-					pos[2] = c;
-					raster.setSample(x, y, c, rgb.getSample(c));
-				}
-			}
-		}
-		
-		return bufImg;
-	}
+    public static final java.awt.image.BufferedImage createAwtImageRGB8(RGB8Array array)
+    {
+        int sizeX = array.getSize(0);
+        int sizeY = array.getSize(1);
+        
+        int type = java.awt.image.BufferedImage.TYPE_INT_RGB;
+        
+        BufferedImage bufImg = new BufferedImage(sizeX, sizeY, type);
+        WritableRaster raster = bufImg.getRaster();
+        
+        int[] pos = new int[3];
+        for (int y = 0; y < sizeY; y++)
+        {
+            pos[1] = y;
+            for (int x = 0; x < sizeX; x++)
+            {
+                pos[0] = x;
+                RGB8 rgb = array.get(pos);
+                for (int c = 0; c < 3; c++)
+                {
+                    pos[2] = c;
+                    raster.setSample(x, y, c, rgb.getSample(c));
+                }
+            }
+        }
+        
+        return bufImg;
+    }
 
+    public static final java.awt.image.BufferedImage createAwtImageRGB16(RGB16Array array)
+    {
+        int sizeX = array.getSize(0);
+        int sizeY = array.getSize(1);
+        
+        // determines max red, green and blue values
+        int rMax = 0, gMax = 0, bMax = 0;
+        for (RGB16 rgb : array)
+        {
+            rMax = Math.max(rMax, rgb.getSample(0));
+            gMax = Math.max(gMax, rgb.getSample(1));
+            bMax = Math.max(bMax, rgb.getSample(2));
+        }
+        double k = 255.0 / Math.max(Math.max(rMax,  gMax),  bMax);
+ 
+        // create result AWT image
+        int type = java.awt.image.BufferedImage.TYPE_INT_RGB;
+        BufferedImage bufImg = new BufferedImage(sizeX, sizeY, type);
+        WritableRaster raster = bufImg.getRaster();
+        
+        int[] pos = new int[3];
+        for (int y = 0; y < sizeY; y++)
+        {
+            pos[1] = y;
+            for (int x = 0; x < sizeX; x++)
+            {
+                pos[0] = x;
+                RGB16 rgb = array.get(pos);
+                for (int c = 0; c < 3; c++)
+                {
+                    pos[2] = c;
+                    raster.setSample(x, y, c, (int) (rgb.getSample(c) * k));
+                }
+            }
+        }
+        
+        return bufImg;
+    }
 }
