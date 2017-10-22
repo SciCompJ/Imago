@@ -72,6 +72,7 @@ import imago.gui.action.process.ColorImageBivariateHistogramsAction;
 import imago.gui.action.process.ImageExtendedExtremaAction;
 import imago.gui.action.process.ImageFillHolesAction;
 import imago.gui.action.process.ImageFindNonZeroPixelsAction;
+import imago.gui.action.process.ImageGeodesicDistanceMapAction;
 import imago.gui.action.process.ImageKillBordersAction;
 import imago.gui.action.process.ImageMorphologicalReconstructionAction;
 import imago.gui.action.process.ImageOtsuThresholdAction;
@@ -459,6 +460,8 @@ public class GuiBuilder
 		addMenuItem(binaryMenu, new ArrayOperatorAction(frame, "distanceMap2dFloat",
 				new ChamferDistanceTransform2DFloat(ChamferWeights2D.CHESSKNIGHT, false)),
 				"Distance Map (float)", is2D && isBinary);
+		addMenuItem(binaryMenu, new ImageGeodesicDistanceMapAction(frame, "geodesicDistanceMap"),
+				"Geodesic Distance Map");
 		menu.add(binaryMenu);
 
 		menu.addSeparator();

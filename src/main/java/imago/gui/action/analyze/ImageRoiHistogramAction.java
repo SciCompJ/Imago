@@ -125,7 +125,7 @@ public class ImageRoiHistogramAction extends ImagoAction
 	 */
 	public static final DataTable histogram(ScalarArray2D<?> array, Domain2D domain, double[] range, int nBins)
 	{
-		// compute the width of an individual bin
+		// compute the sizeX of an individual bin
 		double binWidth = (range[1] - range[0]) / (nBins - 1);
 		
 		// allocate memory for result

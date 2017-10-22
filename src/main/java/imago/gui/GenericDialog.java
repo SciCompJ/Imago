@@ -172,7 +172,7 @@ public class GenericDialog
 	 * @param label			the label
 	 * @param defaultValue	state to be initially displayed
 	 * @param digits			number of digits to right of decimal point
-	 * @param columns		width of field in characters
+	 * @param columns		sizeX of field in characters
 	 * @param units			a string displayed to the right of the field
 	 */
 	public void addNumericField(String label, double defaultValue, int digits,
@@ -262,7 +262,7 @@ public class GenericDialog
 	 * @param defaultText
 	 *            text initially displayed
 	 * @param columns
-	 *            width of the text field
+	 *            sizeX of the text field
 	 */
 	public void addTextField(String label, String text, int columns) 
 	{
