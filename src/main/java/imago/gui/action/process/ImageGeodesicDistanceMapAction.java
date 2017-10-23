@@ -3,21 +3,20 @@
  */
 package imago.gui.action.process;
 
+import java.awt.event.ActionEvent;
+import java.util.Collection;
+
 import imago.app.ImagoApp;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoAction;
 import imago.gui.ImagoFrame;
-
-import java.awt.event.ActionEvent;
-import java.util.Collection;
-
 import net.sci.array.Array;
 import net.sci.array.data.BinaryArray;
+import net.sci.array.data.ScalarArray;
 import net.sci.array.data.scalar2d.BinaryArray2D;
-import net.sci.array.data.scalar2d.ScalarArray2D;
+import net.sci.array.data.scalar3d.BinaryArray3D;
 import net.sci.image.Image;
-import net.sci.image.binary.geoddist.GeodesicDistanceTransform2D;
-import net.sci.image.binary.geoddist.GeodesicDistanceTransform2DFloat5x5Scanning;
+import net.sci.image.binary.BinaryImages;
 
 /**
  * Computes geodesic distance map of a marker image constrained by a mask image.
@@ -89,29 +88,30 @@ public class ImageGeodesicDistanceMapAction extends ImagoAction
 			return;
 		}
 		
-		if (marker.dimensionality() != 2)
-		{
-			this.frame.showErrorDialog("Require array with dimensionality 2", "Dimensionality Error");
-			return;
-		}
-		
 		if (!(marker instanceof BinaryArray) || !(mask instanceof BinaryArray) )
 		{
 			this.frame.showErrorDialog("Both arrays should be binary", "Image Type Error");
 			return;
 		}
 		
-		if (!(marker instanceof BinaryArray2D) || !(mask instanceof BinaryArray2D) )
+		ScalarArray<?> result;
+		if (marker instanceof BinaryArray2D && mask instanceof BinaryArray2D) 
+		{
+    		// computes distance map for 2D images
+    		result = BinaryImages.geodesicDistanceMap2d((BinaryArray2D) marker, (BinaryArray2D) mask);
+		}
+		else if (marker instanceof BinaryArray3D && mask instanceof BinaryArray3D)
+		{
+            // computes distance map for 3D images
+            result = BinaryImages.geodesicDistanceMap3d((BinaryArray3D) marker, (BinaryArray3D) mask);
+		}
+		else
 		{
             this.frame.showErrorDialog("Both arrays should be binary", "Image Type Error");
-			System.err.println("Both arrays should be instances of BinaryArray2D");
-			return;
+            System.err.println("Both arrays should be instances of BinaryArray2D or Binary3D");
+            return;
 		}
-		
-		// Create operator, and computes distance map
-		GeodesicDistanceTransform2D op = new GeodesicDistanceTransform2DFloat5x5Scanning();
-		ScalarArray2D<?> result = op.process((BinaryArray2D) marker, (BinaryArray2D) mask);
-		
+		    
 		// Create result image
 		Image resultImage = new Image(result, markerImage);
 		resultImage.setName(markerImage.getName() + "-geodDist");
