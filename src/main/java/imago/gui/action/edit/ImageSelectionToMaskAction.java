@@ -97,7 +97,7 @@ public class ImageSelectionToMaskAction extends ImagoAction
             {
                 if (poly.contains(new Point2D(x, y)) ^ clockWise)
                 {
-                    mask.setState(x, y, true);
+                    mask.setBoolean(x, y, true);
                 }
             }
         }

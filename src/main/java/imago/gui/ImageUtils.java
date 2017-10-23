@@ -171,7 +171,7 @@ public class ImageUtils
 		{
 			for (int x = 0; x < sizeX; x++)
 			{
-				int value = array.getState(x, y) ? 255 : 0;
+				int value = array.getBoolean(x, y) ? 255 : 0;
 				raster.setSample(x, y, 0, value); 
 			}
 		}
