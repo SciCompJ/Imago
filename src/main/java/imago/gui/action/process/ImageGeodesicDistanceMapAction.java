@@ -17,7 +17,7 @@ import net.sci.array.data.scalar2d.BinaryArray2D;
 import net.sci.array.data.scalar2d.ScalarArray2D;
 import net.sci.image.Image;
 import net.sci.image.binary.geoddist.GeodesicDistanceTransform2D;
-import net.sci.image.binary.geoddist.GeodesicDistanceTransformShort2D5x5;
+import net.sci.image.binary.geoddist.GeodesicDistanceTransform2DFloat5x5Scanning;
 
 /**
  * Computes geodesic distance map of a marker image constrained by a mask image.
@@ -79,41 +79,37 @@ public class ImageGeodesicDistanceMapAction extends ImagoAction
 		Array<?> mask = maskImage.getData();
 		if (!Array.isSameDimensionality(marker, mask))
 		{
-			// TODO: display error dialog
-			System.err.println("Both arrays must have same dimensionality");
+			this.frame.showErrorDialog("Both arrays must have same dimensionality", "Dimensionality Error");
 			return;
 		}
 		
 		if (!Array.isSameSize(marker, mask))
 		{
-			// TODO: display error dialog
-			System.err.println("Both arrays must have same size");
+			this.frame.showErrorDialog("Both arrays must have same size", "Image Size Error");
 			return;
 		}
 		
 		if (marker.dimensionality() != 2)
 		{
-			// TODO: display error dialog
-			System.err.println("Require array with dimensionality 2");
+			this.frame.showErrorDialog("Require array with dimensionality 2", "Dimensionality Error");
 			return;
 		}
 		
 		if (!(marker instanceof BinaryArray) || !(mask instanceof BinaryArray) )
 		{
-			// TODO: display error dialog
-			System.err.println("Both arrays should be binary");
+			this.frame.showErrorDialog("Both arrays should be binary", "Image Type Error");
 			return;
 		}
 		
 		if (!(marker instanceof BinaryArray2D) || !(mask instanceof BinaryArray2D) )
 		{
-			// TODO: display error dialog
+            this.frame.showErrorDialog("Both arrays should be binary", "Image Type Error");
 			System.err.println("Both arrays should be instances of BinaryArray2D");
 			return;
 		}
 		
 		// Create operator, and computes distance map
-		GeodesicDistanceTransform2D op = new GeodesicDistanceTransformShort2D5x5();
+		GeodesicDistanceTransform2D op = new GeodesicDistanceTransform2DFloat5x5Scanning();
 		ScalarArray2D<?> result = op.process((BinaryArray2D) marker, (BinaryArray2D) mask);
 		
 		// Create result image
