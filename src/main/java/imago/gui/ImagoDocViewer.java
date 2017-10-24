@@ -58,6 +58,14 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
 		super(gui, "Image Frame");
 		this.doc = doc;
 		this.image = doc.getImage();
+		if (image != null)
+		{
+		    String filePath = image.getFilePath();
+		    if (filePath != null && filePath.length() > 0)
+		    {
+		        this.setLastOpenPath(filePath);
+		    }
+		}
 
 		// create menu
 		GuiBuilder builder = new GuiBuilder(this);
