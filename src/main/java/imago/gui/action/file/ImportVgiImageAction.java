@@ -11,6 +11,7 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import imago.gui.ImagoAction;
+import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import net.sci.image.Image;
 import net.sci.image.io.VgiImageReader;
@@ -64,6 +65,10 @@ public class ImportVgiImageAction extends ImagoAction
 			return;
 		}
 
+		// keep path for future opening
+		String path = file.getPath();
+		this.frame.setLastOpenPath(path);
+
 		// Create a MetaImage Format reader with the chosen file
 		VgiImageReader reader;
 		try
@@ -91,9 +96,10 @@ public class ImportVgiImageAction extends ImagoAction
 			return;
 		}
 		image.setName(file.getName());
-
+		
 		// add the image document to GUI
-		this.gui.addNewDocument(image);
+        ImagoDocViewer frame = this.gui.addNewDocument(image);
+        frame.setLastOpenPath(path);
 	}
 
 }
