@@ -9,6 +9,7 @@ import imago.app.ImagoDoc;
 import imago.gui.ImagoAction;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
+import imago.gui.ImagoGui;
 import net.sci.array.Array;
 import net.sci.array.data.Int16Array;
 import net.sci.array.data.ScalarArray;
@@ -54,8 +55,7 @@ public class ConvertToInt16ImageAction extends ImagoAction
 		}
 		if (!(array instanceof ScalarArray))
 		{
-			// TODO : display error message
-			System.err.println("Requires a scalar image");
+            ImagoGui.showErrorDialog(frame, "Requires a scalar image", "Data Type Error");
 			return;
 		}
 

@@ -9,6 +9,7 @@ import imago.app.ImagoDoc;
 import imago.gui.ImagoAction;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
+import imago.gui.ImagoGui;
 import net.sci.array.Array;
 import net.sci.array.data.ScalarArray;
 import net.sci.array.data.VectorArray;
@@ -56,8 +57,7 @@ public class StackToVectorImageAction extends ImagoAction
 		}
 		if (array.dimensionality() != 3 || !(array instanceof ScalarArray))
 		{
-			// TODO : display error message
-			System.err.println("Requires a 3D scalar stack");
+            ImagoGui.showErrorDialog(frame, "Requires a 3D scalar stack", "Data Type Error");
 			return;
 		}
 

@@ -7,6 +7,7 @@ import imago.app.ImagoDoc;
 import imago.gui.ImagoAction;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
+import imago.gui.ImagoGui;
 
 import java.awt.event.ActionEvent;
 
@@ -55,8 +56,7 @@ public class ConvertRGB8ToUInt8ImageAction extends ImagoAction
 		}
 		if (!(array instanceof RGB8Array))
 		{
-			// TODO : display error message
-			System.err.println("Requires a RGB8 color image");
+		    ImagoGui.showErrorDialog(frame, "Requires a RGB8 color image", "Data Type Error");
 			return;
 		}
 

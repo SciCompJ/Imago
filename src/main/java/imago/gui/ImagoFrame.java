@@ -4,7 +4,6 @@
 package imago.gui;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 /**
  * The superclass of all Imago frames. 
@@ -78,16 +77,12 @@ public abstract class ImagoFrame extends JFrame
 
 	public void showErrorDialog(String message) 
 	{
-		JOptionPane.showMessageDialog(
-				this, message, "Error", 
-				JOptionPane.ERROR_MESSAGE);
+        ImagoGui.showErrorDialog(this, message, "Error");
 	}
 	
 	public void showErrorDialog(String message, String title) 
 	{
-		JOptionPane.showMessageDialog(
-				this, message, title,
-				JOptionPane.ERROR_MESSAGE);
+        ImagoGui.showErrorDialog(this, message, title);
 	}
 	
 	

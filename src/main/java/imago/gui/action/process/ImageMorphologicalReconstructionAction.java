@@ -10,6 +10,7 @@ import imago.app.ImagoApp;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoAction;
 import imago.gui.ImagoFrame;
+import imago.gui.ImagoGui;
 import net.sci.array.Array;
 import net.sci.image.Image;
 import net.sci.image.morphology.MorphologicalReconstruction;
@@ -76,8 +77,7 @@ public class ImageMorphologicalReconstructionAction extends ImagoAction
 		Array<?> mask = maskImage.getData();
 		if (marker.dimensionality() != mask.dimensionality())
 		{
-			// TODO: display error dialog
-			System.err.println("Both arrays must have same dimensionality");
+            ImagoGui.showErrorDialog(frame, "Both arrays should have same dimension", "Dimension Error");
 			return;
 		}
 		

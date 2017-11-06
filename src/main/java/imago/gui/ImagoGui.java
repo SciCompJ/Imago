@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import net.sci.image.Image;
@@ -26,6 +27,24 @@ import net.sci.image.Image;
  */
 public class ImagoGui 
 {
+    // ===================================================================
+    // Static methods
+
+    public static final void showErrorDialog(ImagoFrame frame, String message)
+    {
+        JOptionPane.showMessageDialog(
+                frame, message, "Error", 
+                JOptionPane.ERROR_MESSAGE);
+    }
+    
+    public static final void showErrorDialog(ImagoFrame frame, String message, String title)
+    {
+        JOptionPane.showMessageDialog(
+                frame, message, title, 
+                JOptionPane.ERROR_MESSAGE);
+    }
+    
+    
 	// ===================================================================
 	// Class variables
 
