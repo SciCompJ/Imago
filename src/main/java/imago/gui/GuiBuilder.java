@@ -88,6 +88,7 @@ import net.sci.array.data.ScalarArray;
 import net.sci.array.process.PowerOfTwo;
 import net.sci.array.process.Sqrt;
 import net.sci.array.process.shape.Flip;
+import net.sci.array.process.shape.Rotate90;
 import net.sci.image.Image;
 import net.sci.image.binary.ChamferWeights2D;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DFloat;
@@ -304,6 +305,7 @@ public class GuiBuilder
 	private JMenu createImageMenu()
 	{
 		boolean isImage = hasImageDoc(frame);
+		boolean is2D = has2DImage(frame);
 		boolean is3D = has3DImage(frame);
 		boolean isScalar = hasScalarImage(frame);
 		boolean isVector = hasVectorImage(frame);
@@ -340,6 +342,12 @@ public class GuiBuilder
 		// addMenuItem(geometryMenu,
 		// new ImageOperatorAction(frame, "rotation90", new Rotation90()),
 		// "Rotation 90", has2D);
+		addMenuItem(geometryMenu,
+				 new ArrayOperatorAction(frame, "imageRotateLeft", new Rotate90(-1)),
+				 "Rotate Left", is2D);
+		addMenuItem(geometryMenu,
+				 new ArrayOperatorAction(frame, "imageRotateRight", new Rotate90(+1)),
+				 "Rotate Right", is2D);
 		addMenuItem(geometryMenu,
 				 new ArrayOperatorAction(frame, "rotateImage", new RotationAroundCenter(30)),
 				 "Rotate Image", isImage);
