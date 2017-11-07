@@ -3,14 +3,6 @@
  */
 package imago.gui;
 
-import java.awt.image.BufferedImage;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-
 import imago.app.ImagoDoc;
 import imago.gui.action.ArrayOperatorAction;
 import imago.gui.action.ImageArrayOperatorAction;
@@ -63,6 +55,7 @@ import imago.gui.action.image.SetImageDisplayRangeAction;
 import imago.gui.action.image.SetManualDisplayRangeAction;
 import imago.gui.action.image.SplitImageChannelsAction;
 import imago.gui.action.image.StackToVectorImageAction;
+import imago.gui.action.process.BinaryImageConnectedComponentsLabelingAction;
 import imago.gui.action.process.BoxFilter3x3Float;
 import imago.gui.action.process.BoxFilterAction;
 import imago.gui.action.process.BoxMedianFilterAction;
@@ -80,6 +73,15 @@ import imago.gui.action.process.MorphologicalFilteringAction;
 import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectPolygonTool;
 import imago.gui.tool.SelectionTool;
+
+import java.awt.image.BufferedImage;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+
 import net.sci.array.Array;
 import net.sci.array.data.IntArray;
 import net.sci.array.data.ScalarArray;
@@ -88,7 +90,6 @@ import net.sci.array.process.Sqrt;
 import net.sci.array.process.shape.Flip;
 import net.sci.image.Image;
 import net.sci.image.binary.ChamferWeights2D;
-import net.sci.image.binary.FloodFillComponentsLabeling2D;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DFloat;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DUInt16;
 import net.sci.image.data.Connectivity2D;
@@ -452,8 +453,10 @@ public class GuiBuilder
 
 		// operators specific to binary images
 		JMenu binaryMenu = new JMenu("Binary Images");
-		addMenuItem(binaryMenu, new ImageArrayOperatorAction(frame, "connectedComponentLabeling",
-				new FloodFillComponentsLabeling2D()), "Connected Component Labeling", is2D && isBinary);
+//		addMenuItem(binaryMenu, new ImageArrayOperatorAction(frame, "connectedComponentLabeling",
+//				new FloodFillComponentsLabeling2D()), "Connected Component Labeling", is2D && isBinary);
+		addMenuItem(binaryMenu, new BinaryImageConnectedComponentsLabelingAction(frame, "connectedComponentLabeling"),
+				"Connected Component Labeling", (is2D || is3D) && isBinary);
 		addMenuItem(binaryMenu, new ArrayOperatorAction(frame, "distanceMap2dShort",
 				new ChamferDistanceTransform2DUInt16(ChamferWeights2D.CHESSKNIGHT, false)),
 				"Distance Map", is2D && isBinary);

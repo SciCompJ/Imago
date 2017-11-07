@@ -41,7 +41,7 @@ public class BoxMedianFilterAction extends ImagoAction
 	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	@Override
-	public void actionPerformed(ActionEvent arg0)
+	public void actionPerformed(ActionEvent evt)
 	{
 		System.out.println("median box filter (generic)");
 
