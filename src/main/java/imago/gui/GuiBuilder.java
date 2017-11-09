@@ -3,14 +3,6 @@
  */
 package imago.gui;
 
-import java.awt.image.BufferedImage;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-
 import imago.app.ImagoDoc;
 import imago.gui.action.ArrayOperatorAction;
 import imago.gui.action.ImageArrayOperatorAction;
@@ -63,6 +55,7 @@ import imago.gui.action.image.SetImageDisplayRangeAction;
 import imago.gui.action.image.SetManualDisplayRangeAction;
 import imago.gui.action.image.SplitImageChannelsAction;
 import imago.gui.action.image.StackToVectorImageAction;
+import imago.gui.action.process.BinaryImageConnectedComponentsLabelingAction;
 import imago.gui.action.process.BoxFilter3x3Float;
 import imago.gui.action.process.BoxFilterAction;
 import imago.gui.action.process.BoxMedianFilterAction;
@@ -80,15 +73,24 @@ import imago.gui.action.process.MorphologicalFilteringAction;
 import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectPolygonTool;
 import imago.gui.tool.SelectionTool;
+
+import java.awt.image.BufferedImage;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+
 import net.sci.array.Array;
 import net.sci.array.data.IntArray;
 import net.sci.array.data.ScalarArray;
 import net.sci.array.process.PowerOfTwo;
 import net.sci.array.process.Sqrt;
 import net.sci.array.process.shape.Flip;
+import net.sci.array.process.shape.Rotate90;
 import net.sci.image.Image;
 import net.sci.image.binary.ChamferWeights2D;
-import net.sci.image.binary.FloodFillComponentsLabeling2D;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DFloat;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DUInt16;
 import net.sci.image.data.Connectivity2D;
@@ -303,6 +305,7 @@ public class GuiBuilder
 	private JMenu createImageMenu()
 	{
 		boolean isImage = hasImageDoc(frame);
+		boolean is2D = has2DImage(frame);
 		boolean is3D = has3DImage(frame);
 		boolean isScalar = hasScalarImage(frame);
 		boolean isVector = hasVectorImage(frame);
@@ -339,6 +342,12 @@ public class GuiBuilder
 		// addMenuItem(geometryMenu,
 		// new ImageOperatorAction(frame, "rotation90", new Rotation90()),
 		// "Rotation 90", has2D);
+		addMenuItem(geometryMenu,
+				 new ArrayOperatorAction(frame, "imageRotateLeft", new Rotate90(-1)),
+				 "Rotate Left", is2D);
+		addMenuItem(geometryMenu,
+				 new ArrayOperatorAction(frame, "imageRotateRight", new Rotate90(+1)),
+				 "Rotate Right", is2D);
 		addMenuItem(geometryMenu,
 				 new ArrayOperatorAction(frame, "rotateImage", new RotationAroundCenter(30)),
 				 "Rotate Image", isImage);
@@ -452,8 +461,10 @@ public class GuiBuilder
 
 		// operators specific to binary images
 		JMenu binaryMenu = new JMenu("Binary Images");
-		addMenuItem(binaryMenu, new ImageArrayOperatorAction(frame, "connectedComponentLabeling",
-				new FloodFillComponentsLabeling2D()), "Connected Component Labeling", is2D && isBinary);
+//		addMenuItem(binaryMenu, new ImageArrayOperatorAction(frame, "connectedComponentLabeling",
+//				new FloodFillComponentsLabeling2D()), "Connected Component Labeling", is2D && isBinary);
+		addMenuItem(binaryMenu, new BinaryImageConnectedComponentsLabelingAction(frame, "connectedComponentLabeling"),
+				"Connected Component Labeling", (is2D || is3D) && isBinary);
 		addMenuItem(binaryMenu, new ArrayOperatorAction(frame, "distanceMap2dShort",
 				new ChamferDistanceTransform2DUInt16(ChamferWeights2D.CHESSKNIGHT, false)),
 				"Distance Map", is2D && isBinary);
