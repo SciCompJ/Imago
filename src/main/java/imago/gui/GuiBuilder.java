@@ -36,6 +36,7 @@ import imago.gui.action.file.OpenDemoStack;
 import imago.gui.action.file.OpenImageAction;
 import imago.gui.action.file.QuitAction;
 import imago.gui.action.file.ReadTiffAction;
+import imago.gui.action.file.ShowDemoTable;
 import imago.gui.action.image.ConvertRGB8ToUInt8ImageAction;
 import imago.gui.action.image.ConvertToFloat32ImageAction;
 import imago.gui.action.image.ConvertToFloat64ImageAction;
@@ -177,7 +178,9 @@ public class GuiBuilder
 
 //		addMenuItem(demoMenu, new CreateWhiteNoiseImageAction(frame,
 //				"createWhiteNoiseImage"), "White Noise Array<?>");
-
+        fileMenu.addSeparator();
+        addMenuItem(fileMenu, new ShowDemoTable(frame, "showDemoTableFrame"), "Show Demo Table");
+        
 		fileMenu.addSeparator();
 		addMenuItem(fileMenu, new CloseFrameAction(frame, "close"), "Close", !(frame instanceof ImagoEmptyFrame));
 		addMenuItem(fileMenu, new QuitAction(frame, "quit"), "Quit");
