@@ -39,6 +39,7 @@ import imago.gui.action.file.QuitAction;
 import imago.gui.action.file.ReadTiffAction;
 import imago.gui.action.file.SaveTableAction;
 import imago.gui.action.file.ShowDemoTable;
+import imago.gui.action.file.TableScatterPlotAction;
 import imago.gui.action.image.ConvertRGB8ToUInt8ImageAction;
 import imago.gui.action.image.ConvertToFloat32ImageAction;
 import imago.gui.action.image.ConvertToFloat64ImageAction;
@@ -154,6 +155,9 @@ public class GuiBuilder
         
         fileMenu.addSeparator();
         addMenuItem(fileMenu, new SaveTableAction(frame, "saveTable"), "Save Table...");
+
+        fileMenu.addSeparator();
+        addMenuItem(fileMenu, new TableScatterPlotAction(frame, "scatterPlot"), "Scatter Plot...");
 
         fileMenu.addSeparator();
         addMenuItem(fileMenu, new CloseFrameAction(frame, "close"), "Close", !(frame instanceof ImagoEmptyFrame));
