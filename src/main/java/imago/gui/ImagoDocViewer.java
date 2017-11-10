@@ -68,8 +68,8 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
 		}
 
 		// create menu
-		GuiBuilder builder = new GuiBuilder(this);
-		builder.createMenuBar();
+		GuiBuilder builder = new GuiBuilder();
+		builder.createMenuBar(this);
 		
         // Create a status bar
         this.statusBar = new StatusBar();

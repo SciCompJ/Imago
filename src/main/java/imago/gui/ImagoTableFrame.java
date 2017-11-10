@@ -46,8 +46,8 @@ public class ImagoTableFrame extends ImagoFrame
         this.table = table;
 
         // create menu
-        GuiBuilder builder = new GuiBuilder(this);
-        builder.createMenuBar();
+        GuiBuilder builder = new GuiBuilder();
+        builder.createMenuBar(this);
         
 //        // Create a status bar
 //        this.statusBar = new StatusBar();
