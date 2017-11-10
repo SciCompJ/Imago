@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import imago.gui.util.RowNumberTable;
 import net.sci.table.Table;
 
 /**
@@ -105,10 +106,16 @@ public class ImagoTableFrame extends ImagoFrame
         
         // create JTable object
         JTable jtable = new JTable(data, colNames);
-         
+        
         //add the table to the frame
-        mainPanel.add(new JScrollPane(jtable), BorderLayout.CENTER);
-
+        JScrollPane scrollPane = new JScrollPane(jtable);
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
+        
+        // decorate the scroll panel with label column
+        JTable rowTable = new RowNumberTable(jtable);
+        scrollPane.setRowHeaderView(rowTable);
+        scrollPane.setCorner(JScrollPane.UPPER_LEFT_CORNER, rowTable.getTableHeader());
+        
 //        mainPanel.add(imageView);
 //        mainPanel.add(this.statusBar, BorderLayout.SOUTH);
         
