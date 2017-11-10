@@ -124,11 +124,18 @@ public class GuiBuilder
 	{
 
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.add(createFileMenu(frame));
-		menuBar.add(createEditMenu(frame));
-		menuBar.add(createImageMenu(frame));
-		menuBar.add(createProcessMenu(frame));
-		menuBar.add(createAnalyzeMenu(frame));
+		if (frame instanceof ImagoDocViewer || frame instanceof ImagoEmptyFrame)
+		{
+	        menuBar.add(createImageFileMenu(frame));
+    		menuBar.add(createImageEditMenu(frame));
+    		menuBar.add(createImageMenu(frame));
+    		menuBar.add(createImageProcessMenu(frame));
+    		menuBar.add(createImageAnalyzeMenu(frame));
+		}
+		else if (frame instanceof ImagoTableFrame)
+		{
+		    menuBar.add(createTableFileMenu(frame));
+		}
 		menuBar.add(createHelpMenu(frame));
 
 		frame.setJMenuBar(menuBar);
@@ -136,8 +143,25 @@ public class GuiBuilder
 
 	/**
 	 * Creates the sub-menu for the "File" item in the main menu bar.
+     */
+    private JMenu createTableFileMenu(ImagoFrame frame)
+    {
+        JMenu fileMenu = new JMenu("File");
+        
+        fileMenu.addSeparator();
+        addMenuItem(fileMenu, new ShowDemoTable(frame, "showDemoTableFrame"), "Show Demo Table");
+        
+        fileMenu.addSeparator();
+        addMenuItem(fileMenu, new CloseFrameAction(frame, "close"), "Close", !(frame instanceof ImagoEmptyFrame));
+        addMenuItem(fileMenu, new QuitAction(frame, "quit"), "Quit");
+
+        return fileMenu;
+    }
+
+	/**
+	 * Creates the sub-menu for the "File" item in the main menu bar.
 	 */
-	private JMenu createFileMenu(ImagoFrame frame)
+	private JMenu createImageFileMenu(ImagoFrame frame)
 	{
 		JMenu fileMenu = new JMenu("File");
 		addMenuItem(fileMenu, new CreateEmptyImageAction(frame, "createEmptyImage"), 
@@ -185,7 +209,7 @@ public class GuiBuilder
 	/**
 	 * Creates the sub-menu for the "Edit" item in the main menu bar.
 	 */
-	private JMenu createEditMenu(ImagoFrame frame)
+	private JMenu createImageEditMenu(ImagoFrame frame)
 	{
 		boolean isImage = hasImageDoc(frame);
 		boolean isScalar = hasScalarImage(frame);
@@ -384,7 +408,7 @@ public class GuiBuilder
 	/**
 	 * Creates the sub-menu for the "process" item in the main Menu bar.
 	 */
-	private JMenu createProcessMenu(ImagoFrame frame)
+	private JMenu createImageProcessMenu(ImagoFrame frame)
 	{
 		boolean isImage = hasImageDoc(frame);
 		boolean is2D = has2DImage(frame);
@@ -495,7 +519,7 @@ public class GuiBuilder
 	/**
 	 * Creates the sub-menu for the "process" item in the main Menu bar.
 	 */
-	private JMenu createAnalyzeMenu(ImagoFrame frame)
+	private JMenu createImageAnalyzeMenu(ImagoFrame frame)
 	{
 		 boolean isImage = hasImageDoc(frame);
 		// boolean has3D = has3DImage(frame);

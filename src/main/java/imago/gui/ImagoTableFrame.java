@@ -99,7 +99,7 @@ public class ImagoTableFrame extends ImagoFrame
             Object[] row = new Object[nCols];
             for (int j = 0; j < nCols; j++)
             {
-                row[j] = table.getValue(i, j);
+                row[j] = table.get(i, j);
             }
             data[i] = row;
         };
