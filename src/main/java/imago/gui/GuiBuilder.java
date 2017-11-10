@@ -34,8 +34,10 @@ import imago.gui.action.file.ImportVgiImageAction;
 import imago.gui.action.file.OpenDemoImage;
 import imago.gui.action.file.OpenDemoStack;
 import imago.gui.action.file.OpenImageAction;
+import imago.gui.action.file.OpenTableAction;
 import imago.gui.action.file.QuitAction;
 import imago.gui.action.file.ReadTiffAction;
+import imago.gui.action.file.SaveTableAction;
 import imago.gui.action.file.ShowDemoTable;
 import imago.gui.action.image.ConvertRGB8ToUInt8ImageAction;
 import imago.gui.action.image.ConvertToFloat32ImageAction;
@@ -148,9 +150,11 @@ public class GuiBuilder
     {
         JMenu fileMenu = new JMenu("File");
         
-        fileMenu.addSeparator();
-        addMenuItem(fileMenu, new ShowDemoTable(frame, "showDemoTableFrame"), "Show Demo Table");
+        addMenuItem(fileMenu, new OpenTableAction(frame, "openTable"), "Open Table...");
         
+        fileMenu.addSeparator();
+        addMenuItem(fileMenu, new SaveTableAction(frame, "saveTable"), "Save Table...");
+
         fileMenu.addSeparator();
         addMenuItem(fileMenu, new CloseFrameAction(frame, "close"), "Close", !(frame instanceof ImagoEmptyFrame));
         addMenuItem(fileMenu, new QuitAction(frame, "quit"), "Quit");
@@ -198,6 +202,7 @@ public class GuiBuilder
 //		addMenuItem(demoMenu, new CreateWhiteNoiseImageAction(frame,
 //				"createWhiteNoiseImage"), "White Noise Array<?>");
         fileMenu.addSeparator();
+        addMenuItem(fileMenu, new OpenTableAction(frame, "openTable"), "Open Table...");
         addMenuItem(fileMenu, new ShowDemoTable(frame, "showDemoTableFrame"), "Show Demo Table");
         
 		fileMenu.addSeparator();

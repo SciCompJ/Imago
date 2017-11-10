@@ -169,7 +169,11 @@ public class ImagoTableFrame extends ImagoFrame
         this.setTitle(titleString);
     }
     
-
+    public Table getTable()
+    {
+        return this.table;
+    }
+    
     // ===================================================================
     // Display management methods
 

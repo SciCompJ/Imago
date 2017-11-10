@@ -85,8 +85,7 @@ public class ImagoGui
 	{
 		// set up default font
 		UIManager.put("swing.boldMetal", Boolean.FALSE);
-		UIManager.put("ComboBox.background", 
-				UIManager.get("TextArea.background"));
+        UIManager.put("ComboBox.background", UIManager.get("TextArea.background"));
 	}
 
 	
@@ -103,7 +102,7 @@ public class ImagoGui
 		this.emptyFrame.setVisible(b);
 	}
 	
-	/** 
+    /** 
 	 * Creates a new document from an image, adds it to the application, 
 	 * and returns a new frame associated to this document. 
 	 */
