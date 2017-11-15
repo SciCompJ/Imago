@@ -209,4 +209,23 @@ public class ImagoGui
 		
 		return viewers;
 	}
+	
+	/**
+	 * Finds the frame corresponding to he viewer of a given document.
+	 * 
+	 * @param doc the document
+	 * @return an instance of ImagoDocViewer associated to this document
+	 */
+	public ImagoDocViewer getDocumentViewer(ImagoDoc doc)
+	{
+	    for (ImagoDocViewer viewer : getDocumentViewers())
+	    {
+	        if (doc == viewer.getDocument())
+	        {
+	            return viewer;
+	        }
+	    }
+	    
+	    throw new RuntimeException("Could not find a document viewer for document with name: " + doc.getName());
+	}
  }
