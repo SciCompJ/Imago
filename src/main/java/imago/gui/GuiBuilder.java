@@ -73,6 +73,7 @@ import imago.gui.action.process.ImageGeodesicDistanceMapAction;
 import imago.gui.action.process.ImageKillBordersAction;
 import imago.gui.action.process.ImageMorphologicalReconstructionAction;
 import imago.gui.action.process.ImageOtsuThresholdAction;
+import imago.gui.action.process.ImageReshapeAction;
 import imago.gui.action.process.MorphologicalFilteringAction;
 import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectPolygonTool;
@@ -382,6 +383,9 @@ public class GuiBuilder
 		addMenuItem(geometryMenu,
 				 new ArrayOperatorAction(frame, "rotateImage", new RotationAroundCenter(30)),
 				 "Rotate Image", isImage);
+        addMenuItem(geometryMenu,
+                new ImageReshapeAction(frame, "reshapeImage"),
+                "Reshape Image", isImage);
 
 		menu.add(geometryMenu);
 
