@@ -59,6 +59,7 @@ import imago.gui.action.image.SetImageDisplayRangeAction;
 import imago.gui.action.image.SetManualDisplayRangeAction;
 import imago.gui.action.image.SplitImageChannelsAction;
 import imago.gui.action.image.StackToVectorImageAction;
+import imago.gui.action.process.BinaryImageBoundaryGraphAction;
 import imago.gui.action.process.BinaryImageConnectedComponentsLabelingAction;
 import imago.gui.action.process.BoxFilter3x3Float;
 import imago.gui.action.process.BoxFilterAction;
@@ -508,6 +509,9 @@ public class GuiBuilder
 				"Distance Map (float)", is2D && isBinary);
 		addMenuItem(binaryMenu, new ImageGeodesicDistanceMapAction(frame, "geodesicDistanceMap"),
 				"Geodesic Distance Map");
+        binaryMenu.addSeparator();
+        addMenuItem(binaryMenu, new BinaryImageBoundaryGraphAction(frame, "binaryImageBoundaryGraph"),
+                "Boundary Graph", is2D && isBinary);
 		menu.add(binaryMenu);
 
 		menu.addSeparator();

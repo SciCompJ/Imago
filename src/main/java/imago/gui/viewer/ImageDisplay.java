@@ -22,6 +22,7 @@ import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.curve.Ellipse2D;
+import net.sci.geom.geom2d.graph.SimpleGraph2D;
 import net.sci.geom.geom2d.line.LineSegment2D;
 import net.sci.geom.geom2d.polygon.PolygonalDomain2D;
 import net.sci.geom.geom2d.polygon.Polyline2D;
@@ -308,6 +309,11 @@ public class ImageDisplay extends JPanel
             Polyline2D poly = ((Ellipse2D) geom).asPolyline(120);
             drawPolyline(g2, poly);
         }
+        else if (geom instanceof SimpleGraph2D)
+        {
+            drawGraphEdges(g2, (SimpleGraph2D) geom);
+            drawGraphVertices(g2, (SimpleGraph2D) geom);
+        }
         else
         {
             // basic check to avoid errors
@@ -318,7 +324,45 @@ public class ImageDisplay extends JPanel
             System.out.println("can not handle geometry of class: " + selection.getClass());
         }
     }
+
     
+    // ===================================================================
+    // Specific geometry paint methods
+
+    /**
+     * Draws edges of a graph on the specified graphics. Paint settings are
+     * assumed to be already defined.
+     * 
+     * @param g2
+     *            the instance of Graphics2D to paint on
+     * @param graph
+     *            the graph whose edge need to be paint
+     */
+    private void drawGraphVertices(Graphics2D g2, SimpleGraph2D graph)
+    {
+        for (Point2D v : graph.vertices())
+        {
+            drawPoint(g2, v);
+        }
+    }
+    
+    /**
+     * Draws edges of a graph on the specified graphics. Paint settings are
+     * assumed to be already defined.
+     * 
+     * @param g2
+     *            the instance of Graphics2D to paint on
+     * @param graph
+     *            the graph whose edge need to be paint
+     */
+    private void drawGraphEdges(Graphics2D g2, SimpleGraph2D graph)
+    {
+        for (int iEdge = 0; iEdge < graph.edgeNumber(); iEdge++)
+        {
+            drawLineSegment(g2, graph.getEdgeCurve(iEdge));
+        }
+    }
+
     /**
 	 * Draws a point on the specified graphics. Paint settings are assumed to be
 	 * already defined.
@@ -421,5 +465,5 @@ public class ImageDisplay extends JPanel
 
     	// display the polygon
         g2.drawPolygon(px, py, nv);
-    }    
+    }
 }
