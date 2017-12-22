@@ -3,6 +3,14 @@
  */
 package imago.gui;
 
+import java.awt.image.BufferedImage;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+
 import imago.app.ImagoDoc;
 import imago.gui.action.ArrayOperatorAction;
 import imago.gui.action.ImageArrayOperatorAction;
@@ -72,6 +80,7 @@ import imago.gui.action.process.ImageFillHolesAction;
 import imago.gui.action.process.ImageFindNonZeroPixelsAction;
 import imago.gui.action.process.ImageGeodesicDistanceMapAction;
 import imago.gui.action.process.ImageKillBordersAction;
+import imago.gui.action.process.ImageManualThresholdAction;
 import imago.gui.action.process.ImageMorphologicalReconstructionAction;
 import imago.gui.action.process.ImageOtsuThresholdAction;
 import imago.gui.action.process.ImageReshapeAction;
@@ -79,15 +88,6 @@ import imago.gui.action.process.MorphologicalFilteringAction;
 import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectPolygonTool;
 import imago.gui.tool.SelectionTool;
-
-import java.awt.image.BufferedImage;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-
 import net.sci.array.Array;
 import net.sci.array.data.IntArray;
 import net.sci.array.data.ScalarArray;
@@ -104,7 +104,6 @@ import net.sci.image.morphology.MinimaAndMaxima;
 import net.sci.image.morphology.extrema.RegionalExtrema2D;
 import net.sci.image.process.DynamicAdjustment;
 import net.sci.image.process.ImageInverter;
-import net.sci.image.process.ImageThreshold;
 import net.sci.image.process.RotationAroundCenter;
 import net.sci.image.process.SobelGradient;
 import net.sci.image.process.SobelGradientNorm;
@@ -519,9 +518,9 @@ public class GuiBuilder
 		addMenuItem(menu, 
 				new ImageOtsuThresholdAction(frame, "otsuThreshold"),
 				"Otsu Threshold", isScalar);
-		addMenuItem(menu,
-				new ImageOperatorAction(frame, "threshold", new ImageThreshold(20)),
-				"Threshold (20)", isScalar);
+        addMenuItem(menu, 
+                new ImageManualThresholdAction(frame, "otsuThreshold"),
+                "Manual Threshold", isScalar);
         addMenuItem(menu, new ImageFindNonZeroPixelsAction(frame, "findNonZerosPixels"),
                 "Find Non-Zeros Elements", is2D && isScalar);
 		menu.addSeparator();
