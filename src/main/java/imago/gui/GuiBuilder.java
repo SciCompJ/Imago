@@ -61,6 +61,7 @@ import imago.gui.action.image.Image3DOrthoslicesImageAction;
 import imago.gui.action.image.Image3DSetOrthoSlicesDisplayAction;
 import imago.gui.action.image.MergeChannelImagesAction;
 import imago.gui.action.image.MiddleSliceImageAction;
+import imago.gui.action.image.PrintImageInfosAction;
 import imago.gui.action.image.PrintImageTiffTagsAction;
 import imago.gui.action.image.SetDataTypeDisplayRangeAction;
 import imago.gui.action.image.SetImageDisplayRangeAction;
@@ -414,8 +415,10 @@ public class GuiBuilder
 //		addMenuItem(menu, new DuplicateAction(frame, "Duplicate"), "Duplicate",
 //				isImage);
 
-		addMenuItem(menu, new PrintImageTiffTagsAction(frame,
-				"printImageTiffTags"), "Print TIFF Tags", isImage);
+        addMenuItem(menu, new PrintImageTiffTagsAction(frame,
+                "printImageTiffTags"), "Print TIFF Tags", isImage);
+        addMenuItem(menu, new PrintImageInfosAction(frame,
+                "printImageInfo"), "Print Image Info", isImage);
 		return menu;
 	}
 
