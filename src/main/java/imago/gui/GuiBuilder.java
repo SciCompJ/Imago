@@ -79,6 +79,7 @@ import imago.gui.action.process.ImageExtendedExtremaAction;
 import imago.gui.action.process.ImageFillHolesAction;
 import imago.gui.action.process.ImageFindNonZeroPixelsAction;
 import imago.gui.action.process.ImageGeodesicDistanceMapAction;
+import imago.gui.action.process.ImageIsocontourAction;
 import imago.gui.action.process.ImageKillBordersAction;
 import imago.gui.action.process.ImageManualThresholdAction;
 import imago.gui.action.process.ImageMorphologicalReconstructionAction;
@@ -507,7 +508,7 @@ public class GuiBuilder
 				new ChamferDistanceTransform2DFloat(ChamferWeights2D.CHESSKNIGHT, false)),
 				"Distance Map (float)", is2D && isBinary);
 		addMenuItem(binaryMenu, new ImageGeodesicDistanceMapAction(frame, "geodesicDistanceMap"),
-				"Geodesic Distance Map");
+				"Geodesic Distance Map...");
         binaryMenu.addSeparator();
         addMenuItem(binaryMenu, new BinaryImageBoundaryGraphAction(frame, "binaryImageBoundaryGraph"),
                 "Boundary Graph", is2D && isBinary);
@@ -519,10 +520,12 @@ public class GuiBuilder
 				new ImageOtsuThresholdAction(frame, "otsuThreshold"),
 				"Otsu Threshold", isScalar);
         addMenuItem(menu, 
-                new ImageManualThresholdAction(frame, "otsuThreshold"),
+                new ImageManualThresholdAction(frame, "manualThreshold"),
                 "Manual Threshold", isScalar);
         addMenuItem(menu, new ImageFindNonZeroPixelsAction(frame, "findNonZerosPixels"),
                 "Find Non-Zeros Elements", is2D && isScalar);
+        addMenuItem(menu, new ImageIsocontourAction(frame, "isocontour"),
+                "Isocontour...", is2D && isScalar);
 		menu.addSeparator();
 
 		addMenuItem(menu, 
