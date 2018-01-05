@@ -124,19 +124,19 @@ public class ExtractChannelFromColorImageAction extends ImagoAction
         case 3: // Hue
             while(rgb8Iter.hasNext() && channelIter.hasNext())
             {
-                channelIter.setNextValue(rgb8Iter.next().getHue() * k);
+                channelIter.setNextValue(rgb8Iter.next().hue() * k);
             }
             break;
         case 4: // Saturation
             while(rgb8Iter.hasNext() && channelIter.hasNext())
             {
-                channelIter.setNextValue(rgb8Iter.next().getSaturation() * k);
+                channelIter.setNextValue(rgb8Iter.next().saturation() * k);
             }
             break;
         case 5: // Luminance
             while(rgb8Iter.hasNext() && channelIter.hasNext())
             {
-                channelIter.setNextValue(rgb8Iter.next().getLuminance() * k);
+                channelIter.setNextValue(rgb8Iter.next().luminance() * k);
             }
             break;
         }
