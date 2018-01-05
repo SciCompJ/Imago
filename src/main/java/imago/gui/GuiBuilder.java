@@ -59,6 +59,7 @@ import imago.gui.action.image.ExtractChannelFromColorImageAction;
 import imago.gui.action.image.Image3DGetSliceAction;
 import imago.gui.action.image.Image3DOrthoslicesImageAction;
 import imago.gui.action.image.Image3DSetOrthoSlicesDisplayAction;
+import imago.gui.action.image.ImageDuplicateAction;
 import imago.gui.action.image.MergeChannelImagesAction;
 import imago.gui.action.image.MiddleSliceImageAction;
 import imago.gui.action.image.PrintImageInfosAction;
@@ -391,9 +392,9 @@ public class GuiBuilder
 
 		menu.add(geometryMenu);
 
+		// Create the menu for 3D images
 		JMenu stackMenu = new JMenu("Stacks");
 		stackMenu.setEnabled(is3D);
-
 		addMenuItem(stackMenu, 
 				new MiddleSliceImageAction(frame, "middleSlice"), "Middle Slice", is3D);
         addMenuItem(stackMenu, new Image3DGetSliceAction(frame,
@@ -406,15 +407,13 @@ public class GuiBuilder
         stackMenu.addSeparator();
 		addMenuItem(stackMenu, new StackToVectorImageAction(frame, "stackToVector"),
 				"Stack To Vector", is3D);
-
-//		addMenuItem(stackMenu, new StackSliceAction(frame, "stackSlice"),
-//				"Get Slice Stack", has3D);
-//
 		menu.add(stackMenu);
-//
-//		addMenuItem(menu, new DuplicateAction(frame, "Duplicate"), "Duplicate",
-//				isImage);
 
+        menu.addSeparator();
+		addMenuItem(menu, new ImageDuplicateAction(frame, "Duplicate"), "Duplicate",
+		        isImage);
+
+		menu.addSeparator();
         addMenuItem(menu, new PrintImageTiffTagsAction(frame,
                 "printImageTiffTags"), "Print TIFF Tags", isImage);
         addMenuItem(menu, new PrintImageInfosAction(frame,
