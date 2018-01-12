@@ -10,8 +10,8 @@ import imago.gui.ImagoAction;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import net.sci.array.Array;
-import net.sci.array.ArrayToArrayOperator;
 import net.sci.array.data.Float32Array;
+import net.sci.array.data.ScalarArray;
 import net.sci.image.Image;
 import net.sci.image.process.filter.BoxFilter3x3;
 
@@ -48,12 +48,18 @@ public class BoxFilter3x3Float extends ImagoAction
 		Image metaImage = doc.getImage();
 		Array<?> array = metaImage.getData();
 
+		// Check array is scalar
+		if (!(array instanceof ScalarArray))
+		{
+		    return;
+		}
+
 		// create result image with specified type
 		Float32Array output = Float32Array.create(array.getSize());
 
 		// create operator and apply
-		ArrayToArrayOperator filter = new BoxFilter3x3();
-		filter.process(array, output);
+		BoxFilter3x3 filter = new BoxFilter3x3();
+		filter.processScalar((ScalarArray<?>) array, output);
 		Image result = new Image(output, metaImage);
 
 		// add the image document to GUI

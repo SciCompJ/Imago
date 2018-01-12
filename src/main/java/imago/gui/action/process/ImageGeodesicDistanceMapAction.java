@@ -11,6 +11,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImagoAction;
 import imago.gui.ImagoFrame;
 import net.sci.array.Array;
+import net.sci.array.Arrays;
 import net.sci.array.data.BinaryArray;
 import net.sci.array.data.ScalarArray;
 import net.sci.array.data.scalar2d.BinaryArray2D;
@@ -76,13 +77,13 @@ public class ImageGeodesicDistanceMapAction extends ImagoAction
 
 		Array<?> marker = markerImage.getData();
 		Array<?> mask = maskImage.getData();
-		if (!Array.isSameDimensionality(marker, mask))
+		if (!Arrays.isSameDimensionality(marker, mask))
 		{
 			this.frame.showErrorDialog("Both arrays must have same dimensionality", "Dimensionality Error");
 			return;
 		}
 		
-		if (!Array.isSameSize(marker, mask))
+		if (!Arrays.isSameSize(marker, mask))
 		{
 			this.frame.showErrorDialog("Both arrays must have same size", "Image Size Error");
 			return;
