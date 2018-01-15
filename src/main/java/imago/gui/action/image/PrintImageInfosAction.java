@@ -10,6 +10,8 @@ import imago.gui.ImagoAction;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import net.sci.image.Image;
+import net.sci.image.ImageAxis;
+import net.sci.image.NumericalAxis;
 
 /**
  * @author dlegland
@@ -50,13 +52,17 @@ public class PrintImageInfosAction extends ImagoAction
             System.out.print(image.getSize(d) + ", ");
         System.out.println(image.getSize(nd-1) + "]");
 
-        double[] calib = image.getSpatialCalibration().getResolutions();
-        System.out.print("Spatial Calibration: [");
-        for (int d = 0; d < nd-1; d++)
-            System.out.print(calib[d] + ", ");
-        System.out.println(calib[nd-1] + "]");
-        System.out.print("Spatial Calibration Unit: " +  image.getSpatialCalibration().getUnit());
-        
+        System.out.println("Axes calibration:");
+        int d = 0;
+        for (ImageAxis axis : image.getAxes())
+        {
+            System.out.print("  Axis[" + (d++) + "]: ");
+            if (axis instanceof NumericalAxis)
+            {
+                NumericalAxis axis2 = (NumericalAxis) axis;
+                System.out.print(axis2.getSpacing() + " " + axis2.getUnitName());
+            }
+            System.out.println();
+        }
     }
-
 }
