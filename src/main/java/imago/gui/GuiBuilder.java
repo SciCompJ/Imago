@@ -60,6 +60,7 @@ import imago.gui.action.image.Image3DGetSliceAction;
 import imago.gui.action.image.Image3DOrthoslicesImageAction;
 import imago.gui.action.image.Image3DSetOrthoSlicesDisplayAction;
 import imago.gui.action.image.ImageDuplicateAction;
+import imago.gui.action.image.ImageSetScaleAction;
 import imago.gui.action.image.MergeChannelImagesAction;
 import imago.gui.action.image.MiddleSliceImageAction;
 import imago.gui.action.image.PrintImageInfosAction;
@@ -365,6 +366,10 @@ public class GuiBuilder
 				 new ArrayOperatorAction(frame, "adjustDynamic", new DynamicAdjustment(.01)),
 				 "Adjust Grayscale Dynamic", isScalar);
 
+        addMenuItem(menu, new ImageSetScaleAction(frame, "setImageScale"), 
+                "Set Image Scale", isImage);
+        
+        menu.addSeparator();
 		JMenu geometryMenu = new JMenu("Geometry");
 		geometryMenu.setEnabled(isImage);
 		addMenuItem(geometryMenu, new ArrayOperatorAction(frame,

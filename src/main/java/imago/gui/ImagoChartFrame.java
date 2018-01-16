@@ -21,7 +21,7 @@ public class ImagoChartFrame extends ImagoFrame {
 
 
 	// ===================================================================
-	// Constructor
+	// Constructors
 	
 	public ImagoChartFrame(ImagoGui gui) {
 		super(gui);
