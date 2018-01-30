@@ -330,14 +330,20 @@ public class GuiBuilder
         JMenu colormapMenu = new JMenu("Color Maps");
         addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapGray", 
                 ColorMaps.GRAY), "Gray");
+        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapJet", 
+                ColorMaps.JET), "Jet");
+        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapBlueGrayRed", 
+                ColorMaps.BLUE_GRAY_RED), "Blue-Gray-Red");
         addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapRed", 
                 ColorMaps.RED), "Red");
         addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapGreen", 
                 ColorMaps.GREEN), "Green");
         addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapBlue", 
                 ColorMaps.BLUE), "Blue");
-        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapBlueGrayRed", 
-                ColorMaps.BLUE_GRAY_RED), "Blue-Gray-Red");
+        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapFire", 
+                ColorMaps.FIRE), "Fire");
+        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapGlasbey", 
+                ColorMaps.GLASBEY), "Glasbey");
         editMenu.add(colormapMenu);
 
         // add utility
