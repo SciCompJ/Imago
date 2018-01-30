@@ -63,15 +63,16 @@ import javax.swing.event.CaretListener;
  * 
  */
 public class GenericDialog
-		implements ActionListener, AdjustmentListener, CaretListener,
-		FocusListener, InputMethodListener, KeyListener, WindowListener
 {
-	// TODO: thinking about splitting GUI and model parts ?
-
+    // =============================================================
+    // Constants
 	
 	private static final int MAX_SLIDERS = 25;
 
 	
+    // =============================================================
+    // Class variables
+    
 	/** The dialog instance containing widgets */
 	private Dialog dialog;
 
@@ -108,6 +109,14 @@ public class GenericDialog
     
     boolean updateWidgets = false;
    
+    
+    // the listeners
+    Controller controller;
+    
+
+    // =============================================================
+    // Constructors
+    
 	/**
 	 * Creates a new GenericDialog, located with respect to parent frame, and
 	 * with given title.
@@ -115,15 +124,18 @@ public class GenericDialog
 	public GenericDialog (JFrame parent, String title) 
 	{
 		this.dialog = new JDialog(parent, title, true);
-		
+	
+		// creates the listeners
+		this.controller = new Controller(dialog);
+	    		
 		// setup global layout
 		gridLayout = new GridBagLayout();
 		c = new GridBagConstraints();
 		this.dialog.setLayout(gridLayout);
 
 		// add some listeners
-		this.dialog.addKeyListener(this);
-		this.dialog.addWindowListener(this);
+		this.dialog.addKeyListener(this.controller);
+		this.dialog.addWindowListener(this.controller);
 		
 		// setup location
 		if (parent != null)
@@ -144,6 +156,10 @@ public class GenericDialog
 		this((JFrame) null, title);
 	}
 
+
+	// =============================================================
+    // General methods
+    
 	/**
 	 * Adds a numeric field.
 	 */
@@ -322,7 +338,7 @@ public class GenericDialog
 		JCheckBox cb = new JCheckBox(label);
 		cb.setSelected(defaultValue);
 //		cb.addItemListener(this);
-		cb.addKeyListener(this);
+		cb.addKeyListener(this.controller);
 
 		// Configure layout depending on number of existing checkboxes
 		if (checkBoxes == null)
@@ -378,7 +394,7 @@ public class GenericDialog
 	    this.dialog.add(theLabel);
 	    
 	    JComboBox<String> combo = new JComboBox<String>();
-	    combo.addKeyListener(this);
+	    combo.addKeyListener(this.controller);
 	    //		thisChoice.addItemListener(this);
 	    for (String item : items)
 	        combo.addItem(item);
@@ -423,7 +439,7 @@ public class GenericDialog
         this.dialog.add(theLabel);
         
         JComboBox<String> combo = new JComboBox<String>();
-        combo.addKeyListener(this);
+        combo.addKeyListener(this.controller);
         //      thisChoice.addItemListener(this);
         for (T item : items)
             combo.addItem(item.toString());
@@ -490,7 +506,7 @@ public class GenericDialog
 
 //		GUI.fix(s);
 		scrollBars.add(s);
-		s.addAdjustmentListener(this);
+		s.addAdjustmentListener(this.controller);
 		s.setUnitIncrement(1);
 
 		if (numericFields==null) 
@@ -555,8 +571,6 @@ public class GenericDialog
 //		if (Recorder.record || macro)
 //			saveLabel(tf, label);
    }
-
-
    
 	/**
 	 * Cleanup a label in case some special characters were added.
@@ -588,10 +602,10 @@ public class GenericDialog
 //		if (IJ.isLinux())
 //			tf.setBackground(Color.white);
 		
-		tf.addActionListener(this);
-		tf.addCaretListener(this);
-		tf.addFocusListener(this);
-		tf.addKeyListener(this);
+		tf.addActionListener(this.controller);
+		tf.addCaretListener(this.controller);
+		tf.addFocusListener(this.controller);
+		tf.addKeyListener(this.controller);
 
 		return tf;
 	}
@@ -727,8 +741,8 @@ public class GenericDialog
 	private JButton addButton(String label) 
 	{
 		JButton button = new JButton(label);
-		button.addActionListener(this);
-		button.addKeyListener(this);
+		button.addActionListener(this.controller);
+		button.addKeyListener(this.controller);
 		return button;
 	}
 	
@@ -885,160 +899,174 @@ public class GenericDialog
 		return index;
     }
     
-
-    
-	@Override
-	public void windowActivated(WindowEvent arg0) {}
-
-	@Override
-	public void windowClosed(WindowEvent arg0) {}
-
-	@Override
-	public void windowClosing(WindowEvent arg0) {
-		wasCanceled = true; 
-		output = Output.CANCEL;
-		this.dialog.dispose(); 
-	}
-
-	@Override
-	public void windowDeactivated(WindowEvent arg0) {}
-
-	@Override
-	public void windowDeiconified(WindowEvent arg0) {}
-
-	@Override
-	public void windowIconified(WindowEvent arg0) {}
-
-	@Override
-	public void windowOpened(WindowEvent arg0) {}
-
-	@Override
-	public void keyPressed(KeyEvent evt) 
+	private class Controller implements ActionListener, AdjustmentListener, CaretListener,
+    FocusListener, InputMethodListener, KeyListener, WindowListener
 	{
-		int keyCode = evt.getKeyCode(); 
-//		IJ.setKeyDown(keyCode);
-		
-//		if (keyCode == KeyEvent.VK_ENTER && textArea1 == null) {
-		if (keyCode == KeyEvent.VK_ENTER) {
-			wasOKed = true;
-			output = Output.OK;
-//			if (IJ.isMacOSX() && IJ.isJava15())
-//				accessTextFields();
-			this.dialog.dispose();
-		} else if (keyCode == KeyEvent.VK_ESCAPE) {
-			wasCanceled = true;
-			output = Output.CANCEL;
-			this.dialog.dispose();
-//			IJ.resetEscape();
-		} else if (keyCode == KeyEvent.VK_W
-				&& (evt.getModifiers() & Toolkit.getDefaultToolkit()
-						.getMenuShortcutKeyMask()) != 0) {
-			wasCanceled = true;
-			output = Output.CANCEL;
-			this.dialog.dispose();
-		}
-	}
+	    Dialog dialog;
+	    
+	    public Controller(Dialog dialog)
+	    {
+	        this.dialog = dialog;
+	    }
+	    
+	    @Override
+	    public void keyPressed(KeyEvent evt) 
+	    {
+	        int keyCode = evt.getKeyCode(); 
+//	      IJ.setKeyDown(keyCode);
+	        
+//	      if (keyCode == KeyEvent.VK_ENTER && textArea1 == null) {
+	        if (keyCode == KeyEvent.VK_ENTER) {
+	            wasOKed = true;
+	            output = Output.OK;
+//	          if (IJ.isMacOSX() && IJ.isJava15())
+//	              accessTextFields();
+	            this.dialog.dispose();
+	        } else if (keyCode == KeyEvent.VK_ESCAPE) {
+	            wasCanceled = true;
+	            output = Output.CANCEL;
+	            this.dialog.dispose();
+//	          IJ.resetEscape();
+	        } else if (keyCode == KeyEvent.VK_W
+	                && (evt.getModifiers() & Toolkit.getDefaultToolkit()
+	                        .getMenuShortcutKeyMask()) != 0) {
+	            wasCanceled = true;
+	            output = Output.CANCEL;
+	            this.dialog.dispose();
+	        }
+	    }
 
-	@Override
-	public void keyReleased(KeyEvent arg0) {}
+	    @Override
+	    public void keyReleased(KeyEvent arg0) {}
 
-	@Override
-	public void keyTyped(KeyEvent arg0) {}
+	    @Override
+	    public void keyTyped(KeyEvent arg0) {}
 
-	@Override
-	public void focusGained(FocusEvent evt) {
-		Component c = evt.getComponent();
-		if (c instanceof JTextField)
-			((JTextField) c).selectAll();
+	    @Override
+	    public void focusGained(FocusEvent evt) {
+	        Component c = evt.getComponent();
+	        if (c instanceof JTextField)
+	            ((JTextField) c).selectAll();
 
-	}
+	    }
 
-	@Override
-	public void focusLost(FocusEvent evt) {
-		Component c = evt.getComponent();
-		if (c instanceof JTextField)
-			((JTextField) c).select(0, 0);
-	}
+	    @Override
+	    public void focusLost(FocusEvent evt) {
+	        Component c = evt.getComponent();
+	        if (c instanceof JTextField)
+	            ((JTextField) c).select(0, 0);
+	    }
 
-	@Override
-	public void actionPerformed(ActionEvent evt) {
-		Object source = evt.getSource();
-		if (source == okButton) {
-			output = Output.OK;
-			this.dialog.dispose();
-		} else if (source == cancelButton) {
-			output = Output.CANCEL;
-			this.dialog.dispose();
-		}
-//		} else
-//            notifyListeners(evt);
-	}
+        @Override
+        public void actionPerformed(ActionEvent evt)
+        {
+            Object source = evt.getSource();
+            if (source == okButton)
+            {
+                output = Output.OK;
+                this.dialog.dispose();
+            } 
+            else if (source == cancelButton)
+            {
+                output = Output.CANCEL;
+                this.dialog.dispose();
+            }
+            // } else
+            // notifyListeners(evt);
+        }
 
-	@Override
-	public void caretPositionChanged(InputMethodEvent arg0) {
-	}
+	    @Override
+	    public void caretPositionChanged(InputMethodEvent arg0) {
+	    }
 
-	@Override
-	public void inputMethodTextChanged(InputMethodEvent arg0) {
-	}
+	    @Override
+	    public void inputMethodTextChanged(InputMethodEvent arg0) {
+	    }
 
-	@Override
-	public synchronized void caretUpdate(CaretEvent evt) {
-//        notifyListeners(e); 
-		if (updateWidgets)
-			return;
-		if (scrollBars == null)
-			return;
-		
-		Object source = evt.getSource();
-		for (int i = 0; i < scrollBars.size(); i++) {
-			int index = sliderIndexes[i];
-			if (source == numericFields.get(index)) {
-				updateWidgets = true;
+	    @Override
+	    public synchronized void caretUpdate(CaretEvent evt) {
+//	        notifyListeners(e); 
+	        if (updateWidgets)
+	            return;
+	        if (scrollBars == null)
+	            return;
+	        
+	        Object source = evt.getSource();
+	        for (int i = 0; i < scrollBars.size(); i++) {
+	            int index = sliderIndexes[i];
+	            if (source == numericFields.get(index)) {
+	                updateWidgets = true;
 
-				JTextField tf = numericFields.get(index);
-				// double state = Tools.parseDouble(tf.getText());
-				double value = parseDouble(tf.getText());
-				if (!Double.isNaN(value)) {
-					JScrollBar sb = scrollBars.get(i);
-					sb.setValue((int) (value * sliderScales[i]));
-				}
-				updateWidgets = false;
+	                JTextField tf = numericFields.get(index);
+	                // double state = Tools.parseDouble(tf.getText());
+	                double value = parseDouble(tf.getText());
+	                if (!Double.isNaN(value)) {
+	                    JScrollBar sb = scrollBars.get(i);
+	                    sb.setValue((int) (value * sliderScales[i]));
+	                }
+	                updateWidgets = false;
 
-				// IJ.log(i+" "+tf.getText());
-			}
-		}
-	}
+	                // IJ.log(i+" "+tf.getText());
+	            }
+	        }
+	    }
 
-	private static final double parseDouble(String text) 
-	{
-		if (text == null || text.isEmpty()) return Double.NaN;
-		return Double.parseDouble(text);
+	    @Override
+	    public synchronized void adjustmentValueChanged(AdjustmentEvent evt) 
+	    {
+	        if (updateWidgets)
+	            return;
+	        
+	        Object source = evt.getSource();
+	        for (int i = 0; i < scrollBars.size(); i++) {
+	            if (source == scrollBars.get(i)) {
+	                updateWidgets = true;
+	                JScrollBar sb = (JScrollBar) source;
+	                JTextField tf = numericFields.get(sliderIndexes[i]);
+	                
+	                double scale = sliderScales[i];
+	                int digits = scale == 1.0 ? 0 : 2;
+
+	                String text = formatNumber(sb.getValue() / scale, digits);
+	                tf.setText(text);
+	                updateWidgets = false;
+	            }
+	        }
+	    }
+
+        @Override
+        public void windowActivated(WindowEvent arg0) {}
+
+        @Override
+        public void windowClosed(WindowEvent arg0) {}
+
+        @Override
+        public void windowClosing(WindowEvent arg0) 
+        {
+            wasCanceled = true; 
+            output = Output.CANCEL;
+            dialog.dispose(); 
+        }
+
+        @Override
+        public void windowDeactivated(WindowEvent arg0) {}
+
+        @Override
+        public void windowDeiconified(WindowEvent arg0) {}
+
+        @Override
+        public void windowIconified(WindowEvent arg0) {}
+
+        @Override
+        public void windowOpened(WindowEvent arg0) {}
 	}
 	
-	@Override
-	public synchronized void adjustmentValueChanged(AdjustmentEvent evt) 
-	{
-		if (updateWidgets)
-			return;
-		
-		Object source = evt.getSource();
-		for (int i = 0; i < scrollBars.size(); i++) {
-			if (source == scrollBars.get(i)) {
-				updateWidgets = true;
-				JScrollBar sb = (JScrollBar) source;
-				JTextField tf = numericFields.get(sliderIndexes[i]);
-				
-				double scale = sliderScales[i];
-				int digits = scale == 1.0 ? 0 : 2;
-
-				String text = formatNumber(sb.getValue() / scale, digits);
-				tf.setText(text);
-				updateWidgets = false;
-			}
-		}
-	}
-
+    private static final double parseDouble(String text) 
+    {
+        if (text == null || text.isEmpty()) return Double.NaN;
+        return Double.parseDouble(text);
+    }
+    
 	public static final void main(String[] args) 
 	{
 		System.out.println("start main");
