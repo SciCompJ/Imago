@@ -3,14 +3,6 @@
  */
 package imago.gui;
 
-import java.awt.image.BufferedImage;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-
 import imago.app.ImagoDoc;
 import imago.gui.action.ArrayOperatorAction;
 import imago.gui.action.ImageArrayOperatorAction;
@@ -60,6 +52,7 @@ import imago.gui.action.image.Image3DGetSliceAction;
 import imago.gui.action.image.Image3DOrthoslicesImageAction;
 import imago.gui.action.image.Image3DSetOrthoSlicesDisplayAction;
 import imago.gui.action.image.ImageDuplicateAction;
+import imago.gui.action.image.ImageSetColorMapFactoryAction;
 import imago.gui.action.image.ImageSetScaleAction;
 import imago.gui.action.image.MergeChannelImagesAction;
 import imago.gui.action.image.MiddleSliceImageAction;
@@ -92,6 +85,15 @@ import imago.gui.action.process.MorphologicalFilteringAction;
 import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectPolygonTool;
 import imago.gui.tool.SelectionTool;
+
+import java.awt.image.BufferedImage;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+
 import net.sci.array.Array;
 import net.sci.array.data.IntArray;
 import net.sci.array.data.ScalarArray;
@@ -99,6 +101,7 @@ import net.sci.array.process.PowerOfTwo;
 import net.sci.array.process.Sqrt;
 import net.sci.array.process.shape.Flip;
 import net.sci.array.process.shape.Rotate90;
+import net.sci.image.ColorMaps;
 import net.sci.image.Image;
 import net.sci.image.binary.ChamferWeights2D;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DFloat;
@@ -323,7 +326,21 @@ public class GuiBuilder
 		addMenuItem(editMenu, new ZoomOneAction(frame, "zoomOne"), "Zoom One",
 				isImage);
 		
-		// add utility
+        // add Colormap utils
+        JMenu colormapMenu = new JMenu("Color Maps");
+        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapGray", 
+                ColorMaps.GRAY), "Gray");
+        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapRed", 
+                ColorMaps.RED), "Red");
+        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapGreen", 
+                ColorMaps.GREEN), "Green");
+        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapBlue", 
+                ColorMaps.BLUE), "Blue");
+        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapBlueGrayRed", 
+                ColorMaps.BLUE_GRAY_RED), "Blue-Gray-Red");
+        editMenu.add(colormapMenu);
+
+        // add utility
 		editMenu.addSeparator();
         addMenuItem(editMenu, new PrintFrameListAction(frame, "printFrameList"), 
                 "Print Frame List");
