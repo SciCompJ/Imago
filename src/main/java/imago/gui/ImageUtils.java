@@ -279,9 +279,10 @@ public class ImageUtils
         byte[] red = new byte[256];
         byte[] green = new byte[256];
         byte[] blue = new byte[256];
+        int nColors = colormap.size();
         for(int i = 0; i < 256; i++) 
         {
-            net.sci.array.type.Color color = colormap.getColor(i);
+            net.sci.array.type.Color color = colormap.getColor(i % nColors);
             red[i]      = (byte) (color.red() * 255);
             green[i]    = (byte) (color.green() * 255);
             blue[i]     = (byte) (color.blue() * 255);

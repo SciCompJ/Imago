@@ -45,7 +45,7 @@ public class ImageDuplicateAction extends ImagoAction
         ImagoDoc doc = ((ImagoDocViewer) this.frame).getDocument();
         Image image = doc.getImage();
         
-        Image result = new Image(image.getData().duplicate(), image);
+        Image result = image.duplicate();
         
         // add the image document to GUI
         this.gui.addNewDocument(result);

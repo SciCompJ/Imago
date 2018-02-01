@@ -11,24 +11,24 @@ import imago.gui.ImagoFrame;
 
 import java.awt.event.ActionEvent;
 
+import net.sci.array.type.Color;
+import net.sci.array.type.CommonColors;
 import net.sci.image.Image;
 
 /**
- * Setup spatial calibration of the image, assuming all dimensions are expressed
- * with the same unit.
+ * Changes the background color (used for display of labels) for this image.
  * 
  * @author David Legland
  *
  */
-public class ImageSetScaleAction extends ImagoAction
+public class ImageSetBackgroundColorAction extends ImagoAction
 {
-
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public ImageSetScaleAction(ImagoFrame frame, String name)
+	public ImageSetBackgroundColorAction(ImagoFrame frame, String name)
 	{
 		super(frame, name);
 	}
@@ -42,22 +42,15 @@ public class ImageSetScaleAction extends ImagoAction
 	@Override
 	public void actionPerformed(ActionEvent evt)
 	{
-		System.out.println("image set scale");
+		System.out.println("image set background color");
 
 		// get current image data
 		ImagoDocViewer viewer = (ImagoDocViewer) this.frame;
 		ImagoDoc doc = viewer.getDocument();
 		Image image	= doc.getImage();
 
-		int nd = image.getDimension();
-		
-		
 		GenericDialog gd = new GenericDialog(this.frame, "Set Image Scale");
-		for (int d = 0; d < nd; d++)
-		{
-			gd.addNumericField("Pixel size [" + (d+1) + "]", 1.0, 6);
-		}
-		gd.addTextField("Unit Name:" , "");
+        gd.addChoice("Background Color:", CommonColors.all(), CommonColors.BLACK);
 		gd.showDialog();
 		
 		if (gd.getOutput() == GenericDialog.Output.CANCEL) 
@@ -65,16 +58,11 @@ public class ImageSetScaleAction extends ImagoAction
 			return;
 		}
 		
-		// parse dialog results
-		double[] resolList = new double[nd];
-		for (int d = 0; d < nd; d++)
-		{
-			resolList[d] = gd.getNextNumber();
-		}
-		String unitName = gd.getNextString();
+        // parse dialog results
+		Color bgColor = CommonColors.fromLabel(gd.getNextChoice()).getColor();
+		image.setBackgroundColor(bgColor);
 
-		image.setSpatialCalibration(resolList, unitName);
-		
+		viewer.getImageView().refreshDisplay();
 		viewer.repaint();
 	}
 

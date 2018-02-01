@@ -52,6 +52,7 @@ import imago.gui.action.image.Image3DGetSliceAction;
 import imago.gui.action.image.Image3DOrthoslicesImageAction;
 import imago.gui.action.image.Image3DSetOrthoSlicesDisplayAction;
 import imago.gui.action.image.ImageDuplicateAction;
+import imago.gui.action.image.ImageSetBackgroundColorAction;
 import imago.gui.action.image.ImageSetColorMapFactoryAction;
 import imago.gui.action.image.ImageSetScaleAction;
 import imago.gui.action.image.MergeChannelImagesAction;
@@ -60,6 +61,7 @@ import imago.gui.action.image.PrintImageInfosAction;
 import imago.gui.action.image.PrintImageTiffTagsAction;
 import imago.gui.action.image.SetDataTypeDisplayRangeAction;
 import imago.gui.action.image.SetImageDisplayRangeAction;
+import imago.gui.action.image.SetImageTypeToLabelAction;
 import imago.gui.action.image.SetManualDisplayRangeAction;
 import imago.gui.action.image.SplitImageChannelsAction;
 import imago.gui.action.image.StackToVectorImageAction;
@@ -236,8 +238,8 @@ public class GuiBuilder
 		JMenu editMenu = new JMenu("Edit");
 
 		// Type conversion items
-		JMenu convertTypeMenu = new JMenu("Convert Type");
-		convertTypeMenu.setEnabled(isImage);
+		JMenu convertDataTypeMenu = new JMenu("Convert Data-Type");
+		convertDataTypeMenu.setEnabled(isImage);
 		// addMenuItem(convertTypeMenu, new MetaImageOperatorAction(frame,
 		// "toGray8",
 		// new Gray8Converter()), "Gray8", isImage);
@@ -245,22 +247,26 @@ public class GuiBuilder
 		// "toFloat",
 		// new FloatConverter()), "Float", isImage);
 		// editMenu.add(convertTypeMenu);
-		addMenuItem(convertTypeMenu, new ConvertToUInt8ImageAction(frame, "convertToUInt8"),
+		addMenuItem(convertDataTypeMenu, new ConvertToUInt8ImageAction(frame, "convertToUInt8"),
 				"UInt8", isScalar);
-		addMenuItem(convertTypeMenu, new ConvertToUInt16ImageAction(frame, "convertToUInt16"),
+		addMenuItem(convertDataTypeMenu, new ConvertToUInt16ImageAction(frame, "convertToUInt16"),
 				"UInt16", isScalar);
-		convertTypeMenu.addSeparator();
-		addMenuItem(convertTypeMenu, new ConvertToInt16ImageAction(frame, "convertToInt16"),
+		convertDataTypeMenu.addSeparator();
+		addMenuItem(convertDataTypeMenu, new ConvertToInt16ImageAction(frame, "convertToInt16"),
 				"Int16", isScalar);
-		addMenuItem(convertTypeMenu, new ConvertToInt32ImageAction(frame, "convertToInt32"),
+		addMenuItem(convertDataTypeMenu, new ConvertToInt32ImageAction(frame, "convertToInt32"),
 				"Int32", isScalar);
-		convertTypeMenu.addSeparator();
-		addMenuItem(convertTypeMenu, new ConvertToFloat32ImageAction(frame, "convertToFloat32"),
+		convertDataTypeMenu.addSeparator();
+		addMenuItem(convertDataTypeMenu, new ConvertToFloat32ImageAction(frame, "convertToFloat32"),
 				"Float32", isImage);
-		addMenuItem(convertTypeMenu, new ConvertToFloat64ImageAction(frame, "convertToFloat64"),
-				"Float64", isImage);
-		editMenu.add(convertTypeMenu);
+        addMenuItem(convertDataTypeMenu, new ConvertToFloat64ImageAction(frame, "convertToFloat64"),
+                "Float64", isImage);
+		editMenu.add(convertDataTypeMenu);
 
+		JMenu imageTypeMenu = new JMenu("Image Type");
+        addMenuItem(imageTypeMenu, new SetImageTypeToLabelAction(frame, "convertTypeToLabel"),
+                "Set to Label Image", isScalar);
+        editMenu.add(imageTypeMenu);
 
 		// submenu for creation of phantoms
         JMenu phantomMenu = new JMenu("Phantoms");
@@ -286,6 +292,8 @@ public class GuiBuilder
 				"mergeChannels"), "Merge Channels");
         addMenuItem(colorMenu, new ExtractChannelFromColorImageAction(frame,
                 "extractChannel"), "Extract Channel...", isColor);
+        addMenuItem(colorMenu, new ImageSetBackgroundColorAction(frame, "imageSetBackgroundColor"),
+                "Set Background Color...", hasLabelImage(frame));
 		// addMenuItem(editMenu, new MetaImageOperatorAction(frame,
 		// "colorToGray",
 		// new Gray8Converter()), "RGB -> Gray8", isColor);
@@ -645,7 +653,20 @@ public class GuiBuilder
 		return doc != null;
 	}
 
-	private final static boolean hasIntegerImage(ImagoFrame frame)
+    private final static boolean hasLabelImage(ImagoFrame frame)
+    {
+        ImagoDoc doc = null;
+        if (frame instanceof ImagoDocViewer)
+        {
+            doc = ((ImagoDocViewer) frame).getDocument();
+        }
+        if (doc == null)
+            return false;
+
+        return doc.getImage().isLabelImage();
+    }
+
+    private final static boolean hasIntegerImage(ImagoFrame frame)
 	{
 		ImagoDoc doc = null;
 		if (frame instanceof ImagoDocViewer)

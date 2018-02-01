@@ -9,9 +9,12 @@ import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 
+import net.sci.array.type.Color;
 import net.sci.image.ColorMap;
 import net.sci.image.ColorMapFactory;
+import net.sci.image.DefaultColorMap;
 import net.sci.image.Image;
 
 /**
@@ -67,6 +70,20 @@ public class ImageSetColorMapFactoryAction extends ImagoAction
 		}
 		
 		ColorMap colorMap = factory.createColorMap(nColors);
+		
+        // in case of label image, add the background color in the beginning of
+        // the colormap
+        if (image.isLabelImage())
+        {
+            ArrayList<Color> newColors = new ArrayList<Color>(nColors + 1);
+            newColors.add(image.getBackgroundColor());
+            for (int i = 0;i < nColors; i++)
+            {
+                newColors.add(colorMap.getColor(i));
+            }
+            colorMap = new DefaultColorMap(newColors);
+        }
+		
 		image.setColorMap(colorMap);
 		//TODO: notify change ?
 		
