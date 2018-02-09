@@ -13,6 +13,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import imago.gui.ImagoAction;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
+import imago.gui.ImagoGui;
 import net.sci.array.Array;
 import net.sci.array.data.BinaryArray;
 import net.sci.array.data.UInt8Array;
@@ -80,9 +81,10 @@ public class ReadTiffAction extends ImagoAction
 		{
 			reader = new TiffImageReader(file);
 		}
-		catch (IOException ex) 
+		catch (Exception ex) 
 		{
-			System.err.println(ex);
+		    System.err.println(ex);
+            ImagoGui.showErrorDialog(frame, ex.getLocalizedMessage(), "TIFF Image Reading Error");
 			return;
 		}
 		
@@ -100,43 +102,15 @@ public class ReadTiffAction extends ImagoAction
 		} 
 		catch (Exception ex)
 		{
-			System.err.println(ex);
-			return;
+            System.err.println(ex);
+            ImagoGui.showErrorDialog(frame, ex.getLocalizedMessage(), "TIFF Image Reading Error");
+            return;
 		}
 		
         // If image data contains only two different values, convert to binary
         image = eventuallyConvertToBinary(image);
 		 
-//		// If image is indexed, convert to true RGB
-//		if (image.getColorMap() != null)
-//		{
-//			int dim = image.getDimension();
-//			int[][] map = image.getColorMap();
-//			
-//			switch (dim)
-//			{
-//			case 2:
-//				// Convert indexed 2D image to 2D RGB image
-//				UInt8Array3D img3d = (UInt8Array3D) image.getData();
-//				
-//				RGB8Image2D rgb2d = new ByteBufferedRGB8Image2D(img2d.getSize(0), img2d.getSize(1));
-//				image = new Image(rgb2d, image);
-//				image.setColorMap(map);
-//				break;
-//				
-//			case 3:
-//				// Convert indexed 3D image to 3D RGB image
-//				RGB8Image3D rgb3d = new ByteBufferedRGB8Image3D(img3d.getSize(0), img3d.getSize(1), img3d.getSize(2));
-//				image = new Image(rgb3d, image);
-//				image.setColorMap(map);
-//				break;
-//
-//			default:
-//				throw new RuntimeException("Unknown image dimension: "
-//						+ image.getDimension());
-//			}
-//		}
-		
+        // populates some meta-data
 		image.setName(file.getName());
 		
 		// add the image document to GUI
