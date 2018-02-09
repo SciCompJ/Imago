@@ -49,6 +49,7 @@ import imago.gui.action.image.ConvertToInt32ImageAction;
 import imago.gui.action.image.ConvertToUInt16ImageAction;
 import imago.gui.action.image.ConvertToUInt8ImageAction;
 import imago.gui.action.image.ExtractChannelFromColorImageAction;
+import imago.gui.action.image.Image3DGetCurrentSliceAction;
 import imago.gui.action.image.Image3DGetSliceAction;
 import imago.gui.action.image.Image3DOrthoslicesImageAction;
 import imago.gui.action.image.Image3DSetOrthoSlicesDisplayAction;
@@ -57,7 +58,6 @@ import imago.gui.action.image.ImageSetBackgroundColorAction;
 import imago.gui.action.image.ImageSetColorMapFactoryAction;
 import imago.gui.action.image.ImageSetScaleAction;
 import imago.gui.action.image.MergeChannelImagesAction;
-import imago.gui.action.image.MiddleSliceImageAction;
 import imago.gui.action.image.PrintImageInfosAction;
 import imago.gui.action.image.PrintImageTiffTagsAction;
 import imago.gui.action.image.SetDataTypeDisplayRangeAction;
@@ -434,8 +434,10 @@ public class GuiBuilder
 		// Create the menu for 3D images
 		JMenu stackMenu = new JMenu("Stacks");
 		stackMenu.setEnabled(is3D);
-		addMenuItem(stackMenu, 
-				new MiddleSliceImageAction(frame, "middleSlice"), "Middle Slice", is3D);
+//		addMenuItem(stackMenu, 
+//				new MiddleSliceImageAction(frame, "middleSlice"), "Middle Slice", is3D);
+        addMenuItem(stackMenu, new Image3DGetCurrentSliceAction(frame,
+                "getCurrentSliceImage"), "Extract Current Slice", is3D);
         addMenuItem(stackMenu, new Image3DGetSliceAction(frame,
                 "getSlice2dImage"), "Extract Slice...", is3D);
         addMenuItem(stackMenu, new Image3DOrthoslicesImageAction(frame,
