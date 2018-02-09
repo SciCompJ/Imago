@@ -41,6 +41,7 @@ import imago.gui.action.file.SaveTableAction;
 import imago.gui.action.file.ShowDemoTable;
 import imago.gui.action.file.TableScatterPlotAction;
 import imago.gui.action.image.ConvertRGB8ToUInt8ImageAction;
+import imago.gui.action.image.ConvertToBinaryImageAction;
 import imago.gui.action.image.ConvertToFloat32ImageAction;
 import imago.gui.action.image.ConvertToFloat64ImageAction;
 import imago.gui.action.image.ConvertToInt16ImageAction;
@@ -247,6 +248,8 @@ public class GuiBuilder
 		// "toFloat",
 		// new FloatConverter()), "Float", isImage);
 		// editMenu.add(convertTypeMenu);
+        addMenuItem(convertDataTypeMenu, new ConvertToBinaryImageAction(frame, "convertToBinary"),
+                "Binary", isScalar);
 		addMenuItem(convertDataTypeMenu, new ConvertToUInt8ImageAction(frame, "convertToUInt8"),
 				"UInt8", isScalar);
 		addMenuItem(convertDataTypeMenu, new ConvertToUInt16ImageAction(frame, "convertToUInt16"),
