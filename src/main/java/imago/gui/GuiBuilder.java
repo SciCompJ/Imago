@@ -232,81 +232,8 @@ public class GuiBuilder
 	private JMenu createImageEditMenu(ImagoFrame frame)
 	{
 		boolean isImage = hasImageDoc(frame);
-		boolean isScalar = hasScalarImage(frame);
-		boolean isVector = hasVectorImage(frame);
-		boolean isColor = hasRGB8Image(frame);
 			
 		JMenu editMenu = new JMenu("Edit");
-
-		// Type conversion items
-		JMenu convertDataTypeMenu = new JMenu("Convert Data-Type");
-		convertDataTypeMenu.setEnabled(isImage);
-		// addMenuItem(convertTypeMenu, new MetaImageOperatorAction(frame,
-		// "toGray8",
-		// new Gray8Converter()), "Gray8", isImage);
-		// addMenuItem(convertTypeMenu, new MetaImageOperatorAction(frame,
-		// "toFloat",
-		// new FloatConverter()), "Float", isImage);
-		// editMenu.add(convertTypeMenu);
-        addMenuItem(convertDataTypeMenu, new ConvertToBinaryImageAction(frame, "convertToBinary"),
-                "Binary", isScalar);
-		addMenuItem(convertDataTypeMenu, new ConvertToUInt8ImageAction(frame, "convertToUInt8"),
-				"UInt8", isScalar);
-		addMenuItem(convertDataTypeMenu, new ConvertToUInt16ImageAction(frame, "convertToUInt16"),
-				"UInt16", isScalar);
-		convertDataTypeMenu.addSeparator();
-		addMenuItem(convertDataTypeMenu, new ConvertToInt16ImageAction(frame, "convertToInt16"),
-				"Int16", isScalar);
-		addMenuItem(convertDataTypeMenu, new ConvertToInt32ImageAction(frame, "convertToInt32"),
-				"Int32", isScalar);
-		convertDataTypeMenu.addSeparator();
-		addMenuItem(convertDataTypeMenu, new ConvertToFloat32ImageAction(frame, "convertToFloat32"),
-				"Float32", isImage);
-        addMenuItem(convertDataTypeMenu, new ConvertToFloat64ImageAction(frame, "convertToFloat64"),
-                "Float64", isImage);
-		editMenu.add(convertDataTypeMenu);
-
-		JMenu imageTypeMenu = new JMenu("Image Type");
-        addMenuItem(imageTypeMenu, new SetImageTypeToLabelAction(frame, "convertTypeToLabel"),
-                "Set to Label Image", isScalar);
-        editMenu.add(imageTypeMenu);
-
-		// submenu for creation of phantoms
-        JMenu phantomMenu = new JMenu("Phantoms");
-        addMenuItem(phantomMenu, new ImageFillDiskAction(frame, "imageFillDisk"), 
-                "Fill Disk...");
-        addMenuItem(phantomMenu, new ImageFillEllipseAction(frame, "imageFillEllipse"), 
-                "Fill Ellipse...");
-        addMenuItem(phantomMenu, new ImageSelectionToMaskAction(frame, "imageSelectionToMask"), 
-                "Selection To Mask");
-        addMenuItem(phantomMenu, new ImageSelectionToDistanceMapAction(frame, "imageSelectionToDistanceMap"), 
-                "Selection To Distance Map");
-        editMenu.add(phantomMenu);
-
-        
-		// Color conversion items
-		JMenu colorMenu = new JMenu("Color");
-		// editMenu.add(convertTypeMenu);
-		addMenuItem(colorMenu, new ConvertRGB8ToUInt8ImageAction(frame, "convertRGB8ToUInt8"),
-				"Convert to UInt8", isColor);
-		addMenuItem(colorMenu, new SplitImageChannelsAction(frame,
-				"splitChannels"), "Split Channels", isVector || isColor);
-		addMenuItem(colorMenu, new MergeChannelImagesAction(frame,
-				"mergeChannels"), "Merge Channels");
-        addMenuItem(colorMenu, new ExtractChannelFromColorImageAction(frame,
-                "extractChannel"), "Extract Channel...", isColor);
-        addMenuItem(colorMenu, new ImageSetBackgroundColorAction(frame, "imageSetBackgroundColor"),
-                "Set Background Color...", hasLabelImage(frame));
-		// addMenuItem(editMenu, new MetaImageOperatorAction(frame,
-		// "colorToGray",
-		// new Gray8Converter()), "RGB -> Gray8", isColor);
-		editMenu.add(colorMenu);
-
-		editMenu.addSeparator();
-		addMenuItem(editMenu, 
-				new ImageArrayOperatorAction(frame, "invert",
-				new ImageInverter()), "Invert", isScalar || isColor);
-		editMenu.addSeparator();
 
 		// tool selection items
 		if (frame instanceof ImagoDocViewer)
@@ -337,26 +264,6 @@ public class GuiBuilder
 		addMenuItem(editMenu, new ZoomOneAction(frame, "zoomOne"), "Zoom One",
 				isImage);
 		
-        // add Colormap utils
-        JMenu colormapMenu = new JMenu("Color Maps");
-        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapGray", 
-                ColorMaps.GRAY), "Gray");
-        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapJet", 
-                ColorMaps.JET), "Jet");
-        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapBlueGrayRed", 
-                ColorMaps.BLUE_GRAY_RED), "Blue-Gray-Red");
-        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapRed", 
-                ColorMaps.RED), "Red");
-        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapGreen", 
-                ColorMaps.GREEN), "Green");
-        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapBlue", 
-                ColorMaps.BLUE), "Blue");
-        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapFire", 
-                ColorMaps.FIRE), "Fire");
-        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapGlasbey", 
-                ColorMaps.GLASBEY), "Glasbey");
-        editMenu.add(colormapMenu);
-
         // add utility
 		editMenu.addSeparator();
         addMenuItem(editMenu, new PrintFrameListAction(frame, "printFrameList"), 
@@ -378,10 +285,45 @@ public class GuiBuilder
 		boolean is2D = has2DImage(frame);
 		boolean is3D = has3DImage(frame);
 		boolean isScalar = hasScalarImage(frame);
-		boolean isVector = hasVectorImage(frame);
+		boolean isColor = hasRGB8Image(frame);
+        boolean isVector = hasVectorImage(frame);
 
 		JMenu menu = new JMenu("Image");
 		
+        JMenu imageTypeMenu = new JMenu("Image Type");
+        addMenuItem(imageTypeMenu, new SetImageTypeToLabelAction(frame, "convertTypeToLabel"),
+                "Set to Label Image", isScalar);
+        menu.add(imageTypeMenu);
+        
+	      // Type conversion items
+        JMenu convertDataTypeMenu = new JMenu("Convert Data-Type");
+        convertDataTypeMenu.setEnabled(isImage);
+        // addMenuItem(convertTypeMenu, new MetaImageOperatorAction(frame,
+        // "toGray8",
+        // new Gray8Converter()), "Gray8", isImage);
+        // addMenuItem(convertTypeMenu, new MetaImageOperatorAction(frame,
+        // "toFloat",
+        // new FloatConverter()), "Float", isImage);
+        // editMenu.add(convertTypeMenu);
+        addMenuItem(convertDataTypeMenu, new ConvertToBinaryImageAction(frame, "convertToBinary"),
+                "Binary", isScalar);
+        addMenuItem(convertDataTypeMenu, new ConvertToUInt8ImageAction(frame, "convertToUInt8"),
+                "UInt8", isScalar);
+        addMenuItem(convertDataTypeMenu, new ConvertToUInt16ImageAction(frame, "convertToUInt16"),
+                "UInt16", isScalar);
+        convertDataTypeMenu.addSeparator();
+        addMenuItem(convertDataTypeMenu, new ConvertToInt16ImageAction(frame, "convertToInt16"),
+                "Int16", isScalar);
+        addMenuItem(convertDataTypeMenu, new ConvertToInt32ImageAction(frame, "convertToInt32"),
+                "Int32", isScalar);
+        convertDataTypeMenu.addSeparator();
+        addMenuItem(convertDataTypeMenu, new ConvertToFloat32ImageAction(frame, "convertToFloat32"),
+                "Float32", isImage);
+        addMenuItem(convertDataTypeMenu, new ConvertToFloat64ImageAction(frame, "convertToFloat64"),
+                "Float64", isImage);
+        menu.add(convertDataTypeMenu);
+        
+        menu.addSeparator();
 		JMenu displayRangeMenu = new JMenu("Display Range");
 		addMenuItem(displayRangeMenu, new SetDataTypeDisplayRangeAction(frame, "setDataTypeDisplayRange"), 
 		        "Set Data Type Display Range", isScalar);
@@ -400,14 +342,57 @@ public class GuiBuilder
 				 new ArrayOperatorAction(frame, "adjustDynamic", new DynamicAdjustment(.01)),
 				 "Adjust Grayscale Dynamic", isScalar);
 
+        
+        // Color conversion items
+        menu.addSeparator();
+        JMenu colorMenu = new JMenu("Color");
+        // editMenu.add(convertTypeMenu);
+        addMenuItem(colorMenu, new ConvertRGB8ToUInt8ImageAction(frame, "convertRGB8ToUInt8"),
+                "Convert to UInt8", isColor);
+        addMenuItem(colorMenu, new SplitImageChannelsAction(frame,
+                "splitChannels"), "Split Channels", isVector || isColor);
+        addMenuItem(colorMenu, new MergeChannelImagesAction(frame,
+                "mergeChannels"), "Merge Channels");
+        addMenuItem(colorMenu, new ExtractChannelFromColorImageAction(frame,
+                "extractChannel"), "Extract Channel...", isColor);
+        // addMenuItem(editMenu, new MetaImageOperatorAction(frame,
+        // "colorToGray",
+        // new Gray8Converter()), "RGB -> Gray8", isColor);
+        menu.add(colorMenu);
+
+        // add Colormap utils
+        JMenu colormapMenu = new JMenu("Color Maps");
+        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapGray", 
+                ColorMaps.GRAY), "Gray");
+        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapJet", 
+                ColorMaps.JET), "Jet");
+        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapBlueGrayRed", 
+                ColorMaps.BLUE_GRAY_RED), "Blue-Gray-Red");
+        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapRed", 
+                ColorMaps.RED), "Red");
+        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapGreen", 
+                ColorMaps.GREEN), "Green");
+        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapBlue", 
+                ColorMaps.BLUE), "Blue");
+        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapFire", 
+                ColorMaps.FIRE), "Fire");
+        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapGlasbey", 
+                ColorMaps.GLASBEY), "Glasbey");
+        menu.add(colormapMenu);
+        
+        addMenuItem(menu, new ImageSetBackgroundColorAction(frame, "imageSetBackgroundColor"),
+                "Set Background Color...", hasLabelImage(frame));
+        
+
+        menu.addSeparator();
         addMenuItem(menu, new ImageSetScaleAction(frame, "setImageScale"), 
-                "Set Image Scale", isImage);
+                "Image Scale...", isImage);
         
         menu.addSeparator();
 		JMenu geometryMenu = new JMenu("Geometry");
 		geometryMenu.setEnabled(isImage);
 		addMenuItem(geometryMenu, new ArrayOperatorAction(frame,
-				"flipXFilter", new Flip(0)), "Flip Horizontal", isImage);
+				"flipXFilter", new Flip(0)), "Fl&ip Horizontal", isImage);
 		addMenuItem(geometryMenu, new ArrayOperatorAction(frame,
 				"flipYFilter", new Flip(1)), "Flip Vertical", isImage);
 		addMenuItem(geometryMenu, new ArrayOperatorAction(frame,
@@ -453,7 +438,22 @@ public class GuiBuilder
         menu.addSeparator();
 		addMenuItem(menu, new ImageDuplicateAction(frame, "Duplicate"), "Duplicate",
 		        isImage);
-
+        addMenuItem(menu, 
+                new ImageArrayOperatorAction(frame, "invert",
+                new ImageInverter()), "Invert", isScalar || isColor);
+        
+        // submenu for creation of phantoms
+        JMenu phantomMenu = new JMenu("Phantoms");
+        addMenuItem(phantomMenu, new ImageFillDiskAction(frame, "imageFillDisk"), 
+                "Fill Disk...");
+        addMenuItem(phantomMenu, new ImageFillEllipseAction(frame, "imageFillEllipse"), 
+                "Fill Ellipse...");
+        addMenuItem(phantomMenu, new ImageSelectionToMaskAction(frame, "imageSelectionToMask"), 
+                "Selection To Mask");
+        addMenuItem(phantomMenu, new ImageSelectionToDistanceMapAction(frame, "imageSelectionToDistanceMap"), 
+                "Selection To Distance Map");
+        menu.add(phantomMenu);
+        
 		menu.addSeparator();
         addMenuItem(menu, new PrintImageTiffTagsAction(frame,
                 "printImageTiffTags"), "Print TIFF Tags", isImage);
