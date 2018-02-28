@@ -3,7 +3,7 @@
  */
 package imago.gui;
 
-import java.awt.Color;
+//import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
@@ -15,10 +15,12 @@ import net.sci.array.data.VectorArray;
 import net.sci.array.data.color.RGB16Array;
 import net.sci.array.data.color.RGB8Array;
 import net.sci.array.data.scalar2d.BinaryArray2D;
+import net.sci.array.data.scalar2d.IntArray2D;
 import net.sci.array.data.scalar2d.ScalarArray2D;
 import net.sci.array.data.scalar2d.UInt8Array2D;
 import net.sci.array.type.RGB16;
 import net.sci.array.type.RGB8;
+import net.sci.array.type.Color;
 import net.sci.image.ColorMap;
 import net.sci.image.ColorMaps;
 import net.sci.image.Image;
@@ -40,6 +42,14 @@ public class ImageUtils
 	{
 	}
 
+	//TODO: simplification of image conversion methods
+	// * binaryToAwtImage(BinaryArray, fg, bg)
+    // * labelToIndexedAwtImage(IntArray, ColorMaps, nLabels, bgColor)
+    // * labelToAwtImage(IntArray, ColorMaps, bgColor) -> assume same number of labels, or cyclic
+	// * scalarToAwtImage(ScalarArray, ColorMap, range) 
+	// * scalarToAwtImage(ScalarArray, ColorMap, range, nanColor) 
+	// * grayScaleToRGB(UInt8Array)
+	
 	public static final java.awt.image.BufferedImage createAwtImage(Image image, int sliceIndex)
 	{
 	    // extract specified slice from image
@@ -58,6 +68,16 @@ public class ImageUtils
 		}
 
 		Array<?> array = image.getData();
+		
+		if (image.isBinaryImage())
+		{
+		    // binary images are converted to bi-color images
+		    return createAwtImage((BinaryArray2D) array, Color.RED, Color.WHITE);
+		} 
+		else if (image.isLabelImage())
+		{
+		    return labelToAwtImage((IntArray2D<?>) array, lut, image.getBackgroundColor());
+		}
 		
 		// Process array depending on its data type
 		if (array instanceof BinaryArray2D)
@@ -156,12 +176,12 @@ public class ImageUtils
 		byte[] red = new byte[256];
 		byte[] green = new byte[256];
 		byte[] blue = new byte[256];
-		red[0] 		= (byte) bgColor.getRed();
-		green[0] 	= (byte) bgColor.getGreen();
-		blue[0] 	= (byte) bgColor.getBlue();
-		red[255] 	= (byte) fgColor.getRed();
-		green[255] 	= (byte) fgColor.getGreen();
-		blue[255] 	= (byte) fgColor.getBlue();
+		red[0] 		= (byte) (bgColor.red() * 255);
+		green[0] 	= (byte) (bgColor.green() * 255);
+		blue[0] 	= (byte) (bgColor.blue() * 255);
+		red[255] 	= (byte) (fgColor.red() * 255);
+		green[255] 	= (byte) (fgColor.green() * 255);
+		blue[255] 	= (byte) (fgColor.blue() * 255);
 		IndexColorModel cm = new IndexColorModel(8, 256, red, green, blue);  
 		
 		// Create the AWT image
@@ -245,6 +265,33 @@ public class ImageUtils
         return bufImg;
     }
 	
+    public static final java.awt.image.BufferedImage labelToAwtImage(
+            IntArray2D<?> array, ColorMap colormap, Color backgroundColor)
+    {
+        int sizeX = array.getSize(0);
+        int sizeY = array.getSize(1);
+        
+        // Computes the color model
+        IndexColorModel cm = createIndexColorModel(colormap, backgroundColor);  
+        
+        // Create the AWT image
+        int type = java.awt.image.BufferedImage.TYPE_BYTE_INDEXED ;
+        BufferedImage bufImg = new BufferedImage(sizeX, sizeY, type, cm);
+        
+        // Populate the raster
+        WritableRaster raster = bufImg.getRaster();
+        for (int y = 0; y < sizeY; y++)
+        {
+            for (int x = 0; x < sizeX; x++)
+            {
+                int index = Math.min(array.getInt(x, y), 255);
+                raster.setSample(x, y, 0, index); 
+            }
+        }
+
+        return bufImg;
+    }
+    
     /**
      * Convert the colormap given as N-by-3 array into an IndexColorModel.
      * 
@@ -286,6 +333,38 @@ public class ImageUtils
             red[i]      = (byte) (color.red() * 255);
             green[i]    = (byte) (color.green() * 255);
             blue[i]     = (byte) (color.blue() * 255);
+        }
+        IndexColorModel cm = new IndexColorModel(8, 256, red, green, blue);  
+        return cm;
+    }
+    
+    /**
+     * Convert the colormap given as N-by-3 array into an IndexColorModel.
+     * 
+     * @param colormap the colormap instance
+     * @param background the background color
+     * @return the corresponding IndexColorModel, with 256 colors max.
+     */
+    private final static IndexColorModel createIndexColorModel(ColorMap colormap, Color background)
+    {
+        // allocate color components arrays
+        byte[] red = new byte[256];
+        byte[] green = new byte[256];
+        byte[] blue = new byte[256];
+
+        // first color corresponds to background
+        red[0] = (byte) (background.red() * 255);
+        green[0] = (byte) (background.green() * 255);
+        blue[0] = (byte) (background.blue() * 255);
+
+        // convert colormapcolors
+        int nColors = Math.min(colormap.size(), 255);
+        for(int i = 0; i < nColors; i++) 
+        {
+            net.sci.array.type.Color color = colormap.getColor(i);
+            red[i+1]      = (byte) (color.red() * 255);
+            green[i+1]    = (byte) (color.green() * 255);
+            blue[i+1]     = (byte) (color.blue() * 255);
         }
         IndexColorModel cm = new IndexColorModel(8, 256, red, green, blue);  
         return cm;

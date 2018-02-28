@@ -138,10 +138,10 @@ public abstract class ImageViewer extends JPanel
 	}
 
 
-	public void refreshDisplay()
-	{
-//		System.out.println("refresh display");
-	}
+	public abstract void refreshDisplay();
+//	{
+////		System.out.println("refresh display");
+//	}
 
 //	public void repaint() {
 //		super.repaint();

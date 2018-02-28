@@ -5,6 +5,7 @@ package imago.gui.action.image;
 
 import imago.app.ImagoDoc;
 import imago.gui.GenericDialog;
+import imago.gui.ImageViewer;
 import imago.gui.ImagoAction;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
@@ -62,7 +63,8 @@ public class ImageSetBackgroundColorAction extends ImagoAction
 		Color bgColor = CommonColors.fromLabel(gd.getNextChoice()).getColor();
 		image.setBackgroundColor(bgColor);
 
-		viewer.getImageView().refreshDisplay();
+		ImageViewer imageViewer = viewer.getImageView();
+		imageViewer.refreshDisplay();
 		viewer.repaint();
 	}
 

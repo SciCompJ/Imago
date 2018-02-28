@@ -169,12 +169,23 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 
 	public void refreshDisplay()
 	{
-		imageDisplay.updateOffset();
-		Image image = this.getImageToDisplay();
-		
-		this.awtImage = ImageUtils.createAwtImage(image);
+//		imageDisplay.updateOffset();
+//		Image image = this.getImageToDisplay();
+//		this.awtImage = ImageUtils.createAwtImage(image);
+	    updateAwtImage();
+	    
 		this.imageDisplay.setBufferedImage(this.awtImage);
+		imageDisplay.updateOffset();
 		this.imageDisplay.repaint();
+	}
+	
+	/**
+	 * Updates the AWT Image displayed in the center of the ImageDisplay.
+	 */
+	public void updateAwtImage()
+	{
+        Image image = this.getImageToDisplay();
+        this.awtImage = ImageUtils.createAwtImage(image);
 	}
 	
 	public void repaint()

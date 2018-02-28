@@ -58,7 +58,8 @@ public class ImageSetColorMapFactoryAction extends ImagoAction
 		ImagoDoc doc = viewer.getDocument();
 		Image image	= doc.getImage();
 
-		if (image.getType() != Image.Type.LABEL && image.getType() != Image.Type.GRAYSCALE && image.getType() != Image.Type.INTENSITY)
+		Image.Type type = image.getType();
+		if (type != Image.Type.LABEL && type != Image.Type.GRAYSCALE && type != Image.Type.INTENSITY)
 		{
 		    throw new RuntimeException("Requires a scalar image as input");
 		}
@@ -69,6 +70,10 @@ public class ImageSetColorMapFactoryAction extends ImagoAction
             nColors = (int) image.getDisplayRange()[1];
 		}
 		
+		System.out.println("number of colors for colormap: " + nColors);
+		
+		// TODO: factory should be stored within Image instance
+		// Then, when display range  is changed, map can be recomputed
 		ColorMap colorMap = factory.createColorMap(nColors);
 		
         // in case of label image, add the background color in the beginning of
@@ -77,7 +82,7 @@ public class ImageSetColorMapFactoryAction extends ImagoAction
         {
             ArrayList<Color> newColors = new ArrayList<Color>(nColors + 1);
             newColors.add(image.getBackgroundColor());
-            for (int i = 0;i < nColors; i++)
+            for (int i = 0; i < nColors; i++)
             {
                 newColors.add(colorMap.getColor(i));
             }

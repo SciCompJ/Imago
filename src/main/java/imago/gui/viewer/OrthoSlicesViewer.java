@@ -195,7 +195,17 @@ public class OrthoSlicesViewer extends ImageViewer implements ChangeListener, Ac
 		}
 	}
 
-	// ===================================================================
+    public void refreshDisplay()
+    {
+//        imageDisplay.updateOffset();
+//        Image image = this.getImageToDisplay();
+//        
+//        this.awtImage = ImageUtils.createAwtImage(image);
+//        this.imageDisplay.setBufferedImage(this.awtImage);
+//        this.imageDisplay.repaint();
+    }
+
+    // ===================================================================
 	// Implementation of StateListener interface
 
 	@Override
