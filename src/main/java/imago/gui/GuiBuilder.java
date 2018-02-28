@@ -98,7 +98,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import net.sci.array.Array;
-import net.sci.array.data.IntArray;
 import net.sci.array.data.ScalarArray;
 import net.sci.array.process.PowerOfTwo;
 import net.sci.array.process.Sqrt;
@@ -584,9 +583,9 @@ public class GuiBuilder
 	private JMenu createImageAnalyzeMenu(ImagoFrame frame)
 	{
 		 boolean isImage = hasImageDoc(frame);
-		// boolean has3D = has3DImage(frame);
          boolean has2D = has2DImage(frame);
-         boolean hasInt = hasIntegerImage(frame);
+         boolean has3D = has3DImage(frame);
+         boolean hasLabel = hasLabelImage(frame);
 
 		JMenu menu = new JMenu("Analyze");
 
@@ -605,11 +604,11 @@ public class GuiBuilder
 
         menu.addSeparator();
         addMenuItem(menu, new LabelImageBoundingBoxesAction(frame, "boundingBoxes"),
-                "Bounding Boxes", has2D && hasInt);
+                "Bounding Boxes", has2D && hasLabel);
         addMenuItem(menu, new LabelImageCentroidsAction(frame, "regionCentroids"),
-                "Regions Centroid", has2D && hasInt);
+                "Regions Centroid", (has2D || has3D) && hasLabel);
         addMenuItem(menu, new LabelImageInertiaEllipsesAction(frame, "regionEllipses"),
-                "Regions Inertia Ellipses", has2D && hasInt);
+                "Regions Inertia Ellipses", has2D && hasLabel);
 		return menu;
 	}
 
@@ -670,20 +669,6 @@ public class GuiBuilder
 
         return doc.getImage().isLabelImage();
     }
-
-    private final static boolean hasIntegerImage(ImagoFrame frame)
-	{
-		ImagoDoc doc = null;
-		if (frame instanceof ImagoDocViewer)
-		{
-			doc = ((ImagoDocViewer) frame).getDocument();
-		}
-		if (doc == null)
-			return false;
-
-		Array<?> img = doc.getImage().getData();
-		return img instanceof IntArray<?>;
-	}
 
     private final static boolean hasScalarImage(ImagoFrame frame)
     {
