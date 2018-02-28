@@ -225,7 +225,7 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
         imageDisplay.updateOffset();
         Image image = this.getImageToDisplay();
         
-        this.awtImage = ImageUtils.createAwtImage(image);
+        this.awtImage = ImageUtils.createAwtImage(image, this.sliceIndex);
         this.imageDisplay.setBufferedImage(this.awtImage);
         this.imageDisplay.repaint();
     }
