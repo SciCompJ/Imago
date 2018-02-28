@@ -604,7 +604,7 @@ public class GuiBuilder
 
         menu.addSeparator();
         addMenuItem(menu, new LabelImageBoundingBoxesAction(frame, "boundingBoxes"),
-                "Bounding Boxes", has2D && hasLabel);
+                "Bounding Boxes", (has2D || has3D) && hasLabel);
         addMenuItem(menu, new LabelImageCentroidsAction(frame, "regionCentroids"),
                 "Regions Centroid", (has2D || has3D) && hasLabel);
         addMenuItem(menu, new LabelImageInertiaEllipsesAction(frame, "regionEllipses"),

@@ -143,12 +143,11 @@ public class ImagoTableFrame extends ImagoFrame
     public void updateTitle()
     {
         // table name
-        String name;
-//        String name = this.table.getName();
-//        if (name == null || name.isEmpty()) 
-//        {
+        String name = this.table.getName();
+        if (name == null || name.isEmpty()) 
+        {
             name = "No Name";
-//        }
+        }
         
         String dimString = "(unknown size)";
         int dim[] = this.table.getSize();

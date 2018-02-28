@@ -110,7 +110,8 @@ public class LabelImageCentroidsAction extends ImagoAction
                 tab.setValue(i, 1, centroid.getY());
                 tab.setValue(i, 2, centroid.getZ());
             }
-            
+            tab.setName(image.getName() + "-Centroids");
+
             gui.addFrame(new ImagoTableFrame(this.frame, tab));
         }
     }
