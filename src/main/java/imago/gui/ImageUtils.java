@@ -41,14 +41,6 @@ public class ImageUtils
 	private ImageUtils()
 	{
 	}
-
-	//TODO: simplification of image conversion methods
-	// * binaryToAwtImage(BinaryArray, fg, bg)
-    // * labelToIndexedAwtImage(IntArray, ColorMaps, nLabels, bgColor)
-    // * labelToAwtImage(IntArray, ColorMaps, bgColor) -> assume same number of labels, or cyclic
-	// * scalarToAwtImage(ScalarArray, ColorMap, range) 
-	// * scalarToAwtImage(ScalarArray, ColorMap, range, nanColor) 
-	// * grayScaleToRGB(UInt8Array)
 	
 	public static final java.awt.image.BufferedImage createAwtImage(Image image, int sliceIndex)
 	{
@@ -63,49 +55,59 @@ public class ImageUtils
 		ColorMap lut = image.getColorMap();
 		if (lut == null)
 		{
-//		    lut = createGrayLut(); 
 		    lut = ColorMaps.GRAY.createColorMap(256); 
 		}
 
 		Array<?> array = image.getData();
+        if (array.dimensionality() != 2)
+        {
+            throw new RuntimeException("Requires inner array to be 2-dimensional, not " + array.dimensionality());
+        }
 		
+        // Displatch process depending on image type
 		if (image.isBinaryImage())
 		{
+		    if (!(array instanceof BinaryArray2D))
+		    {
+		        throw new RuntimeException("Binary images assume inner array implements BinaryArray2D");
+		    }
+		    
 		    // binary images are converted to bi-color images
 		    return createAwtImage((BinaryArray2D) array, Color.RED, Color.WHITE);
 		} 
 		else if (image.isLabelImage())
 		{
+            if (!(array instanceof IntArray2D))
+            {
+                throw new RuntimeException("Label images assume inner array implements IntArray2D");
+            }
+            
 		    return labelToAwtImage((IntArray2D<?>) array, lut, image.getBackgroundColor());
+		}
+		else if (image.isColorImage())
+		{
+		    if (array instanceof RGB8Array)
+	        {
+	            // call the standard way for converting planar RGB images
+	            return createAwtImageRGB8((RGB8Array) array);
+	        } 
+	        else if (array instanceof RGB16Array)
+	        {
+	            // call the standard way for converting planar RGB16 images
+	            return createAwtImageRGB16((RGB16Array) array);
+	        }
+	        else
+	        {
+	            throw new RuntimeException("Could not process color image with array of class " + array.getClass().getName());
+	        }
 		}
 		
 		// Process array depending on its data type
-		if (array instanceof BinaryArray2D)
-		{
-			// binary images are converted to bi-color images
-			return createAwtImage((BinaryArray2D) array, Color.RED, Color.WHITE);
-		}
- 		else if (array instanceof ScalarArray2D)
+		if (array instanceof ScalarArray2D)
  		{
  			// scalar images use display range and current LUT
  			double[] displayRange = image.getDisplayRange();
  			return createAwtImage((ScalarArray2D<?>) array, displayRange, lut);
- 		}
-        else if (array instanceof RGB8Array)
-        {
-            // call the standard way for converting planar RGB images
-            return createAwtImageRGB8((RGB8Array) array);
-        } 
-        else if (array instanceof RGB16Array)
-        {
-            // call the standard way for converting planar RGB16 images
-            return createAwtImageRGB16((RGB16Array) array);
-        } 
- 		else if (image.isColorImage())
- 		{
- 			// obsolete, and should be removed
- 			System.err.println("Color images should implement RGB8Array interface");
- 			return createAwtImageRGB8((UInt8Array) array);
  		}
 		else if (array instanceof VectorArray)
 		{
@@ -117,7 +119,8 @@ public class ImageUtils
  			return createAwtImage((ScalarArray2D<?>) norm, displayRange, lut);
 		} 
 
- 		return null;
+ 		throw new RuntimeException("Could not process image of type " + image.getType() +
+ 		        ", with array of class " + array.getClass().getName());
 	}
 	
 	
