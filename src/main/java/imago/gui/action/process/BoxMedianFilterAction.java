@@ -56,7 +56,7 @@ public class BoxMedianFilterAction extends ImagoAction
 		GenericDialog gd = new GenericDialog(this.frame, "Median Filter");
 		for (int d = 0; d < nd; d++)
 		{
-			gd.addNumericField("Radius dim. " + (d+1), 3, 0);
+			gd.addNumericField("Size dim. " + (d+1), 3, 0);
 		}
 		gd.showDialog();
 		
@@ -66,14 +66,14 @@ public class BoxMedianFilterAction extends ImagoAction
 		}
 		
 		// parse dialog results
-		int[] radiusList = new int[nd];
+		int[] diameters = new int[nd];
 		for (int d = 0; d < nd; d++)
 		{
-			radiusList[d] = (int) gd.getNextNumber();
+			diameters[d] = (int) gd.getNextNumber();
 		}
 		
 		// create median box operator
-		BoxMedianFilter filter = new BoxMedianFilter(radiusList);
+		BoxMedianFilter filter = new BoxMedianFilter(diameters);
 		filter.addAlgoListener((ImagoDocViewer) this.frame);
 		
 		// apply operator on current image

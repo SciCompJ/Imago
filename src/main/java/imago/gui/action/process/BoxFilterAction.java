@@ -55,7 +55,7 @@ public class BoxFilterAction extends ImagoAction
 		GenericDialog gd = new GenericDialog(this.frame, "Flat Blur");
 		for (int d = 0; d < nd; d++)
 		{
-			gd.addNumericField("Radius dim. " + (d+1), 3, 0);
+			gd.addNumericField("Size dim. " + (d+1), 3, 0);
 		}
 		gd.showDialog();
 		
@@ -65,14 +65,14 @@ public class BoxFilterAction extends ImagoAction
 		}
 		
 		// parse dialog results
-		int[] radiusList = new int[nd];
+		int[] diameters = new int[nd];
 		for (int d = 0; d < nd; d++)
 		{
-			radiusList[d] = (int) gd.getNextNumber();
+			diameters[d] = (int) gd.getNextNumber();
 		}
 
 		// create operator box filtering operator
-		BoxFilter filter = new BoxFilter(radiusList);
+		BoxFilter filter = new BoxFilter(diameters);
 		
 		// apply operator on current image
 		Image result = filter.process(image);

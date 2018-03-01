@@ -56,7 +56,7 @@ public class BoxMinMaxFilterAction extends ImagoAction
 		gd.addChoice("Operation",  new String[]{"Min.",  "Max."}, "Min.");
 		for (int d = 0; d < nd; d++)
 		{
-			gd.addNumericField("Radius dim. " + (d+1), 3, 0);
+			gd.addNumericField("Size dim. " + (d+1), 3, 0);
 		}
 		gd.showDialog();
 		
@@ -67,15 +67,15 @@ public class BoxMinMaxFilterAction extends ImagoAction
 		
 		// parse dialog results
 		boolean minFilter = gd.getNextChoiceIndex() == 0;
-		int[] radiusList = new int[nd];
+		int[] diameters = new int[nd];
 		for (int d = 0; d < nd; d++)
 		{
-			radiusList[d] = (int) gd.getNextNumber();
+			diameters[d] = (int) gd.getNextNumber();
 		}
 
 		// create operator box filtering operator
 		BoxMinMaxFilterNaive.Type type = minFilter ? BoxMinMaxFilterNaive.Type.MIN : BoxMinMaxFilterNaive.Type.MAX;  
-		BoxMinMaxFilterNaive filter = new BoxMinMaxFilterNaive(type, radiusList);
+		BoxMinMaxFilterNaive filter = new BoxMinMaxFilterNaive(type, diameters);
 		
 		// apply operator on current image
 		Image result = filter.process(image);

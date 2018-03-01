@@ -56,7 +56,7 @@ public class BoxVarianceFilterAction extends ImagoAction
 		GenericDialog gd = new GenericDialog(this.frame, "Variance Filter");
 		for (int d = 0; d < nd; d++)
 		{
-			gd.addNumericField("Radius dim. " + (d+1), 3, 0);
+			gd.addNumericField("Size dim. " + (d+1), 3, 0);
 		}
 		gd.showDialog();
 		
@@ -66,18 +66,18 @@ public class BoxVarianceFilterAction extends ImagoAction
 		}
 		
 		// parse dialog results
-		int[] radiusList = new int[nd];
+		int[] diameters = new int[nd];
 		for (int d = 0; d < nd; d++)
 		{
-			radiusList[d] = (int) gd.getNextNumber();
+			diameters[d] = (int) gd.getNextNumber();
 		}
 		
 		// create median box operator
-		BoxVarianceFilter filter = new BoxVarianceFilter(radiusList);
+		BoxVarianceFilter filter = new BoxVarianceFilter(diameters);
 		
 		// apply operator on current image
 		Image result = filter.process(image);
-		result.setName(image.getName() + "-varianceFilt");
+		result.setName(image.getName() + "-varFilt");
 		
 		// add the image document to GUI
 		this.gui.addNewDocument(result);
