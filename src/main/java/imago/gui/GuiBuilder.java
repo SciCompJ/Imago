@@ -14,6 +14,7 @@ import imago.gui.action.analyze.ImageMeanValueAction;
 import imago.gui.action.analyze.ImageRoiHistogramAction;
 import imago.gui.action.analyze.LabelImageBoundingBoxesAction;
 import imago.gui.action.analyze.LabelImageCentroidsAction;
+import imago.gui.action.analyze.LabelImageEquivalentDisksAction;
 import imago.gui.action.analyze.LabelImageInertiaEllipsesAction;
 import imago.gui.action.edit.DocClearShapesAction;
 import imago.gui.action.edit.ImageFillDiskAction;
@@ -606,7 +607,9 @@ public class GuiBuilder
         addMenuItem(menu, new LabelImageBoundingBoxesAction(frame, "boundingBoxes"),
                 "Bounding Boxes", (has2D || has3D) && hasLabel);
         addMenuItem(menu, new LabelImageCentroidsAction(frame, "regionCentroids"),
-                "Regions Centroid", (has2D || has3D) && hasLabel);
+                "Regions Centroids", (has2D || has3D) && hasLabel);
+        addMenuItem(menu, new LabelImageEquivalentDisksAction(frame, "equivDisks"),
+                "Regions Equivalent Disks", has2D && hasLabel);
         addMenuItem(menu, new LabelImageInertiaEllipsesAction(frame, "regionEllipses"),
                 "Regions Inertia Ellipses", has2D && hasLabel);
 		return menu;

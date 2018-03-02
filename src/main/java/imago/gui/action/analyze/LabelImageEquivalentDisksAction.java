@@ -17,6 +17,7 @@ import imago.gui.ImagoTableFrame;
 import net.sci.array.Array;
 import net.sci.array.data.scalar2d.IntArray2D;
 import net.sci.geom.geom2d.Point2D;
+import net.sci.geom.geom2d.curve.Circle2D;
 import net.sci.geom.geom2d.curve.Ellipse2D;
 import net.sci.image.Image;
 import net.sci.image.analyze.RegionAnalysis2D;
@@ -24,20 +25,22 @@ import net.sci.image.morphology.LabelImages;
 import net.sci.table.Table;
 
 /**
- * Computes the inertia ellipse of each region in the current label image.
+ * Computes the equivalent disk of each region in the current label image.
+ * 
+ * The center of the disk is the centroid if the region, and the radius is
+ * computed such as the area of the disk corresponds to the area of the region.
  * 
  * @author dlegland
  *
  */
-public class LabelImageInertiaEllipsesAction extends ImagoAction
+public class LabelImageEquivalentDisksAction extends ImagoAction
 {
-    
     /**
      * 
      */
     private static final long serialVersionUID = 1L;
 
-    public LabelImageInertiaEllipsesAction(ImagoFrame frame, String name)
+    public LabelImageEquivalentDisksAction(ImagoFrame frame, String name)
     {
         super(frame, name);
     }
@@ -57,14 +60,12 @@ public class LabelImageInertiaEllipsesAction extends ImagoAction
         // retrieve image data
         ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
         Image image = doc.getImage();
-        
-        // check image type
         if (!image.isLabelImage())
         {
             System.out.println("Requires label image as input");
             return;
         }
-
+        
         // check input data type
         Array<?> array = image.getData();
         if (!(array instanceof IntArray2D))
@@ -73,8 +74,7 @@ public class LabelImageInertiaEllipsesAction extends ImagoAction
             return;
         }
 
-        // open dialog to setup options
-        GenericDialog dlg = new GenericDialog(this.frame, "Inertia Ellipses");
+        GenericDialog dlg = new GenericDialog(this.frame, "Equivalent Disks");
         dlg.addCheckBox("Display Table ", true);
         dlg.addCheckBox("Overlay Results ", true);
         Collection<String> imageNames = gui.getAppli().getImageDocumentNames();
@@ -83,37 +83,33 @@ public class LabelImageInertiaEllipsesAction extends ImagoAction
         dlg.addChoice("Image to Overlay ", imageNameArray, firstImageName);
         dlg.showDialog();
         
-        // Parse dialog options
         boolean showTable = dlg.getNextBoolean();
         boolean overlay = dlg.getNextBoolean();
         String imageToOverlay = dlg.getNextChoice();
         
         // Extract ellipses
         IntArray2D<?> array2d = (IntArray2D<?>) array;
-        int[] labels = LabelImages.findAllLabels(array2d); 
+        int[] labels = LabelImages.findAllLabels(array2d);
         Ellipse2D[] ellipses = RegionAnalysis2D.inertiaEllipses(array2d, labels);
          
-        // Display results within a table
         if (showTable)
         {
             // Convert ellipse to table, and display
-            Table tab = Table.create(ellipses.length, 5);
-            tab.setColumnNames(new String[]{"Center.X", "Center.Y", "MajorSemiAxisLength", "MinorSemiAxisLength", "Orientation"});
+            Table tab = Table.create(ellipses.length, 3);
+            tab.setColumnNames(new String[]{"Center.X", "Center.Y", "Radius"});
             for (int i = 0; i < ellipses.length; i++)
             {
                 Ellipse2D elli = ellipses[i];
                 Point2D center = elli.center();
                 tab.setValue(i, 0, center.getX());
                 tab.setValue(i, 1, center.getY());
-                tab.setValue(i, 2, elli.semiMajorAxisLength());
-                tab.setValue(i, 3, elli.semiMinorAxisLength());
-                tab.setValue(i, 4, elli.orientation());
+                double radius = Math.sqrt(elli.semiMajorAxisLength() * elli.semiMinorAxisLength());
+                tab.setValue(i, 2, radius);
             }
             
             gui.addFrame(new ImagoTableFrame(this.frame, tab));
         }
         
-        // Overlay results on an image
         if (overlay)
         {
             ImagoDoc ovrDoc = gui.getAppli().getDocumentFromName(imageToOverlay);
@@ -122,8 +118,12 @@ public class LabelImageInertiaEllipsesAction extends ImagoAction
             // add to the document
             for (int i = 0; i < ellipses.length; i++)
             {
-                ovrDoc.addShape(new ImagoShape(ellipses[i]));
+                Ellipse2D elli = ellipses[i];
+                Point2D center = elli.center();
+                double radius = Math.sqrt(elli.semiMajorAxisLength() * elli.semiMinorAxisLength());
+                ovrDoc.addShape(new ImagoShape(new Circle2D(center, radius)));
             }
+            
             // TODO: maybe propagating events would be better
             viewer.repaint(); 
         }

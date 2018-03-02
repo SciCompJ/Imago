@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import imago.app.shape.ImagoShape;
 import imago.gui.ImagoDocViewer;
 import net.sci.geom.Geometry;
+import net.sci.geom.geom2d.Curve2D;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.curve.Ellipse2D;
@@ -289,6 +290,17 @@ public class ImageDisplay extends JPanel
 	 */
     private void drawGeometry(Graphics2D g2, Geometry2D geom)
     {
+        // basic checkups
+        if (geom == null)
+        {
+            throw new RuntimeException("Geometry should not be null");
+        }
+        if (!geom.isBounded())
+        {
+            throw new RuntimeException("Can not draw unbounded geometries");
+        }
+
+        // Process various geometry cases
         if (geom instanceof Point2D)
         {
             Point2D point = (Point2D) geom;
@@ -309,6 +321,12 @@ public class ImageDisplay extends JPanel
             Polyline2D poly = ((Ellipse2D) geom).asPolyline(120);
             drawPolyline(g2, poly);
         }
+        else if (geom instanceof Curve2D)
+        {
+            Curve2D curve = (Curve2D) geom;
+            Polyline2D poly = curve.asPolyline(120);
+            drawPolyline(g2, poly);
+        }
         else if (geom instanceof SimpleGraph2D)
         {
             drawGraphEdges(g2, (SimpleGraph2D) geom);
@@ -317,11 +335,7 @@ public class ImageDisplay extends JPanel
         else
         {
             // basic check to avoid errors
-            if (this.selection == null)
-            {
-                throw new RuntimeException("Geometry should not be null");
-            }
-            System.out.println("can not handle geometry of class: " + selection.getClass());
+            System.out.println("can not handle geometry of class: " + geom.getClass());
         }
     }
 
