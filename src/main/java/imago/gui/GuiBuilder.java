@@ -28,6 +28,7 @@ import imago.gui.action.edit.ZoomOneAction;
 import imago.gui.action.edit.ZoomOutAction;
 import imago.gui.action.file.CloseFrameAction;
 import imago.gui.action.file.CreateColorCubeStack;
+import imago.gui.action.file.CreateDistanceToOctahedronStack;
 import imago.gui.action.file.CreateEmptyImageAction;
 import imago.gui.action.file.ImportMetaImageFileAction;
 import imago.gui.action.file.ImportRawDataAction;
@@ -198,8 +199,10 @@ public class GuiBuilder
 				"files/lena_gray_512.tif"), "Lena");
 		addMenuItem(demoMenu, new OpenDemoImage(frame, "openDemoSunflower",
 				"files/sunflower.png"), "Sunflower");
-		addMenuItem(demoMenu, new OpenDemoStack(frame, "openDemoStack"),
-				"Demo Stack");
+        addMenuItem(demoMenu, new OpenDemoStack(frame, "openDemoStack"),
+                "Demo Stack");
+        addMenuItem(demoMenu, new CreateDistanceToOctahedronStack(frame, "octahedronDistanceMap"),
+                "Octahedron Distance Map");
 		addMenuItem(demoMenu, new CreateColorCubeStack(frame,
 				"createDemoColorCube"), "3D Color Cube");
         fileMenu.add(demoMenu);
