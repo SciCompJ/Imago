@@ -97,12 +97,13 @@ public class ReadTiffAction extends ImagoAction
 		} 
 		catch (IOException ex)
 		{
-			System.err.println(ex);
+			ex.printStackTrace();
+            ImagoGui.showErrorDialog(frame, ex.getLocalizedMessage(), "TIFF Image Reading Error");
 			return;
 		} 
 		catch (Exception ex)
 		{
-            System.err.println(ex);
+            ex.printStackTrace();
             ImagoGui.showErrorDialog(frame, ex.getLocalizedMessage(), "TIFF Image Reading Error");
             return;
 		}
