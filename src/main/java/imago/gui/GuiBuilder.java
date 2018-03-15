@@ -86,6 +86,7 @@ import imago.gui.action.process.ImageManualThresholdAction;
 import imago.gui.action.process.ImageMorphologicalReconstructionAction;
 import imago.gui.action.process.ImageOtsuThresholdAction;
 import imago.gui.action.process.ImageReshapeAction;
+import imago.gui.action.process.ImageDownsampleAction;
 import imago.gui.action.process.MorphologicalFilteringAction;
 import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectPolygonTool;
@@ -416,6 +417,9 @@ public class GuiBuilder
         addMenuItem(geometryMenu,
                 new ImageReshapeAction(frame, "reshapeImage"),
                 "Reshape Image", isImage);
+        addMenuItem(geometryMenu,
+                new ImageDownsampleAction(frame, "downsampleImage"),
+                "Downsample Image", isImage);
 
 		menu.add(geometryMenu);
 
