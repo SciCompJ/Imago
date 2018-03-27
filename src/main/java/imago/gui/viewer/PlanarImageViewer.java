@@ -3,6 +3,10 @@
  */
 package imago.gui.viewer;
 
+import imago.gui.ImageUtils;
+import imago.gui.ImageViewer;
+import imago.gui.ImagoTool;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -12,9 +16,6 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JScrollPane;
 
-import imago.gui.ImageUtils;
-import imago.gui.ImageViewer;
-import imago.gui.ImagoTool;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.image.Image;
 

@@ -3,8 +3,27 @@
  */
 package imago.gui.action.analyze;
 
+import imago.gui.ImageViewer;
+import imago.gui.ImagoAction;
+import imago.gui.ImagoChartFrame;
+import imago.gui.ImagoDocViewer;
+import imago.gui.ImagoFrame;
+import imago.gui.viewer.PlanarImageViewer;
+
 import java.awt.Color;
 import java.awt.event.ActionEvent;
+
+import net.sci.array.Array;
+import net.sci.array.data.ScalarArray;
+import net.sci.array.data.color.RGB8Array2D;
+import net.sci.array.data.scalar2d.ScalarArray2D;
+import net.sci.array.data.vector.VectorArray2D;
+import net.sci.array.interp.LinearInterpolator2D;
+import net.sci.geom.geom2d.Geometry2D;
+import net.sci.geom.geom2d.Point2D;
+import net.sci.geom.geom2d.line.LineSegment2D;
+import net.sci.image.Image;
+import net.sci.table.DataTable;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -14,24 +33,6 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-
-import imago.gui.ImageViewer;
-import imago.gui.ImagoAction;
-import imago.gui.ImagoChartFrame;
-import imago.gui.ImagoDocViewer;
-import imago.gui.ImagoFrame;
-import imago.gui.viewer.PlanarImageViewer;
-import net.sci.geom.geom2d.Point2D;
-import net.sci.array.Array;
-import net.sci.array.data.ScalarArray;
-import net.sci.array.data.color.RGB8Array2D;
-import net.sci.array.data.scalar2d.ScalarArray2D;
-import net.sci.array.data.vector.VectorArray2D;
-import net.sci.array.interp.LinearInterpolator2D;
-import net.sci.geom.geom2d.Geometry2D;
-import net.sci.geom.geom2d.line.LineSegment2D;
-import net.sci.image.Image;
-import net.sci.table.DataTable;
 
 /**
  * Simple demo for line profile that computes profile along image diagonal.

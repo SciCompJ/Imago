@@ -3,13 +3,14 @@
  */
 package imago.gui.action.image;
 
-import java.awt.event.ActionEvent;
-
 import imago.app.ImagoDoc;
 import imago.gui.ImagoAction;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
+
+import java.awt.event.ActionEvent;
+
 import net.sci.array.Array;
 import net.sci.array.data.ScalarArray;
 import net.sci.array.data.UInt8Array;

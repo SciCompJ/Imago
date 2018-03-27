@@ -3,6 +3,8 @@
  */
 package imago.gui;
 
+import imago.gui.util.RowNumberTable;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -14,7 +16,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import imago.gui.util.RowNumberTable;
 import net.sci.table.Table;
 
 /**

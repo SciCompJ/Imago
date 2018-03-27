@@ -3,6 +3,9 @@
  */
 package imago.gui.viewer;
 
+import imago.app.shape.ImagoShape;
+import imago.gui.ImagoDocViewer;
+
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -16,8 +19,6 @@ import java.util.Iterator;
 
 import javax.swing.JPanel;
 
-import imago.app.shape.ImagoShape;
-import imago.gui.ImagoDocViewer;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Curve2D;
 import net.sci.geom.geom2d.Geometry2D;

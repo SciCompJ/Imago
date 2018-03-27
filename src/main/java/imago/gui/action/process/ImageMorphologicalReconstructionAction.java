@@ -3,14 +3,15 @@
  */
 package imago.gui.action.process;
 
-import java.awt.event.ActionEvent;
-import java.util.Collection;
-
 import imago.app.ImagoApp;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoAction;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
+
+import java.awt.event.ActionEvent;
+import java.util.Collection;
+
 import net.sci.array.Array;
 import net.sci.image.Image;
 import net.sci.image.morphology.MorphologicalReconstruction;

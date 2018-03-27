@@ -3,14 +3,15 @@
  */
 package imago.gui.action.analyze;
 
-import java.awt.event.ActionEvent;
-
 import imago.app.ImagoDoc;
 import imago.app.shape.ImagoShape;
 import imago.gui.ImagoAction;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoTableFrame;
+
+import java.awt.event.ActionEvent;
+
 import net.sci.array.Array;
 import net.sci.array.data.scalar2d.IntArray2D;
 import net.sci.array.data.scalar3d.IntArray3D;

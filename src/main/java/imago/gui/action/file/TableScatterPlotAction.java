@@ -3,20 +3,21 @@
  */
 package imago.gui.action.file;
 
+import imago.gui.ImagoAction;
+import imago.gui.ImagoFrame;
+import imago.gui.ImagoTableFrame;
+
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JFrame;
 
+import net.sci.table.Table;
+
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
-
-import imago.gui.ImagoAction;
-import imago.gui.ImagoFrame;
-import imago.gui.ImagoTableFrame;
-import net.sci.table.Table;
 
 
 /**

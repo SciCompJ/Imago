@@ -6,10 +6,11 @@ package imago.gui.tool;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoTool;
 import imago.gui.viewer.ImageDisplay;
-import net.sci.geom.geom2d.Point2D;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+
+import net.sci.geom.geom2d.Point2D;
 
 /**
  * The default tool for choosing pixel on an image.

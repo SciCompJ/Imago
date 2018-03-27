@@ -3,10 +3,11 @@
  */
 package imago.app;
 
+import imago.app.shape.ImagoShape;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
-import imago.app.shape.ImagoShape;
 import net.sci.image.Image;
 
 

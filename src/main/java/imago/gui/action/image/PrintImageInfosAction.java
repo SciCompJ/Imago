@@ -3,12 +3,13 @@
  */
 package imago.gui.action.image;
 
-import java.awt.event.ActionEvent;
-
 import imago.app.ImagoDoc;
 import imago.gui.ImagoAction;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
+
+import java.awt.event.ActionEvent;
+
 import net.sci.image.Image;
 import net.sci.image.ImageAxis;
 import net.sci.image.NumericalAxis;

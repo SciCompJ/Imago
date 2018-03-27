@@ -3,6 +3,10 @@
  */
 package imago.gui.viewer;
 
+import imago.gui.ImageUtils;
+import imago.gui.ImageViewer;
+import imago.gui.ImagoTool;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -19,9 +23,6 @@ import javax.swing.JScrollPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import imago.gui.ImageUtils;
-import imago.gui.ImageViewer;
-import imago.gui.ImagoTool;
 import net.sci.image.Image;
 import net.sci.image.process.shape.ImageSlicer;
 

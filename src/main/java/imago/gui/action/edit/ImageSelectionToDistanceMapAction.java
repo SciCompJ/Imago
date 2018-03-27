@@ -3,14 +3,15 @@
  */
 package imago.gui.action.edit;
 
-import java.awt.event.ActionEvent;
-
 import imago.app.ImagoDoc;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoAction;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import imago.gui.viewer.PlanarImageViewer;
+
+import java.awt.event.ActionEvent;
+
 import net.sci.array.Array;
 import net.sci.array.data.scalar2d.Float32Array2D;
 import net.sci.geom.geom2d.Geometry2D;

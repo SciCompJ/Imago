@@ -3,6 +3,12 @@
  */
 package imago.gui;
 
+import imago.app.ImagoDoc;
+import imago.gui.panel.StatusBar;
+import imago.gui.tool.DisplayCurrentValueTool;
+import imago.gui.viewer.PlanarImageViewer;
+import imago.gui.viewer.StackSliceViewer;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -12,11 +18,6 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JPanel;
 
-import imago.app.ImagoDoc;
-import imago.gui.panel.StatusBar;
-import imago.gui.tool.DisplayCurrentValueTool;
-import imago.gui.viewer.PlanarImageViewer;
-import imago.gui.viewer.StackSliceViewer;
 import net.sci.algo.AlgoEvent;
 import net.sci.algo.AlgoListener;
 import net.sci.image.Image;

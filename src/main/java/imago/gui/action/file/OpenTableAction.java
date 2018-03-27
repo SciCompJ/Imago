@@ -3,16 +3,17 @@
  */
 package imago.gui.action.file;
 
+import imago.gui.ImagoAction;
+import imago.gui.ImagoFrame;
+import imago.gui.ImagoGui;
+import imago.gui.ImagoTableFrame;
+
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
 
-import imago.gui.ImagoAction;
-import imago.gui.ImagoFrame;
-import imago.gui.ImagoGui;
-import imago.gui.ImagoTableFrame;
 import net.sci.table.Table;
 import net.sci.table.io.DelimitedTableReader;
 

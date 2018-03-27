@@ -8,6 +8,9 @@ import imago.gui.ImageViewer;
 import imago.gui.ImagoAction;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
+
+import java.awt.event.ActionEvent;
+
 import net.sci.array.Array;
 import net.sci.array.data.ScalarArray;
 import net.sci.array.data.UInt16Array;
@@ -15,8 +18,6 @@ import net.sci.array.data.UInt8Array;
 import net.sci.array.data.VectorArray;
 import net.sci.array.type.UInt16;
 import net.sci.image.Image;
-
-import java.awt.event.ActionEvent;
 
 /**
  * @author David Legland

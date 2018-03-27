@@ -3,14 +3,15 @@
  */
 package imago.gui.tool;
 
-import java.awt.Point;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoTool;
 import imago.gui.viewer.ImageDisplay;
 import imago.gui.viewer.PlanarImageViewer;
+
+import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.polygon.Polygon2D;
 import net.sci.geom.geom2d.polygon.SimplePolygon2D;

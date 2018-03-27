@@ -3,11 +3,11 @@
  */
 package imago.gui.action.edit;
 
-import java.util.Collection;
-
 import imago.gui.ImagoAction;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
+
+import java.util.Collection;
 
 /**
  * @author dlegland

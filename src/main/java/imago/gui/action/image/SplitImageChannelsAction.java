@@ -6,14 +6,15 @@ package imago.gui.action.image;
 import imago.gui.ImagoAction;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
+
+import java.awt.event.ActionEvent;
+
 import net.sci.array.Array;
 import net.sci.array.data.ScalarArray;
 import net.sci.array.data.UInt8Array;
 import net.sci.array.data.VectorArray;
 import net.sci.array.data.color.RGB8Array;
 import net.sci.image.Image;
-
-import java.awt.event.ActionEvent;
 
 /**
  * @author David Legland

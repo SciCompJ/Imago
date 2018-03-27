@@ -3,11 +3,12 @@
  */
 package imago.gui.action.file;
 
-import java.awt.event.ActionEvent;
-
 import imago.gui.GenericDialog;
 import imago.gui.ImagoAction;
 import imago.gui.ImagoFrame;
+
+import java.awt.event.ActionEvent;
+
 import net.sci.array.Array;
 import net.sci.array.data.BinaryArray;
 import net.sci.array.data.Float32Array;

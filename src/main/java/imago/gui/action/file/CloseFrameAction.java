@@ -3,10 +3,10 @@
  */
 package imago.gui.action.file;
 
-import java.awt.event.ActionEvent;
-
 import imago.gui.ImagoAction;
 import imago.gui.ImagoFrame;
+
+import java.awt.event.ActionEvent;
 
 /**
  * Closes the current frame.

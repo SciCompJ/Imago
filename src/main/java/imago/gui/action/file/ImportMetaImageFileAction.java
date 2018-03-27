@@ -5,8 +5,6 @@ package imago.gui.action.file;
 
 import imago.gui.ImagoAction;
 import imago.gui.ImagoFrame;
-import net.sci.image.Image;
-import net.sci.image.io.MetaImageReader;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -14,6 +12,9 @@ import java.io.IOException;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import net.sci.image.Image;
+import net.sci.image.io.MetaImageReader;
 
 /**
  * @author David Legland

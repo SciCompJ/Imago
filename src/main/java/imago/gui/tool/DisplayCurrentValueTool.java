@@ -3,16 +3,17 @@
  */
 package imago.gui.tool;
 
-import java.awt.Point;
-import java.awt.event.MouseEvent;
-import java.util.Locale;
-
 import imago.gui.ImageViewer;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoTool;
 import imago.gui.panel.StatusBar;
 import imago.gui.viewer.ImageDisplay;
 import imago.gui.viewer.StackSliceViewer;
+
+import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.util.Locale;
+
 import net.sci.array.Array;
 import net.sci.array.data.Array2D;
 import net.sci.array.data.Array3D;

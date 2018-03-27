@@ -3,8 +3,21 @@
  */
 package imago.gui.action.analyze;
 
+import imago.gui.ImagoAction;
+import imago.gui.ImagoChartFrame;
+import imago.gui.ImagoDocViewer;
+import imago.gui.ImagoFrame;
+
 import java.awt.Color;
 import java.awt.event.ActionEvent;
+
+import net.sci.array.Array;
+import net.sci.array.data.ScalarArray;
+import net.sci.array.data.color.RGB16Array;
+import net.sci.array.data.color.RGB8Array;
+import net.sci.array.process.Histogram;
+import net.sci.image.Image;
+import net.sci.table.DataTable;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -19,18 +32,6 @@ import org.jfree.data.statistics.SimpleHistogramBin;
 import org.jfree.data.statistics.SimpleHistogramDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-
-import imago.gui.ImagoAction;
-import imago.gui.ImagoChartFrame;
-import imago.gui.ImagoDocViewer;
-import imago.gui.ImagoFrame;
-import net.sci.array.Array;
-import net.sci.array.data.ScalarArray;
-import net.sci.array.data.color.RGB16Array;
-import net.sci.array.data.color.RGB8Array;
-import net.sci.array.process.Histogram;
-import net.sci.image.Image;
-import net.sci.table.DataTable;
 
 /**
  * @author David Legland

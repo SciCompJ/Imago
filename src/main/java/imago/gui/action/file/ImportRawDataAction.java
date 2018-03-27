@@ -3,6 +3,10 @@
  */
 package imago.gui.action.file;
 
+import imago.gui.GenericDialog;
+import imago.gui.ImagoAction;
+import imago.gui.ImagoFrame;
+
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
@@ -11,9 +15,6 @@ import java.util.EnumSet;
 
 import javax.swing.JFileChooser;
 
-import imago.gui.GenericDialog;
-import imago.gui.ImagoAction;
-import imago.gui.ImagoFrame;
 import net.sci.image.Image;
 import net.sci.image.io.RawImageReader;
 import net.sci.image.io.RawImageReader.DataType;

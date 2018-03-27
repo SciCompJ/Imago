@@ -10,8 +10,8 @@ import imago.gui.ImagoFrame;
 
 import java.awt.event.ActionEvent;
 
-import net.sci.image.ImageOperator;
 import net.sci.image.Image;
+import net.sci.image.ImageOperator;
 
 /**
  * @author David Legland

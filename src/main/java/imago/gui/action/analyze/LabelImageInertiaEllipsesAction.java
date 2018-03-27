@@ -3,9 +3,6 @@
  */
 package imago.gui.action.analyze;
 
-import java.awt.event.ActionEvent;
-import java.util.Collection;
-
 import imago.app.ImagoDoc;
 import imago.app.shape.ImagoShape;
 import imago.gui.GenericDialog;
@@ -14,6 +11,10 @@ import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.ImagoTableFrame;
+
+import java.awt.event.ActionEvent;
+import java.util.Collection;
+
 import net.sci.array.Array;
 import net.sci.array.data.scalar2d.IntArray2D;
 import net.sci.geom.geom2d.Point2D;

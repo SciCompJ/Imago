@@ -3,6 +3,12 @@
  */
 package imago.gui.viewer;
 
+import imago.app.ImagoDoc;
+import imago.gui.ImageUtils;
+import imago.gui.ImageViewer;
+import imago.gui.ImagoDocViewer;
+import imago.gui.ImagoTool;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -20,11 +26,6 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import imago.app.ImagoDoc;
-import imago.gui.ImageUtils;
-import imago.gui.ImageViewer;
-import imago.gui.ImagoDocViewer;
-import imago.gui.ImagoTool;
 import net.sci.image.Image;
 
 

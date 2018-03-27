@@ -3,13 +3,14 @@
  */
 package imago.gui.action.image;
 
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-
 import imago.app.ImagoApp;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoAction;
 import imago.gui.ImagoFrame;
+
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+
 import net.sci.array.data.UInt8Array;
 import net.sci.array.data.color.RGB8Array;
 import net.sci.image.Image;

@@ -3,10 +3,11 @@
  */
 package imago.gui.action.file;
 
-import java.awt.event.ActionEvent;
-
 import imago.gui.ImagoAction;
 import imago.gui.ImagoFrame;
+
+import java.awt.event.ActionEvent;
+
 import net.sci.array.data.color.RGB8Array3D;
 import net.sci.array.type.RGB8;
 import net.sci.image.Image;
