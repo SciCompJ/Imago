@@ -87,6 +87,7 @@ import imago.gui.action.process.ImageManualThresholdAction;
 import imago.gui.action.process.ImageMorphologicalReconstructionAction;
 import imago.gui.action.process.ImageOtsuThresholdAction;
 import imago.gui.action.process.ImageReshapeAction;
+import imago.gui.action.process.ImageSkeletonizationAction;
 import imago.gui.action.process.MorphologicalFilteringAction;
 import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectPolygonTool;
@@ -559,6 +560,8 @@ public class GuiBuilder
 				"Distance Map (float)", is2D && isBinary);
 		addMenuItem(binaryMenu, new ImageGeodesicDistanceMapAction(frame, "geodesicDistanceMap"),
 				"Geodesic Distance Map...");
+        addMenuItem(binaryMenu, new ImageSkeletonizationAction(frame, "binaryImageSkeleton"),
+                "IJ Skeleton", is2D && isBinary);
         binaryMenu.addSeparator();
         addMenuItem(binaryMenu, new BinaryImageBoundaryGraphAction(frame, "binaryImageBoundaryGraph"),
                 "Boundary Graph", is2D && isBinary);
