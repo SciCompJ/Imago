@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 
 import net.sci.array.Array;
 import net.sci.array.data.BinaryArray;
+import net.sci.array.type.RGB8;
 import net.sci.image.ColorMaps;
 import net.sci.image.Image;
 import net.sci.image.binary.BinaryImages;
@@ -95,7 +96,7 @@ public class BinaryImageConnectedComponentsLabelingAction extends ImagoAction
 		// TODO: update by scaling?
 		int nColors = (int) Math.min(result.getDisplayRange()[1], 255);
 		result.setColorMap(ColorMaps.JET.createColorMap(nColors));
-		result.setBackgroundColor(net.sci.array.type.Color.WHITE);
+		result.setBackgroundColor(RGB8.WHITE);
 		
 		// add the image document to GUI
 		this.gui.addNewDocument(result);

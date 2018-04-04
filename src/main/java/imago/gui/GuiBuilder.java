@@ -70,6 +70,7 @@ import imago.gui.action.image.SplitImageChannelsAction;
 import imago.gui.action.image.StackToVectorImageAction;
 import imago.gui.action.process.BinaryImageBoundaryGraphAction;
 import imago.gui.action.process.BinaryImageConnectedComponentsLabelingAction;
+import imago.gui.action.process.BinaryImageOverlayAction;
 import imago.gui.action.process.BoxFilter3x3Float;
 import imago.gui.action.process.BoxFilterAction;
 import imago.gui.action.process.BoxMedianFilterAction;
@@ -562,6 +563,8 @@ public class GuiBuilder
 				"Geodesic Distance Map...");
         addMenuItem(binaryMenu, new ImageSkeletonizationAction(frame, "binaryImageSkeleton"),
                 "IJ Skeleton", is2D && isBinary);
+        addMenuItem(binaryMenu, new BinaryImageOverlayAction(frame, "binaryImageOverlay"),
+                "Binary Overlay...");
         binaryMenu.addSeparator();
         addMenuItem(binaryMenu, new BinaryImageBoundaryGraphAction(frame, "binaryImageBoundaryGraph"),
                 "Boundary Graph", is2D && isBinary);

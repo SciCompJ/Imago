@@ -73,7 +73,7 @@ public class ImageUtils
 		    }
 		    
 		    // binary images are converted to bi-color images
-		    return createAwtImage((BinaryArray2D) array, Color.RED, Color.WHITE);
+		    return createAwtImage((BinaryArray2D) array, RGB8.RED, RGB8.WHITE);
 		} 
 		else if (image.isLabelImage())
 		{
