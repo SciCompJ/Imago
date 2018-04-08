@@ -73,5 +73,5 @@ public class BoxFilter implements Plugin
 		// add the image document to GUI
 		frame.getGui().addNewDocument(result);
 	}
-
+	
 }

@@ -30,8 +30,8 @@ public class ImagoEmptyFrame extends ImagoFrame {
 	{
 		super(gui, "Image Frame");
 		
-		GuiBuilder builder = new GuiBuilder();
-		builder.createMenuBar(this);
+        GuiBuilder builder = new GuiBuilder(this);
+        builder.createMenuBar();
 		
 		putFrameTopRight();
 	}

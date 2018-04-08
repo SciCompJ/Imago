@@ -104,7 +104,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import net.sci.array.Array;
-import net.sci.array.data.ScalarArray;
+import net.sci.array.data.color.RGB8Array;
 import net.sci.array.process.PowerOfTwo;
 import net.sci.array.process.Sqrt;
 import net.sci.array.process.shape.Flip;
@@ -132,38 +132,90 @@ import net.sci.image.process.VectorArrayNorm;
  */
 public class GuiBuilder
 {
+    /** 
+     * The frame to setup.
+     */
+    ImagoFrame frame;
+    
+    boolean hasDoc = false;
+    boolean hasImage = false;
+    boolean hasImage2D = false;
+    boolean hasImage3D = false;
+    boolean hasScalarImage = false;
+    boolean hasLabelImage = false;
+    boolean hasBinaryImage = false;
+    boolean hasVectorImage = false;
+    boolean hasColorImage = false;
+    boolean hasRGB8Image = false;
+
 	Icon emptyIcon;
 
-	public GuiBuilder()
+	/**
+	 * Creates a builder for the specified frame.
+	 * 
+	 * @param frame the frame to build.
+	 */
+	public GuiBuilder(ImagoFrame frame)
 	{
+	    this.frame = frame;
 		createEmptyIcon();
 	}
 
-	public void createMenuBar(ImagoFrame frame)
+	public void createMenuBar()
 	{
-
+	    computeFlags();
+	    
 		JMenuBar menuBar = new JMenuBar();
 		if (frame instanceof ImagoDocViewer || frame instanceof ImagoEmptyFrame)
 		{
-	        menuBar.add(createImageFileMenu(frame));
-    		menuBar.add(createImageEditMenu(frame));
-    		menuBar.add(createImageMenu(frame));
-    		menuBar.add(createImageProcessMenu(frame));
-    		menuBar.add(createImageAnalyzeMenu(frame));
+	        menuBar.add(createImageFileMenu());
+    		menuBar.add(createImageEditMenu());
+    		menuBar.add(createImageMenu());
+    		menuBar.add(createImageProcessMenu());
+    		menuBar.add(createImageAnalyzeMenu());
 		}
 		else if (frame instanceof ImagoTableFrame)
 		{
-		    menuBar.add(createTableFileMenu(frame));
+		    menuBar.add(createTableFileMenu());
 		}
-		menuBar.add(createHelpMenu(frame));
+		menuBar.add(createHelpMenu());
 
 		frame.setJMenuBar(menuBar);
 	}
 
+	private void computeFlags()
+	{
+	    ImagoDoc doc = null;
+        if (frame instanceof ImagoDocViewer)
+        {
+            doc = ((ImagoDocViewer) frame).getDocument();
+
+            this.hasDoc = doc != null;
+            if (!hasDoc) 
+                return;
+            
+            Image image = doc.getImage();
+            this.hasImage = image != null;
+            if (!hasImage) 
+                return;
+
+            Array<?> array = doc.getImage().getData();
+            this.hasImage2D = array.dimensionality() == 2;
+            this.hasImage3D = array.dimensionality() == 3;
+            
+            this.hasScalarImage = image.isScalarImage();
+            this.hasLabelImage = image.isLabelImage();
+            this.hasBinaryImage = image.isBinaryImage();
+            this.hasVectorImage = image.isVectorImage();
+            this.hasColorImage = image.isColorImage();
+            this.hasVectorImage = array instanceof RGB8Array;
+        }
+	}
+	
 	/**
 	 * Creates the sub-menu for the "File" item in the main menu bar.
      */
-    private JMenu createTableFileMenu(ImagoFrame frame)
+    private JMenu createTableFileMenu()
     {
         JMenu fileMenu = new JMenu("File");
         
@@ -185,7 +237,7 @@ public class GuiBuilder
 	/**
 	 * Creates the sub-menu for the "File" item in the main menu bar.
 	 */
-	private JMenu createImageFileMenu(ImagoFrame frame)
+	private JMenu createImageFileMenu()
 	{
 		JMenu fileMenu = new JMenu("File");
 		addMenuItem(fileMenu, new CreateEmptyImageAction(frame, "createEmptyImage"), 
@@ -236,10 +288,8 @@ public class GuiBuilder
 	/**
 	 * Creates the sub-menu for the "Edit" item in the main menu bar.
 	 */
-	private JMenu createImageEditMenu(ImagoFrame frame)
+	private JMenu createImageEditMenu()
 	{
-		boolean isImage = hasImageDoc(frame);
-			
 		JMenu editMenu = new JMenu("Edit");
 
 		// tool selection items
@@ -250,26 +300,25 @@ public class GuiBuilder
 
 			tool = new SelectionTool(viewer, "select");
 			addMenuItem(editMenu, new SelectToolAction(viewer, tool), "Select",
-					isImage);
+					hasImage);
 
-//			tool = new SelectLineTool(viewer, "selectLine");
             addMenuItem(editMenu, 
                     new SelectToolAction(viewer, new SelectLineSegmentTool(viewer, "selectLineSegment")),
-                    "Select Line", isImage);
+                    "Select Line", hasImage);
             addMenuItem(editMenu, 
                     new SelectToolAction(viewer, new SelectPolygonTool(viewer, "selectPolygon")),
-                    "Select Polygon", isImage);
+                    "Select Polygon", hasImage);
 
 			editMenu.addSeparator();
 		}
 
 		// zoom items
 		addMenuItem(editMenu, new ZoomInAction(frame, "zoomIn"), "Zoom In",
-				isImage);
+				hasImage);
 		addMenuItem(editMenu, new ZoomOutAction(frame, "zoomOut"), "Zoom Out",
-				isImage);
+				hasImage);
 		addMenuItem(editMenu, new ZoomOneAction(frame, "zoomOne"), "Zoom One",
-				isImage);
+				hasImage);
 		
         // add utility
 		editMenu.addSeparator();
@@ -286,68 +335,61 @@ public class GuiBuilder
 	/**
 	 * Creates the sub-menu for the "IMAGE" item in the main Menu bar.
 	 */
-	private JMenu createImageMenu(ImagoFrame frame)
+	private JMenu createImageMenu()
 	{
-		boolean isImage = hasImageDoc(frame);
-		boolean is2D = has2DImage(frame);
-		boolean is3D = has3DImage(frame);
-		boolean isScalar = hasScalarImage(frame);
-		boolean isColor = hasRGB8Image(frame);
-        boolean isVector = hasVectorImage(frame);
-
 		JMenu menu = new JMenu("Image");
 		
         JMenu imageTypeMenu = new JMenu("Image Type");
         addMenuItem(imageTypeMenu, new SetImageTypeToLabelAction(frame, "convertTypeToLabel"),
-                "Set to Label Image", isScalar);
+                "Set to Label Image", hasScalarImage);
         menu.add(imageTypeMenu);
         
 	      // Type conversion items
         JMenu convertDataTypeMenu = new JMenu("Convert Data-Type");
-        convertDataTypeMenu.setEnabled(isImage);
+        convertDataTypeMenu.setEnabled(hasImage);
         // addMenuItem(convertTypeMenu, new MetaImageOperatorAction(frame,
         // "toGray8",
-        // new Gray8Converter()), "Gray8", isImage);
+        // new Gray8Converter()), "Gray8", hasImage);
         // addMenuItem(convertTypeMenu, new MetaImageOperatorAction(frame,
         // "toFloat",
-        // new FloatConverter()), "Float", isImage);
+        // new FloatConverter()), "Float", hasImage);
         // editMenu.add(convertTypeMenu);
         addMenuItem(convertDataTypeMenu, new ConvertToBinaryImageAction(frame, "convertToBinary"),
-                "Binary", isScalar);
+                "Binary", hasScalarImage);
         addMenuItem(convertDataTypeMenu, new ConvertToUInt8ImageAction(frame, "convertToUInt8"),
-                "UInt8", isScalar);
+                "UInt8", hasScalarImage);
         addMenuItem(convertDataTypeMenu, new ConvertToUInt16ImageAction(frame, "convertToUInt16"),
-                "UInt16", isScalar);
+                "UInt16", hasScalarImage);
         convertDataTypeMenu.addSeparator();
         addMenuItem(convertDataTypeMenu, new ConvertToInt16ImageAction(frame, "convertToInt16"),
-                "Int16", isScalar);
+                "Int16", hasScalarImage);
         addMenuItem(convertDataTypeMenu, new ConvertToInt32ImageAction(frame, "convertToInt32"),
-                "Int32", isScalar);
+                "Int32", hasScalarImage);
         convertDataTypeMenu.addSeparator();
         addMenuItem(convertDataTypeMenu, new ConvertToFloat32ImageAction(frame, "convertToFloat32"),
-                "Float32", isImage);
+                "Float32", hasImage);
         addMenuItem(convertDataTypeMenu, new ConvertToFloat64ImageAction(frame, "convertToFloat64"),
-                "Float64", isImage);
+                "Float64", hasImage);
         menu.add(convertDataTypeMenu);
         
         menu.addSeparator();
 		JMenu displayRangeMenu = new JMenu("Display Range");
 		addMenuItem(displayRangeMenu, new SetDataTypeDisplayRangeAction(frame, "setDataTypeDisplayRange"), 
-		        "Set Data Type Display Range", isScalar);
+		        "Set Data Type Display Range", hasScalarImage);
 		addMenuItem(displayRangeMenu, new SetImageDisplayRangeAction(frame, "setImageDisplayRange"), 
 		        "Set Image Display Range",
-				isScalar | isVector);
+				hasScalarImage | hasVectorImage);
 		addMenuItem(displayRangeMenu, new SetManualDisplayRangeAction(frame, "setManualDisplayRange"), 
 		        "Set Manual Display Range",
-				isScalar | isVector);
+				hasScalarImage | hasVectorImage);
 		// addMenuItem(editMenu, new SetDisplayRangeUnitIntervalAction(frame,
 		// "setDisplayRangeUnitInterval"),
-		// "Set Display Range [0 ; 1]", isScalar || isVector);
+		// "Set Display Range [0 ; 1]", hasScalarImage || hasVectorImage);
 		menu.add(displayRangeMenu);
 
 		addMenuItem(menu,
 				 new ArrayOperatorAction(frame, "adjustDynamic", new DynamicAdjustment(.01)),
-				 "Adjust Grayscale Dynamic", isScalar);
+				 "Adjust Grayscale Dynamic", hasScalarImage);
 
         
         // Color conversion items
@@ -355,16 +397,16 @@ public class GuiBuilder
         JMenu colorMenu = new JMenu("Color");
         // editMenu.add(convertTypeMenu);
         addMenuItem(colorMenu, new ConvertRGB8ToUInt8ImageAction(frame, "convertRGB8ToUInt8"),
-                "Convert to UInt8", isColor);
+                "Convert to UInt8", hasColorImage);
         addMenuItem(colorMenu, new SplitImageChannelsAction(frame,
-                "splitChannels"), "Split Channels", isVector || isColor);
+                "splitChannels"), "Split Channels", hasVectorImage || hasColorImage);
         addMenuItem(colorMenu, new MergeChannelImagesAction(frame,
                 "mergeChannels"), "Merge Channels");
         addMenuItem(colorMenu, new ExtractChannelFromColorImageAction(frame,
-                "extractChannel"), "Extract Channel...", isColor);
+                "extractChannel"), "Extract Channel...", hasColorImage);
         // addMenuItem(editMenu, new MetaImageOperatorAction(frame,
         // "colorToGray",
-        // new Gray8Converter()), "RGB -> Gray8", isColor);
+        // new Gray8Converter()), "RGB -> Gray8", hasColorImage);
         menu.add(colorMenu);
 
         // add Colormap utils
@@ -388,69 +430,69 @@ public class GuiBuilder
         menu.add(colormapMenu);
         
         addMenuItem(menu, new ImageSetBackgroundColorAction(frame, "imageSetBackgroundColor"),
-                "Set Background Color...", hasLabelImage(frame));
+                "Set Background Color...", hasLabelImage);
         
 
         menu.addSeparator();
         addMenuItem(menu, new ImageSetScaleAction(frame, "setImageScale"), 
-                "Image Scale...", isImage);
+                "Image Scale...", hasImage);
         
         menu.addSeparator();
 		JMenu geometryMenu = new JMenu("Geometry");
-		geometryMenu.setEnabled(isImage);
+		geometryMenu.setEnabled(hasImage);
 		addMenuItem(geometryMenu, new ArrayOperatorAction(frame,
-				"flipXFilter", new Flip(0)), "Fl&ip Horizontal", isImage);
+				"flipXFilter", new Flip(0)), "Fl&ip Horizontal", hasImage);
 		addMenuItem(geometryMenu, new ArrayOperatorAction(frame,
-				"flipYFilter", new Flip(1)), "Flip Vertical", isImage);
+				"flipYFilter", new Flip(1)), "Flip Vertical", hasImage);
 		addMenuItem(geometryMenu, new ArrayOperatorAction(frame,
-				"flipZFilter", new Flip(2)), "Flip Slices", is3D);
+				"flipZFilter", new Flip(2)), "Flip Slices", hasImage3D);
 		geometryMenu.addSeparator();
 		// addMenuItem(geometryMenu,
 		// new ImageOperatorAction(frame, "rotation90", new Rotation90()),
-		// "Rotation 90", has2D);
+		// "Rotation 90", hasImage2D);
 		addMenuItem(geometryMenu,
 				 new ArrayOperatorAction(frame, "imageRotateLeft", new Rotate90(-1)),
-				 "Rotate Left", is2D);
+				 "Rotate Left", hasImage2D);
 		addMenuItem(geometryMenu,
 				 new ArrayOperatorAction(frame, "imageRotateRight", new Rotate90(+1)),
-				 "Rotate Right", is2D);
+				 "Rotate Right", hasImage2D);
 		addMenuItem(geometryMenu,
 				 new ArrayOperatorAction(frame, "rotateImage", new RotationAroundCenter(30)),
-				 "Rotate Image", isImage);
+				 "Rotate Image", hasImage);
         addMenuItem(geometryMenu,
                 new ImageReshapeAction(frame, "reshapeImage"),
-                "Reshape Image", isImage);
+                "Reshape Image", hasImage);
         addMenuItem(geometryMenu,
                 new ImageDownsampleAction(frame, "downsampleImage"),
-                "Downsample Image", isImage);
+                "Downsample Image", hasImage);
 
 		menu.add(geometryMenu);
 
 		// Create the menu for 3D images
 		JMenu stackMenu = new JMenu("Stacks");
-		stackMenu.setEnabled(is3D);
+		stackMenu.setEnabled(hasImage3D);
 //		addMenuItem(stackMenu, 
-//				new MiddleSliceImageAction(frame, "middleSlice"), "Middle Slice", is3D);
+//				new MiddleSliceImageAction(frame, "middleSlice"), "Middle Slice", hasImage3D);
         addMenuItem(stackMenu, new Image3DGetCurrentSliceAction(frame,
-                "getCurrentSliceImage"), "Extract Current Slice", is3D);
+                "getCurrentSliceImage"), "Extract Current Slice", hasImage3D);
         addMenuItem(stackMenu, new Image3DGetSliceAction(frame,
-                "getSlice2dImage"), "Extract Slice...", is3D);
+                "getSlice2dImage"), "Extract Slice...", hasImage3D);
         addMenuItem(stackMenu, new Image3DOrthoslicesImageAction(frame,
-                "orthoSlicesImage"), "Create OrthoSlices Image...", is3D);
+                "orthoSlicesImage"), "Create OrthoSlices Image...", hasImage3D);
         stackMenu.addSeparator();
         addMenuItem(stackMenu, new Image3DSetOrthoSlicesDisplayAction(frame,
-                "setOrthoSlicesView"), "Set Orthoslices Display", is3D);
+                "setOrthoSlicesView"), "Set Orthoslices Display", hasImage3D);
         stackMenu.addSeparator();
 		addMenuItem(stackMenu, new StackToVectorImageAction(frame, "stackToVector"),
-				"Stack To Vector", is3D);
+				"Stack To Vector", hasImage3D);
 		menu.add(stackMenu);
 
         menu.addSeparator();
 		addMenuItem(menu, new ImageDuplicateAction(frame, "Duplicate"), "Duplicate",
-		        isImage);
+		        hasImage);
         addMenuItem(menu, 
                 new ImageArrayOperatorAction(frame, "invert",
-                new ImageInverter()), "Invert", isScalar || isColor);
+                new ImageInverter()), "Invert", hasScalarImage || hasColorImage);
         
         // submenu for creation of phantoms
         JMenu phantomMenu = new JMenu("Phantoms");
@@ -466,170 +508,156 @@ public class GuiBuilder
         
 		menu.addSeparator();
         addMenuItem(menu, new PrintImageTiffTagsAction(frame,
-                "printImageTiffTags"), "Print TIFF Tags", isImage);
+                "printImageTiffTags"), "Print TIFF Tags", hasImage);
         addMenuItem(menu, new PrintImageInfosAction(frame,
-                "printImageInfo"), "Print Image Info", isImage);
+                "printImageInfo"), "Print Image Info", hasImage);
 		return menu;
 	}
 
 	/**
 	 * Creates the sub-menu for the "process" item in the main Menu bar.
 	 */
-	private JMenu createImageProcessMenu(ImagoFrame frame)
+	private JMenu createImageProcessMenu()
 	{
-		boolean isImage = hasImageDoc(frame);
-		boolean is2D = has2DImage(frame);
-		boolean is3D = has3DImage(frame);
-		boolean isScalar = hasScalarImage(frame);
-		boolean isVector = hasVectorImage(frame);
-		boolean isColor = hasRGB8Image(frame);
-		boolean isBinary = hasBinaryImage(frame);
-
 		JMenu menu = new JMenu("Process");
 
 		JMenu mathsMenu = new JMenu("Maths");
 		addMenuItem(mathsMenu,
 				new ArrayOperatorAction(frame, "sqrt", new Sqrt()),
-				"Sqrt", isScalar);
+				"Sqrt", hasScalarImage);
 		addMenuItem(mathsMenu,
 				new ArrayOperatorAction(frame, "powerOfTwo", new PowerOfTwo()),
-				"Power Of Two", isScalar);
+				"Power Of Two", hasScalarImage);
 		menu.add(mathsMenu);
 		menu.addSeparator();
 
 		// Noise reduction filters
-        addPluginMenuItem(menu, new BoxFilter(), frame, "Box Filter", isScalar);
+        addPlugin(menu, new BoxFilter(), "Box Filter");
 		addMenuItem(menu, new BoxFilter3x3Float(frame, "boxFilter3x3Float"),
-				"Box Filter 2D 3x3 (float)", isScalar);
+				"Box Filter 2D 3x3 (float)", hasScalarImage);
 		addMenuItem(menu, new BoxMedianFilterAction(frame, "medianFilter"),
-				"Median Filter", isScalar);
+				"Median Filter", hasScalarImage);
 		addMenuItem(menu, new BoxMinMaxFilterAction(frame, "minMaxFilter"),
-				"Min/Max Filter", isScalar);
+				"Min/Max Filter", hasScalarImage);
 		addMenuItem(menu, new BoxVarianceFilterAction(frame, "boxVarianceFilter"),
-				"Variance Filter", isScalar);
+				"Variance Filter", hasScalarImage);
 		menu.addSeparator();
 		
 		// Gradient filters
 		addMenuItem(menu, new ImageArrayOperatorAction(frame, "sobelGradient",
-				new SobelGradient()), "Sobel Gradient", isImage);
+				new SobelGradient()), "Sobel Gradient", hasImage);
 		addMenuItem(menu, new ImageOperatorAction(frame, "sobelGradientNorm",
-				new SobelGradientNorm()), "Sobel Gradient Norm", isScalar);
+				new SobelGradientNorm()), "Sobel Gradient Norm", hasScalarImage);
 		addMenuItem(menu, new ImageArrayOperatorAction(frame, "sobelGradient",
-				new SobelGradient()), "Sobel Gradient", isScalar);
+				new SobelGradient()), "Sobel Gradient", hasScalarImage);
 		addMenuItem(menu, new ImageArrayOperatorAction(frame, "vectorImageNorm",
-				new VectorArrayNorm()), "Vector Image Norm", isVector);
+				new VectorArrayNorm()), "Vector Image Norm", hasVectorImage);
 		// addMenuItem(menu, new ImageOperatorAction(frame, "vectorAngle",
 		// new VectorImageAngle()),
-		// "Array<?> Angle", isImage);
+		// "Array<?> Angle", hasImage);
 		menu.addSeparator();
 		
 		JMenu morphologyMenu = new JMenu("Mathematical Morphology");
-		addPluginMenuItem(morphologyMenu, new MorphologicalFiltering(), frame,
-				"Morphological Filtering", isScalar && is2D);
+		addPlugin(morphologyMenu, new MorphologicalFiltering(), "Morphological Filtering");
 
 		morphologyMenu.addSeparator();
 		addMenuItem(morphologyMenu, new ImageOperatorAction(frame, "regionalMin",
 				new RegionalExtrema2D(MinimaAndMaxima.Type.MINIMA, Connectivity2D.C4)), 
-				"Regional Minima", isScalar);
+				"Regional Minima", hasScalarImage);
 		addMenuItem(morphologyMenu, new ImageOperatorAction(frame, "regionalMax",
 				new RegionalExtrema2D(MinimaAndMaxima.Type.MAXIMA, Connectivity2D.C4)), 
-				"Regional Maxima", isScalar);
+				"Regional Maxima", hasScalarImage);
 		addMenuItem(morphologyMenu, new ImageExtendedExtremaAction(frame, "extendedExtrema"), 
-				"Extended Min./Max.", isScalar);
+				"Extended Min./Max.", hasScalarImage);
 		addMenuItem(morphologyMenu, 
 				new ImageMorphologicalReconstructionAction(frame, "morphoRec"), 
 				"Morphological Reconstruction");
 		morphologyMenu.addSeparator();
 		addMenuItem(morphologyMenu, 
 				new ImageFillHolesAction(frame, "fillHoles"), 
-				"Fill Holes", isScalar && (is2D || is3D));
+				"Fill Holes", hasScalarImage && (hasImage2D || hasImage3D));
 		addMenuItem(morphologyMenu, 
 				new ImageKillBordersAction(frame, "killBorders"), 
-				"Kill Borders", isScalar && (is2D || is3D));
+				"Kill Borders", hasScalarImage && (hasImage2D || hasImage3D));
 		menu.add(morphologyMenu);
 
 		// operators specific to binary images
 		JMenu binaryMenu = new JMenu("Binary Images");
 //		addMenuItem(binaryMenu, new ImageArrayOperatorAction(frame, "connectedComponentLabeling",
-//				new FloodFillComponentsLabeling2D()), "Connected Component Labeling", is2D && isBinary);
+//				new FloodFillComponentsLabeling2D()), "Connected Component Labeling", hasImage2D && hasBinaryImage);
 		addMenuItem(binaryMenu, new BinaryImageConnectedComponentsLabelingAction(frame, "connectedComponentLabeling"),
-				"Connected Component Labeling", (is2D || is3D) && isBinary);
+				"Connected Component Labeling", (hasImage2D || hasImage3D) && hasBinaryImage);
 		addMenuItem(binaryMenu, new ArrayOperatorAction(frame, "distanceMap2dShort",
 				new ChamferDistanceTransform2DUInt16(ChamferWeights2D.CHESSKNIGHT, false)),
-				"Distance Map", is2D && isBinary);
+				"Distance Map", hasImage2D && hasBinaryImage);
 		addMenuItem(binaryMenu, new ArrayOperatorAction(frame, "distanceMap2dFloat",
 				new ChamferDistanceTransform2DFloat(ChamferWeights2D.CHESSKNIGHT, false)),
-				"Distance Map (float)", is2D && isBinary);
+				"Distance Map (float)", hasImage2D && hasBinaryImage);
 		addMenuItem(binaryMenu, new ImageGeodesicDistanceMapAction(frame, "geodesicDistanceMap"),
 				"Geodesic Distance Map...");
         addMenuItem(binaryMenu, new ImageSkeletonizationAction(frame, "binaryImageSkeleton"),
-                "IJ Skeleton", is2D && isBinary);
+                "IJ Skeleton", hasImage2D && hasBinaryImage);
         binaryMenu.addSeparator();
         addMenuItem(binaryMenu, new BinaryImageBoundaryGraphAction(frame, "binaryImageBoundaryGraph"),
-                "Boundary Graph", is2D && isBinary);
+                "Boundary Graph", hasImage2D && hasBinaryImage);
 		menu.add(binaryMenu);
 
 		menu.addSeparator();
 
 		addMenuItem(menu, 
 				new ImageOtsuThresholdAction(frame, "otsuThreshold"),
-				"Otsu Threshold", isScalar);
+				"Otsu Threshold", hasScalarImage);
         addMenuItem(menu, 
                 new ImageManualThresholdAction(frame, "manualThreshold"),
-                "Manual Threshold", isScalar);
+                "Manual Threshold", hasScalarImage);
         addMenuItem(menu, new ImageFindNonZeroPixelsAction(frame, "findNonZerosPixels"),
-                "Find Non-Zeros Elements", is2D && isScalar);
+                "Find Non-Zeros Elements", hasImage2D && hasScalarImage);
         addMenuItem(menu, new ImageIsocontourAction(frame, "isocontour"),
-                "Isocontour...", is2D && isScalar);
+                "Isocontour...", hasImage2D && hasScalarImage);
 		menu.addSeparator();
 
 		addMenuItem(menu, 
 				new ColorImageBivariateHistogramsAction(frame, "bivarateHistograms"), 
-				"RGB to Color Histograms", isColor);
+				"RGB to Color Histograms", hasColorImage);
 
 		Plugin boxFilter3x3f = new BoxFilter3x3FloatPlugin("");
-		addPluginMenuItem(menu, boxFilter3x3f, frame, "Box Filter 3x3", isScalar);
+		addPlugin(menu, boxFilter3x3f, "Box Filter 3x3");
         return menu;
 	}
 
 	/**
 	 * Creates the sub-menu for the "process" item in the main Menu bar.
 	 */
-	private JMenu createImageAnalyzeMenu(ImagoFrame frame)
+	private JMenu createImageAnalyzeMenu()
 	{
-		 boolean isImage = hasImageDoc(frame);
-         boolean has2D = has2DImage(frame);
-         boolean has3D = has3DImage(frame);
-         boolean hasLabel = hasLabelImage(frame);
-
 		JMenu menu = new JMenu("Analyze");
 
 		addMenuItem(menu, new ImageHistogramAction(frame, "histogram"),
-				"Histogram", isImage);
+				"Histogram", hasImage);
 		addMenuItem(menu, new ImageRoiHistogramAction(frame, "roiHistogram"),
-				"ROI Histogram", isImage && has2D);
+				"ROI Histogram", hasImage && hasImage2D);
         addMenuItem(menu, new ImageMeanValueAction(frame, "meanValue"),
-                "Mean Value", isImage);
+                "Mean Value", hasImage);
 //		addMenuItem(menu, new RGBJointHistogramsAction(frame,
 //				"rgbJointHistograms"), "RGB Joint Histograms",
 //				hasRGB8Image(frame));
 		menu.addSeparator();
 		addMenuItem(menu, new ImageLineProfileDemoAction(frame, "lineProfile"),
-				"Line Profile", isImage);
+				"Line Profile", hasImage);
 
         menu.addSeparator();
         addMenuItem(menu, new LabelImageBoundingBoxesAction(frame, "boundingBoxes"),
-                "Bounding Boxes", (has2D || has3D) && hasLabel);
+                "Bounding Boxes", (hasImage2D || hasImage3D) && hasLabelImage);
         addMenuItem(menu, new LabelImageCentroidsAction(frame, "regionCentroids"),
-                "Regions Centroids", (has2D || has3D) && hasLabel);
+                "Regions Centroids", (hasImage2D || hasImage3D) && hasLabelImage);
         addMenuItem(menu, new LabelImageEquivalentDisksAction(frame, "equivDisks"),
-                "Regions Equivalent Disks", has2D && hasLabel);
+                "Regions Equivalent Disks", hasImage2D && hasLabelImage);
         addMenuItem(menu, new LabelImageInertiaEllipsesAction(frame, "regionEllipses"),
-                "Regions Inertia Ellipses", has2D && hasLabel);
+                "Regions Inertia Ellipses", hasImage2D && hasLabelImage);
 		return menu;
 	}
 
-	private JMenu createHelpMenu(ImagoFrame frame)
+	private JMenu createHelpMenu()
 	{
 		JMenu menu = new JMenu("Help");
 		addMenuItem(menu, null, "About...", true);
@@ -652,13 +680,12 @@ public class GuiBuilder
 		return item;
 	}
 
-    private JMenuItem addPluginMenuItem(JMenu menu, Plugin plugin, ImagoFrame frame, String label,
-            boolean enabled)
+    private JMenuItem addPlugin(JMenu menu, Plugin plugin, String label)
     {
         JMenuItem item = new JMenuItem(new RunPluginAction(frame, plugin));
         item.setText(label);
         item.setIcon(this.emptyIcon);
-        item.setEnabled(enabled);
+        item.setEnabled(plugin.isEnabled(frame));
         menu.add(item);
         return item;
     }
@@ -673,135 +700,5 @@ public class GuiBuilder
 			for (int x = 0; x < width; x++)
 				image.setRGB(x, y, 0x00FFFFFF);
 		this.emptyIcon = new ImageIcon(image);
-	}
-
-	private final static boolean hasImageDoc(ImagoFrame frame)
-	{
-		ImagoDoc doc = null;
-		if (frame instanceof ImagoDocViewer)
-		{
-			doc = ((ImagoDocViewer) frame).getDocument();
-		}
-		return doc != null;
-	}
-
-    private final static boolean hasLabelImage(ImagoFrame frame)
-    {
-        ImagoDoc doc = null;
-        if (frame instanceof ImagoDocViewer)
-        {
-            doc = ((ImagoDocViewer) frame).getDocument();
-        }
-        if (doc == null)
-            return false;
-
-        return doc.getImage().isLabelImage();
-    }
-
-    private final static boolean hasScalarImage(ImagoFrame frame)
-    {
-        ImagoDoc doc = null;
-        if (frame instanceof ImagoDocViewer)
-        {
-            doc = ((ImagoDocViewer) frame).getDocument();
-        }
-        if (doc == null)
-            return false;
-
-        boolean isScalar = false;
-        Array<?> img = doc.getImage().getData();
-        if (img instanceof ScalarArray<?>)
-        {
-            isScalar = true;
-        }
-        return isScalar;
-    }
-
-    private final static boolean hasVectorImage(ImagoFrame frame)
-	{
-		ImagoDoc doc = null;
-		if (frame instanceof ImagoDocViewer)
-		{
-			doc = ((ImagoDocViewer) frame).getDocument();
-		}
-		if (doc == null)
-			return false;
-
-		switch(doc.getImage().getType())
-		{
-		case VECTOR:
-		case COLOR:
-		case COMPLEX:
-			return true;
-		default:
-			return false;
-		}
-	}
-
-//	private final static boolean hasColorImage(ImagoFrame frame)
-//	{
-//		ImagoDoc doc = null;
-//		if (frame instanceof ImagoDocViewer)
-//		{
-//			doc = ((ImagoDocViewer) frame).getDocument();
-//		}
-//		if (doc == null)
-//			return false;
-//
-//		return doc.getImage().getType() == Image.Type.COLOR;
-//	}
-
-	private final static boolean has2DImage(ImagoFrame frame)
-	{
-		ImagoDoc doc = null;
-		if (frame instanceof ImagoDocViewer)
-		{
-			doc = ((ImagoDocViewer) frame).getDocument();
-		}
-		if (doc == null)
-			return false;
-
-		Array<?> array = doc.getImage().getData();
-		return array.dimensionality() == 2;
-	}
-
-	private final static boolean has3DImage(ImagoFrame frame)
-	{
-		ImagoDoc doc = null;
-		if (frame instanceof ImagoDocViewer)
-		{
-			doc = ((ImagoDocViewer) frame).getDocument();
-		}
-		if (doc == null)
-			return false;
-
-		Array<?> array = doc.getImage().getData();
-		return array.dimensionality() == 3;
-	}
-
-	private final static boolean hasRGB8Image(ImagoFrame frame)
-	{
-		ImagoDoc doc = null;
-		if (frame instanceof ImagoDocViewer)
-		{
-			doc = ((ImagoDocViewer) frame).getDocument();
-		}
-		if (doc == null)
-			return false;
-
-		return doc.getImage().getType() == Image.Type.COLOR;
-	}
-	
-	private final static boolean hasBinaryImage(ImagoFrame frame)
-	{
-		ImagoDoc doc = null;
-		if (frame instanceof ImagoDocViewer)
-		{
-			doc = ((ImagoDocViewer) frame).getDocument();
-		}
-		if (doc == null)
-			return false;
-
-		return doc.getImage().getType() == Image.Type.BINARY;
 	}
 }
