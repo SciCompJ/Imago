@@ -72,7 +72,6 @@ import imago.gui.action.image.StackToVectorImageAction;
 import imago.gui.action.process.BinaryImageBoundaryGraphAction;
 import imago.gui.action.process.BinaryImageConnectedComponentsLabelingAction;
 import imago.gui.action.process.BoxFilter3x3Float;
-import imago.gui.action.process.BoxFilterAction;
 import imago.gui.action.process.BoxMedianFilterAction;
 import imago.gui.action.process.BoxMinMaxFilterAction;
 import imago.gui.action.process.BoxVarianceFilterAction;
@@ -89,12 +88,12 @@ import imago.gui.action.process.ImageMorphologicalReconstructionAction;
 import imago.gui.action.process.ImageOtsuThresholdAction;
 import imago.gui.action.process.ImageReshapeAction;
 import imago.gui.action.process.ImageSkeletonizationAction;
-import imago.gui.action.process.MorphologicalFilteringAction;
 import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectPolygonTool;
 import imago.gui.tool.SelectionTool;
 import imago.plugin.BoxFilter3x3FloatPlugin;
 import imago.plugin.image.process.BoxFilter;
+import imago.plugin.image.process.MorphologicalFiltering;
 
 import java.awt.image.BufferedImage;
 
@@ -499,8 +498,6 @@ public class GuiBuilder
 		menu.addSeparator();
 
 		// Noise reduction filters
-//		addMenuItem(menu, new BoxFilterAction(frame, "boxFilter"),
-//				"Box Filter", isImage);
         addPluginMenuItem(menu, new BoxFilter(), frame, "Box Filter", isScalar);
 		addMenuItem(menu, new BoxFilter3x3Float(frame, "boxFilter3x3Float"),
 				"Box Filter 2D 3x3 (float)", isScalar);
@@ -527,8 +524,9 @@ public class GuiBuilder
 		menu.addSeparator();
 		
 		JMenu morphologyMenu = new JMenu("Mathematical Morphology");
-		addMenuItem(morphologyMenu, new MorphologicalFilteringAction(frame, "Morphological Filtering"),
+		addPluginMenuItem(morphologyMenu, new MorphologicalFiltering(), frame,
 				"Morphological Filtering", isScalar && is2D);
+
 		morphologyMenu.addSeparator();
 		addMenuItem(morphologyMenu, new ImageOperatorAction(frame, "regionalMin",
 				new RegionalExtrema2D(MinimaAndMaxima.Type.MINIMA, Connectivity2D.C4)), 

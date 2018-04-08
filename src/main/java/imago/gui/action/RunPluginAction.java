@@ -25,8 +25,10 @@ public class RunPluginAction extends ImagoAction
     Plugin plugin;
     
     /**
-     * @param frame the frame from which the plugin will be called
-     * @param plugin the plugin to run
+     * @param frame
+     *            the frame from which the plugin will be called
+     * @param plugin
+     *            the plugin to run
      */
     public RunPluginAction(ImagoFrame frame, Plugin plugin)
     {
@@ -44,16 +46,6 @@ public class RunPluginAction extends ImagoAction
         {
             public void run()
             {
-                System.out.println("Run plugin from thread");
-                System.out.println("Mon traitement " + Thread.currentThread().getName());
-//                try
-//                {
-//                    Thread.sleep(5000);
-//                } 
-//                catch (Exception ex)
-//                {
-//                    ex.printStackTrace();
-//                }
                 plugin.run(frame);
             }
         };
