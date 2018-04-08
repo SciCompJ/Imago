@@ -99,4 +99,8 @@ public abstract class ImagoFrame extends JFrame
 		this.lastOpenPath = lastOpenPath;
 	}
 	
+	public ImagoGui getGui()
+	{
+	    return this.gui;
+	}
 }

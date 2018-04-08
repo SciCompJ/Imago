@@ -7,6 +7,7 @@ import imago.app.ImagoDoc;
 import imago.gui.action.ArrayOperatorAction;
 import imago.gui.action.ImageArrayOperatorAction;
 import imago.gui.action.ImageOperatorAction;
+import imago.gui.action.RunPluginAction;
 import imago.gui.action.SelectToolAction;
 import imago.gui.action.analyze.ImageHistogramAction;
 import imago.gui.action.analyze.ImageLineProfileDemoAction;
@@ -92,6 +93,7 @@ import imago.gui.action.process.MorphologicalFilteringAction;
 import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectPolygonTool;
 import imago.gui.tool.SelectionTool;
+import imago.plugin.BoxFilter3x3FloatPlugin;
 
 import java.awt.image.BufferedImage;
 
@@ -585,7 +587,10 @@ public class GuiBuilder
 				new ColorImageBivariateHistogramsAction(frame, "bivarateHistograms"), 
 				"RGB to Color Histograms", isColor);
 
-		return menu;
+		Plugin boxFilter3x3f = new BoxFilter3x3FloatPlugin("");
+		//addMenuItem(menu, new RunPluginAction(frame, boxFilter3x3f), "Box Filter 3x3", isScalar);
+		addPluginMenuItem(menu, boxFilter3x3f, frame, "Box Filter 3x3", isScalar);
+        return menu;
 	}
 
 	/**
@@ -647,6 +652,17 @@ public class GuiBuilder
 		menu.add(item);
 		return item;
 	}
+
+    private JMenuItem addPluginMenuItem(JMenu menu, Plugin plugin, ImagoFrame frame, String label,
+            boolean enabled)
+    {
+        JMenuItem item = new JMenuItem(new RunPluginAction(frame, plugin));
+        item.setText(label);
+        item.setIcon(this.emptyIcon);
+        item.setEnabled(enabled);
+        menu.add(item);
+        return item;
+    }
 
 	private void createEmptyIcon()
 	{
