@@ -94,6 +94,7 @@ import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectPolygonTool;
 import imago.gui.tool.SelectionTool;
 import imago.plugin.BoxFilter3x3FloatPlugin;
+import imago.plugin.image.process.BoxFilter;
 
 import java.awt.image.BufferedImage;
 
@@ -498,8 +499,9 @@ public class GuiBuilder
 		menu.addSeparator();
 
 		// Noise reduction filters
-		addMenuItem(menu, new BoxFilterAction(frame, "boxFilter"),
-				"Box Filter", isImage);
+//		addMenuItem(menu, new BoxFilterAction(frame, "boxFilter"),
+//				"Box Filter", isImage);
+        addPluginMenuItem(menu, new BoxFilter(), frame, "Box Filter", isScalar);
 		addMenuItem(menu, new BoxFilter3x3Float(frame, "boxFilter3x3Float"),
 				"Box Filter 2D 3x3 (float)", isScalar);
 		addMenuItem(menu, new BoxMedianFilterAction(frame, "medianFilter"),
@@ -588,7 +590,6 @@ public class GuiBuilder
 				"RGB to Color Histograms", isColor);
 
 		Plugin boxFilter3x3f = new BoxFilter3x3FloatPlugin("");
-		//addMenuItem(menu, new RunPluginAction(frame, boxFilter3x3f), "Box Filter 3x3", isScalar);
 		addPluginMenuItem(menu, boxFilter3x3f, frame, "Box Filter 3x3", isScalar);
         return menu;
 	}
