@@ -36,7 +36,7 @@ public class BoxFilter3x3FloatPlugin implements Plugin
 	public void run(ImagoFrame frame)
 	{
 		System.out.println("box filter 3x3 float");
-
+		
 		// get current image data
 		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
 		Image metaImage = doc.getImage();
@@ -53,6 +53,10 @@ public class BoxFilter3x3FloatPlugin implements Plugin
 
 		// create operator and apply
 		BoxFilter3x3 filter = new BoxFilter3x3();
+		if (frame instanceof ImagoDocViewer)
+		{
+		    filter.addAlgoListener((ImagoDocViewer) frame);
+		}
 		filter.processScalar((ScalarArray<?>) array, output);
 		Image result = new Image(output, metaImage);
 

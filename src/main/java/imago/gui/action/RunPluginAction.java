@@ -40,7 +40,24 @@ public class RunPluginAction extends ImagoAction
     @Override
     public void actionPerformed(ActionEvent evt)
     {
-        this.plugin.run(this.frame);
+        Thread t = new Thread()
+        {
+            public void run()
+            {
+                System.out.println("Run plugin from thread");
+                System.out.println("Mon traitement " + Thread.currentThread().getName());
+//                try
+//                {
+//                    Thread.sleep(5000);
+//                } 
+//                catch (Exception ex)
+//                {
+//                    ex.printStackTrace();
+//                }
+                plugin.run(frame);
+            }
+        };
+        t.start();
     }
 
 }
