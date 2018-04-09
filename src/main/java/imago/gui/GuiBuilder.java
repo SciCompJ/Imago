@@ -3,6 +3,14 @@
  */
 package imago.gui;
 
+import java.awt.image.BufferedImage;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+
 import imago.app.ImagoDoc;
 import imago.gui.action.ArrayOperatorAction;
 import imago.gui.action.ImageArrayOperatorAction;
@@ -73,9 +81,6 @@ import imago.gui.action.process.BinaryImageBoundaryGraphAction;
 import imago.gui.action.process.BinaryImageConnectedComponentsLabelingAction;
 import imago.gui.action.process.BinaryImageOverlayAction;
 import imago.gui.action.process.BoxFilter3x3Float;
-import imago.gui.action.process.BoxMedianFilterAction;
-import imago.gui.action.process.BoxMinMaxFilterAction;
-import imago.gui.action.process.BoxVarianceFilterAction;
 import imago.gui.action.process.ColorImageBivariateHistogramsAction;
 import imago.gui.action.process.ImageDownsampleAction;
 import imago.gui.action.process.ImageExtendedExtremaAction;
@@ -92,18 +97,11 @@ import imago.gui.action.process.ImageSkeletonizationAction;
 import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectPolygonTool;
 import imago.gui.tool.SelectionTool;
-import imago.plugin.BoxFilter3x3FloatPlugin;
 import imago.plugin.image.process.BoxFilter;
+import imago.plugin.image.process.ImageBoxMedianFilter;
+import imago.plugin.image.process.ImageBoxMinMaxFilter;
+import imago.plugin.image.process.ImageBoxVarianceFilter;
 import imago.plugin.image.process.MorphologicalFiltering;
-
-import java.awt.image.BufferedImage;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-
 import net.sci.array.Array;
 import net.sci.array.data.color.RGB8Array;
 import net.sci.array.process.PowerOfTwo;
@@ -536,12 +534,9 @@ public class GuiBuilder
         addPlugin(menu, new BoxFilter(), "Box Filter");
 		addMenuItem(menu, new BoxFilter3x3Float(frame, "boxFilter3x3Float"),
 				"Box Filter 2D 3x3 (float)", hasScalarImage);
-		addMenuItem(menu, new BoxMedianFilterAction(frame, "medianFilter"),
-				"Median Filter", hasScalarImage);
-		addMenuItem(menu, new BoxMinMaxFilterAction(frame, "minMaxFilter"),
-				"Min/Max Filter", hasScalarImage);
-		addMenuItem(menu, new BoxVarianceFilterAction(frame, "boxVarianceFilter"),
-				"Variance Filter", hasScalarImage);
+        addPlugin(menu, new ImageBoxMedianFilter(), "Median Filter");
+        addPlugin(menu, new ImageBoxMinMaxFilter(), "Min/Max Filter");
+		addPlugin(menu, new ImageBoxVarianceFilter(), "Variance Filter");
 		menu.addSeparator();
 		
 		// Gradient filters
@@ -584,8 +579,6 @@ public class GuiBuilder
 
 		// operators specific to binary images
 		JMenu binaryMenu = new JMenu("Binary Images");
-//		addMenuItem(binaryMenu, new ImageArrayOperatorAction(frame, "connectedComponentLabeling",
-//				new FloodFillComponentsLabeling2D()), "Connected Component Labeling", hasImage2D && hasBinaryImage);
 		addMenuItem(binaryMenu, new BinaryImageConnectedComponentsLabelingAction(frame, "connectedComponentLabeling"),
 				"Connected Component Labeling", (hasImage2D || hasImage3D) && hasBinaryImage);
 		addMenuItem(binaryMenu, new ArrayOperatorAction(frame, "distanceMap2dShort",
@@ -619,13 +612,7 @@ public class GuiBuilder
                 "Isocontour...", hasImage2D && hasScalarImage);
 		menu.addSeparator();
 
-		addMenuItem(menu, 
-				new ColorImageBivariateHistogramsAction(frame, "bivarateHistograms"), 
-				"RGB to Color Histograms", hasColorImage);
-
-		Plugin boxFilter3x3f = new BoxFilter3x3FloatPlugin("");
-		addPlugin(menu, boxFilter3x3f, "Box Filter 3x3");
-        return menu;
+		return menu;
 	}
 
 	/**
@@ -641,6 +628,10 @@ public class GuiBuilder
 				"ROI Histogram", hasImage && hasImage2D);
         addMenuItem(menu, new ImageMeanValueAction(frame, "meanValue"),
                 "Mean Value", hasImage);
+        addMenuItem(menu, 
+                new ColorImageBivariateHistogramsAction(frame, "bivarateHistograms"), 
+                "Bivariate Color Histograms", hasColorImage);
+
 //		addMenuItem(menu, new RGBJointHistogramsAction(frame,
 //				"rgbJointHistograms"), "RGB Joint Histograms",
 //				hasRGB8Image(frame));
