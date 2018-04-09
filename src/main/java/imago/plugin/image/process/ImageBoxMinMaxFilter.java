@@ -79,4 +79,23 @@ public class ImageBoxMinMaxFilter implements Plugin
 		// add the image document to GUI
 		frame.getGui().addNewDocument(result);
 	}
+
+	/**
+	 * Returns true if the current frame contains a scalar image.
+	 */
+    @Override
+    public boolean isEnabled(ImagoFrame frame)
+    {
+        // check frame class
+        if (!(frame instanceof ImagoDocViewer))
+            return false;
+        
+        // check image
+        ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+        Image image = doc.getImage();
+        if (image == null)
+            return false;
+
+        return image.isScalarImage();
+    }
 }

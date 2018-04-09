@@ -92,4 +92,26 @@ public class BinaryImageConnectedComponentsLabeling implements Plugin
 		frame.getGui().addNewDocument(result);
 	}
 
+    /**
+     * Returns true if the current frame contains a binary image.
+     * 
+     * @param frame
+     *            the frame from which the plugin will be called
+     * @return true if the frame contains a binary image
+     */
+    @Override
+    public boolean isEnabled(ImagoFrame frame)
+    {
+        // check frame class
+        if (!(frame instanceof ImagoDocViewer))
+            return false;
+        
+        // check image
+        ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+        Image image = doc.getImage();
+        if (image == null)
+            return false;
+
+        return image.isBinaryImage();
+    }
 }

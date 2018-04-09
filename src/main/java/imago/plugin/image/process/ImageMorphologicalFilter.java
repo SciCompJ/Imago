@@ -20,14 +20,14 @@ import net.sci.image.morphology.Strel2D;
  * @author David Legland
  *
  */
-public class MorphologicalFiltering implements Plugin
+public class ImageMorphologicalFilter implements Plugin
 {
 	Operation op = Operation.DILATION;
 	Strel2D.Shape shape = Strel2D.Shape.SQUARE;
 	int radius = 2;
 	boolean showStrel;
 
-	public MorphologicalFiltering()
+	public ImageMorphologicalFilter()
 	{
 	}
 

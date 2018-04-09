@@ -10,7 +10,6 @@ import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
 import net.sci.image.Image;
-//import net.sci.image.process.filter.BoxFilter;
 
 /**
  * Applies box filtering on a multidimensional image.
@@ -74,4 +73,22 @@ public class BoxFilter implements Plugin
 		frame.getGui().addNewDocument(result);
 	}
 	
+    /**
+     * Returns true if the current frame contains a scalar image.
+     */
+    @Override
+    public boolean isEnabled(ImagoFrame frame)
+    {
+        // check frame class
+        if (!(frame instanceof ImagoDocViewer))
+            return false;
+        
+        // check image
+        ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+        Image image = doc.getImage();
+        if (image == null)
+            return false;
+
+        return image.isScalarImage();
+    }
 }

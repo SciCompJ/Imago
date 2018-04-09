@@ -56,7 +56,7 @@ public class ImagoGui
 	/**
 	 * The list of frames associated to this GUI.
 	 */
-	ArrayList<ImagoFrame> frames = new ArrayList<ImagoFrame>(5);
+	ArrayList<ImagoFrame> frames = new ArrayList<ImagoFrame>();
 	
 	/**
      * The list of frames associated to each document.

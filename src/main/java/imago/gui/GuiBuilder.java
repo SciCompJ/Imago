@@ -78,35 +78,35 @@ import imago.gui.action.image.SetManualDisplayRangeAction;
 import imago.gui.action.image.SplitImageChannelsAction;
 import imago.gui.action.image.StackToVectorImageAction;
 import imago.gui.action.process.BinaryImageBoundaryGraphAction;
-import imago.gui.action.process.BinaryImageConnectedComponentsLabelingAction;
 import imago.gui.action.process.BinaryImageOverlayAction;
 import imago.gui.action.process.BoxFilter3x3Float;
 import imago.gui.action.process.ColorImageBivariateHistogramsAction;
 import imago.gui.action.process.ImageDownsampleAction;
 import imago.gui.action.process.ImageExtendedExtremaAction;
-import imago.gui.action.process.ImageFillHolesAction;
 import imago.gui.action.process.ImageFindNonZeroPixelsAction;
 import imago.gui.action.process.ImageGeodesicDistanceMapAction;
 import imago.gui.action.process.ImageIsocontourAction;
-import imago.gui.action.process.ImageKillBordersAction;
 import imago.gui.action.process.ImageManualThresholdAction;
-import imago.gui.action.process.ImageMorphologicalReconstructionAction;
 import imago.gui.action.process.ImageOtsuThresholdAction;
-import imago.gui.action.process.ImageReshapeAction;
-import imago.gui.action.process.ImageSkeletonizationAction;
 import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectPolygonTool;
 import imago.gui.tool.SelectionTool;
+import imago.plugin.image.process.BinaryImageConnectedComponentsLabeling;
+import imago.plugin.image.process.BinaryImageSkeleton;
 import imago.plugin.image.process.BoxFilter;
 import imago.plugin.image.process.ImageBoxMedianFilter;
 import imago.plugin.image.process.ImageBoxMinMaxFilter;
 import imago.plugin.image.process.ImageBoxVarianceFilter;
-import imago.plugin.image.process.MorphologicalFiltering;
+import imago.plugin.image.process.ImageFillHoles;
+import imago.plugin.image.process.ImageFlip;
+import imago.plugin.image.process.ImageKillBorders;
+import imago.plugin.image.process.ImageMorphologicalFilter;
+import imago.plugin.image.process.ImageMorphologicalReconstruction;
+import imago.plugin.image.process.ImageReshape;
 import net.sci.array.Array;
 import net.sci.array.data.color.RGB8Array;
 import net.sci.array.process.PowerOfTwo;
 import net.sci.array.process.Sqrt;
-import net.sci.array.process.shape.Flip;
 import net.sci.array.process.shape.Rotate90;
 import net.sci.image.ColorMaps;
 import net.sci.image.Image;
@@ -439,16 +439,10 @@ public class GuiBuilder
         menu.addSeparator();
 		JMenu geometryMenu = new JMenu("Geometry");
 		geometryMenu.setEnabled(hasImage);
-		addMenuItem(geometryMenu, new ArrayOperatorAction(frame,
-				"flipXFilter", new Flip(0)), "Fl&ip Horizontal", hasImage);
-		addMenuItem(geometryMenu, new ArrayOperatorAction(frame,
-				"flipYFilter", new Flip(1)), "Flip Vertical", hasImage);
-		addMenuItem(geometryMenu, new ArrayOperatorAction(frame,
-				"flipZFilter", new Flip(2)), "Flip Slices", hasImage3D);
+		addPlugin(geometryMenu, new ImageFlip(0), "Horizontal Flip ");
+		addPlugin(geometryMenu, new ImageFlip(1), "Vertical Flip");
+		addPlugin(geometryMenu, new ImageFlip(2), "Z-Flip");
 		geometryMenu.addSeparator();
-		// addMenuItem(geometryMenu,
-		// new ImageOperatorAction(frame, "rotation90", new Rotation90()),
-		// "Rotation 90", hasImage2D);
 		addMenuItem(geometryMenu,
 				 new ArrayOperatorAction(frame, "imageRotateLeft", new Rotate90(-1)),
 				 "Rotate Left", hasImage2D);
@@ -458,9 +452,7 @@ public class GuiBuilder
 		addMenuItem(geometryMenu,
 				 new ArrayOperatorAction(frame, "rotateImage", new RotationAroundCenter(30)),
 				 "Rotate Image", hasImage);
-        addMenuItem(geometryMenu,
-                new ImageReshapeAction(frame, "reshapeImage"),
-                "Reshape Image", hasImage);
+        addPlugin(geometryMenu, new ImageReshape(), "Reshape Image");
         addMenuItem(geometryMenu,
                 new ImageDownsampleAction(frame, "downsampleImage"),
                 "Downsample Image", hasImage);
@@ -554,7 +546,7 @@ public class GuiBuilder
 		menu.addSeparator();
 		
 		JMenu morphologyMenu = new JMenu("Mathematical Morphology");
-		addPlugin(morphologyMenu, new MorphologicalFiltering(), "Morphological Filtering");
+		addPlugin(morphologyMenu, new ImageMorphologicalFilter(), "Morphological Filtering");
 
 		morphologyMenu.addSeparator();
 		addMenuItem(morphologyMenu, new ImageOperatorAction(frame, "regionalMin",
@@ -565,22 +557,15 @@ public class GuiBuilder
 				"Regional Maxima", hasScalarImage);
 		addMenuItem(morphologyMenu, new ImageExtendedExtremaAction(frame, "extendedExtrema"), 
 				"Extended Min./Max.", hasScalarImage);
-		addMenuItem(morphologyMenu, 
-				new ImageMorphologicalReconstructionAction(frame, "morphoRec"), 
-				"Morphological Reconstruction");
+		addPlugin(morphologyMenu, new ImageMorphologicalReconstruction(), "Morphological Reconstruction");
 		morphologyMenu.addSeparator();
-		addMenuItem(morphologyMenu, 
-				new ImageFillHolesAction(frame, "fillHoles"), 
-				"Fill Holes", hasScalarImage && (hasImage2D || hasImage3D));
-		addMenuItem(morphologyMenu, 
-				new ImageKillBordersAction(frame, "killBorders"), 
-				"Kill Borders", hasScalarImage && (hasImage2D || hasImage3D));
+        addPlugin(morphologyMenu, new ImageFillHoles(), "Fill Holes");
+        addPlugin(morphologyMenu, new ImageKillBorders(), "Kill Borders");
 		menu.add(morphologyMenu);
 
 		// operators specific to binary images
 		JMenu binaryMenu = new JMenu("Binary Images");
-		addMenuItem(binaryMenu, new BinaryImageConnectedComponentsLabelingAction(frame, "connectedComponentLabeling"),
-				"Connected Component Labeling", (hasImage2D || hasImage3D) && hasBinaryImage);
+        addPlugin(binaryMenu, new BinaryImageConnectedComponentsLabeling(), "Connected Components Labeling");
 		addMenuItem(binaryMenu, new ArrayOperatorAction(frame, "distanceMap2dShort",
 				new ChamferDistanceTransform2DUInt16(ChamferWeights2D.CHESSKNIGHT, false)),
 				"Distance Map", hasImage2D && hasBinaryImage);
@@ -589,8 +574,9 @@ public class GuiBuilder
 				"Distance Map (float)", hasImage2D && hasBinaryImage);
 		addMenuItem(binaryMenu, new ImageGeodesicDistanceMapAction(frame, "geodesicDistanceMap"),
 				"Geodesic Distance Map...");
-        addMenuItem(binaryMenu, new ImageSkeletonizationAction(frame, "binaryImageSkeleton"),
-                "IJ Skeleton", hasImage2D && hasBinaryImage);
+        addPlugin(binaryMenu, new BinaryImageSkeleton(), "IJ Skeleton");
+//        addMenuItem(binaryMenu, new ImageSkeletonizationAction(frame, "binaryImageSkeleton"),
+//                "IJ Skeleton", hasImage2D && hasBinaryImage);
         addMenuItem(binaryMenu, new BinaryImageOverlayAction(frame, "binaryImageOverlay"),
                 "Binary Overlay...");
         binaryMenu.addSeparator();
