@@ -13,7 +13,8 @@ import net.sci.array.data.BinaryArray;
 import net.sci.array.type.RGB8;
 import net.sci.image.ColorMaps;
 import net.sci.image.Image;
-import net.sci.image.binary.BinaryImages;
+import net.sci.image.binary.FloodFillComponentsLabeling2D;
+import net.sci.image.binary.FloodFillComponentsLabeling3D;
 
 /**
  * Connected component labeling of a binary image.
@@ -80,7 +81,20 @@ public class BinaryImageConnectedComponentsLabeling implements Plugin
 		int bitDepth = bitDepths[bitDepthIndex];
 		
 		// apply connected components labeling
-		Image result = BinaryImages.componentsLabeling(image, conn, bitDepth);
+		Image result;
+		if (nd == 2)
+		{
+		    FloodFillComponentsLabeling2D algo = new FloodFillComponentsLabeling2D(conn, bitDepth);
+		    algo.addAlgoListener((ImagoDocViewer) frame);
+		    result = algo.process(image);
+		}
+		else
+		{
+            FloodFillComponentsLabeling3D algo = new FloodFillComponentsLabeling3D(conn, bitDepth);
+            algo.addAlgoListener((ImagoDocViewer) frame);
+            result = algo.process(image);
+		}
+		result.setType(Image.Type.LABEL);
 		
 		// compute JET lut by default
 		// TODO: update by scaling?

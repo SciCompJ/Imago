@@ -81,7 +81,6 @@ public class ImageUtils
             {
                 throw new RuntimeException("Label images assume inner array implements IntArray2D");
             }
-            
 		    return labelToAwtImage((IntArray2D<?>) array, lut, image.getBackgroundColor());
 		}
 		else if (image.isColorImage())
