@@ -85,7 +85,6 @@ import imago.gui.action.process.ImageDownsampleAction;
 import imago.gui.action.process.ImageExtendedExtremaAction;
 import imago.gui.action.process.ImageFindNonZeroPixelsAction;
 import imago.gui.action.process.ImageGeodesicDistanceMapAction;
-import imago.gui.action.process.ImageIsocontourAction;
 import imago.gui.action.process.ImageManualThresholdAction;
 import imago.gui.action.process.ImageOtsuThresholdAction;
 import imago.gui.tool.SelectLineSegmentTool;
@@ -103,6 +102,7 @@ import imago.plugin.image.process.ImageKillBorders;
 import imago.plugin.image.process.ImageMorphologicalFilter;
 import imago.plugin.image.process.ImageMorphologicalReconstruction;
 import imago.plugin.image.process.ImageReshape;
+import imago.plugin.image.vectorize.ImageIsocontour;
 import net.sci.array.Array;
 import net.sci.array.data.color.RGB8Array;
 import net.sci.array.process.PowerOfTwo;
@@ -594,9 +594,7 @@ public class GuiBuilder
                 "Manual Threshold", hasScalarImage);
         addMenuItem(menu, new ImageFindNonZeroPixelsAction(frame, "findNonZerosPixels"),
                 "Find Non-Zeros Elements", hasImage2D && hasScalarImage);
-        addMenuItem(menu, new ImageIsocontourAction(frame, "isocontour"),
-                "Isocontour...", hasImage2D && hasScalarImage);
-		menu.addSeparator();
+        addPlugin(menu, new ImageIsocontour(), "Isocontour...");
 
 		return menu;
 	}
