@@ -80,7 +80,6 @@ import imago.gui.action.image.StackToVectorImageAction;
 import imago.gui.action.process.BinaryImageBoundaryGraphAction;
 import imago.gui.action.process.BinaryImageOverlayAction;
 import imago.gui.action.process.BoxFilter3x3Float;
-import imago.gui.action.process.ColorImageBivariateHistogramsAction;
 import imago.gui.action.process.ImageDownsampleAction;
 import imago.gui.action.process.ImageExtendedExtremaAction;
 import imago.gui.action.process.ImageFindNonZeroPixelsAction;
@@ -90,6 +89,7 @@ import imago.gui.action.process.ImageOtsuThresholdAction;
 import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectPolygonTool;
 import imago.gui.tool.SelectionTool;
+import imago.plugin.image.analyze.ColorImageBivariateHistograms;
 import imago.plugin.image.process.BinaryImageConnectedComponentsLabeling;
 import imago.plugin.image.process.BinaryImageSkeleton;
 import imago.plugin.image.process.BoxFilter;
@@ -612,8 +612,7 @@ public class GuiBuilder
 				"ROI Histogram", hasImage && hasImage2D);
         addMenuItem(menu, new ImageMeanValueAction(frame, "meanValue"),
                 "Mean Value", hasImage);
-        addMenuItem(menu, 
-                new ColorImageBivariateHistogramsAction(frame, "bivarateHistograms"), 
+        addPlugin(menu, new ColorImageBivariateHistograms(), 
                 "Bivariate Color Histograms", hasColorImage);
 
 //		addMenuItem(menu, new RGBJointHistogramsAction(frame,
@@ -660,10 +659,15 @@ public class GuiBuilder
 
     private JMenuItem addPlugin(JMenu menu, Plugin plugin, String label)
     {
+       return addPlugin(menu, plugin, label, plugin.isEnabled(frame));
+    }
+
+    private JMenuItem addPlugin(JMenu menu, Plugin plugin, String label, boolean enabled)
+    {
         JMenuItem item = new JMenuItem(new RunPluginAction(frame, plugin));
         item.setText(label);
         item.setIcon(this.emptyIcon);
-        item.setEnabled(plugin.isEnabled(frame));
+        item.setEnabled(enabled);
         menu.add(item);
         return item;
     }
