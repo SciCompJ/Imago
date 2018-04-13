@@ -77,12 +77,10 @@ import imago.gui.action.image.SetImageTypeToLabelAction;
 import imago.gui.action.image.SetManualDisplayRangeAction;
 import imago.gui.action.image.SplitImageChannelsAction;
 import imago.gui.action.image.StackToVectorImageAction;
-import imago.gui.action.process.BinaryImageBoundaryGraphAction;
 import imago.gui.action.process.BinaryImageOverlayAction;
 import imago.gui.action.process.BoxFilter3x3Float;
 import imago.gui.action.process.ImageDownsampleAction;
 import imago.gui.action.process.ImageExtendedExtremaAction;
-import imago.gui.action.process.ImageFindNonZeroPixelsAction;
 import imago.gui.action.process.ImageGeodesicDistanceMapAction;
 import imago.gui.action.process.ImageManualThresholdAction;
 import imago.gui.action.process.ImageOtsuThresholdAction;
@@ -102,6 +100,8 @@ import imago.plugin.image.process.ImageKillBorders;
 import imago.plugin.image.process.ImageMorphologicalFilter;
 import imago.plugin.image.process.ImageMorphologicalReconstruction;
 import imago.plugin.image.process.ImageReshape;
+import imago.plugin.image.vectorize.BinaryImageBoundaryGraph;
+import imago.plugin.image.vectorize.ImageFindNonZeroPixels;
 import imago.plugin.image.vectorize.ImageIsocontour;
 import net.sci.array.Array;
 import net.sci.array.data.color.RGB8Array;
@@ -580,7 +580,7 @@ public class GuiBuilder
         addMenuItem(binaryMenu, new BinaryImageOverlayAction(frame, "binaryImageOverlay"),
                 "Binary Overlay...");
         binaryMenu.addSeparator();
-        addMenuItem(binaryMenu, new BinaryImageBoundaryGraphAction(frame, "binaryImageBoundaryGraph"),
+        addPlugin(binaryMenu, new BinaryImageBoundaryGraph(),
                 "Boundary Graph", hasImage2D && hasBinaryImage);
 		menu.add(binaryMenu);
 
@@ -592,7 +592,7 @@ public class GuiBuilder
         addMenuItem(menu, 
                 new ImageManualThresholdAction(frame, "manualThreshold"),
                 "Manual Threshold", hasScalarImage);
-        addMenuItem(menu, new ImageFindNonZeroPixelsAction(frame, "findNonZerosPixels"),
+        addPlugin(menu, new ImageFindNonZeroPixels(),
                 "Find Non-Zeros Elements", hasImage2D && hasScalarImage);
         addPlugin(menu, new ImageIsocontour(), "Isocontour...");
 
