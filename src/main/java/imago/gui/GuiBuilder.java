@@ -96,6 +96,7 @@ import imago.plugin.image.process.ImageBoxMinMaxFilter;
 import imago.plugin.image.process.ImageBoxVarianceFilter;
 import imago.plugin.image.process.ImageFillHoles;
 import imago.plugin.image.process.ImageFlip;
+import imago.plugin.image.process.ImageGeodesicDistanceMap;
 import imago.plugin.image.process.ImageKillBorders;
 import imago.plugin.image.process.ImageMorphologicalFilter;
 import imago.plugin.image.process.ImageMorphologicalReconstruction;
@@ -572,8 +573,7 @@ public class GuiBuilder
 		addMenuItem(binaryMenu, new ArrayOperatorAction(frame, "distanceMap2dFloat",
 				new ChamferDistanceTransform2DFloat(ChamferWeights2D.CHESSKNIGHT, false)),
 				"Distance Map (float)", hasImage2D && hasBinaryImage);
-		addMenuItem(binaryMenu, new ImageGeodesicDistanceMapAction(frame, "geodesicDistanceMap"),
-				"Geodesic Distance Map...");
+		addPlugin(binaryMenu, new ImageGeodesicDistanceMap(), "Geodesic Distance Map...");
         addPlugin(binaryMenu, new BinaryImageSkeleton(), "IJ Skeleton");
 //        addMenuItem(binaryMenu, new ImageSkeletonizationAction(frame, "binaryImageSkeleton"),
 //                "IJ Skeleton", hasImage2D && hasBinaryImage);
