@@ -81,9 +81,6 @@ import imago.gui.action.process.BinaryImageOverlayAction;
 import imago.gui.action.process.BoxFilter3x3Float;
 import imago.gui.action.process.ImageDownsampleAction;
 import imago.gui.action.process.ImageExtendedExtremaAction;
-import imago.gui.action.process.ImageGeodesicDistanceMapAction;
-import imago.gui.action.process.ImageManualThresholdAction;
-import imago.gui.action.process.ImageOtsuThresholdAction;
 import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectPolygonTool;
 import imago.gui.tool.SelectionTool;
@@ -98,8 +95,10 @@ import imago.plugin.image.process.ImageFillHoles;
 import imago.plugin.image.process.ImageFlip;
 import imago.plugin.image.process.ImageGeodesicDistanceMap;
 import imago.plugin.image.process.ImageKillBorders;
+import imago.plugin.image.process.ImageManualThreshold;
 import imago.plugin.image.process.ImageMorphologicalFilter;
 import imago.plugin.image.process.ImageMorphologicalReconstruction;
+import imago.plugin.image.process.ImageOtsuThreshold;
 import imago.plugin.image.process.ImageReshape;
 import imago.plugin.image.vectorize.BinaryImageBoundaryGraph;
 import imago.plugin.image.vectorize.ImageFindNonZeroPixels;
@@ -575,8 +574,6 @@ public class GuiBuilder
 				"Distance Map (float)", hasImage2D && hasBinaryImage);
 		addPlugin(binaryMenu, new ImageGeodesicDistanceMap(), "Geodesic Distance Map...");
         addPlugin(binaryMenu, new BinaryImageSkeleton(), "IJ Skeleton");
-//        addMenuItem(binaryMenu, new ImageSkeletonizationAction(frame, "binaryImageSkeleton"),
-//                "IJ Skeleton", hasImage2D && hasBinaryImage);
         addMenuItem(binaryMenu, new BinaryImageOverlayAction(frame, "binaryImageOverlay"),
                 "Binary Overlay...");
         binaryMenu.addSeparator();
@@ -586,12 +583,8 @@ public class GuiBuilder
 
 		menu.addSeparator();
 
-		addMenuItem(menu, 
-				new ImageOtsuThresholdAction(frame, "otsuThreshold"),
-				"Otsu Threshold", hasScalarImage);
-        addMenuItem(menu, 
-                new ImageManualThresholdAction(frame, "manualThreshold"),
-                "Manual Threshold", hasScalarImage);
+		addPlugin(menu, new ImageOtsuThreshold(), "Otsu Threshold", hasScalarImage);
+        addPlugin(menu, new ImageManualThreshold(), "Manual Threshold", hasScalarImage);
         addPlugin(menu, new ImageFindNonZeroPixels(),
                 "Find Non-Zeros Elements", hasImage2D && hasScalarImage);
         addPlugin(menu, new ImageIsocontour(), "Isocontour...");
