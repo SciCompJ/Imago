@@ -79,7 +79,6 @@ import imago.gui.action.image.SplitImageChannelsAction;
 import imago.gui.action.image.StackToVectorImageAction;
 import imago.gui.action.process.BinaryImageOverlayAction;
 import imago.gui.action.process.BoxFilter3x3Float;
-import imago.gui.action.process.ImageDownsampleAction;
 import imago.gui.action.process.ImageExtendedExtremaAction;
 import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectPolygonTool;
@@ -91,6 +90,7 @@ import imago.plugin.image.process.BoxFilter;
 import imago.plugin.image.process.ImageBoxMedianFilter;
 import imago.plugin.image.process.ImageBoxMinMaxFilter;
 import imago.plugin.image.process.ImageBoxVarianceFilter;
+import imago.plugin.image.process.ImageDownsample;
 import imago.plugin.image.process.ImageFillHoles;
 import imago.plugin.image.process.ImageFlip;
 import imago.plugin.image.process.ImageGeodesicDistanceMap;
@@ -453,10 +453,8 @@ public class GuiBuilder
 				 new ArrayOperatorAction(frame, "rotateImage", new RotationAroundCenter(30)),
 				 "Rotate Image", hasImage);
         addPlugin(geometryMenu, new ImageReshape(), "Reshape Image");
-        addMenuItem(geometryMenu,
-                new ImageDownsampleAction(frame, "downsampleImage"),
-                "Downsample Image", hasImage);
-
+        addPlugin(geometryMenu, new ImageDownsample(), "Downsample Image", hasImage);
+        
 		menu.add(geometryMenu);
 
 		// Create the menu for 3D images
