@@ -14,7 +14,6 @@ import javax.swing.JMenuItem;
 import imago.app.ImagoDoc;
 import imago.gui.action.ArrayOperatorAction;
 import imago.gui.action.ImageArrayOperatorAction;
-import imago.gui.action.ImageOperatorAction;
 import imago.gui.action.RunPluginAction;
 import imago.gui.action.SelectToolAction;
 import imago.gui.action.analyze.ImageHistogramAction;
@@ -79,10 +78,10 @@ import imago.gui.action.image.SplitImageChannelsAction;
 import imago.gui.action.image.StackToVectorImageAction;
 import imago.gui.action.process.BinaryImageOverlayAction;
 import imago.gui.action.process.BoxFilter3x3Float;
-import imago.gui.action.process.ImageExtendedExtremaAction;
 import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectPolygonTool;
 import imago.gui.tool.SelectionTool;
+import imago.plugin.image.ImageOperatorPlugin;
 import imago.plugin.image.analyze.ColorImageBivariateHistograms;
 import imago.plugin.image.process.BinaryImageConnectedComponentsLabeling;
 import imago.plugin.image.process.BinaryImageSkeleton;
@@ -91,6 +90,7 @@ import imago.plugin.image.process.ImageBoxMedianFilter;
 import imago.plugin.image.process.ImageBoxMinMaxFilter;
 import imago.plugin.image.process.ImageBoxVarianceFilter;
 import imago.plugin.image.process.ImageDownsample;
+import imago.plugin.image.process.ImageExtendedExtrema;
 import imago.plugin.image.process.ImageFillHoles;
 import imago.plugin.image.process.ImageFlip;
 import imago.plugin.image.process.ImageGeodesicDistanceMap;
@@ -110,6 +110,7 @@ import net.sci.array.process.Sqrt;
 import net.sci.array.process.shape.Rotate90;
 import net.sci.image.ColorMaps;
 import net.sci.image.Image;
+import net.sci.image.ImageOperator;
 import net.sci.image.binary.ChamferWeights2D;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DFloat;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DUInt16;
@@ -530,14 +531,9 @@ public class GuiBuilder
 		menu.addSeparator();
 		
 		// Gradient filters
-		addMenuItem(menu, new ImageArrayOperatorAction(frame, "sobelGradient",
-				new SobelGradient()), "Sobel Gradient", hasImage);
-		addMenuItem(menu, new ImageOperatorAction(frame, "sobelGradientNorm",
-				new SobelGradientNorm()), "Sobel Gradient Norm", hasScalarImage);
-		addMenuItem(menu, new ImageArrayOperatorAction(frame, "sobelGradient",
-				new SobelGradient()), "Sobel Gradient", hasScalarImage);
-		addMenuItem(menu, new ImageArrayOperatorAction(frame, "vectorImageNorm",
-				new VectorArrayNorm()), "Vector Image Norm", hasVectorImage);
+        addImageOperatorPlugin(menu, new SobelGradient(), "Sobel Gradient", hasScalarImage);
+		addImageOperatorPlugin(menu, new SobelGradientNorm(), "Sobel Gradient Norm", hasScalarImage);
+		addImageOperatorPlugin(menu, new VectorArrayNorm(), "Vector Image Norm", hasVectorImage);
 		// addMenuItem(menu, new ImageOperatorAction(frame, "vectorAngle",
 		// new VectorImageAngle()),
 		// "Array<?> Angle", hasImage);
@@ -547,14 +543,13 @@ public class GuiBuilder
 		addPlugin(morphologyMenu, new ImageMorphologicalFilter(), "Morphological Filtering");
 
 		morphologyMenu.addSeparator();
-		addMenuItem(morphologyMenu, new ImageOperatorAction(frame, "regionalMin",
-				new RegionalExtrema2D(MinimaAndMaxima.Type.MINIMA, Connectivity2D.C4)), 
-				"Regional Minima", hasScalarImage);
-		addMenuItem(morphologyMenu, new ImageOperatorAction(frame, "regionalMax",
-				new RegionalExtrema2D(MinimaAndMaxima.Type.MAXIMA, Connectivity2D.C4)), 
-				"Regional Maxima", hasScalarImage);
-		addMenuItem(morphologyMenu, new ImageExtendedExtremaAction(frame, "extendedExtrema"), 
-				"Extended Min./Max.", hasScalarImage);
+        addImageOperatorPlugin(morphologyMenu,
+                new RegionalExtrema2D(MinimaAndMaxima.Type.MINIMA, Connectivity2D.C4),
+                "Regional Minima (2D)", hasScalarImage && hasImage2D);
+        addImageOperatorPlugin(morphologyMenu, 
+				new RegionalExtrema2D(MinimaAndMaxima.Type.MAXIMA, Connectivity2D.C4), 
+				"Regional Maxima (2D)", hasScalarImage && hasImage2D);
+		addPlugin(morphologyMenu, new ImageExtendedExtrema(), "Extended Min./Max.", hasScalarImage);
 		addPlugin(morphologyMenu, new ImageMorphologicalReconstruction(), "Morphological Reconstruction");
 		morphologyMenu.addSeparator();
         addPlugin(morphologyMenu, new ImageFillHoles(), "Fill Holes");
@@ -647,6 +642,12 @@ public class GuiBuilder
 		menu.add(item);
 		return item;
 	}
+
+    private JMenuItem addImageOperatorPlugin(JMenu menu, ImageOperator operator, String label, boolean enabled)
+    {
+        Plugin plugin = new ImageOperatorPlugin(operator);
+        return addPlugin(menu, plugin, label, enabled);
+    }
 
     private JMenuItem addPlugin(JMenu menu, Plugin plugin, String label)
     {
