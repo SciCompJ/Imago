@@ -16,10 +16,6 @@ import imago.gui.action.ArrayOperatorAction;
 import imago.gui.action.ImageArrayOperatorAction;
 import imago.gui.action.RunPluginAction;
 import imago.gui.action.SelectToolAction;
-import imago.gui.action.analyze.LabelImageBoundingBoxesAction;
-import imago.gui.action.analyze.LabelImageCentroidsAction;
-import imago.gui.action.analyze.LabelImageEquivalentDisksAction;
-import imago.gui.action.analyze.LabelImageInertiaEllipsesAction;
 import imago.gui.action.edit.DocClearShapesAction;
 import imago.gui.action.edit.ImageFillDiskAction;
 import imago.gui.action.edit.ImageFillEllipseAction;
@@ -83,6 +79,10 @@ import imago.plugin.image.analyze.ImageHistogram;
 import imago.plugin.image.analyze.ImageLineProfile;
 import imago.plugin.image.analyze.ImageMeanValue;
 import imago.plugin.image.analyze.ImageRoiHistogram;
+import imago.plugin.image.analyze.LabelImageBoundingBoxes;
+import imago.plugin.image.analyze.LabelImageCentroids;
+import imago.plugin.image.analyze.LabelImageEquivalentDisks;
+import imago.plugin.image.analyze.LabelImageInertiaEllipses;
 import imago.plugin.image.process.BinaryImageConnectedComponentsLabeling;
 import imago.plugin.image.process.BinaryImageSkeleton;
 import imago.plugin.image.process.BoxFilter;
@@ -594,26 +594,16 @@ public class GuiBuilder
 
 		addPlugin(menu, new ImageHistogram(), "Histogram", hasImage);
 		addPlugin(menu, new ImageRoiHistogram(), "ROI Histogram", hasImage && hasImage2D);
-        addPlugin(menu, new ImageMeanValue(),
-                "Mean Value", hasImage);
-        addPlugin(menu, new ColorImageBivariateHistograms(), 
-                "Bivariate Color Histograms", hasColorImage);
-
-//		addMenuItem(menu, new RGBJointHistogramsAction(frame,
-//				"rgbJointHistograms"), "RGB Joint Histograms",
-//				hasRGB8Image(frame));
+        addPlugin(menu, new ImageMeanValue(), "Mean Value", hasImage);
+        addPlugin(menu, new ColorImageBivariateHistograms(), "Bivariate Color Histograms", hasColorImage);
 		menu.addSeparator();
 		addPlugin(menu, new ImageLineProfile(), "Line Profile", hasImage);
 
         menu.addSeparator();
-        addMenuItem(menu, new LabelImageBoundingBoxesAction(frame, "boundingBoxes"),
-                "Bounding Boxes", (hasImage2D || hasImage3D) && hasLabelImage);
-        addMenuItem(menu, new LabelImageCentroidsAction(frame, "regionCentroids"),
-                "Regions Centroids", (hasImage2D || hasImage3D) && hasLabelImage);
-        addMenuItem(menu, new LabelImageEquivalentDisksAction(frame, "equivDisks"),
-                "Regions Equivalent Disks", hasImage2D && hasLabelImage);
-        addMenuItem(menu, new LabelImageInertiaEllipsesAction(frame, "regionEllipses"),
-                "Regions Inertia Ellipses", hasImage2D && hasLabelImage);
+        addPlugin(menu, new LabelImageBoundingBoxes(), "Bounding Boxes", (hasImage2D || hasImage3D) && hasLabelImage);
+        addPlugin(menu, new LabelImageCentroids(), "Regions Centroids", (hasImage2D || hasImage3D) && hasLabelImage);
+        addPlugin(menu, new LabelImageEquivalentDisks(), "Regions Equivalent Disks", hasImage2D && hasLabelImage);
+        addPlugin(menu, new LabelImageInertiaEllipses(), "Regions Inertia Ellipses", hasImage2D && hasLabelImage);
 		return menu;
 	}
 
