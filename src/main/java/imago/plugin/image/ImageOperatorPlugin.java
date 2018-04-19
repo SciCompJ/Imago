@@ -35,7 +35,7 @@ public class ImageOperatorPlugin implements Plugin
      * @see imago.gui.Plugin#run(imago.gui.ImagoFrame)
      */
     @Override
-    public void run(ImagoFrame frame)
+    public void run(ImagoFrame frame, String args)
     {
         // get current frame
         ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();

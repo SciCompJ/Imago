@@ -33,7 +33,7 @@ public class BoxFilter3x3FloatPlugin implements Plugin
 	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	@Override
-	public void run(ImagoFrame frame)
+	public void run(ImagoFrame frame, String args)
 	{
 		System.out.println("box filter 3x3 float");
 		

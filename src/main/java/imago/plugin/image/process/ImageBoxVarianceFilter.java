@@ -25,7 +25,7 @@ public class ImageBoxVarianceFilter implements Plugin
 	}
 
 	@Override
-	public void run(ImagoFrame frame)
+	public void run(ImagoFrame frame, String args)
 	{
 		System.out.println("variance box filter (generic)");
 

@@ -26,7 +26,7 @@ public class ImageReshape implements Plugin
 	}
 
 	@Override
-	public void run(ImagoFrame frame)
+	public void run(ImagoFrame frame, String args)
 	{
 		System.out.println("reshape image");
 

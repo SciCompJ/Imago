@@ -30,7 +30,7 @@ public class BinaryImageOverlayAction implements Plugin
 	}
 
 	@Override
-    public void run(ImagoFrame frame)
+    public void run(ImagoFrame frame, String args)
     {
 		System.out.println("binary image overlay");
 

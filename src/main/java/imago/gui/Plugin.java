@@ -15,8 +15,9 @@ public interface Plugin
      * Run the plugin from the specified frame.
      * 
      * @param frame the current frame.
+     * @param args an optional string containing options for the plugin  
      */
-    public void run(ImagoFrame frame);
+    public void run(ImagoFrame frame, String args);
     
     /**
      * Defines whether this plugin should be enabled for the given frame.

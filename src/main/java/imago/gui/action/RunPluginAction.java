@@ -46,7 +46,7 @@ public class RunPluginAction extends ImagoAction
         {
             public void run()
             {
-                plugin.run(frame);
+                plugin.run(frame, null);
             }
         };
         t.start();

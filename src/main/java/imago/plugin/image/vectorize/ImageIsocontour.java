@@ -36,7 +36,7 @@ public class ImageIsocontour implements Plugin
 	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	@Override
-	public void run(ImagoFrame frame)
+	public void run(ImagoFrame frame, String args)
 	{
 		System.out.println("image isocontour");
 
