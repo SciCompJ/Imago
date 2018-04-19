@@ -1,7 +1,6 @@
 /**
+ * Plugins for analysis of images.
  * 
- */
-/**
  * @author dlegland
  *
  */

@@ -16,10 +16,6 @@ import imago.gui.action.ArrayOperatorAction;
 import imago.gui.action.ImageArrayOperatorAction;
 import imago.gui.action.RunPluginAction;
 import imago.gui.action.SelectToolAction;
-import imago.gui.action.analyze.ImageHistogramAction;
-import imago.gui.action.analyze.ImageLineProfileDemoAction;
-import imago.gui.action.analyze.ImageMeanValueAction;
-import imago.gui.action.analyze.ImageRoiHistogramAction;
 import imago.gui.action.analyze.LabelImageBoundingBoxesAction;
 import imago.gui.action.analyze.LabelImageCentroidsAction;
 import imago.gui.action.analyze.LabelImageEquivalentDisksAction;
@@ -83,6 +79,10 @@ import imago.gui.tool.SelectPolygonTool;
 import imago.gui.tool.SelectionTool;
 import imago.plugin.image.ImageOperatorPlugin;
 import imago.plugin.image.analyze.ColorImageBivariateHistograms;
+import imago.plugin.image.analyze.ImageHistogram;
+import imago.plugin.image.analyze.ImageLineProfile;
+import imago.plugin.image.analyze.ImageMeanValue;
+import imago.plugin.image.analyze.ImageRoiHistogram;
 import imago.plugin.image.process.BinaryImageConnectedComponentsLabeling;
 import imago.plugin.image.process.BinaryImageSkeleton;
 import imago.plugin.image.process.BoxFilter;
@@ -592,11 +592,9 @@ public class GuiBuilder
 	{
 		JMenu menu = new JMenu("Analyze");
 
-		addMenuItem(menu, new ImageHistogramAction(frame, "histogram"),
-				"Histogram", hasImage);
-		addMenuItem(menu, new ImageRoiHistogramAction(frame, "roiHistogram"),
-				"ROI Histogram", hasImage && hasImage2D);
-        addMenuItem(menu, new ImageMeanValueAction(frame, "meanValue"),
+		addPlugin(menu, new ImageHistogram(), "Histogram", hasImage);
+		addPlugin(menu, new ImageRoiHistogram(), "ROI Histogram", hasImage && hasImage2D);
+        addPlugin(menu, new ImageMeanValue(),
                 "Mean Value", hasImage);
         addPlugin(menu, new ColorImageBivariateHistograms(), 
                 "Bivariate Color Histograms", hasColorImage);
@@ -605,8 +603,7 @@ public class GuiBuilder
 //				"rgbJointHistograms"), "RGB Joint Histograms",
 //				hasRGB8Image(frame));
 		menu.addSeparator();
-		addMenuItem(menu, new ImageLineProfileDemoAction(frame, "lineProfile"),
-				"Line Profile", hasImage);
+		addPlugin(menu, new ImageLineProfile(), "Line Profile", hasImage);
 
         menu.addSeparator();
         addMenuItem(menu, new LabelImageBoundingBoxesAction(frame, "boundingBoxes"),
