@@ -42,24 +42,15 @@ import imago.gui.action.file.ReadTiffAction;
 import imago.gui.action.file.SaveTableAction;
 import imago.gui.action.file.ShowDemoTable;
 import imago.gui.action.file.TableScatterPlotAction;
-import imago.gui.action.image.ExtractChannelFromColorImageAction;
-import imago.gui.action.image.Image3DGetCurrentSliceAction;
-import imago.gui.action.image.Image3DGetSliceAction;
-import imago.gui.action.image.Image3DOrthoslicesImageAction;
-import imago.gui.action.image.Image3DSetOrthoSlicesDisplayAction;
-import imago.gui.action.image.ImageDuplicateAction;
 import imago.gui.action.image.ImageSetBackgroundColorAction;
 import imago.gui.action.image.ImageSetColorMapFactoryAction;
 import imago.gui.action.image.ImageSetScaleAction;
-import imago.gui.action.image.MergeChannelImagesAction;
 import imago.gui.action.image.PrintImageInfosAction;
 import imago.gui.action.image.PrintImageTiffTagsAction;
 import imago.gui.action.image.SetDataTypeDisplayRangeAction;
 import imago.gui.action.image.SetImageDisplayRangeAction;
 import imago.gui.action.image.SetImageTypeToLabelAction;
 import imago.gui.action.image.SetManualDisplayRangeAction;
-import imago.gui.action.image.SplitImageChannelsAction;
-import imago.gui.action.image.StackToVectorImageAction;
 import imago.gui.action.process.BinaryImageOverlayAction;
 import imago.gui.action.process.BoxFilter3x3Float;
 import imago.gui.tool.SelectLineSegmentTool;
@@ -75,6 +66,7 @@ import imago.plugin.image.analyze.LabelImageBoundingBoxes;
 import imago.plugin.image.analyze.LabelImageCentroids;
 import imago.plugin.image.analyze.LabelImageEquivalentDisks;
 import imago.plugin.image.analyze.LabelImageInertiaEllipses;
+import imago.plugin.image.convert.ConvertImage3DToVectorImage;
 import imago.plugin.image.convert.ConvertImageToBinary;
 import imago.plugin.image.convert.ConvertImageToFloat32;
 import imago.plugin.image.convert.ConvertImageToFloat64;
@@ -86,10 +78,16 @@ import imago.plugin.image.convert.ConvertRGB8ImageToUInt8;
 import imago.plugin.image.process.BinaryImageConnectedComponentsLabeling;
 import imago.plugin.image.process.BinaryImageSkeleton;
 import imago.plugin.image.process.BoxFilter;
+import imago.plugin.image.process.ColorImageExtractChannel;
+import imago.plugin.image.process.Image3DGetCurrentSlice;
+import imago.plugin.image.process.Image3DGetSlice;
+import imago.plugin.image.process.Image3DOrthoslicesImage;
+import imago.plugin.image.process.Image3DSetOrthoSlicesDisplay;
 import imago.plugin.image.process.ImageBoxMedianFilter;
 import imago.plugin.image.process.ImageBoxMinMaxFilter;
 import imago.plugin.image.process.ImageBoxVarianceFilter;
 import imago.plugin.image.process.ImageDownsample;
+import imago.plugin.image.process.ImageDuplicate;
 import imago.plugin.image.process.ImageExtendedExtrema;
 import imago.plugin.image.process.ImageFillHoles;
 import imago.plugin.image.process.ImageFlip;
@@ -100,6 +98,8 @@ import imago.plugin.image.process.ImageMorphologicalFilter;
 import imago.plugin.image.process.ImageMorphologicalReconstruction;
 import imago.plugin.image.process.ImageOtsuThreshold;
 import imago.plugin.image.process.ImageReshape;
+import imago.plugin.image.process.ImageSplitChannels;
+import imago.plugin.image.process.MergeChannelImages;
 import imago.plugin.image.vectorize.BinaryImageBoundaryGraph;
 import imago.plugin.image.vectorize.ImageFindNonZeroPixels;
 import imago.plugin.image.vectorize.ImageIsocontour;
@@ -383,12 +383,9 @@ public class GuiBuilder
         JMenu colorMenu = new JMenu("Color");
         // editMenu.add(convertTypeMenu);
         addPlugin(colorMenu, new ConvertRGB8ImageToUInt8(), "Convert to UInt8", hasColorImage);
-        addMenuItem(colorMenu, new SplitImageChannelsAction(frame,
-                "splitChannels"), "Split Channels", hasVectorImage || hasColorImage);
-        addMenuItem(colorMenu, new MergeChannelImagesAction(frame,
-                "mergeChannels"), "Merge Channels");
-        addMenuItem(colorMenu, new ExtractChannelFromColorImageAction(frame,
-                "extractChannel"), "Extract Channel...", hasColorImage);
+        addPlugin(colorMenu, new ImageSplitChannels(), "Split Channels", hasVectorImage || hasColorImage);
+        addPlugin(colorMenu, new MergeChannelImages(), "Merge Channels");
+        addPlugin(colorMenu, new ColorImageExtractChannel(), "Extract Channel...", hasColorImage);
         // addMenuItem(editMenu, new MetaImageOperatorAction(frame,
         // "colorToGray",
         // new Gray8Converter()), "RGB -> Gray8", hasColorImage);
@@ -448,23 +445,17 @@ public class GuiBuilder
 		stackMenu.setEnabled(hasImage3D);
 //		addMenuItem(stackMenu, 
 //				new MiddleSliceImageAction(frame, "middleSlice"), "Middle Slice", hasImage3D);
-        addMenuItem(stackMenu, new Image3DGetCurrentSliceAction(frame,
-                "getCurrentSliceImage"), "Extract Current Slice", hasImage3D);
-        addMenuItem(stackMenu, new Image3DGetSliceAction(frame,
-                "getSlice2dImage"), "Extract Slice...", hasImage3D);
-        addMenuItem(stackMenu, new Image3DOrthoslicesImageAction(frame,
-                "orthoSlicesImage"), "Create OrthoSlices Image...", hasImage3D);
+        addPlugin(stackMenu, new Image3DGetCurrentSlice(), "Extract Current Slice", hasImage3D);
+        addPlugin(stackMenu, new Image3DGetSlice(), "Extract Slice...", hasImage3D);
+        addPlugin(stackMenu, new Image3DOrthoslicesImage(), "Create OrthoSlices Image...", hasImage3D);
         stackMenu.addSeparator();
-        addMenuItem(stackMenu, new Image3DSetOrthoSlicesDisplayAction(frame,
-                "setOrthoSlicesView"), "Set Orthoslices Display", hasImage3D);
+        addPlugin(stackMenu, new Image3DSetOrthoSlicesDisplay(), "Set Orthoslices Display", hasImage3D);
         stackMenu.addSeparator();
-		addMenuItem(stackMenu, new StackToVectorImageAction(frame, "stackToVector"),
-				"Stack To Vector", hasImage3D);
+		addPlugin(stackMenu, new ConvertImage3DToVectorImage(), "Stack To Vector", hasImage3D);
 		menu.add(stackMenu);
 
         menu.addSeparator();
-		addMenuItem(menu, new ImageDuplicateAction(frame, "Duplicate"), "Duplicate",
-		        hasImage);
+		addPlugin(menu, new ImageDuplicate(), "Duplicate", hasImage);
         addMenuItem(menu, 
                 new ImageArrayOperatorAction(frame, "invert",
                 new ImageInverter()), "Invert", hasScalarImage || hasColorImage);

@@ -10,7 +10,9 @@ import imago.gui.ImagoGui;
 import imago.gui.Plugin;
 import net.sci.array.Array;
 import net.sci.array.data.ScalarArray;
-import net.sci.array.data.UInt8Array;
+import net.sci.array.data.VectorArray;
+import net.sci.array.data.scalar3d.ScalarArray3D;
+import net.sci.array.data.vector.VectorArray2D;
 import net.sci.image.Image;
 
 
@@ -18,10 +20,11 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class ConvertImageToUInt8 implements Plugin
+public class ConvertImage3DToVectorImage implements Plugin
 {
-	public ConvertImageToUInt8() 
+	public ConvertImage3DToVectorImage() 
 	{
+		super();
 	}
 	
 	/* (non-Javadoc)
@@ -30,7 +33,7 @@ public class ConvertImageToUInt8 implements Plugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("convert to uint8 image");
+		System.out.println("stack to vector image");
 		
 		// get current frame
 		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
@@ -45,17 +48,17 @@ public class ConvertImageToUInt8 implements Plugin
 		{
 			return;
 		}
-		if (!(array instanceof ScalarArray))
+		if (array.dimensionality() != 3 || !(array instanceof ScalarArray))
 		{
-            ImagoGui.showErrorDialog(frame, "Requires a scalar image", "Data Type Error");
+            ImagoGui.showErrorDialog(frame, "Requires a 3D scalar stack", "Data Type Error");
 			return;
 		}
 
-		
-		UInt8Array result = UInt8Array.convert((ScalarArray<?>) array);
-		Image resultImage = new Image(result, image);
+		VectorArray<?> vectArray = VectorArray2D.fromStack((ScalarArray3D<?>) array);
+		Image result = new Image(vectArray, image);
 				
 		// add the image document to GUI
-		frame.getGui().addNewDocument(resultImage); 
+		frame.getGui().addNewDocument(result); 
 	}
+
 }
