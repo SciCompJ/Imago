@@ -42,15 +42,7 @@ import imago.gui.action.file.ReadTiffAction;
 import imago.gui.action.file.SaveTableAction;
 import imago.gui.action.file.ShowDemoTable;
 import imago.gui.action.file.TableScatterPlotAction;
-import imago.gui.action.image.ImageSetBackgroundColorAction;
-import imago.gui.action.image.ImageSetColorMapFactoryAction;
-import imago.gui.action.image.ImageSetScaleAction;
-import imago.gui.action.image.PrintImageInfosAction;
-import imago.gui.action.image.PrintImageTiffTagsAction;
-import imago.gui.action.image.SetDataTypeDisplayRangeAction;
-import imago.gui.action.image.SetImageDisplayRangeAction;
 import imago.gui.action.image.SetImageTypeToLabelAction;
-import imago.gui.action.image.SetManualDisplayRangeAction;
 import imago.gui.action.process.BinaryImageOverlayAction;
 import imago.gui.action.process.BoxFilter3x3Float;
 import imago.gui.tool.SelectLineSegmentTool;
@@ -75,6 +67,14 @@ import imago.plugin.image.convert.ConvertImageToInt32;
 import imago.plugin.image.convert.ConvertImageToUInt16;
 import imago.plugin.image.convert.ConvertImageToUInt8;
 import imago.plugin.image.convert.ConvertRGB8ImageToUInt8;
+import imago.plugin.image.edit.ImageSetBackgroundColor;
+import imago.plugin.image.edit.ImageSetColorMapFactory;
+import imago.plugin.image.edit.ImageSetScale;
+import imago.plugin.image.edit.PrintImageInfos;
+import imago.plugin.image.edit.PrintImageTiffTags;
+import imago.plugin.image.edit.SetImageDisplayRange;
+import imago.plugin.image.edit.SetImageDisplayRangeToData;
+import imago.plugin.image.edit.SetImageDisplayRangeToDataType;
 import imago.plugin.image.process.BinaryImageConnectedComponentsLabeling;
 import imago.plugin.image.process.BinaryImageSkeleton;
 import imago.plugin.image.process.BoxFilter;
@@ -360,14 +360,9 @@ public class GuiBuilder
         
         menu.addSeparator();
 		JMenu displayRangeMenu = new JMenu("Display Range");
-		addMenuItem(displayRangeMenu, new SetDataTypeDisplayRangeAction(frame, "setDataTypeDisplayRange"), 
-		        "Set Data Type Display Range", hasScalarImage);
-		addMenuItem(displayRangeMenu, new SetImageDisplayRangeAction(frame, "setImageDisplayRange"), 
-		        "Set Image Display Range",
-				hasScalarImage | hasVectorImage);
-		addMenuItem(displayRangeMenu, new SetManualDisplayRangeAction(frame, "setManualDisplayRange"), 
-		        "Set Manual Display Range",
-				hasScalarImage | hasVectorImage);
+		addPlugin(displayRangeMenu, new SetImageDisplayRangeToDataType(), "Set Data Type Display Range", hasScalarImage);
+		addPlugin(displayRangeMenu, new SetImageDisplayRangeToData(), "Set Image Display Range", hasScalarImage | hasVectorImage);
+		addPlugin(displayRangeMenu, new SetImageDisplayRange(), "Set Manual Display Range", hasScalarImage | hasVectorImage);
 		// addMenuItem(editMenu, new SetDisplayRangeUnitIntervalAction(frame,
 		// "setDisplayRangeUnitInterval"),
 		// "Set Display Range [0 ; 1]", hasScalarImage || hasVectorImage);
@@ -393,31 +388,21 @@ public class GuiBuilder
 
         // add Colormap utils
         JMenu colormapMenu = new JMenu("Color Maps");
-        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapGray", 
-                ColorMaps.GRAY), "Gray");
-        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapJet", 
-                ColorMaps.JET), "Jet");
-        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapBlueGrayRed", 
-                ColorMaps.BLUE_GRAY_RED), "Blue-Gray-Red");
-        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapRed", 
-                ColorMaps.RED), "Red");
-        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapGreen", 
-                ColorMaps.GREEN), "Green");
-        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapBlue", 
-                ColorMaps.BLUE), "Blue");
-        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapFire", 
-                ColorMaps.FIRE), "Fire");
-        addMenuItem(colormapMenu, new ImageSetColorMapFactoryAction(frame, "setColorMapGlasbey", 
-                ColorMaps.GLASBEY), "Glasbey");
+        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.GRAY), "Gray");
+        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.JET), "Jet");
+        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.BLUE_GRAY_RED), "Blue-Gray-Red");
+        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.RED), "Red");
+        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.GREEN), "Green");
+        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.BLUE), "Blue");
+        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.FIRE), "Fire");
+        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.GLASBEY), "Glasbey");
         menu.add(colormapMenu);
         
-        addMenuItem(menu, new ImageSetBackgroundColorAction(frame, "imageSetBackgroundColor"),
-                "Set Background Color...", hasLabelImage);
+        addPlugin(menu, new ImageSetBackgroundColor(), "Set Background Color...", hasLabelImage);
         
 
         menu.addSeparator();
-        addMenuItem(menu, new ImageSetScaleAction(frame, "setImageScale"), 
-                "Image Scale...", hasImage);
+        addPlugin(menu, new ImageSetScale(), "Image Scale...", hasImage);
         
         menu.addSeparator();
 		JMenu geometryMenu = new JMenu("Geometry");
@@ -473,10 +458,8 @@ public class GuiBuilder
         menu.add(phantomMenu);
         
 		menu.addSeparator();
-        addMenuItem(menu, new PrintImageTiffTagsAction(frame,
-                "printImageTiffTags"), "Print TIFF Tags", hasImage);
-        addMenuItem(menu, new PrintImageInfosAction(frame,
-                "printImageInfo"), "Print Image Info", hasImage);
+        addPlugin(menu, new PrintImageTiffTags(), "Print TIFF Tags", hasImage);
+        addPlugin(menu, new PrintImageInfos(), "Print Image Info", hasImage);
 		return menu;
 	}
 
