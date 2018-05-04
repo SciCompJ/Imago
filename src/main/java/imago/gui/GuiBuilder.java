@@ -42,14 +42,6 @@ import imago.gui.action.file.ReadTiffAction;
 import imago.gui.action.file.SaveTableAction;
 import imago.gui.action.file.ShowDemoTable;
 import imago.gui.action.file.TableScatterPlotAction;
-import imago.gui.action.image.ConvertRGB8ToUInt8ImageAction;
-import imago.gui.action.image.ConvertToBinaryImageAction;
-import imago.gui.action.image.ConvertToFloat32ImageAction;
-import imago.gui.action.image.ConvertToFloat64ImageAction;
-import imago.gui.action.image.ConvertToInt16ImageAction;
-import imago.gui.action.image.ConvertToInt32ImageAction;
-import imago.gui.action.image.ConvertToUInt16ImageAction;
-import imago.gui.action.image.ConvertToUInt8ImageAction;
 import imago.gui.action.image.ExtractChannelFromColorImageAction;
 import imago.gui.action.image.Image3DGetCurrentSliceAction;
 import imago.gui.action.image.Image3DGetSliceAction;
@@ -83,6 +75,14 @@ import imago.plugin.image.analyze.LabelImageBoundingBoxes;
 import imago.plugin.image.analyze.LabelImageCentroids;
 import imago.plugin.image.analyze.LabelImageEquivalentDisks;
 import imago.plugin.image.analyze.LabelImageInertiaEllipses;
+import imago.plugin.image.convert.ConvertImageToBinary;
+import imago.plugin.image.convert.ConvertImageToFloat32;
+import imago.plugin.image.convert.ConvertImageToFloat64;
+import imago.plugin.image.convert.ConvertImageToInt16;
+import imago.plugin.image.convert.ConvertImageToInt32;
+import imago.plugin.image.convert.ConvertImageToUInt16;
+import imago.plugin.image.convert.ConvertImageToUInt8;
+import imago.plugin.image.convert.ConvertRGB8ImageToUInt8;
 import imago.plugin.image.process.BinaryImageConnectedComponentsLabeling;
 import imago.plugin.image.process.BinaryImageSkeleton;
 import imago.plugin.image.process.BoxFilter;
@@ -347,29 +347,15 @@ public class GuiBuilder
 	      // Type conversion items
         JMenu convertDataTypeMenu = new JMenu("Convert Data-Type");
         convertDataTypeMenu.setEnabled(hasImage);
-        // addMenuItem(convertTypeMenu, new MetaImageOperatorAction(frame,
-        // "toGray8",
-        // new Gray8Converter()), "Gray8", hasImage);
-        // addMenuItem(convertTypeMenu, new MetaImageOperatorAction(frame,
-        // "toFloat",
-        // new FloatConverter()), "Float", hasImage);
-        // editMenu.add(convertTypeMenu);
-        addMenuItem(convertDataTypeMenu, new ConvertToBinaryImageAction(frame, "convertToBinary"),
-                "Binary", hasScalarImage);
-        addMenuItem(convertDataTypeMenu, new ConvertToUInt8ImageAction(frame, "convertToUInt8"),
-                "UInt8", hasScalarImage);
-        addMenuItem(convertDataTypeMenu, new ConvertToUInt16ImageAction(frame, "convertToUInt16"),
-                "UInt16", hasScalarImage);
+        addPlugin(convertDataTypeMenu, new ConvertImageToBinary(), "Binary", hasScalarImage);
+        addPlugin(convertDataTypeMenu, new ConvertImageToUInt8(), "UInt8", hasScalarImage);
+        addPlugin(convertDataTypeMenu, new ConvertImageToUInt16(), "UInt16", hasScalarImage);
         convertDataTypeMenu.addSeparator();
-        addMenuItem(convertDataTypeMenu, new ConvertToInt16ImageAction(frame, "convertToInt16"),
-                "Int16", hasScalarImage);
-        addMenuItem(convertDataTypeMenu, new ConvertToInt32ImageAction(frame, "convertToInt32"),
-                "Int32", hasScalarImage);
+        addPlugin(convertDataTypeMenu, new ConvertImageToInt16(), "Int16", hasScalarImage);
+        addPlugin(convertDataTypeMenu, new ConvertImageToInt32(), "Int32", hasScalarImage);
         convertDataTypeMenu.addSeparator();
-        addMenuItem(convertDataTypeMenu, new ConvertToFloat32ImageAction(frame, "convertToFloat32"),
-                "Float32", hasImage);
-        addMenuItem(convertDataTypeMenu, new ConvertToFloat64ImageAction(frame, "convertToFloat64"),
-                "Float64", hasImage);
+        addPlugin(convertDataTypeMenu, new ConvertImageToFloat32(), "Float32", hasImage);
+        addPlugin(convertDataTypeMenu, new ConvertImageToFloat64(), "Float64", hasImage);
         menu.add(convertDataTypeMenu);
         
         menu.addSeparator();
@@ -396,8 +382,7 @@ public class GuiBuilder
         menu.addSeparator();
         JMenu colorMenu = new JMenu("Color");
         // editMenu.add(convertTypeMenu);
-        addMenuItem(colorMenu, new ConvertRGB8ToUInt8ImageAction(frame, "convertRGB8ToUInt8"),
-                "Convert to UInt8", hasColorImage);
+        addPlugin(colorMenu, new ConvertRGB8ImageToUInt8(), "Convert to UInt8", hasColorImage);
         addMenuItem(colorMenu, new SplitImageChannelsAction(frame,
                 "splitChannels"), "Split Channels", hasVectorImage || hasColorImage);
         addMenuItem(colorMenu, new MergeChannelImagesAction(frame,
