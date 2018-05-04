@@ -13,7 +13,6 @@ import javax.swing.JMenuItem;
 
 import imago.app.ImagoDoc;
 import imago.gui.action.ArrayOperatorAction;
-import imago.gui.action.ImageArrayOperatorAction;
 import imago.gui.action.RunPluginAction;
 import imago.gui.action.SelectToolAction;
 import imago.gui.action.edit.DocClearShapesAction;
@@ -48,6 +47,7 @@ import imago.gui.action.process.BoxFilter3x3Float;
 import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectPolygonTool;
 import imago.gui.tool.SelectionTool;
+import imago.plugin.image.ImageArrayOperatorPlugin;
 import imago.plugin.image.ImageOperatorPlugin;
 import imago.plugin.image.analyze.ColorImageBivariateHistograms;
 import imago.plugin.image.analyze.ImageHistogram;
@@ -104,6 +104,7 @@ import imago.plugin.image.vectorize.BinaryImageBoundaryGraph;
 import imago.plugin.image.vectorize.ImageFindNonZeroPixels;
 import imago.plugin.image.vectorize.ImageIsocontour;
 import net.sci.array.Array;
+import net.sci.array.ArrayOperator;
 import net.sci.array.data.color.RGB8Array;
 import net.sci.array.process.PowerOfTwo;
 import net.sci.array.process.Sqrt;
@@ -368,9 +369,7 @@ public class GuiBuilder
 		// "Set Display Range [0 ; 1]", hasScalarImage || hasVectorImage);
 		menu.add(displayRangeMenu);
 
-		addMenuItem(menu,
-				 new ArrayOperatorAction(frame, "adjustDynamic", new DynamicAdjustment(.01)),
-				 "Adjust Grayscale Dynamic", hasScalarImage);
+		addArrayOperatorPlugin(menu, new DynamicAdjustment(.01), "Adjust Grayscale Dynamic", hasScalarImage);
 
         
         // Color conversion items
@@ -411,15 +410,9 @@ public class GuiBuilder
 		addPlugin(geometryMenu, new ImageFlip(1), "Vertical Flip");
 		addPlugin(geometryMenu, new ImageFlip(2), "Z-Flip");
 		geometryMenu.addSeparator();
-		addMenuItem(geometryMenu,
-				 new ArrayOperatorAction(frame, "imageRotateLeft", new Rotate90(-1)),
-				 "Rotate Left", hasImage2D);
-		addMenuItem(geometryMenu,
-				 new ArrayOperatorAction(frame, "imageRotateRight", new Rotate90(+1)),
-				 "Rotate Right", hasImage2D);
-		addMenuItem(geometryMenu,
-				 new ArrayOperatorAction(frame, "rotateImage", new RotationAroundCenter(30)),
-				 "Rotate Image", hasImage);
+        addArrayOperatorPlugin(geometryMenu, new Rotate90(-1), "Rotate Left", hasImage2D);
+        addArrayOperatorPlugin(geometryMenu, new Rotate90(+1), "Rotate Right", hasImage2D);
+		addArrayOperatorPlugin(geometryMenu, new RotationAroundCenter(30), "Rotate Image", hasImage); // TODO: Implement a plugin to choose rotation angle
         addPlugin(geometryMenu, new ImageReshape(), "Reshape Image");
         addPlugin(geometryMenu, new ImageDownsample(), "Downsample Image", hasImage);
         
@@ -441,9 +434,7 @@ public class GuiBuilder
 
         menu.addSeparator();
 		addPlugin(menu, new ImageDuplicate(), "Duplicate", hasImage);
-        addMenuItem(menu, 
-                new ImageArrayOperatorAction(frame, "invert",
-                new ImageInverter()), "Invert", hasScalarImage || hasColorImage);
+		addArrayOperatorPlugin(menu, new ImageInverter(), "Invert", hasScalarImage || hasColorImage);
         
         // submenu for creation of phantoms
         JMenu phantomMenu = new JMenu("Phantoms");
@@ -518,11 +509,9 @@ public class GuiBuilder
 		// operators specific to binary images
 		JMenu binaryMenu = new JMenu("Binary Images");
         addPlugin(binaryMenu, new BinaryImageConnectedComponentsLabeling(), "Connected Components Labeling");
-		addMenuItem(binaryMenu, new ArrayOperatorAction(frame, "distanceMap2dShort",
-				new ChamferDistanceTransform2DUInt16(ChamferWeights2D.CHESSKNIGHT, false)),
+        addArrayOperatorPlugin(binaryMenu, new ChamferDistanceTransform2DUInt16(ChamferWeights2D.CHESSKNIGHT, false),
 				"Distance Map", hasImage2D && hasBinaryImage);
-		addMenuItem(binaryMenu, new ArrayOperatorAction(frame, "distanceMap2dFloat",
-				new ChamferDistanceTransform2DFloat(ChamferWeights2D.CHESSKNIGHT, false)),
+        addArrayOperatorPlugin(binaryMenu, new ChamferDistanceTransform2DFloat(ChamferWeights2D.CHESSKNIGHT, false),
 				"Distance Map (float)", hasImage2D && hasBinaryImage);
 		addPlugin(binaryMenu, new ImageGeodesicDistanceMap(), "Geodesic Distance Map...");
         addPlugin(binaryMenu, new BinaryImageSkeleton(), "IJ Skeleton");
@@ -592,6 +581,12 @@ public class GuiBuilder
     private JMenuItem addImageOperatorPlugin(JMenu menu, ImageOperator operator, String label, boolean enabled)
     {
         Plugin plugin = new ImageOperatorPlugin(operator);
+        return addPlugin(menu, plugin, label, enabled);
+    }
+
+    private JMenuItem addArrayOperatorPlugin(JMenu menu, ArrayOperator operator, String label, boolean enabled)
+    {
+        Plugin plugin = new ImageArrayOperatorPlugin(operator);
         return addPlugin(menu, plugin, label, enabled);
     }
 
