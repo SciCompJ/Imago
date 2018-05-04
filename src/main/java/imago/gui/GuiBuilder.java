@@ -98,6 +98,7 @@ import imago.plugin.image.process.ImageMorphologicalFilter;
 import imago.plugin.image.process.ImageMorphologicalReconstruction;
 import imago.plugin.image.process.ImageOtsuThreshold;
 import imago.plugin.image.process.ImageReshape;
+import imago.plugin.image.process.ImageRotateAroundCenter;
 import imago.plugin.image.process.ImageSplitChannels;
 import imago.plugin.image.process.MergeChannelImages;
 import imago.plugin.image.vectorize.BinaryImageBoundaryGraph;
@@ -120,7 +121,6 @@ import net.sci.image.morphology.MinimaAndMaxima;
 import net.sci.image.morphology.extrema.RegionalExtrema2D;
 import net.sci.image.process.DynamicAdjustment;
 import net.sci.image.process.ImageInverter;
-import net.sci.image.process.RotationAroundCenter;
 import net.sci.image.process.SobelGradient;
 import net.sci.image.process.SobelGradientNorm;
 import net.sci.image.process.VectorArrayNorm;
@@ -412,7 +412,7 @@ public class GuiBuilder
 		geometryMenu.addSeparator();
         addArrayOperatorPlugin(geometryMenu, new Rotate90(-1), "Rotate Left", hasImage2D);
         addArrayOperatorPlugin(geometryMenu, new Rotate90(+1), "Rotate Right", hasImage2D);
-		addArrayOperatorPlugin(geometryMenu, new RotationAroundCenter(30), "Rotate Image", hasImage); // TODO: Implement a plugin to choose rotation angle
+		addPlugin(geometryMenu, new ImageRotateAroundCenter(), "Rotate...", hasImage2D);
         addPlugin(geometryMenu, new ImageReshape(), "Reshape Image");
         addPlugin(geometryMenu, new ImageDownsample(), "Downsample Image", hasImage);
         
