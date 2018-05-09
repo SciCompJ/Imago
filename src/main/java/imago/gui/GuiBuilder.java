@@ -13,10 +13,6 @@ import javax.swing.JMenuItem;
 
 import imago.app.ImagoDoc;
 import imago.gui.action.RunPluginAction;
-import imago.gui.action.file.OpenTableAction;
-import imago.gui.action.file.SaveTableAction;
-import imago.gui.action.file.ShowDemoTable;
-import imago.gui.action.file.TableScatterPlotAction;
 import imago.gui.action.image.SetImageTypeToLabelAction;
 import imago.gui.action.process.BinaryImageOverlayAction;
 import imago.gui.tool.SelectLineSegmentTool;
@@ -104,6 +100,10 @@ import imago.plugin.image.process.MergeChannelImages;
 import imago.plugin.image.vectorize.BinaryImageBoundaryGraph;
 import imago.plugin.image.vectorize.ImageFindNonZeroPixels;
 import imago.plugin.image.vectorize.ImageIsocontour;
+import imago.plugin.table.OpenTable;
+import imago.plugin.table.SaveTable;
+import imago.plugin.table.ShowDemoTable;
+import imago.plugin.table.TableScatterPlot;
 import net.sci.array.Array;
 import net.sci.array.ArrayOperator;
 import net.sci.array.data.color.RGB8Array;
@@ -220,13 +220,13 @@ public class GuiBuilder
     {
         JMenu fileMenu = new JMenu("File");
         
-        addMenuItem(fileMenu, new OpenTableAction(frame, "openTable"), "Open Table...");
+        addPlugin(fileMenu, new OpenTable(), "Open Table...");
         
         fileMenu.addSeparator();
-        addMenuItem(fileMenu, new SaveTableAction(frame, "saveTable"), "Save Table...");
+        addPlugin(fileMenu, new SaveTable(), "Save Table...");
 
         fileMenu.addSeparator();
-        addMenuItem(fileMenu, new TableScatterPlotAction(frame, "scatterPlot"), "Scatter Plot...");
+        addPlugin(fileMenu, new TableScatterPlot(), "Scatter Plot...");
 
         fileMenu.addSeparator();
         addPlugin(fileMenu, new CloseCurrentFrame(), "Close", !(frame instanceof ImagoEmptyFrame));
@@ -265,8 +265,8 @@ public class GuiBuilder
 //		addMenuItem(demoMenu, new CreateWhiteNoiseImageAction(frame,
 //				"createWhiteNoiseImage"), "White Noise Array<?>");
         fileMenu.addSeparator();
-        addMenuItem(fileMenu, new OpenTableAction(frame, "openTable"), "Open Table...");
-        addMenuItem(fileMenu, new ShowDemoTable(frame, "showDemoTableFrame"), "Show Demo Table");
+        addPlugin(fileMenu, new OpenTable(), "Open Table...");
+        addPlugin(fileMenu, new ShowDemoTable(), "Show Demo Table");
         
 		fileMenu.addSeparator();
 		addPlugin(fileMenu, new CloseCurrentFrame(), "Close", !(frame instanceof ImagoEmptyFrame));
