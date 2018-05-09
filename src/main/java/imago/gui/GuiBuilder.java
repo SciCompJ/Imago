@@ -29,15 +29,8 @@ import imago.gui.action.file.CloseFrameAction;
 import imago.gui.action.file.CreateColorCubeStack;
 import imago.gui.action.file.CreateDistanceToOctahedronStack;
 import imago.gui.action.file.CreateEmptyImageAction;
-import imago.gui.action.file.ImportMetaImageFileAction;
-import imago.gui.action.file.ImportRawDataAction;
-import imago.gui.action.file.ImportVgiImageAction;
-import imago.gui.action.file.OpenDemoImage;
-import imago.gui.action.file.OpenDemoStack;
-import imago.gui.action.file.OpenImageAction;
 import imago.gui.action.file.OpenTableAction;
 import imago.gui.action.file.QuitAction;
-import imago.gui.action.file.ReadTiffAction;
 import imago.gui.action.file.SaveTableAction;
 import imago.gui.action.file.ShowDemoTable;
 import imago.gui.action.file.TableScatterPlotAction;
@@ -75,6 +68,13 @@ import imago.plugin.image.edit.PrintImageTiffTags;
 import imago.plugin.image.edit.SetImageDisplayRange;
 import imago.plugin.image.edit.SetImageDisplayRangeToData;
 import imago.plugin.image.edit.SetImageDisplayRangeToDataType;
+import imago.plugin.image.file.ImportImageMetaImage;
+import imago.plugin.image.file.ImportImageRawData;
+import imago.plugin.image.file.ImportImageVgi;
+import imago.plugin.image.file.OpenDemoImage;
+import imago.plugin.image.file.OpenDemoStack;
+import imago.plugin.image.file.OpenImage;
+import imago.plugin.image.file.ReadImageTiff;
 import imago.plugin.image.process.BinaryImageConnectedComponentsLabeling;
 import imago.plugin.image.process.BinaryImageSkeleton;
 import imago.plugin.image.process.BoxFilter;
@@ -244,21 +244,15 @@ public class GuiBuilder
 		JMenu fileMenu = new JMenu("File");
 		addMenuItem(fileMenu, new CreateEmptyImageAction(frame, "createEmptyImage"), 
 				"New...");
-		addMenuItem(fileMenu, new OpenImageAction(frame, "openImage"),
-				"Open...");
-		addMenuItem(fileMenu, new ReadTiffAction(frame, "readTiffImage"),
-				"Read TIFF...");
+		addPlugin(fileMenu, new OpenImage(), "Open...");
+		addPlugin(fileMenu, new ReadImageTiff(), "Read TIFF...");
 
 		// Import demo images
 		JMenu demoMenu = new JMenu("Open Demo Image");
-        addMenuItem(demoMenu, new OpenDemoImage(frame, "openDemoRice",
-                "files/grains.png"), "Rice grains");
-		addMenuItem(demoMenu, new OpenDemoImage(frame, "openDemoLena",
-				"files/lena_gray_512.tif"), "Lena");
-		addMenuItem(demoMenu, new OpenDemoImage(frame, "openDemoSunflower",
-				"files/sunflower.png"), "Sunflower");
-        addMenuItem(demoMenu, new OpenDemoStack(frame, "openDemoStack"),
-                "Demo Stack");
+        addPlugin(demoMenu, new OpenDemoImage("files/grains.png"), "Rice grains");
+        addPlugin(demoMenu, new OpenDemoImage("files/lena_gray_512.tif"), "Lena");
+		addPlugin(demoMenu, new OpenDemoImage("files/sunflower.png"), "Sunflower");
+		addPlugin(demoMenu, new OpenDemoStack(), "Demo Stack");
         addMenuItem(demoMenu, new CreateDistanceToOctahedronStack(frame, "octahedronDistanceMap"),
                 "Octahedron Distance Map");
 		addMenuItem(demoMenu, new CreateColorCubeStack(frame,
@@ -267,12 +261,9 @@ public class GuiBuilder
 
 		// Import less common file formats
 		JMenu fileImportMenu = new JMenu("Import");
-		addMenuItem(fileImportMenu, new ImportRawDataAction(frame,
-		        "importRawData"), "Raw Data...");
-		addMenuItem(fileImportMenu, new ImportMetaImageFileAction(frame,
-		        "readMetaImageFormat"), "MetaImage Data...");
-		addMenuItem(fileImportMenu, new ImportVgiImageAction(frame,
-		        "importVgiImage"), "VGI Image...");
+		addPlugin(fileImportMenu, new ImportImageRawData(), "Raw Data...");
+		addPlugin(fileImportMenu, new ImportImageMetaImage(), "MetaImage Data...");
+		addPlugin(fileImportMenu, new ImportImageVgi(), "VGI Image...");
 		fileMenu.add(fileImportMenu);
 
 //		addMenuItem(demoMenu, new CreateWhiteNoiseImageAction(frame,
