@@ -16,19 +16,12 @@ import imago.gui.action.ArrayOperatorAction;
 import imago.gui.action.RunPluginAction;
 import imago.gui.action.SelectToolAction;
 import imago.gui.action.edit.DocClearShapesAction;
-import imago.gui.action.edit.ImageFillDiskAction;
-import imago.gui.action.edit.ImageFillEllipseAction;
-import imago.gui.action.edit.ImageSelectionToDistanceMapAction;
-import imago.gui.action.edit.ImageSelectionToMaskAction;
 import imago.gui.action.edit.PrintDocumentListAction;
 import imago.gui.action.edit.PrintFrameListAction;
 import imago.gui.action.edit.ZoomInAction;
 import imago.gui.action.edit.ZoomOneAction;
 import imago.gui.action.edit.ZoomOutAction;
 import imago.gui.action.file.CloseFrameAction;
-import imago.gui.action.file.CreateColorCubeStack;
-import imago.gui.action.file.CreateDistanceToOctahedronStack;
-import imago.gui.action.file.CreateEmptyImageAction;
 import imago.gui.action.file.OpenTableAction;
 import imago.gui.action.file.QuitAction;
 import imago.gui.action.file.SaveTableAction;
@@ -60,6 +53,12 @@ import imago.plugin.image.convert.ConvertImageToInt32;
 import imago.plugin.image.convert.ConvertImageToUInt16;
 import imago.plugin.image.convert.ConvertImageToUInt8;
 import imago.plugin.image.convert.ConvertRGB8ImageToUInt8;
+import imago.plugin.image.edit.CreateColorCubeImage3D;
+import imago.plugin.image.edit.CreateDistanceToOctahedronImage3D;
+import imago.plugin.image.edit.ImageFillDisk;
+import imago.plugin.image.edit.ImageFillEllipse;
+import imago.plugin.image.edit.ImageSelectionToDistanceMap;
+import imago.plugin.image.edit.ImageSelectionToMask;
 import imago.plugin.image.edit.ImageSetBackgroundColor;
 import imago.plugin.image.edit.ImageSetColorMapFactory;
 import imago.plugin.image.edit.ImageSetScale;
@@ -68,6 +67,7 @@ import imago.plugin.image.edit.PrintImageTiffTags;
 import imago.plugin.image.edit.SetImageDisplayRange;
 import imago.plugin.image.edit.SetImageDisplayRangeToData;
 import imago.plugin.image.edit.SetImageDisplayRangeToDataType;
+import imago.plugin.image.file.CreateNewImage;
 import imago.plugin.image.file.ImportImageMetaImage;
 import imago.plugin.image.file.ImportImageRawData;
 import imago.plugin.image.file.ImportImageVgi;
@@ -242,8 +242,7 @@ public class GuiBuilder
 	private JMenu createImageFileMenu()
 	{
 		JMenu fileMenu = new JMenu("File");
-		addMenuItem(fileMenu, new CreateEmptyImageAction(frame, "createEmptyImage"), 
-				"New...");
+		addPlugin(fileMenu, new CreateNewImage(), "New Image...");
 		addPlugin(fileMenu, new OpenImage(), "Open...");
 		addPlugin(fileMenu, new ReadImageTiff(), "Read TIFF...");
 
@@ -253,10 +252,8 @@ public class GuiBuilder
         addPlugin(demoMenu, new OpenDemoImage("files/lena_gray_512.tif"), "Lena");
 		addPlugin(demoMenu, new OpenDemoImage("files/sunflower.png"), "Sunflower");
 		addPlugin(demoMenu, new OpenDemoStack(), "Demo Stack");
-        addMenuItem(demoMenu, new CreateDistanceToOctahedronStack(frame, "octahedronDistanceMap"),
-                "Octahedron Distance Map");
-		addMenuItem(demoMenu, new CreateColorCubeStack(frame,
-				"createDemoColorCube"), "3D Color Cube");
+        addPlugin(demoMenu, new CreateDistanceToOctahedronImage3D(), "Octahedron Distance Map");
+		addPlugin(demoMenu, new CreateColorCubeImage3D(), "3D Color Cube");
         fileMenu.add(demoMenu);
 
 		// Import less common file formats
@@ -432,14 +429,10 @@ public class GuiBuilder
         
         // submenu for creation of phantoms
         JMenu phantomMenu = new JMenu("Phantoms");
-        addMenuItem(phantomMenu, new ImageFillDiskAction(frame, "imageFillDisk"), 
-                "Fill Disk...");
-        addMenuItem(phantomMenu, new ImageFillEllipseAction(frame, "imageFillEllipse"), 
-                "Fill Ellipse...");
-        addMenuItem(phantomMenu, new ImageSelectionToMaskAction(frame, "imageSelectionToMask"), 
-                "Selection To Mask");
-        addMenuItem(phantomMenu, new ImageSelectionToDistanceMapAction(frame, "imageSelectionToDistanceMap"), 
-                "Selection To Distance Map");
+        addPlugin(phantomMenu, new ImageFillDisk(), "Fill Disk...");
+        addPlugin(phantomMenu, new ImageFillEllipse(), "Fill Ellipse...");
+        addPlugin(phantomMenu, new ImageSelectionToMask(), "Selection To Mask");
+        addPlugin(phantomMenu, new ImageSelectionToDistanceMap(), "Selection To Distance Map");
         menu.add(phantomMenu);
         
 		menu.addSeparator();
