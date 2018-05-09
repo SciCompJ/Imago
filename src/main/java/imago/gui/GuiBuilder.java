@@ -12,20 +12,19 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import imago.app.ImagoDoc;
-import imago.gui.action.ArrayOperatorAction;
 import imago.gui.action.RunPluginAction;
-import imago.gui.action.file.CloseFrameAction;
 import imago.gui.action.file.OpenTableAction;
-import imago.gui.action.file.QuitAction;
 import imago.gui.action.file.SaveTableAction;
 import imago.gui.action.file.ShowDemoTable;
 import imago.gui.action.file.TableScatterPlotAction;
 import imago.gui.action.image.SetImageTypeToLabelAction;
 import imago.gui.action.process.BinaryImageOverlayAction;
-import imago.gui.action.process.BoxFilter3x3Float;
 import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectPolygonTool;
 import imago.gui.tool.SelectionTool;
+import imago.plugin.BoxFilter3x3FloatPlugin;
+import imago.plugin.CloseCurrentFrame;
+import imago.plugin.QuitApplication;
 import imago.plugin.edit.ChangeCurrentTool;
 import imago.plugin.edit.DocClearShapes;
 import imago.plugin.edit.PrintDocumentList;
@@ -230,8 +229,8 @@ public class GuiBuilder
         addMenuItem(fileMenu, new TableScatterPlotAction(frame, "scatterPlot"), "Scatter Plot...");
 
         fileMenu.addSeparator();
-        addMenuItem(fileMenu, new CloseFrameAction(frame, "close"), "Close", !(frame instanceof ImagoEmptyFrame));
-        addMenuItem(fileMenu, new QuitAction(frame, "quit"), "Quit");
+        addPlugin(fileMenu, new CloseCurrentFrame(), "Close", !(frame instanceof ImagoEmptyFrame));
+        addPlugin(fileMenu, new QuitApplication(), "Quit");
 
         return fileMenu;
     }
@@ -270,8 +269,8 @@ public class GuiBuilder
         addMenuItem(fileMenu, new ShowDemoTable(frame, "showDemoTableFrame"), "Show Demo Table");
         
 		fileMenu.addSeparator();
-		addMenuItem(fileMenu, new CloseFrameAction(frame, "close"), "Close", !(frame instanceof ImagoEmptyFrame));
-		addMenuItem(fileMenu, new QuitAction(frame, "quit"), "Quit");
+		addPlugin(fileMenu, new CloseCurrentFrame(), "Close", !(frame instanceof ImagoEmptyFrame));
+		addPlugin(fileMenu, new QuitApplication(), "Quit");
 		return fileMenu;
 	}
 
@@ -441,19 +440,14 @@ public class GuiBuilder
 		JMenu menu = new JMenu("Process");
 
 		JMenu mathsMenu = new JMenu("Maths");
-		addMenuItem(mathsMenu,
-				new ArrayOperatorAction(frame, "sqrt", new Sqrt()),
-				"Sqrt", hasScalarImage);
-		addMenuItem(mathsMenu,
-				new ArrayOperatorAction(frame, "powerOfTwo", new PowerOfTwo()),
-				"Power Of Two", hasScalarImage);
+        addArrayOperatorPlugin(mathsMenu, new Sqrt(), "Sqrt", hasScalarImage);
+        addArrayOperatorPlugin(mathsMenu, new PowerOfTwo(), "Power Of Two", hasScalarImage);
 		menu.add(mathsMenu);
 		menu.addSeparator();
 
 		// Noise reduction filters
         addPlugin(menu, new BoxFilter(), "Box Filter");
-		addMenuItem(menu, new BoxFilter3x3Float(frame, "boxFilter3x3Float"),
-				"Box Filter 2D 3x3 (float)", hasScalarImage);
+		addPlugin(menu, new BoxFilter3x3FloatPlugin(), "Box Filter 2D 3x3 (float)", hasScalarImage);
         addPlugin(menu, new ImageBoxMedianFilter(), "Median Filter");
         addPlugin(menu, new ImageBoxMinMaxFilter(), "Min/Max Filter");
 		addPlugin(menu, new ImageBoxVarianceFilter(), "Variance Filter");

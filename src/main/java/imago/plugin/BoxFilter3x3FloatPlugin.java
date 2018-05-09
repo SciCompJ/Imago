@@ -19,11 +19,8 @@ import net.sci.image.process.filter.BoxFilter3x3;
  */
 public class BoxFilter3x3FloatPlugin implements Plugin
 {
-    String name;
-
-	public BoxFilter3x3FloatPlugin(String name)
+	public BoxFilter3x3FloatPlugin()
 	{
-		this.name = name;
 	}
 
 	/*
