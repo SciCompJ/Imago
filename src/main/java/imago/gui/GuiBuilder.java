@@ -86,6 +86,7 @@ import imago.plugin.image.process.Image3DSetOrthoSlicesDisplay;
 import imago.plugin.image.process.ImageBoxMedianFilter;
 import imago.plugin.image.process.ImageBoxMinMaxFilter;
 import imago.plugin.image.process.ImageBoxVarianceFilter;
+import imago.plugin.image.process.ImageConcatenate;
 import imago.plugin.image.process.ImageDownsample;
 import imago.plugin.image.process.ImageDuplicate;
 import imago.plugin.image.process.ImageExtendedExtrema;
@@ -415,6 +416,8 @@ public class GuiBuilder
 		addPlugin(geometryMenu, new ImageRotateAroundCenter(), "Rotate...", hasImage2D);
         addPlugin(geometryMenu, new ImageReshape(), "Reshape Image");
         addPlugin(geometryMenu, new ImageDownsample(), "Downsample Image", hasImage);
+        geometryMenu.addSeparator();
+        addPlugin(geometryMenu, new ImageConcatenate(), "Concatenate");
         
 		menu.add(geometryMenu);
 

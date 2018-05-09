@@ -77,6 +77,12 @@ public class LabelImageInertiaEllipses implements Plugin
         dlg.addChoice("Image to Overlay ", imageNameArray, firstImageName);
         dlg.showDialog();
         
+        if (dlg.wasCanceled()) 
+        {
+            return;
+        }
+        
+       
         // Parse dialog options
         boolean showTable = dlg.getNextBoolean();
         boolean overlay = dlg.getNextBoolean();
