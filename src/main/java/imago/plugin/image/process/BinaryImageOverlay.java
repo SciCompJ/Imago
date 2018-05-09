@@ -23,9 +23,9 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class BinaryImageOverlayAction implements Plugin
+public class BinaryImageOverlay implements Plugin
 {
-	public BinaryImageOverlayAction()
+	public BinaryImageOverlay()
 	{
 	}
 

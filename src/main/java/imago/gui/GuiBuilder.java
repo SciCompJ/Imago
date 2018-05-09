@@ -13,8 +13,6 @@ import javax.swing.JMenuItem;
 
 import imago.app.ImagoDoc;
 import imago.gui.action.RunPluginAction;
-import imago.gui.action.image.SetImageTypeToLabelAction;
-import imago.gui.action.process.BinaryImageOverlayAction;
 import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectPolygonTool;
 import imago.gui.tool.SelectionTool;
@@ -62,6 +60,7 @@ import imago.plugin.image.edit.PrintImageTiffTags;
 import imago.plugin.image.edit.SetImageDisplayRange;
 import imago.plugin.image.edit.SetImageDisplayRangeToData;
 import imago.plugin.image.edit.SetImageDisplayRangeToDataType;
+import imago.plugin.image.edit.SetImageTypeToLabel;
 import imago.plugin.image.file.CreateNewImage;
 import imago.plugin.image.file.ImportImageMetaImage;
 import imago.plugin.image.file.ImportImageRawData;
@@ -71,6 +70,7 @@ import imago.plugin.image.file.OpenDemoStack;
 import imago.plugin.image.file.OpenImage;
 import imago.plugin.image.file.ReadImageTiff;
 import imago.plugin.image.process.BinaryImageConnectedComponentsLabeling;
+import imago.plugin.image.process.BinaryImageOverlay;
 import imago.plugin.image.process.BinaryImageSkeleton;
 import imago.plugin.image.process.BoxFilter;
 import imago.plugin.image.process.ColorImageExtractChannel;
@@ -321,8 +321,7 @@ public class GuiBuilder
 		JMenu menu = new JMenu("Image");
 		
         JMenu imageTypeMenu = new JMenu("Image Type");
-        addMenuItem(imageTypeMenu, new SetImageTypeToLabelAction(frame, "convertTypeToLabel"),
-                "Set to Label Image", hasScalarImage);
+        addPlugin(imageTypeMenu, new SetImageTypeToLabel(), "Set to Label Image", hasScalarImage);
         menu.add(imageTypeMenu);
         
 	      // Type conversion items
@@ -488,8 +487,7 @@ public class GuiBuilder
 				"Distance Map (float)", hasImage2D && hasBinaryImage);
 		addPlugin(binaryMenu, new ImageGeodesicDistanceMap(), "Geodesic Distance Map...");
         addPlugin(binaryMenu, new BinaryImageSkeleton(), "IJ Skeleton");
-        addMenuItem(binaryMenu, new BinaryImageOverlayAction(frame, "binaryImageOverlay"),
-                "Binary Overlay...");
+        addPlugin(binaryMenu, new BinaryImageOverlay(), "Binary Overlay...");
         binaryMenu.addSeparator();
         addPlugin(binaryMenu, new BinaryImageBoundaryGraph(),
                 "Boundary Graph", hasImage2D && hasBinaryImage);
@@ -533,11 +531,6 @@ public class GuiBuilder
 		JMenu menu = new JMenu("Help");
 		addMenuItem(menu, null, "About...", true);
 		return menu;
-	}
-
-	private JMenuItem addMenuItem(JMenu menu, ImagoAction action, String label)
-	{
-		return addMenuItem(menu, action, label, true);
 	}
 
 	private JMenuItem addMenuItem(JMenu menu, ImagoAction action, String label,
