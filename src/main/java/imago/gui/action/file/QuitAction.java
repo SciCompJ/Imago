@@ -40,7 +40,7 @@ public class QuitAction extends ImagoAction
 
 		for (ImagoFrame frame : this.gui.getFrames())
 		{
-			System.out.println("  need to close: " + frame.getName());
+			System.out.println("  need to close: " + frame.getWidget().getName());
 			frame.dispose();
 		}
 		

@@ -33,14 +33,14 @@ public class ImagoGui
     public static final void showErrorDialog(ImagoFrame frame, String message)
     {
         JOptionPane.showMessageDialog(
-                frame, message, "Error", 
+                frame.getWidget(), message, "Error", 
                 JOptionPane.ERROR_MESSAGE);
     }
     
     public static final void showErrorDialog(ImagoFrame frame, String message, String title)
     {
         JOptionPane.showMessageDialog(
-                frame, message, title, 
+                frame.getWidget(), message, title, 
                 JOptionPane.ERROR_MESSAGE);
     }
     
@@ -173,7 +173,7 @@ public class ImagoGui
 			ArrayList<ImagoFrame> frameList = docFrames.get(doc.getName());
 			if (!frameList.contains(frame))
 			{
-			    System.err.println("Warning: frame " + frame.getName() + " is not referenced by document " + doc.getName());
+			    System.err.println("Warning: frame " + frame.getWidget().getName() + " is not referenced by document " + doc.getName());
 			}
 			
 			frameList.remove(frame);
@@ -193,7 +193,7 @@ public class ImagoGui
 
 	public void disposeEmptyFrame()
 	{
-		this.emptyFrame.dispose();
+		this.emptyFrame.getWidget().dispose();
 	}
 	
 	public Collection<ImagoDocViewer> getDocumentViewers()

@@ -208,8 +208,8 @@ public class ImageLineProfileDemoAction extends ImagoAction
         
         // creates a new frame to contains the chart panel
         ImagoChartFrame frame = new ImagoChartFrame(this.gui, "Intensity Profile");
-        frame.setContentPane(chartPanel);
-        frame.pack();
+        frame.getWidget().setContentPane(chartPanel);
+        frame.getWidget().pack();
         frame.setVisible(true);
     }
     
@@ -272,8 +272,8 @@ public class ImageLineProfileDemoAction extends ImagoAction
         
         // creates a new frame to contains the chart panel
         ImagoChartFrame frame = new ImagoChartFrame(this.gui, "Color Profile");
-        frame.setContentPane(chartPanel);
-        frame.pack();
+        frame.getWidget().setContentPane(chartPanel);
+        frame.getWidget().pack();
         frame.setVisible(true);
         
     }

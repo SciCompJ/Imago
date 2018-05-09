@@ -16,12 +16,6 @@ public class ImagoEmptyFrame extends ImagoFrame {
 
 	// ===================================================================
 	// Static class variables
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	
 	// ===================================================================
 	// Constructor
@@ -44,13 +38,13 @@ public class ImagoEmptyFrame extends ImagoFrame {
 		// Get screen size
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		
-		this.setMinimumSize(new Dimension(300, 0));
-		this.pack();
+		this.jFrame.setMinimumSize(new Dimension(300, 0));
+		this.jFrame.pack();
 		
 		// set up frame position depending on frame size
-		Dimension size = this.getSize();
+		Dimension size = this.jFrame.getSize();
 		int posX = (screenSize.width - size.width - 100);
 		int posY = 50;
-		this.setLocation(posX, posY);
+		this.jFrame.setLocation(posX, posY);
 	}
 }

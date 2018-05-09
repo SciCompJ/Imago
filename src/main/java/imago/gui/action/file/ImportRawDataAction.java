@@ -55,7 +55,7 @@ public class ImportRawDataAction extends ImagoAction
         }
 
         // Open dialog to choose the file
-        int ret = openWindow.showOpenDialog(this.frame);
+        int ret = openWindow.showOpenDialog(this.frame.getWidget());
         if (ret != JFileChooser.APPROVE_OPTION)
         {
             return;

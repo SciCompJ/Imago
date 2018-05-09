@@ -47,7 +47,7 @@ public class OpenImageAction extends ImagoAction {
 		}
 
 		// Open dialog to choose the file
-		int ret = openWindow.showOpenDialog(this.frame);
+		int ret = openWindow.showOpenDialog(this.frame.getWidget());
 		if (ret != JFileChooser.APPROVE_OPTION)
 		{
 			return;
@@ -69,14 +69,14 @@ public class OpenImageAction extends ImagoAction {
 		{
 			ex.printStackTrace(System.err);
 			// custom title, error icon
-			JOptionPane.showMessageDialog(this.frame,
+			JOptionPane.showMessageDialog(this.frame.getWidget(),
 					"Could not read the image.", "Image I/O Error",
 					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		catch (Exception ex)
 		{
-			JOptionPane.showMessageDialog(this.frame,
+			JOptionPane.showMessageDialog(this.frame.getWidget(),
 					"Could not read the image.", "Image I/O Error",
 					JOptionPane.ERROR_MESSAGE);
 			ex.printStackTrace(System.err);

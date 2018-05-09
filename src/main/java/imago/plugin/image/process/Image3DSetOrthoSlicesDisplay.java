@@ -46,7 +46,7 @@ public class Image3DSetOrthoSlicesDisplay implements Plugin
 		viewer.validate();
 		
 		docViewer.setImageView(viewer);
-        docViewer.validate();
+        docViewer.getWidget().validate();
         docViewer.repaint();
 	}
 }

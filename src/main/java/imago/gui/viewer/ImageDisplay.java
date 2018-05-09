@@ -3,11 +3,7 @@
  */
 package imago.gui.viewer;
 
-import imago.app.shape.ImagoShape;
-import imago.gui.ImagoDocViewer;
-
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -19,6 +15,7 @@ import java.util.Iterator;
 
 import javax.swing.JPanel;
 
+import imago.app.shape.ImagoShape;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Curve2D;
 import net.sci.geom.geom2d.Geometry2D;
@@ -113,15 +110,15 @@ public class ImageDisplay extends JPanel
         this.selection = shape;
     }
     
-	public ImagoDocViewer getViewer() 
-	{
-		Container container = this.getParent();
-		while (!(container instanceof ImagoDocViewer))
-		{
-			container = container.getParent();
-		}
-		return (ImagoDocViewer) container;
-	}
+//	public ImagoDocViewer getViewer() 
+//	{
+//		Container container = this.getParent();
+//		while (!(container instanceof ImagoDocViewer))
+//		{
+//			container = container.getParent();
+//		}
+//		return (ImagoDocViewer) container;
+//	}
 	
 	
 	// ===================================================================

@@ -41,7 +41,7 @@ public class ZoomOutAction extends ImagoAction {
 		view.setZoom(zoom);
 		
 		view.invalidate();
-		iframe.validate();
+		iframe.getWidget().validate();
 		iframe.repaint();
 	}
 

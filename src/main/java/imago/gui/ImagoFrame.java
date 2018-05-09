@@ -12,19 +12,16 @@ import javax.swing.JFrame;
  * @author David Legland
  *
  */
-public abstract class ImagoFrame extends JFrame 
+public abstract class ImagoFrame  
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	/**
 	 * Reference to the global GUI, for retrieving other frames open within the
 	 * current application
 	 */
 	ImagoGui gui;
 
+	JFrame jFrame;
+	
 	/**
 	 * The path to the directory that was used to save this document.
 	 */
@@ -41,6 +38,7 @@ public abstract class ImagoFrame extends JFrame
 	 */
 	protected ImagoFrame(ImagoGui gui)
 	{
+	    this();
 		this.gui = gui;
 	}
 
@@ -59,7 +57,7 @@ public abstract class ImagoFrame extends JFrame
 	 */
 	protected ImagoFrame(ImagoGui gui, String name)
 	{
-		super(name);
+		this(name);
 		this.gui = gui;
 	}
 
@@ -68,9 +66,20 @@ public abstract class ImagoFrame extends JFrame
 	 */
 	protected ImagoFrame(ImagoFrame parent, String name)
 	{
-		super(name);
+		this(name);
 		this.gui = parent.gui;
 	}
+	
+    private ImagoFrame()
+    {
+        this.jFrame = new JFrame();
+    }
+    
+    private ImagoFrame(String name)
+    {
+        this.jFrame = new JFrame(name);
+    }
+    
 	
 	// ===================================================================
 	// General methods
@@ -103,4 +112,37 @@ public abstract class ImagoFrame extends JFrame
 	{
 	    return this.gui;
 	}
+	
+    /**
+     * Returns the widget instance used to represent this frame.
+     * 
+     * @return an instance of the Window Toolkit (here, a JFrame)
+     */
+	public JFrame getWidget()
+	{
+	    return this.jFrame;
+	}
+	
+    // ===================================================================
+    // Overload some methods from the inner JFrame
+
+	public void repaint()
+	{
+	    this.jFrame.repaint();
+	}
+	
+    public void setVisible(boolean b)
+    {
+        this.jFrame.setVisible(b);
+    }
+
+    public void setTitle(String title)
+    {
+        this.jFrame.setTitle(title);
+    }
+    
+    public void dispose()
+    {
+        this.jFrame.dispose();
+    }
 }

@@ -39,7 +39,7 @@ public class ZoomOneAction extends ImagoAction {
 		display.setZoom(1);
 		
 		display.invalidate();
-		iframe.validate();
+		iframe.getWidget().validate();
 		iframe.repaint();
 	}
 

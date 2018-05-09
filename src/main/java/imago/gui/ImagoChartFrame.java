@@ -9,13 +9,8 @@ package imago.gui;
  *  
  *
  */
-public class ImagoChartFrame extends ImagoFrame {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
+public class ImagoChartFrame extends ImagoFrame 
+{
 	// ===================================================================
 	// Class variables
 
@@ -23,15 +18,18 @@ public class ImagoChartFrame extends ImagoFrame {
 	// ===================================================================
 	// Constructors
 	
-	public ImagoChartFrame(ImagoGui gui) {
+	public ImagoChartFrame(ImagoGui gui) 
+	{
 		super(gui);
 	}
 	
-	public ImagoChartFrame(ImagoGui gui, String name) {
+	public ImagoChartFrame(ImagoGui gui, String name) 
+	{
 		super(gui, name);
 	}
 	
-	public ImagoChartFrame(ImagoFrame parent, String name) {
+	public ImagoChartFrame(ImagoFrame parent, String name) 
+	{
 		super(parent, name);
 	}
 	

@@ -306,8 +306,8 @@ public class ImageRoiHistogramAction extends ImagoAction
 
 		// creates a new frame to contains the chart panel
 		ImagoChartFrame frame = new ImagoChartFrame(this.gui, "Histogram");
-		frame.setContentPane(chartPanel);
-		frame.pack();
+		frame.getWidget().setContentPane(chartPanel);
+		frame.getWidget().pack();
 		frame.setVisible(true);
 	}
 
@@ -380,8 +380,8 @@ public class ImageRoiHistogramAction extends ImagoAction
 
 		// creates a new frame to contains the chart panel
 		ImagoChartFrame frame = new ImagoChartFrame(this.gui, "Histogram");
-		frame.setContentPane(chartPanel);
-		frame.pack();
+		frame.getWidget().setContentPane(chartPanel);
+		frame.getWidget().pack();
 		frame.setVisible(true);
 	}
 }

@@ -4,8 +4,6 @@
 package imago.gui;
 
 
-import java.awt.Container;
-
 import javax.swing.JPanel;
 
 import net.sci.image.Image;
@@ -100,20 +98,20 @@ public abstract class ImageViewer extends JPanel
 		this.previewImage = previewImage;
 	}
 
-	/**
-	 * Returns the instance of ImagoDocViewer that contains this Image view,
-	 * or null if no one is found.
-	 */
-	public ImagoDocViewer getViewer() 
-	{
-		Container container = this.getParent();
-		while (!(container instanceof ImagoDocViewer) && container != null) 
-		{
-			container = container.getParent();
-		}
-		
-		return (ImagoDocViewer) container;
-	}	
+//	/**
+//	 * Returns the instance of ImagoDocViewer that contains this Image view,
+//	 * or null if no one is found.
+//	 */
+//	public ImagoDocViewer getViewer() 
+//	{
+//		Container container = this.getParent();
+//		while (!(container instanceof ImagoDocViewer) && container != null) 
+//		{
+//			container = container.getParent();
+//		}
+//		
+//		return (ImagoDocViewer) container;
+//	}	
 
 	
 	// ===================================================================

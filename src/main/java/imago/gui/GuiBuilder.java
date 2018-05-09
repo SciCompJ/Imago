@@ -181,7 +181,7 @@ public class GuiBuilder
 		}
 		menuBar.add(createHelpMenu());
 
-		frame.setJMenuBar(menuBar);
+		frame.getWidget().setJMenuBar(menuBar);
 	}
 
 	private void computeFlags()

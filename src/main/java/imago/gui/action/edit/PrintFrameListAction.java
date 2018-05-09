@@ -41,11 +41,11 @@ public class PrintFrameListAction extends ImagoAction
 		    if (frame instanceof ImagoDocViewer)
 		    {
 		        String docName = ((ImagoDocViewer)frame).getDocument().getName();
-                System.out.println("  frame: " + frame.getName() + ", doc: " + docName);
+                System.out.println("  frame: " + frame.getWidget().getName() + ", doc: " + docName);
 		    }
 		    else
 		    {
-	            System.out.println("  frame: " + frame.getName());
+	            System.out.println("  frame: " + frame.getWidget().getName());
 		    }
 		}
 	}

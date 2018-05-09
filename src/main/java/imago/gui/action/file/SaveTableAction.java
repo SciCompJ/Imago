@@ -51,7 +51,7 @@ public class SaveTableAction extends ImagoAction
 		}
 
 		// Open dialog to choose the file
-		int ret = saveWindow.showSaveDialog(this.frame);
+		int ret = saveWindow.showSaveDialog(this.frame.getWidget());
 		if (ret != JFileChooser.APPROVE_OPTION)
 		{
 			return;

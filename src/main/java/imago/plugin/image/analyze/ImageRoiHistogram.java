@@ -300,8 +300,8 @@ public class ImageRoiHistogram implements Plugin
 
 		// creates a new frame to contains the chart panel
 		ImagoChartFrame frame = new ImagoChartFrame(parentFrame, "Histogram");
-		frame.setContentPane(chartPanel);
-		frame.pack();
+		frame.getWidget().setContentPane(chartPanel);
+		frame.getWidget().pack();
 		frame.setVisible(true);
 	}
 
@@ -374,8 +374,8 @@ public class ImageRoiHistogram implements Plugin
 
 		// creates a new frame to contains the chart panel
 		ImagoChartFrame frame = new ImagoChartFrame(parentFrame, "Histogram");
-		frame.setContentPane(chartPanel);
-		frame.pack();
+		frame.getWidget().setContentPane(chartPanel);
+		frame.getWidget().pack();
 		frame.setVisible(true);
 	}
 }

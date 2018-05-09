@@ -268,8 +268,8 @@ public class ImageHistogramAction extends ImagoAction
 
 		// creates a new frame to contains the chart panel
 		ImagoChartFrame frame = new ImagoChartFrame(this.frame, "Intensity Histogram");
-		frame.setContentPane(chartPanel);
-		frame.pack();
+		frame.getWidget().setContentPane(chartPanel);
+		frame.getWidget().pack();
 		frame.setVisible(true);
 	}
 
@@ -337,8 +337,8 @@ public class ImageHistogramAction extends ImagoAction
 
 		// creates a new frame to contains the chart panel
 		ImagoChartFrame frame = new ImagoChartFrame(this.frame, "Color Histogram");
-		frame.setContentPane(chartPanel);
-		frame.pack();
+		frame.getWidget().setContentPane(chartPanel);
+		frame.getWidget().pack();
 		frame.setVisible(true);
 	}
 }

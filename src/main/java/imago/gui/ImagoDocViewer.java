@@ -3,12 +3,6 @@
  */
 package imago.gui;
 
-import imago.app.ImagoDoc;
-import imago.gui.panel.StatusBar;
-import imago.gui.tool.DisplayCurrentValueTool;
-import imago.gui.viewer.PlanarImageViewer;
-import imago.gui.viewer.StackSliceViewer;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -16,8 +10,14 @@ import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import imago.app.ImagoDoc;
+import imago.gui.panel.StatusBar;
+import imago.gui.tool.DisplayCurrentValueTool;
+import imago.gui.viewer.PlanarImageViewer;
+import imago.gui.viewer.StackSliceViewer;
 import net.sci.algo.AlgoEvent;
 import net.sci.algo.AlgoListener;
 import net.sci.image.Image;
@@ -34,12 +34,6 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
 {
 	// ===================================================================
 	// Static class variables
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
 
 	// ===================================================================
 	// Class variables
@@ -80,18 +74,18 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
         
 		// layout the frame
 		setupLayout();
-		doLayout();
+		jFrame.doLayout();
 		updateTitle();
 		
 		// setup window listener
-		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        this.addWindowListener(new WindowAdapter()
+		this.jFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        this.jFrame.addWindowListener(new WindowAdapter()
         {
             @Override
             public void windowClosing(WindowEvent evt)
             {
                 gui.removeFrame(ImagoDocViewer.this);
-                ImagoDocViewer.this.dispose();
+                ImagoDocViewer.this.jFrame.dispose();
             }           
         });
 		
@@ -132,7 +126,7 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
 		mainPanel.add(imageView, BorderLayout.CENTER);
 		mainPanel.add(this.statusBar, BorderLayout.SOUTH);
 		
-		this.setContentPane(mainPanel);
+		this.jFrame.setContentPane(mainPanel);
 	}
 	
 	private void putFrameMiddleScreen()
@@ -142,12 +136,12 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
 		int width = Math.min(800, screenSize.width - 100);
 		int height = Math.min(700, screenSize.width - 100);
 		Dimension frameSize = new Dimension(width, height);
-		this.setSize(frameSize);
+		this.jFrame.setSize(frameSize);
 
 		// set up frame position depending on frame size
 		int posX = (screenSize.width - width) / 4;
 		int posY = (screenSize.height - height) / 4;
-		this.setLocation(posX, posY);
+		this.jFrame.setLocation(posX, posY);
 	}
 	
 	
@@ -210,7 +204,7 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
         
         this.imageView = view;
         setupLayout();
-        doLayout();
+        jFrame.doLayout();
         
         if (currentTool != null)
         {

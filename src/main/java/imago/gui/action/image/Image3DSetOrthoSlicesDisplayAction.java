@@ -56,7 +56,7 @@ public class Image3DSetOrthoSlicesDisplayAction extends ImagoAction
 		viewer.validate();
 		
 		docViewer.setImageView(viewer);
-        docViewer.validate();
+        docViewer.getWidget().validate();
         docViewer.repaint();
 	}
 }

@@ -3,8 +3,6 @@
  */
 package imago.gui;
 
-import imago.gui.util.RowNumberTable;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -12,10 +10,12 @@ import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import imago.gui.util.RowNumberTable;
 import net.sci.table.Table;
 
 /**
@@ -24,12 +24,6 @@ import net.sci.table.Table;
  */
 public class ImagoTableFrame extends ImagoFrame
 {
-    
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
-
     // ===================================================================
     // Class variables
 
@@ -60,16 +54,16 @@ public class ImagoTableFrame extends ImagoFrame
         setupLayout();
          
         this.setTitle("Table Example");
-        this.pack();
+        this.jFrame.pack();
         this.setVisible(true);
  
         
-        doLayout();
+        jFrame.doLayout();
         updateTitle();
         
         // setup window listener
-        this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        this.addWindowListener(new WindowAdapter()
+        this.jFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        this.jFrame.addWindowListener(new WindowAdapter()
         {
             @Override
             public void windowClosing(WindowEvent evt)
@@ -120,7 +114,7 @@ public class ImagoTableFrame extends ImagoFrame
 //        mainPanel.add(imageView);
 //        mainPanel.add(this.statusBar, BorderLayout.SOUTH);
         
-        this.setContentPane(mainPanel);
+        this.jFrame.setContentPane(mainPanel);
     }
     
     private void putFrameMiddleScreen()
@@ -130,12 +124,12 @@ public class ImagoTableFrame extends ImagoFrame
         int width = Math.min(800, screenSize.width - 100);
         int height = Math.min(700, screenSize.width - 100);
         Dimension frameSize = new Dimension(width, height);
-        this.setSize(frameSize);
+        this.jFrame.setSize(frameSize);
 
         // set up frame position depending on frame size
         int posX = (screenSize.width - width) / 4;
         int posY = (screenSize.height - height) / 4;
-        this.setLocation(posX, posY);
+        this.jFrame.setLocation(posX, posY);
     }
 
     // ===================================================================

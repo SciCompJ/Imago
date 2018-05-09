@@ -199,8 +199,8 @@ public class ImageLineProfile implements Plugin
         
         // creates a new frame to contains the chart panel
         ImagoChartFrame frame = new ImagoChartFrame(parentFrame.getGui(), "Intensity Profile");
-        frame.setContentPane(chartPanel);
-        frame.pack();
+        frame.getWidget().setContentPane(chartPanel);
+        frame.getWidget().pack();
         frame.setVisible(true);
     }
     
@@ -263,8 +263,8 @@ public class ImageLineProfile implements Plugin
         
         // creates a new frame to contains the chart panel
         ImagoChartFrame frame = new ImagoChartFrame(parentFrame.getGui(), "Color Profile");
-        frame.setContentPane(chartPanel);
-        frame.pack();
+        frame.getWidget().setContentPane(chartPanel);
+        frame.getWidget().pack();
         frame.setVisible(true);
         
     }

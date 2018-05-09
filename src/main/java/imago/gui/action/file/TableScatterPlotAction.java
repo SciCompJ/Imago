@@ -79,7 +79,7 @@ public class TableScatterPlotAction extends ImagoAction
                 
                 // Show it
                 JFrame chartFrame = new SwingWrapper(chart).displayChart();
-                Point pos0 = frame.getLocation();
+                Point pos0 = frame.getWidget().getLocation();
                 chartFrame.setLocation(pos0.x + 30, pos0.y + 20);
             }
             

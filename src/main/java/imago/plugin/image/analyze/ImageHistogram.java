@@ -259,8 +259,8 @@ public class ImageHistogram implements Plugin
 
 		// creates a new frame to contains the chart panel
 		ImagoChartFrame frame = new ImagoChartFrame(parentFrame, "Intensity Histogram");
-		frame.setContentPane(chartPanel);
-		frame.pack();
+		frame.getWidget().setContentPane(chartPanel);
+		frame.getWidget().pack();
 		frame.setVisible(true);
 	}
 
@@ -328,8 +328,8 @@ public class ImageHistogram implements Plugin
 
 		// creates a new frame to contains the chart panel
 		ImagoChartFrame frame = new ImagoChartFrame(parentFrame, "Color Histogram");
-		frame.setContentPane(chartPanel);
-		frame.pack();
+		frame.getWidget().setContentPane(chartPanel);
+		frame.getWidget().pack();
 		frame.setVisible(true);
 	}
 }

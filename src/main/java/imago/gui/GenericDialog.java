@@ -121,9 +121,10 @@ public class GenericDialog
 	 * Creates a new GenericDialog, located with respect to parent frame, and
 	 * with given title.
 	 */
-	public GenericDialog (JFrame parent, String title) 
+	public GenericDialog (ImagoFrame parent, String title) 
 	{
-		this.dialog = new JDialog(parent, title, true);
+	    JFrame frame = parent.getWidget();
+		this.dialog = new JDialog(frame, title, true);
 	
 		// creates the listeners
 		this.controller = new Controller(dialog);
@@ -140,8 +141,8 @@ public class GenericDialog
 		// setup location
 		if (parent != null)
 		{
-			Point pos = parent.getLocation();
-			Dimension dim = parent.getSize();
+			Point pos = frame.getLocation();
+			Dimension dim = frame.getSize();
 			int x = pos.x + dim.width / 4;
 			int y = pos.y + dim.height / 4;
 			this.dialog.setLocation(x, y);
@@ -153,7 +154,7 @@ public class GenericDialog
 	 */
 	public GenericDialog (String title) 
 	{
-		this((JFrame) null, title);
+		this(null, title);
 	}
 
 
