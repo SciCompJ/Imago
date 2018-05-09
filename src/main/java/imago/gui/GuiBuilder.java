@@ -14,13 +14,6 @@ import javax.swing.JMenuItem;
 import imago.app.ImagoDoc;
 import imago.gui.action.ArrayOperatorAction;
 import imago.gui.action.RunPluginAction;
-import imago.gui.action.SelectToolAction;
-import imago.gui.action.edit.DocClearShapesAction;
-import imago.gui.action.edit.PrintDocumentListAction;
-import imago.gui.action.edit.PrintFrameListAction;
-import imago.gui.action.edit.ZoomInAction;
-import imago.gui.action.edit.ZoomOneAction;
-import imago.gui.action.edit.ZoomOutAction;
 import imago.gui.action.file.CloseFrameAction;
 import imago.gui.action.file.OpenTableAction;
 import imago.gui.action.file.QuitAction;
@@ -33,6 +26,13 @@ import imago.gui.action.process.BoxFilter3x3Float;
 import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectPolygonTool;
 import imago.gui.tool.SelectionTool;
+import imago.plugin.edit.ChangeCurrentTool;
+import imago.plugin.edit.DocClearShapes;
+import imago.plugin.edit.PrintDocumentList;
+import imago.plugin.edit.PrintFrameList;
+import imago.plugin.edit.ZoomIn;
+import imago.plugin.edit.ZoomOne;
+import imago.plugin.edit.ZoomOut;
 import imago.plugin.image.ImageArrayOperatorPlugin;
 import imago.plugin.image.ImageOperatorPlugin;
 import imago.plugin.image.analyze.ColorImageBivariateHistograms;
@@ -289,35 +289,27 @@ public class GuiBuilder
 			ImagoDocViewer viewer = (ImagoDocViewer) frame;
 
 			tool = new SelectionTool(viewer, "select");
-			addMenuItem(editMenu, new SelectToolAction(viewer, tool), "Select",
-					hasImage);
-
-            addMenuItem(editMenu, 
-                    new SelectToolAction(viewer, new SelectLineSegmentTool(viewer, "selectLineSegment")),
+			addPlugin(editMenu, new ChangeCurrentTool(tool), "Select", hasImage);
+			addPlugin(editMenu, 
+                    new ChangeCurrentTool(new SelectLineSegmentTool(viewer, "selectLineSegment")),
                     "Select Line", hasImage);
-            addMenuItem(editMenu, 
-                    new SelectToolAction(viewer, new SelectPolygonTool(viewer, "selectPolygon")),
+			addPlugin(editMenu, 
+                    new ChangeCurrentTool(new SelectPolygonTool(viewer, "selectPolygon")),
                     "Select Polygon", hasImage);
 
 			editMenu.addSeparator();
 		}
 
 		// zoom items
-		addMenuItem(editMenu, new ZoomInAction(frame, "zoomIn"), "Zoom In",
-				hasImage);
-		addMenuItem(editMenu, new ZoomOutAction(frame, "zoomOut"), "Zoom Out",
-				hasImage);
-		addMenuItem(editMenu, new ZoomOneAction(frame, "zoomOne"), "Zoom One",
-				hasImage);
+		addPlugin(editMenu, new ZoomIn(), "Zoom In", hasImage);
+		addPlugin(editMenu, new ZoomOut(), "Zoom Out", hasImage);
+		addPlugin(editMenu, new ZoomOne(), "Zoom One", hasImage);
 		
         // add utility
 		editMenu.addSeparator();
-        addMenuItem(editMenu, new PrintFrameListAction(frame, "printFrameList"), 
-                "Print Frame List");
-        addMenuItem(editMenu, new PrintDocumentListAction(frame, "printDocumentList"), 
-                "Print Document List");
-        addMenuItem(editMenu, new DocClearShapesAction(frame, "docClearShapes"),
-                "Clear Shapes");
+		addPlugin(editMenu, new PrintFrameList(), "Print Frame List");
+		addPlugin(editMenu, new PrintDocumentList(), "Print Document List");
+		addPlugin(editMenu, new DocClearShapes(), "Clear Shapes");
 		
 		return editMenu;
 	}
