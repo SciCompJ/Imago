@@ -3,14 +3,6 @@
  */
 package imago.gui;
 
-import java.awt.image.BufferedImage;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-
 import imago.app.ImagoDoc;
 import imago.gui.action.RunPluginAction;
 import imago.gui.tool.SelectLineSegmentTool;
@@ -93,6 +85,7 @@ import imago.plugin.image.process.ImageManualThreshold;
 import imago.plugin.image.process.ImageMorphologicalFilter;
 import imago.plugin.image.process.ImageMorphologicalReconstruction;
 import imago.plugin.image.process.ImageOtsuThreshold;
+import imago.plugin.image.process.ImageRegionalExtrema;
 import imago.plugin.image.process.ImageReshape;
 import imago.plugin.image.process.ImageRotateAroundCenter;
 import imago.plugin.image.process.ImageSplitChannels;
@@ -104,6 +97,15 @@ import imago.plugin.table.OpenTable;
 import imago.plugin.table.SaveTable;
 import imago.plugin.table.ShowDemoTable;
 import imago.plugin.table.TableScatterPlot;
+
+import java.awt.image.BufferedImage;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+
 import net.sci.array.Array;
 import net.sci.array.ArrayOperator;
 import net.sci.array.data.color.RGB8Array;
@@ -116,9 +118,6 @@ import net.sci.image.ImageOperator;
 import net.sci.image.binary.ChamferWeights2D;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DFloat;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DUInt16;
-import net.sci.image.data.Connectivity2D;
-import net.sci.image.morphology.MinimaAndMaxima;
-import net.sci.image.morphology.extrema.RegionalExtrema2D;
 import net.sci.image.process.DynamicAdjustment;
 import net.sci.image.process.ImageInverter;
 import net.sci.image.process.SobelGradient;
@@ -465,12 +464,7 @@ public class GuiBuilder
 		addPlugin(morphologyMenu, new ImageMorphologicalFilter(), "Morphological Filtering");
 
 		morphologyMenu.addSeparator();
-        addImageOperatorPlugin(morphologyMenu,
-                new RegionalExtrema2D(MinimaAndMaxima.Type.MINIMA, Connectivity2D.C4),
-                "Regional Minima (2D)", hasScalarImage && hasImage2D);
-        addImageOperatorPlugin(morphologyMenu, 
-				new RegionalExtrema2D(MinimaAndMaxima.Type.MAXIMA, Connectivity2D.C4), 
-				"Regional Maxima (2D)", hasScalarImage && hasImage2D);
+        addPlugin(morphologyMenu, new ImageRegionalExtrema(), "Regional Min./Max.", hasScalarImage);
 		addPlugin(morphologyMenu, new ImageExtendedExtrema(), "Extended Min./Max.", hasScalarImage);
 		addPlugin(morphologyMenu, new ImageMorphologicalReconstruction(), "Morphological Reconstruction");
 		morphologyMenu.addSeparator();
@@ -481,6 +475,7 @@ public class GuiBuilder
 		// operators specific to binary images
 		JMenu binaryMenu = new JMenu("Binary Images");
         addPlugin(binaryMenu, new BinaryImageConnectedComponentsLabeling(), "Connected Components Labeling");
+        //TODO: create plugin with dialog
         addArrayOperatorPlugin(binaryMenu, new ChamferDistanceTransform2DUInt16(ChamferWeights2D.CHESSKNIGHT, false),
 				"Distance Map", hasImage2D && hasBinaryImage);
         addArrayOperatorPlugin(binaryMenu, new ChamferDistanceTransform2DFloat(ChamferWeights2D.CHESSKNIGHT, false),
