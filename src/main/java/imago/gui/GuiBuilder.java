@@ -61,6 +61,7 @@ import imago.plugin.image.file.OpenDemoImage;
 import imago.plugin.image.file.OpenDemoStack;
 import imago.plugin.image.file.OpenImage;
 import imago.plugin.image.file.ReadImageTiff;
+import imago.plugin.image.process.BinaryImageChamferDistanceMap;
 import imago.plugin.image.process.BinaryImageConnectedComponentsLabeling;
 import imago.plugin.image.process.BinaryImageOverlay;
 import imago.plugin.image.process.BinaryImageSkeleton;
@@ -115,9 +116,6 @@ import net.sci.array.process.shape.Rotate90;
 import net.sci.image.ColorMaps;
 import net.sci.image.Image;
 import net.sci.image.ImageOperator;
-import net.sci.image.binary.ChamferWeights2D;
-import net.sci.image.binary.distmap.ChamferDistanceTransform2DFloat;
-import net.sci.image.binary.distmap.ChamferDistanceTransform2DUInt16;
 import net.sci.image.process.DynamicAdjustment;
 import net.sci.image.process.ImageInverter;
 import net.sci.image.process.SobelGradient;
@@ -474,12 +472,8 @@ public class GuiBuilder
 
 		// operators specific to binary images
 		JMenu binaryMenu = new JMenu("Binary Images");
-        addPlugin(binaryMenu, new BinaryImageConnectedComponentsLabeling(), "Connected Components Labeling");
-        //TODO: create plugin with dialog
-        addArrayOperatorPlugin(binaryMenu, new ChamferDistanceTransform2DUInt16(ChamferWeights2D.CHESSKNIGHT, false),
-				"Distance Map", hasImage2D && hasBinaryImage);
-        addArrayOperatorPlugin(binaryMenu, new ChamferDistanceTransform2DFloat(ChamferWeights2D.CHESSKNIGHT, false),
-				"Distance Map (float)", hasImage2D && hasBinaryImage);
+		addPlugin(binaryMenu, new BinaryImageConnectedComponentsLabeling(), "Connected Components Labeling");
+		addPlugin(binaryMenu, new BinaryImageChamferDistanceMap(), "Distance Map", hasBinaryImage);
 		addPlugin(binaryMenu, new ImageGeodesicDistanceMap(), "Geodesic Distance Map...");
         addPlugin(binaryMenu, new BinaryImageSkeleton(), "IJ Skeleton");
         addPlugin(binaryMenu, new BinaryImageOverlay(), "Binary Overlay...");
