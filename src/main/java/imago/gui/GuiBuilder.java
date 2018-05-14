@@ -78,6 +78,7 @@ import imago.plugin.image.process.Image3DGetCurrentSlice;
 import imago.plugin.image.process.Image3DGetSlice;
 import imago.plugin.image.process.Image3DOrthoslicesImage;
 import imago.plugin.image.process.Image3DSetOrthoSlicesDisplay;
+import imago.plugin.image.process.ImageBivariateHistogram;
 import imago.plugin.image.process.ImageBoxMedianFilter;
 import imago.plugin.image.process.ImageBoxMinMaxFilter;
 import imago.plugin.image.process.ImageBoxVarianceFilter;
@@ -515,6 +516,7 @@ public class GuiBuilder
 		addPlugin(menu, new ImageRoiHistogram(), "ROI Histogram", hasImage && hasImage2D);
         addPlugin(menu, new ImageMeanValue(), "Mean Value", hasImage);
         addPlugin(menu, new ColorImageBivariateHistograms(), "Bivariate Color Histograms", hasColorImage);
+        addPlugin(menu, new ImageBivariateHistogram(), "Bivariate Histogram");
 		menu.addSeparator();
 		addPlugin(menu, new ImageLineProfile(), "Line Profile", hasImage);
 

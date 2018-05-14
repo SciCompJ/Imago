@@ -45,15 +45,16 @@ public class BinaryImageOverlay implements Plugin
 		
 		String[] imageNameArray = imageNames.toArray(new String[]{});
 		String firstImageName = imageNameArray[0];
-				
+		String secondImageName = imageNameArray[Math.min(1, imageNameArray.length-1)];
+	
 		// Creates the dialog
 		GenericDialog gd = new GenericDialog(frame, "Binary Overlay");
 		gd.addChoice("Reference Image: ", imageNameArray, firstImageName);
-		gd.addChoice("Binary Image: ", imageNameArray, firstImageName);
+		gd.addChoice("Binary Image: ", imageNameArray, secondImageName);
 		gd.addChoice("Overlay Color: ", CommonColors.all(), CommonColors.RED);
         gd.showDialog();
 		
-		if (gd.getOutput() == GenericDialog.Output.CANCEL) 
+		if (gd.wasCanceled()) 
 		{
 			return;
 		}
