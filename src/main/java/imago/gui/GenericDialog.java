@@ -57,7 +57,6 @@ import javax.swing.event.CaretListener;
  * <li>Choice between several strings, or several enums</li>
  * <li>Text field</li>
  * </ul>
- * </p>
  * 
  * @author David Legland
  * 
@@ -103,9 +102,6 @@ public class GenericDialog
     boolean buttonsCreated = false;
     JButton okButton;
     JButton cancelButton;
-    
-    boolean wasOKed;
-    boolean wasCanceled;
     
     boolean updateWidgets = false;
    
@@ -184,15 +180,23 @@ public class GenericDialog
 		addNumericField(label, defaultValue, digits, columns, units, null);
 	}
 		
-	/** 
-	 * Adds a numeric field. 
-	 * @param label			the label
-	 * @param defaultValue	state to be initially displayed
-	 * @param digits			number of digits to right of decimal point
-	 * @param columns		sizeX of field in characters
-	 * @param units			a string displayed to the right of the field
-	 */
-	public void addNumericField(String label, double defaultValue, int digits,
+    /**
+     * Adds a numeric field.
+     * 
+     * @param label
+     *            the label
+     * @param defaultValue
+     *            state to be initially displayed
+     * @param digits
+     *            number of digits to right of decimal point
+     * @param columns
+     *            sizeX of field in characters
+     * @param units
+     *            a string displayed to the right of the field
+     * @param toolTip
+     *            a tooltip string used to display information about this option
+     */
+    public void addNumericField(String label, double defaultValue, int digits,
 			int columns, String units, String toolTip) 
 	{
 		// creates the label widget
@@ -261,11 +265,14 @@ public class GenericDialog
 		currentRow++;
 	}
 
-	/** 
-	 * Adds an 8 column text field.
-	 * @param label			the label
-	 * @param defaultText		the text initially displayed
-	 */
+	/**
+     * Adds an 8 column text field.
+     * 
+     * @param label
+     *            the label
+     * @param text
+     *            the text initially displayed
+     */
 	public void addTextField(String label, String text) 
 	{
 		addTextField(label, text, 8);
@@ -276,7 +283,7 @@ public class GenericDialog
 	 * 
 	 * @param label
 	 *            the label
-	 * @param defaultText
+	 * @param text
 	 *            text initially displayed
 	 * @param columns
 	 *            sizeX of the text field
@@ -414,7 +421,26 @@ public class GenericDialog
 	}
 
 	/**
-     * Adds a popup menu that contains different choices.
+     * Adds a popup menu that contains different choices, using a list of
+     * enums.
+     * 
+     * Code example:
+     * 
+     * <pre>
+     * {@code
+     *     GenericDialog gd = new GenericDialog("Demo");
+     *     gd.addChoice("Color: ", CommonColors.all(), CommonColors.RED);
+     *     gd.showDialog();
+     *     RGB8 color = new RGB8(CommonColors.fromLabel(gd.getNextChoice()).getColor());
+     * }
+     * </pre>
+     * 
+     * @param label
+     *            the label for the option
+     * @param items
+     *            the list of enum items
+     * @param defaultItem
+     *            the default choice for this option
      */
     public <T extends Enum<T>> void addChoice(String label, EnumSet<T> items, T defaultItem) 
     {
@@ -459,16 +485,20 @@ public class GenericDialog
     }
 
 	/**
-	* Adds a slider (scroll bar) to the dialog box.
-	* Floating point values will be used if (maxValue-minValue)<=5.0
-	* and either minValue or maxValue are non-integer.
-	* @param label	 the label
-	* @param minValue  the minimum state of the slider
-	* @param maxValue  the maximum state of the slider
-	* @param defaultValue  the initial state of the slider
-	*/
-	public void addSlider(String label, double minValue, double maxValue,
-			double defaultValue)
+     * Adds a slider (scroll bar) to the dialog box. Floating point values will
+     * be used if (maxValue-minValue) lower than or equal to 5.0 and either
+     * minValue or maxValue are non-integer.
+     * 
+     * @param label
+     *            the label
+     * @param minValue
+     *            the minimum state of the slider
+     * @param maxValue
+     *            the maximum state of the slider
+     * @param defaultValue
+     *            the initial state of the slider
+     */
+    public void addSlider(String label, double minValue, double maxValue, double defaultValue)
 	{
 		int columns = 4;
 		int digits = 0;
@@ -918,20 +948,17 @@ public class GenericDialog
 	        
 //	      if (keyCode == KeyEvent.VK_ENTER && textArea1 == null) {
 	        if (keyCode == KeyEvent.VK_ENTER) {
-	            wasOKed = true;
 	            output = Output.OK;
 //	          if (IJ.isMacOSX() && IJ.isJava15())
 //	              accessTextFields();
 	            this.dialog.dispose();
 	        } else if (keyCode == KeyEvent.VK_ESCAPE) {
-	            wasCanceled = true;
 	            output = Output.CANCEL;
 	            this.dialog.dispose();
 //	          IJ.resetEscape();
 	        } else if (keyCode == KeyEvent.VK_W
 	                && (evt.getModifiers() & Toolkit.getDefaultToolkit()
 	                        .getMenuShortcutKeyMask()) != 0) {
-	            wasCanceled = true;
 	            output = Output.CANCEL;
 	            this.dialog.dispose();
 	        }
@@ -1044,7 +1071,6 @@ public class GenericDialog
         @Override
         public void windowClosing(WindowEvent arg0) 
         {
-            wasCanceled = true; 
             output = Output.CANCEL;
             dialog.dispose(); 
         }
