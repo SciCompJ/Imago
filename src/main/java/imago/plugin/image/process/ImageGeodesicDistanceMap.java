@@ -12,10 +12,10 @@ import imago.gui.ImagoGui;
 import imago.gui.Plugin;
 import net.sci.array.Array;
 import net.sci.array.Arrays;
-import net.sci.array.data.BinaryArray;
-import net.sci.array.data.ScalarArray;
-import net.sci.array.data.scalar2d.BinaryArray2D;
-import net.sci.array.data.scalar3d.BinaryArray3D;
+import net.sci.array.scalar.BinaryArray;
+import net.sci.array.scalar.BinaryArray2D;
+import net.sci.array.scalar.BinaryArray3D;
+import net.sci.array.scalar.ScalarArray;
 import net.sci.image.Image;
 import net.sci.image.binary.BinaryImages;
 

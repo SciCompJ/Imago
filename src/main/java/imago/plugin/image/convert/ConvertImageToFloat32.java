@@ -8,7 +8,7 @@ import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
-import net.sci.array.data.Float32Array;
+import net.sci.array.scalar.Float32Array;
 import net.sci.image.Image;
 
 

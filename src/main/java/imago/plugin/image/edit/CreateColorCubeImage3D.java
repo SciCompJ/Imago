@@ -5,8 +5,8 @@ package imago.plugin.image.edit;
 
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
-import net.sci.array.data.color.RGB8Array3D;
-import net.sci.array.type.RGB8;
+import net.sci.array.color.RGB8;
+import net.sci.array.color.RGB8Array3D;
 import net.sci.image.Image;
 
 

@@ -5,8 +5,8 @@ package imago.plugin.image.file;
 
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
-import net.sci.array.data.scalar3d.BufferedUInt8Array3D;
-import net.sci.array.data.scalar3d.UInt8Array3D;
+import net.sci.array.scalar.BufferedUInt8Array3D;
+import net.sci.array.scalar.UInt8Array3D;
 import net.sci.image.Image;
 
 /**

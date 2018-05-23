@@ -24,10 +24,10 @@ import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
-import net.sci.array.data.ScalarArray;
-import net.sci.array.data.color.RGB16Array;
-import net.sci.array.data.color.RGB8Array;
+import net.sci.array.color.RGB16Array;
+import net.sci.array.color.RGB8Array;
 import net.sci.array.process.Histogram;
+import net.sci.array.scalar.ScalarArray;
 import net.sci.image.Image;
 import net.sci.table.DataTable;
 

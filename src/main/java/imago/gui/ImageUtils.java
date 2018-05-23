@@ -9,18 +9,18 @@ import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 
 import net.sci.array.Array;
-import net.sci.array.data.ScalarArray;
-import net.sci.array.data.UInt8Array;
-import net.sci.array.data.VectorArray;
-import net.sci.array.data.color.RGB16Array;
-import net.sci.array.data.color.RGB8Array;
-import net.sci.array.data.scalar2d.BinaryArray2D;
-import net.sci.array.data.scalar2d.IntArray2D;
-import net.sci.array.data.scalar2d.ScalarArray2D;
-import net.sci.array.data.scalar2d.UInt8Array2D;
-import net.sci.array.type.Color;
-import net.sci.array.type.RGB16;
-import net.sci.array.type.RGB8;
+import net.sci.array.color.Color;
+import net.sci.array.color.RGB16;
+import net.sci.array.color.RGB16Array;
+import net.sci.array.color.RGB8;
+import net.sci.array.color.RGB8Array;
+import net.sci.array.scalar.BinaryArray2D;
+import net.sci.array.scalar.IntArray2D;
+import net.sci.array.scalar.ScalarArray;
+import net.sci.array.scalar.ScalarArray2D;
+import net.sci.array.scalar.UInt8Array;
+import net.sci.array.scalar.UInt8Array2D;
+import net.sci.array.vector.VectorArray;
 import net.sci.image.ColorMap;
 import net.sci.image.ColorMaps;
 import net.sci.image.Image;
@@ -331,7 +331,7 @@ public class ImageUtils
         int nColors = colormap.size();
         for(int i = 0; i < 256; i++) 
         {
-            net.sci.array.type.Color color = colormap.getColor(i % nColors);
+            net.sci.array.color.Color color = colormap.getColor(i % nColors);
             red[i]      = (byte) (color.red() * 255);
             green[i]    = (byte) (color.green() * 255);
             blue[i]     = (byte) (color.blue() * 255);
@@ -363,7 +363,7 @@ public class ImageUtils
         int nColors = Math.min(colormap.size(), 255);
         for(int i = 0; i < nColors; i++) 
         {
-            net.sci.array.type.Color color = colormap.getColor(i);
+            net.sci.array.color.Color color = colormap.getColor(i);
             red[i+1]      = (byte) (color.red() * 255);
             green[i+1]    = (byte) (color.green() * 255);
             blue[i+1]     = (byte) (color.blue() * 255);

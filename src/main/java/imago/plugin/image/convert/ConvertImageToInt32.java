@@ -9,8 +9,8 @@ import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.Plugin;
 import net.sci.array.Array;
-import net.sci.array.data.Int32Array;
-import net.sci.array.data.ScalarArray;
+import net.sci.array.scalar.Int32Array;
+import net.sci.array.scalar.ScalarArray;
 import net.sci.image.Image;
 
 

@@ -107,7 +107,7 @@ import imago.plugin.table.ShowDemoTable;
 import imago.plugin.table.TableScatterPlot;
 import net.sci.array.Array;
 import net.sci.array.ArrayOperator;
-import net.sci.array.data.color.RGB8Array;
+import net.sci.array.color.RGB8Array;
 import net.sci.array.process.PowerOfTwo;
 import net.sci.array.process.Sqrt;
 import net.sci.array.process.shape.Rotate90;

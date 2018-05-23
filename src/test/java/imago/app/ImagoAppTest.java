@@ -1,8 +1,9 @@
 package imago.app;
 
 import static org.junit.Assert.assertEquals;
-import net.sci.array.data.Array2D;
-import net.sci.array.data.scalar2d.UInt8Array2D;
+
+import net.sci.array.Array2D;
+import net.sci.array.scalar.UInt8Array2D;
 import net.sci.image.Image;
 
 import org.junit.Test;

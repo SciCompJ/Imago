@@ -9,8 +9,8 @@ import imago.gui.ImageViewer;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
-import net.sci.array.type.Color;
-import net.sci.array.type.CommonColors;
+import net.sci.array.color.Color;
+import net.sci.array.color.CommonColors;
 import net.sci.image.Image;
 
 /**

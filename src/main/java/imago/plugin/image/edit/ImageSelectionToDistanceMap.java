@@ -10,7 +10,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import imago.gui.viewer.PlanarImageViewer;
 import net.sci.array.Array;
-import net.sci.array.data.scalar2d.Float32Array2D;
+import net.sci.array.scalar.Float32Array2D;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.image.Image;
