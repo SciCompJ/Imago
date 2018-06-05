@@ -151,14 +151,27 @@ public class ImagoApp
 			baseName = "NoName";
 		}
 		
-		// if no document with such name exist, keep it
+		// if no document with such name exist, just keep it
 		if (!hasDocumentWithName(baseName))
 		{
 			return baseName;
 		}
 		
 		// otherwise, we first check if name contains an "index"
-        // here: the number(s) at the end of the name, separated by a minus
+        // here: the number(s) at the end of the name, before the extension, separated by a dash
+		
+		// extract the sting containing extension (with final dot)
+		String extString = "";
+		int len = baseName.length();
+		int dotIndex = baseName.lastIndexOf(".");
+		// use extension with up to four characters
+	    if (dotIndex !=-1 && (len - dotIndex) < 6) 
+	    {
+            extString = baseName.substring(dotIndex, len);
+            baseName = baseName.substring(0, dotIndex);
+        }
+	    
+        // identifies the set of digits at the end of name 
 		String digits = new String("0123456789");
 		int lastIndex = baseName.length() - 1;
 		String currentChar = ""; 
@@ -182,7 +195,7 @@ public class ImagoApp
 		int index = 1;
 		while (true)
 		{
-	        String newName = baseName + "-" + index;
+	        String newName = baseName + "-" + index + extString;
 	        if (!hasDocumentWithName(newName))
 	        {
 	        	return newName;
