@@ -29,6 +29,7 @@ import imago.plugin.edit.ZoomOut;
 import imago.plugin.image.ImageArrayOperatorPlugin;
 import imago.plugin.image.ImageOperatorPlugin;
 import imago.plugin.image.analyze.ColorImageBivariateHistograms;
+import imago.plugin.image.analyze.GrayLevelImageCooccurenceMatrix;
 import imago.plugin.image.analyze.ImageHistogram;
 import imago.plugin.image.analyze.ImageLineProfile;
 import imago.plugin.image.analyze.ImageMeanValue;
@@ -525,6 +526,10 @@ public class GuiBuilder
         addPlugin(menu, new LabelImageCentroids(), "Regions Centroids", (hasImage2D || hasImage3D) && hasLabelImage);
         addPlugin(menu, new LabelImageEquivalentDisks(), "Regions Equivalent Disks", hasImage2D && hasLabelImage);
         addPlugin(menu, new LabelImageInertiaEllipses(), "Regions Inertia Ellipses", hasImage2D && hasLabelImage);
+
+        menu.addSeparator();
+        addPlugin(menu, new GrayLevelImageCooccurenceMatrix(), "Gray Level Co-Occurence Matrix", hasImage2D && hasScalarImage);
+        
 		return menu;
 	}
 
