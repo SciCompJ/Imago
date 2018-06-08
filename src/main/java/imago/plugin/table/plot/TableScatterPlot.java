@@ -3,15 +3,11 @@
  */
 package imago.plugin.table.plot;
 
-import java.awt.Point;
-
-import javax.swing.JFrame;
-
-import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
 
+import imago.gui.ImagoChartFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoTableFrame;
 import imago.plugin.table.TablePlugin;
@@ -33,8 +29,7 @@ public class TableScatterPlot implements TablePlugin
 	/* (non-Javadoc)
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-    @Override
+	@Override
     public void run(ImagoFrame frame, String args)
 	{
 	    // Get the data table
@@ -73,9 +68,6 @@ public class TableScatterPlot implements TablePlugin
         chart.getStyler().setLegendVisible(false);
         
         // Show it
-        JFrame chartFrame = new SwingWrapper(chart).displayChart();
-        Point pos0 = frame.getWidget().getLocation();
-        chartFrame.setLocation(pos0.x + 30, pos0.y + 20);
-        chartFrame.setTitle("Scatter Plot");
+        ImagoChartFrame.displayChart(frame, "Scatter Plot", chart);
 	}
 }

@@ -3,11 +3,6 @@
  */
 package imago.plugin.table.plot;
 
-import java.awt.Point;
-
-import javax.swing.JFrame;
-
-import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries;
@@ -16,6 +11,7 @@ import org.knowm.xchart.style.Styler.LegendPosition;
 import org.knowm.xchart.style.markers.SeriesMarkers;
 
 import imago.gui.GenericDialog;
+import imago.gui.ImagoChartFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoTableFrame;
 import imago.plugin.table.TablePlugin;
@@ -37,7 +33,6 @@ public class TableLinePlot implements TablePlugin
 	/* (non-Javadoc)
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void run(ImagoFrame frame, String args)
 	{
@@ -113,11 +108,9 @@ public class TableLinePlot implements TablePlugin
                 series.setMarker(SeriesMarkers.NONE);
             }
         }
+
         // Show it
-        JFrame chartFrame = new SwingWrapper(chart).displayChart();
-        Point pos0 = frame.getWidget().getLocation();
-        chartFrame.setLocation(pos0.x + 30, pos0.y + 20);
-        chartFrame.setTitle("Line Plot");
+        ImagoChartFrame.displayChart(frame, "Line Plot", chart);
 	}
 	
 	/**

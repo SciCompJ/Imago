@@ -3,13 +3,8 @@
  */
 package imago.plugin.image.analyze;
 
-import java.awt.Point;
-
-import javax.swing.JFrame;
-
 import org.knowm.xchart.CategoryChart;
 import org.knowm.xchart.CategoryChartBuilder;
-import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries;
@@ -18,6 +13,7 @@ import org.knowm.xchart.style.Styler.LegendPosition;
 import org.knowm.xchart.style.colors.XChartSeriesColors;
 import org.knowm.xchart.style.markers.SeriesMarkers;
 
+import imago.gui.ImagoChartFrame;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
@@ -233,14 +229,8 @@ public class ImageHistogram implements Plugin
 
 	    // Series
         chart.addSeries("histogram", table.getColumnValues(0), table.getColumnValues(1));
-        
 
-        // Show it
-        @SuppressWarnings({ "rawtypes", "unchecked" })
-        JFrame chartFrame = new SwingWrapper(chart).displayChart();
-        Point pos0 = parentFrame.getWidget().getLocation();
-        chartFrame.setLocation(pos0.x + 30, pos0.y + 20);
-        chartFrame.setTitle("Histogram");
+        ImagoChartFrame.displayChart(parentFrame, "Histogram", chart);
 	}
 
 	private void showColorHistogram(ImagoFrame parentFrame, DataTable table)
@@ -290,12 +280,7 @@ public class ImageHistogram implements Plugin
         series[2].setLineColor(XChartSeriesColors.BLUE);
         
         // Show it
-        @SuppressWarnings({ "rawtypes", "unchecked" })
-        JFrame chartFrame = new SwingWrapper(chart).displayChart();
-        Point pos0 = parentFrame.getWidget().getLocation();
-        chartFrame.setLocation(pos0.x + 30, pos0.y + 20);
-        chartFrame.setTitle("Color Histogram");
-
+        ImagoChartFrame.displayChart(parentFrame, "Color Histogram", chart);
 	}
 
 	private String createTitleString(String baseTitle, String imageName)
