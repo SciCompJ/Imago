@@ -105,7 +105,7 @@ import imago.plugin.image.vectorize.ImageIsocontour;
 import imago.plugin.table.OpenTable;
 import imago.plugin.table.SaveTable;
 import imago.plugin.table.ShowDemoTable;
-import imago.plugin.table.TableScatterPlot;
+import imago.plugin.table.plot.TableScatterPlot;
 import net.sci.array.Array;
 import net.sci.array.ArrayOperator;
 import net.sci.array.color.RGB8Array;

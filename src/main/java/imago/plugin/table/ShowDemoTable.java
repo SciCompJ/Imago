@@ -41,6 +41,7 @@ public class ShowDemoTable implements Plugin
             return;
         }
 	    
+        table.setName("fisherIris");
 	    ImagoTableFrame tableFrame = new ImagoTableFrame(frame, table);
 	    
 	    // add the new frame to the GUI

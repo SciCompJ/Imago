@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.plugin.table;
+package imago.plugin.table.plot;
 
 import java.awt.Point;
 
@@ -51,30 +51,38 @@ public class TableScatterPlot implements Plugin
         double[] yData = table.getColumnValues(col2);
         String[] colNames = table.getColumnNames();
             
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                // Create Chart
-                XYChart chart = new XYChartBuilder()
-                        .width(600)
-                        .height(500)
-                        .title(table.getName())
-                        .xAxisTitle(colNames[col1])
-                        .yAxisTitle(colNames[col2])
-                        .build();
-                
-                chart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
-                chart.getStyler().setMarkerSize(4);
-                
-                chart.addSeries("name", xData, yData);
-                
-                // Show it
-                JFrame chartFrame = new SwingWrapper(chart).displayChart();
-                Point pos0 = frame.getWidget().getLocation();
-                chartFrame.setLocation(pos0.x + 30, pos0.y + 20);
-            }
-            
-        });
-        t.start();
+//        Thread t = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+        String tableName = table.getName();
+        if (tableName == null || tableName.length() == 0)
+        {
+            tableName = "data";
+        }
+        
+        // Create Chart
+        XYChart chart = new XYChartBuilder()
+                .width(600)
+                .height(500)
+                .title(tableName)
+                .xAxisTitle(colNames[col1])
+                .yAxisTitle(colNames[col2])
+                .build();
+        
+        chart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
+        chart.getStyler().setMarkerSize(4);
+        
+        chart.addSeries("data", xData, yData);
+        chart.getStyler().setLegendVisible(false);
+        
+        // Show it
+        JFrame chartFrame = new SwingWrapper(chart).displayChart();
+        Point pos0 = frame.getWidget().getLocation();
+        chartFrame.setLocation(pos0.x + 30, pos0.y + 20);
+        chartFrame.setTitle("Scatter Plot");
+//            }
+//            
+//        });
+//        t.start();
 	}
 }
