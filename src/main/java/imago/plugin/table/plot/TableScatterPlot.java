@@ -14,7 +14,7 @@ import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
 
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoTableFrame;
-import imago.gui.Plugin;
+import imago.plugin.table.TablePlugin;
 import net.sci.table.Table;
 
 
@@ -24,7 +24,7 @@ import net.sci.table.Table;
  * @author David Legland
  *
  */
-public class TableScatterPlot implements Plugin
+public class TableScatterPlot implements TablePlugin
 {
     public TableScatterPlot()
     {
@@ -51,9 +51,6 @@ public class TableScatterPlot implements Plugin
         double[] yData = table.getColumnValues(col2);
         String[] colNames = table.getColumnNames();
             
-//        Thread t = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
         String tableName = table.getName();
         if (tableName == null || tableName.length() == 0)
         {
@@ -80,9 +77,5 @@ public class TableScatterPlot implements Plugin
         Point pos0 = frame.getWidget().getLocation();
         chartFrame.setLocation(pos0.x + 30, pos0.y + 20);
         chartFrame.setTitle("Scatter Plot");
-//            }
-//            
-//        });
-//        t.start();
 	}
 }

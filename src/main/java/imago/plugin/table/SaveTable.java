@@ -11,7 +11,6 @@ import javax.swing.JFileChooser;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.ImagoTableFrame;
-import imago.gui.Plugin;
 import net.sci.table.Table;
 import net.sci.table.io.DelimitedTableWriter;
 
@@ -20,7 +19,7 @@ import net.sci.table.io.DelimitedTableWriter;
  * @author David Legland
  *
  */
-public class SaveTable implements Plugin
+public class SaveTable implements TablePlugin
 {
     private JFileChooser saveWindow = null;
     
