@@ -3,23 +3,21 @@
  */
 package imago.plugin.image.analyze;
 
-import java.awt.Color;
+import java.awt.Point;
 
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.StandardXYBarPainter;
-import org.jfree.chart.renderer.xy.XYBarRenderer;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.data.statistics.SimpleHistogramBin;
-import org.jfree.data.statistics.SimpleHistogramDataset;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
+import javax.swing.JFrame;
 
-import imago.gui.ImagoChartFrame;
+import org.knowm.xchart.CategoryChart;
+import org.knowm.xchart.CategoryChartBuilder;
+import org.knowm.xchart.SwingWrapper;
+import org.knowm.xchart.XYChart;
+import org.knowm.xchart.XYChartBuilder;
+import org.knowm.xchart.XYSeries;
+import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
+import org.knowm.xchart.style.Styler.LegendPosition;
+import org.knowm.xchart.style.colors.XChartSeriesColors;
+import org.knowm.xchart.style.markers.SeriesMarkers;
+
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
@@ -194,142 +192,137 @@ public class ImageHistogram implements Plugin
 	/**
 	 * Display histogram of 256 gray scale images.
 	 */
-	private void showIntensityHistogram(ImagoFrame parentFrame, DataTable histo)
+	private void showIntensityHistogram(ImagoFrame parentFrame, DataTable table)
 	{
-		int nValues = histo.getRowNumber();
+//		int nValues = table.getRowNumber();
 
-		// count element number
-		int nElements = 0;
-		for (int i = 0; i < nValues; i++)
-		{
-			nElements += histo.getValue(i, 1);
-		}
+//		// count element number
+//		int nElements = 0;
+//		for (int i = 0; i < nValues; i++)
+//		{
+//			nElements += table.getValue(i, 1);
+//		}
 		
-		double binWidth = histo.getValue(1, 0) - histo.getValue(0, 0);
-		double halfWidth = binWidth * .49;
+//		double binWidth = table.getValue(1, 0) - table.getValue(0, 0);
+//		double halfWidth = binWidth * .49;
+//		
+//		// determine if first bin (usually background) should be displayed
+//		// TODO: same for last bin ?
+//		boolean showFirstBin = table.getValue(0, 1) < .1 * nElements;
 		
-		// determine if first bin (usually background) should be displayed
-		// TODO: same for last bin ?
-		boolean showFirstBin = histo.getValue(0, 1) < .1 * nElements;
+        // Title of the plot
+        ImagoDocViewer iframe = (ImagoDocViewer) parentFrame;
+        Image image = iframe.getDocument().getImage();
+		String titleString = createTitleString("Histogram", image.getName());
 
-		// Create resulting data set instance
-		SimpleHistogramDataset dataset = new SimpleHistogramDataset("Image Values");
+		// Create Chart
+	    CategoryChart chart = new CategoryChartBuilder()
+	            .width(800)
+	            .height(600)
+	            .title(titleString)
+	            .xAxisTitle("Intensity Level")
+	            .yAxisTitle("Frequency")
+	            .build();
+	 
+	    // Customize Chart
+	    chart.getStyler().setLegendVisible(false);
+	    chart.getStyler().setAvailableSpaceFill(1);
+	    chart.getStyler().setPlotGridLinesVisible(false);
+	    chart.getStyler().setPlotGridVerticalLinesVisible(false);
+	    chart.getStyler().setXAxisTicksVisible(false);
 
-		// create a new histogram bin for each value
-		int firstIndex = showFirstBin ? 0 : 1; 
-		for (int i = firstIndex; i < nValues; i++)
-		{
-			double binStart = histo.getValue(i, 0) - halfWidth;
-			double binEnd = histo.getValue(i, 0) + halfWidth;
-			SimpleHistogramBin bin = new SimpleHistogramBin(binStart, binEnd, true, false);
-			bin.setItemCount((int) histo.getValue(i, 1));
-			dataset.addBin(bin);
-		}
+	    // Series
+        chart.addSeries("histogram", table.getColumnValues(0), table.getColumnValues(1));
+        
 
-		// Title of the plot
-		ImagoDocViewer iframe = (ImagoDocViewer) parentFrame;
-		Image image = iframe.getDocument().getImage();
-		String imageName = image.getName();
-		String titleString;
-		if (imageName == null)
-			titleString = "Image Histogram";
-		else
-			titleString = "Histogram of " + imageName;
-
-		// creates the chart
-		JFreeChart chart = ChartFactory.createHistogram(titleString,
-				"Pixel value", "Pixel Count", dataset, PlotOrientation.VERTICAL,
-				true, true, true);
-		chart.getPlot().setBackgroundPaint(Color.WHITE);
-
-		XYBarRenderer renderer = (XYBarRenderer) chart.getXYPlot()
-				.getRenderer();
-		renderer.setBasePaint(Color.BLUE);
-		renderer.setBarPainter(new StandardXYBarPainter());
-		renderer.setShadowVisible(false);
-
-		chart.fireChartChanged();
-
-		// we put the chart into a panel
-		ChartPanel chartPanel = new ChartPanel(chart, 512, 200, 512, 200, 512,
-				512, false, false, true, true, true, true);
-
-		// default size
-		chartPanel.setPreferredSize(new java.awt.Dimension(512, 270));
-
-		// creates a new frame to contains the chart panel
-		ImagoChartFrame frame = new ImagoChartFrame(parentFrame, "Intensity Histogram");
-		frame.getWidget().setContentPane(chartPanel);
-		frame.getWidget().pack();
-		frame.setVisible(true);
+        // Show it
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        JFrame chartFrame = new SwingWrapper(chart).displayChart();
+        Point pos0 = parentFrame.getWidget().getLocation();
+        chartFrame.setLocation(pos0.x + 30, pos0.y + 20);
+        chartFrame.setTitle("Histogram");
 	}
 
-	private void showColorHistogram(ImagoFrame parentFrame, DataTable histo)
+	private void showColorHistogram(ImagoFrame parentFrame, DataTable table)
 	{
-		int nChannels = histo.getColumnNumber() - 1;
-		int nValues = histo.getRowNumber();
+		int nChannels = table.getColumnNumber() - 1;
+		int nValues = table.getRowNumber();
+        String[] colNames = table.getColumnNames();
+        
+        // Default name for table
+        String tableName = table.getName();
+        if (tableName == null || tableName.length() == 0)
+        {
+            tableName = "data";
+        }
 
-		XYSeriesCollection dataset = new XYSeriesCollection();
-		String[] colNames = histo.getColumnNames();
+        // Title of the plot
+        ImagoDocViewer iframe = (ImagoDocViewer) parentFrame;
+        Image image = iframe.getDocument().getImage();
+        String titleString = createTitleString("Histogram", image.getName());
+        
+        // Create Chart
+        XYChart chart = new XYChartBuilder()
+                .width(600)
+                .height(500)
+                .title(titleString)
+                .xAxisTitle("Channel value")
+                .yAxisTitle("Frequency")
+                .build();
+        
+        // Additional chart style
+        chart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
+        chart.getStyler().setLegendPosition(LegendPosition.InsideNE);
+        
+        // create a new series for each channel
+        double[] xData = generateLinearVector(nValues, 0);
+        XYSeries[] series  = new XYSeries[nChannels];
+        for (int c = 0; c < nChannels; c++)
+        {
+            series[c] = chart.addSeries(colNames[c], xData, table.getColumnValues(c+1));
+            series[c].setMarker(SeriesMarkers.NONE);
+            
+        }
+        
+        // changes default colors
+        series[0].setLineColor(XChartSeriesColors.RED);
+        series[1].setLineColor(XChartSeriesColors.GREEN);
+        series[2].setLineColor(XChartSeriesColors.BLUE);
+        
+        // Show it
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        JFrame chartFrame = new SwingWrapper(chart).displayChart();
+        Point pos0 = parentFrame.getWidget().getLocation();
+        chartFrame.setLocation(pos0.x + 30, pos0.y + 20);
+        chartFrame.setTitle("Color Histogram");
 
-		for (int c = 0; c < nChannels; c++)
-		{
-			// create a new series for each channel
-			XYSeries series = new XYSeries(colNames[c + 1]);
-			for (int i = 0; i < nValues; i++)
-			{
-				series.add(histo.getValue(i, 0), histo.getValue(i, c + 1));
-			}
-
-			// add the series to the data set
-			dataset.addSeries(series);
-		}
-
-		// Title of the plot
-		ImagoDocViewer iframe = (ImagoDocViewer) parentFrame;
-		Image image = iframe.getDocument().getImage();
-		String imageName = image.getName();
-		String titleString;
-		if (imageName == null)
-			titleString = "Image Histogram";
-		else
-			titleString = "Histogram of " + imageName;
-
-		// creates the chart
-		JFreeChart chart = ChartFactory.createXYStepChart(titleString,
-				"Pixel value", // domain axis label
-				"Pixel Count", // range axis label
-				dataset, // data
-				PlotOrientation.VERTICAL, true, true, true);
-
-		// get a reference to the plot for further customisation
-		XYPlot plot = chart.getXYPlot();
-		plot.setDomainAxis(new NumberAxis());
-
-		// change the auto tick unit selection to integer units only.
-		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-
-		// set the color for each series
-		XYItemRenderer renderer = plot.getRenderer();
-		renderer.setSeriesPaint(0, Color.RED);
-		renderer.setSeriesPaint(1, Color.GREEN);
-		renderer.setSeriesPaint(2, Color.BLUE);
-
-		
-		chart.fireChartChanged();
-
-		// put the chart into a panel
-		ChartPanel chartPanel = new ChartPanel(chart, 512, 200, 512, 200, 512,
-				512, false, false, true, true, true, true);
-
-		// default size
-		chartPanel.setPreferredSize(new java.awt.Dimension(512, 270));
-
-		// creates a new frame to contains the chart panel
-		ImagoChartFrame frame = new ImagoChartFrame(parentFrame, "Color Histogram");
-		frame.getWidget().setContentPane(chartPanel);
-		frame.getWidget().pack();
-		frame.setVisible(true);
 	}
+
+	private String createTitleString(String baseTitle, String imageName)
+    {
+        if (imageName != null)
+        {
+            baseTitle += " of " + imageName;
+        }
+        return baseTitle;
+    }
+    
+    /**
+     * Generate a linear vectors containing values starting from 1, 2... to
+     * nRows.
+     * 
+     * @param nRows
+     *            the number of values
+     * @return a linear vector of nRows values
+     */
+    private double[] generateLinearVector(int nRows, double startValue)
+    {
+        double[] values = new double[nRows];
+        for (int i = 0; i < nRows; i++)
+        {
+            values[i] = startValue + i;
+        }
+        return values;
+    }
+   
 }
