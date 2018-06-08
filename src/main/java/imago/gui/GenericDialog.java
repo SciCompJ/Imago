@@ -119,7 +119,7 @@ public class GenericDialog
 	 */
 	public GenericDialog (ImagoFrame parent, String title) 
 	{
-	    JFrame frame = parent.getWidget();
+	    JFrame frame = parent == null ? null : parent.getWidget();
 		this.dialog = new JDialog(frame, title, true);
 	
 		// creates the listeners

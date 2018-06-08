@@ -105,6 +105,7 @@ import imago.plugin.image.vectorize.ImageIsocontour;
 import imago.plugin.table.OpenTable;
 import imago.plugin.table.SaveTable;
 import imago.plugin.table.ShowDemoTable;
+import imago.plugin.table.plot.TableLinePlot;
 import imago.plugin.table.plot.TableScatterPlot;
 import net.sci.array.Array;
 import net.sci.array.ArrayOperator;
@@ -229,6 +230,7 @@ public class GuiBuilder
 
         fileMenu.addSeparator();
         addPlugin(fileMenu, new TableScatterPlot(), "Scatter Plot...");
+        addPlugin(fileMenu, new TableLinePlot(), "Line Plot...");
 
         fileMenu.addSeparator();
         addPlugin(fileMenu, new CloseCurrentFrame(), "Close", !(frame instanceof ImagoEmptyFrame));
