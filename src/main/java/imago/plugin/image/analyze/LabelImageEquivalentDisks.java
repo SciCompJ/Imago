@@ -14,7 +14,7 @@ import imago.gui.ImagoGui;
 import imago.gui.ImagoTableFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
-import net.sci.array.data.scalar2d.IntArray2D;
+import net.sci.array.scalar.IntArray2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.curve.Circle2D;
 import net.sci.geom.geom2d.curve.Ellipse2D;

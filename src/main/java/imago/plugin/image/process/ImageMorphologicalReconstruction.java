@@ -59,7 +59,7 @@ public class ImageMorphologicalReconstruction implements Plugin
 		gd.addChoice("Mask: ", imageNameArray, firstImageName);
 		gd.showDialog();
 		
-		if (gd.getOutput() == GenericDialog.Output.CANCEL) 
+		if (gd.wasCanceled()) 
 		{
 			return;
 		}
@@ -68,6 +68,7 @@ public class ImageMorphologicalReconstruction implements Plugin
 		Image markerImage = app.getDocumentFromName(gd.getNextChoice()).getImage();
 		Image maskImage = app.getDocumentFromName(gd.getNextChoice()).getImage();
 
+		// extract arrays and check dimensions
 		Array<?> marker = markerImage.getData();
 		Array<?> mask = maskImage.getData();
         if (!Arrays.isSameSize(marker, mask))
@@ -76,6 +77,7 @@ public class ImageMorphologicalReconstruction implements Plugin
             return;
         }
 		
+        // process morphological reconstruction using default connectivity
 		Image resultImage = MorphologicalReconstruction.reconstructByDilation(markerImage, maskImage);
 		resultImage.setName(markerImage.getName() + "-morphoRec");
 		

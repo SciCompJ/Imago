@@ -15,13 +15,13 @@ import java.awt.event.MouseEvent;
 import java.util.Locale;
 
 import net.sci.array.Array;
-import net.sci.array.data.Array2D;
-import net.sci.array.data.Array3D;
-import net.sci.array.data.IntArray;
-import net.sci.array.data.ScalarArray;
-import net.sci.array.data.VectorArray;
-import net.sci.array.data.color.RGB16Array;
-import net.sci.array.data.color.RGB8Array;
+import net.sci.array.Array2D;
+import net.sci.array.Array3D;
+import net.sci.array.color.RGB16Array;
+import net.sci.array.color.RGB8Array;
+import net.sci.array.scalar.IntArray;
+import net.sci.array.scalar.ScalarArray;
+import net.sci.array.vector.VectorArray;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.image.Image;
 

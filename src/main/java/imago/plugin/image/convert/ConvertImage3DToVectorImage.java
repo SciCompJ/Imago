@@ -9,10 +9,10 @@ import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.Plugin;
 import net.sci.array.Array;
-import net.sci.array.data.ScalarArray;
-import net.sci.array.data.VectorArray;
-import net.sci.array.data.scalar3d.ScalarArray3D;
-import net.sci.array.data.vector.VectorArray2D;
+import net.sci.array.scalar.ScalarArray;
+import net.sci.array.scalar.ScalarArray3D;
+import net.sci.array.vector.VectorArray;
+import net.sci.array.vector.VectorArray2D;
 import net.sci.image.Image;
 
 

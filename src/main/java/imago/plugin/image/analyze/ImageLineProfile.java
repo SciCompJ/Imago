@@ -3,29 +3,30 @@
  */
 package imago.plugin.image.analyze;
 
-import java.awt.Color;
+import java.awt.Point;
 
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
+import javax.swing.JFrame;
+
+import org.knowm.xchart.SwingWrapper;
+import org.knowm.xchart.XYChart;
+import org.knowm.xchart.XYChartBuilder;
+import org.knowm.xchart.XYSeries;
+import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
+import org.knowm.xchart.style.Styler.LegendPosition;
+import org.knowm.xchart.style.colors.XChartSeriesColors;
+import org.knowm.xchart.style.markers.SeriesMarkers;
 
 import imago.gui.ImageViewer;
-import imago.gui.ImagoChartFrame;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
 import imago.gui.viewer.PlanarImageViewer;
+import imago.plugin.image.ImagePlugin;
 import net.sci.array.Array;
-import net.sci.array.data.ScalarArray;
-import net.sci.array.data.color.RGB8Array2D;
-import net.sci.array.data.scalar2d.ScalarArray2D;
-import net.sci.array.data.vector.VectorArray2D;
+import net.sci.array.color.RGB8Array2D;
 import net.sci.array.interp.LinearInterpolator2D;
+import net.sci.array.scalar.ScalarArray;
+import net.sci.array.scalar.ScalarArray2D;
+import net.sci.array.vector.VectorArray2D;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.line.LineSegment2D;
@@ -38,7 +39,7 @@ import net.sci.table.DataTable;
  * @author David Legland
  *
  */
-public class ImageLineProfile implements Plugin
+public class ImageLineProfile implements ImagePlugin
 {
     public ImageLineProfile()
     {
@@ -152,120 +153,127 @@ public class ImageLineProfile implements Plugin
     /**
      * Display a line profile.
      */
-    private void plotIntensityProfile(ImagoFrame parentFrame, DataTable profile)
+    private void plotIntensityProfile(ImagoFrame parentFrame, DataTable table)
     {
-        int nValues = profile.getRowNumber();
-        
-        XYSeriesCollection dataset = new XYSeriesCollection();
-        
-        // create a new series for each channel
-        XYSeries series = new XYSeries("Intensity");
-        for (int i = 0; i < nValues; i++)
+        int nValues = table.getRowNumber();
+
+        // Default name for table
+        String tableName = table.getName();
+        if (tableName == null || tableName.length() == 0)
         {
-            series.add(i, profile.getValue(i, 0));
+            tableName = "data";
         }
-        
-        dataset.addSeries(series);
-        
+
         // Title of the plot
         ImagoDocViewer iframe = (ImagoDocViewer) parentFrame;
         Image image = iframe.getDocument().getImage();
-        String imageName = image.getName();
-        String titleString;
-        if (imageName == null)
-            titleString = "Intensity profile";
-        else
-            titleString = "Intensity profile of " + imageName;
+        String titleString = createTitleString("Intensity profile", image.getName());
+
+        // Create Chart
+        XYChart chart = new XYChartBuilder()
+                .width(600)
+                .height(500)
+                .title(titleString)
+                .xAxisTitle("Position")
+                .yAxisTitle("Intensity")
+                .build();
         
-        // creates the chart
+        // Additional chart style
+        chart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
+        chart.getStyler().setLegendPosition(LegendPosition.InsideNE);
         
-        JFreeChart chart = ChartFactory.createXYLineChart(titleString, "Position", "Intensity",
-                dataset, PlotOrientation.VERTICAL, true, true, true);
-        chart.getPlot().setBackgroundPaint(Color.WHITE);
+        // create series and series style
+        double[] xData = generateLinearVector(nValues, 0);
+        XYSeries series = chart.addSeries("Intensity", xData, table.getColumnValues(0));
+        series.setMarker(SeriesMarkers.NONE);
         
-        XYItemRenderer renderer = (XYItemRenderer) chart.getXYPlot().getRenderer();
-        renderer.setSeriesPaint(0, Color.BLACK);
-        
-        chart.fireChartChanged();
-        
-        // we put the chart into a panel
-        ChartPanel chartPanel = new ChartPanel(chart, 512, 200, 512, 200, 512, 512, false, false,
-                true, true, true, true);
-        
-        // default size
-        chartPanel.setPreferredSize(new java.awt.Dimension(512, 270));
-        
-        chart.fireChartChanged();
-        
-        // creates a new frame to contains the chart panel
-        ImagoChartFrame frame = new ImagoChartFrame(parentFrame.getGui(), "Intensity Profile");
-        frame.getWidget().setContentPane(chartPanel);
-        frame.getWidget().pack();
-        frame.setVisible(true);
+        // Show it
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        JFrame chartFrame = new SwingWrapper(chart).displayChart();
+        Point pos0 = parentFrame.getWidget().getLocation();
+        chartFrame.setLocation(pos0.x + 30, pos0.y + 20);
+        chartFrame.setTitle("Intensity Profile");
     }
     
-    private void plotRGB8LineProfile(ImagoFrame parentFrame, DataTable histo)
+    private void plotRGB8LineProfile(ImagoFrame parentFrame, DataTable table)
     {
-        int nChannels = histo.getColumnNumber();
-        int nValues = histo.getRowNumber();
+        int nChannels = table.getColumnNumber();
+        int nValues = table.getRowNumber();
+        String[] colNames = table.getColumnNames();
         
-        XYSeriesCollection dataset = new XYSeriesCollection();
-        String[] colNames = histo.getColumnNames();
-        
-        for (int c = 0; c < nChannels; c++)
+        // Default name for table
+        String tableName = table.getName();
+        if (tableName == null || tableName.length() == 0)
         {
-            
-            // create a new series for each channel
-            XYSeries series = new XYSeries(colNames[c]);
-            for (int i = 0; i < nValues; i++)
-            {
-                series.add(i, histo.getValue(i, c));
-            }
-            
-            // add the series to the data set
-            dataset.addSeries(series);
+            tableName = "data";
         }
-        
+
         // Title of the plot
         ImagoDocViewer iframe = (ImagoDocViewer) parentFrame;
         Image image = iframe.getDocument().getImage();
-        String imageName = image.getName();
-        String titleString;
-        if (imageName == null)
-            titleString = "Color profile";
-        else
-            titleString = "Color profile of " + imageName;
+        String titleString = createTitleString("Color profile", image.getName());
         
-        // creates the chart
-        JFreeChart chart = ChartFactory.createXYLineChart(titleString, 
-                "Position", // domain axis label
-                "Color Intensity", // range axis label
-                dataset, // data
-                PlotOrientation.VERTICAL, true, true, true);
+        // Create Chart
+        XYChart chart = new XYChartBuilder()
+                .width(600)
+                .height(500)
+                .title(titleString)
+                .xAxisTitle("Position")
+                .yAxisTitle("Intensity")
+                .build();
         
-        // get a reference to the plot for further customisation
-        XYPlot plot = chart.getXYPlot();
+        // Additional chart style
+        chart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
+        chart.getStyler().setLegendPosition(LegendPosition.InsideNE);
         
-        // set the color for each series
-        XYItemRenderer renderer = plot.getRenderer();
-        renderer.setSeriesPaint(0, Color.RED);
-        renderer.setSeriesPaint(1, Color.GREEN);
-        renderer.setSeriesPaint(2, Color.BLUE);
+        // create a new series for each channel
+        double[] xData = generateLinearVector(nValues, 0);
+        XYSeries[] series  = new XYSeries[nChannels];
+        for (int c = 0; c < nChannels; c++)
+        {
+            series[c] = chart.addSeries(colNames[c], xData, table.getColumnValues(c));
+            series[c].setMarker(SeriesMarkers.NONE);
+            
+        }
         
-        chart.fireChartChanged();
+        // changes default colors
+        series[0].setLineColor(XChartSeriesColors.RED);
+        series[1].setLineColor(XChartSeriesColors.GREEN);
+        series[2].setLineColor(XChartSeriesColors.BLUE);
         
-        // put the chart into a panel
-        ChartPanel chartPanel = new ChartPanel(chart, 512, 200, 512, 200, 512, 512, false, false,
-                true, true, true, true);
-        
-        // default size
-        chartPanel.setPreferredSize(new java.awt.Dimension(512, 270));
-        
-        // creates a new frame to contains the chart panel
-        ImagoChartFrame frame = new ImagoChartFrame(parentFrame.getGui(), "Color Profile");
-        frame.getWidget().setContentPane(chartPanel);
-        frame.getWidget().pack();
-        frame.setVisible(true);
-        
+        // Show it
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        JFrame chartFrame = new SwingWrapper(chart).displayChart();
+        Point pos0 = parentFrame.getWidget().getLocation();
+        chartFrame.setLocation(pos0.x + 30, pos0.y + 20);
+        chartFrame.setTitle("Color Profile");
     }
+    
+    private String createTitleString(String baseTitle, String imageName)
+    {
+        if (imageName != null)
+        {
+            baseTitle += " of " + imageName;
+        }
+        return baseTitle;
+    }
+    
+    /**
+     * Generate a linear vectors containing values starting from 1, 2... to
+     * nRows.
+     * 
+     * @param nRows
+     *            the number of values
+     * @return a linear vector of nRows values
+     */
+    private double[] generateLinearVector(int nRows, double startValue)
+    {
+        double[] values = new double[nRows];
+        for (int i = 0; i < nRows; i++)
+        {
+            values[i] = startValue + i;
+        }
+        return values;
+    }
+    
 }

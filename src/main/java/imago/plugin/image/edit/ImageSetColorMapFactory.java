@@ -9,7 +9,7 @@ import imago.app.ImagoDoc;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
-import net.sci.array.type.Color;
+import net.sci.array.color.Color;
 import net.sci.image.ColorMap;
 import net.sci.image.ColorMapFactory;
 import net.sci.image.DefaultColorMap;

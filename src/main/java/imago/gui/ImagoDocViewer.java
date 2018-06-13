@@ -75,6 +75,7 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
 		// layout the frame
 		setupLayout();
 		jFrame.doLayout();
+		
 		updateTitle();
 		
 		// setup window listener
@@ -148,32 +149,31 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
 	// ===================================================================
 	// General methods
 	
+	/**
+     * Updates the title of the frame with a sting containing document name,
+     * image dimensions and type.
+     */
 	public void updateTitle()
 	{
-		// image name
-		String name = this.image.getName();
-		if (name == null || name.isEmpty()) 
-		{
-			name = "No Name";
-		}
-		
+		// use document name for base title
+        String name = this.doc.getName();
+
+        // string containing image dimensions
 		String dimString = "(unknown size)";
-		int dim[] = this.image.getSize();
-		if (dim.length == 2) 
+		int dims[] = this.image.getSize();
+		if (dims.length > 0)
 		{
-			dimString = dim[0] + "x" + dim[1];
-		} 
-		else if (dim.length == 3) 
-		{
-			dimString = dim[0] + "x" + dim[1] + "x" + dim[2];
-		} 
-		else if (dim.length == 4) 
-		{
-			dimString = dim[0] + "x" + dim[1] + "x" + dim[2] + "x" + dim[3];
+		    dimString = "" + dims[0];
+		    for (int d = 1; d < dims.length; d++)
+		    {
+		        dimString += "x" + dims[d];
+		    }
 		}
 		
+		// image type
 		String typeString = this.image.getType().toString();
 		
+		// setup title
 		String titleString = name + " - " + dimString + " - " + typeString;
 		this.setTitle(titleString);
 	}

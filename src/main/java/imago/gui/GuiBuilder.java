@@ -21,6 +21,7 @@ import imago.plugin.edit.ZoomOut;
 import imago.plugin.image.ImageArrayOperatorPlugin;
 import imago.plugin.image.ImageOperatorPlugin;
 import imago.plugin.image.analyze.ColorImageBivariateHistograms;
+import imago.plugin.image.analyze.GrayLevelImageCooccurenceMatrix;
 import imago.plugin.image.analyze.ImageHistogram;
 import imago.plugin.image.analyze.ImageLineProfile;
 import imago.plugin.image.analyze.ImageMeanValue;
@@ -71,6 +72,7 @@ import imago.plugin.image.process.Image3DGetCurrentSlice;
 import imago.plugin.image.process.Image3DGetSlice;
 import imago.plugin.image.process.Image3DOrthoslicesImage;
 import imago.plugin.image.process.Image3DSetOrthoSlicesDisplay;
+import imago.plugin.image.process.ImageBivariateHistogram;
 import imago.plugin.image.process.ImageBoxMedianFilter;
 import imago.plugin.image.process.ImageBoxMinMaxFilter;
 import imago.plugin.image.process.ImageBoxVarianceFilter;
@@ -97,7 +99,8 @@ import imago.plugin.image.vectorize.ImageIsocontour;
 import imago.plugin.table.OpenTable;
 import imago.plugin.table.SaveTable;
 import imago.plugin.table.ShowDemoTable;
-import imago.plugin.table.TableScatterPlot;
+import imago.plugin.table.plot.TableLinePlot;
+import imago.plugin.table.plot.TableScatterPlot;
 
 import java.awt.image.BufferedImage;
 
@@ -109,7 +112,7 @@ import javax.swing.JMenuItem;
 
 import net.sci.array.Array;
 import net.sci.array.ArrayOperator;
-import net.sci.array.data.color.RGB8Array;
+import net.sci.array.color.RGB8Array;
 import net.sci.array.process.PowerOfTwo;
 import net.sci.array.process.Sqrt;
 import net.sci.array.process.shape.Rotate90;
@@ -224,6 +227,7 @@ public class GuiBuilder
 
         fileMenu.addSeparator();
         addPlugin(fileMenu, new TableScatterPlot(), "Scatter Plot...");
+        addPlugin(fileMenu, new TableLinePlot(), "Line Plot...");
 
         fileMenu.addSeparator();
         addPlugin(fileMenu, new CloseCurrentFrame(), "Close", !(frame instanceof ImagoEmptyFrame));
@@ -504,6 +508,7 @@ public class GuiBuilder
 		addPlugin(menu, new ImageRoiHistogram(), "ROI Histogram", hasImage && hasImage2D);
         addPlugin(menu, new ImageMeanValue(), "Mean Value", hasImage);
         addPlugin(menu, new ColorImageBivariateHistograms(), "Bivariate Color Histograms", hasColorImage);
+        addPlugin(menu, new ImageBivariateHistogram(), "Bivariate Histogram");
 		menu.addSeparator();
 		addPlugin(menu, new ImageLineProfile(), "Line Profile", hasImage);
 
@@ -512,6 +517,10 @@ public class GuiBuilder
         addPlugin(menu, new LabelImageCentroids(), "Regions Centroids", (hasImage2D || hasImage3D) && hasLabelImage);
         addPlugin(menu, new LabelImageEquivalentDisks(), "Regions Equivalent Disks", hasImage2D && hasLabelImage);
         addPlugin(menu, new LabelImageInertiaEllipses(), "Regions Inertia Ellipses", hasImage2D && hasLabelImage);
+
+        menu.addSeparator();
+        addPlugin(menu, new GrayLevelImageCooccurenceMatrix(), "Gray Level Co-Occurence Matrix", hasImage2D && hasScalarImage);
+        
 		return menu;
 	}
 

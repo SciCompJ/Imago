@@ -6,13 +6,13 @@ package imago.plugin.image.file;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
-import net.sci.array.data.BinaryArray;
-import net.sci.array.data.Float32Array;
-import net.sci.array.data.Float64Array;
-import net.sci.array.data.Int32Array;
-import net.sci.array.data.ScalarArray;
-import net.sci.array.data.UInt16Array;
-import net.sci.array.data.UInt8Array;
+import net.sci.array.scalar.BinaryArray;
+import net.sci.array.scalar.Float32Array;
+import net.sci.array.scalar.Float64Array;
+import net.sci.array.scalar.Int32Array;
+import net.sci.array.scalar.ScalarArray;
+import net.sci.array.scalar.UInt16Array;
+import net.sci.array.scalar.UInt8Array;
 import net.sci.image.Image;
 
 /**
