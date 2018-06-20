@@ -3,16 +3,6 @@
  */
 package imago.plugin.image.analyze;
 
-import org.knowm.xchart.CategoryChart;
-import org.knowm.xchart.CategoryChartBuilder;
-import org.knowm.xchart.XYChart;
-import org.knowm.xchart.XYChartBuilder;
-import org.knowm.xchart.XYSeries;
-import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
-import org.knowm.xchart.style.Styler.LegendPosition;
-import org.knowm.xchart.style.colors.XChartSeriesColors;
-import org.knowm.xchart.style.markers.SeriesMarkers;
-
 import imago.gui.ImagoChartFrame;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
@@ -24,6 +14,14 @@ import net.sci.array.process.Histogram;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.image.Image;
 import net.sci.table.DataTable;
+
+import org.knowm.xchart.XYChart;
+import org.knowm.xchart.XYChartBuilder;
+import org.knowm.xchart.XYSeries;
+import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
+import org.knowm.xchart.style.Styler.LegendPosition;
+import org.knowm.xchart.style.colors.XChartSeriesColors;
+import org.knowm.xchart.style.markers.SeriesMarkers;
 
 /**
  * @author David Legland
@@ -190,29 +188,13 @@ public class ImageHistogram implements Plugin
 	 */
 	private void showIntensityHistogram(ImagoFrame parentFrame, DataTable table)
 	{
-//		int nValues = table.getRowNumber();
-
-//		// count element number
-//		int nElements = 0;
-//		for (int i = 0; i < nValues; i++)
-//		{
-//			nElements += table.getValue(i, 1);
-//		}
-		
-//		double binWidth = table.getValue(1, 0) - table.getValue(0, 0);
-//		double halfWidth = binWidth * .49;
-//		
-//		// determine if first bin (usually background) should be displayed
-//		// TODO: same for last bin ?
-//		boolean showFirstBin = table.getValue(0, 1) < .1 * nElements;
-		
         // Title of the plot
         ImagoDocViewer iframe = (ImagoDocViewer) parentFrame;
         Image image = iframe.getDocument().getImage();
 		String titleString = createTitleString("Histogram", image.getName());
 
 		// Create Chart
-	    CategoryChart chart = new CategoryChartBuilder()
+	    XYChart chart = new XYChartBuilder()
 	            .width(800)
 	            .height(600)
 	            .title(titleString)
@@ -222,14 +204,16 @@ public class ImageHistogram implements Plugin
 	 
 	    // Customize Chart
 	    chart.getStyler().setLegendVisible(false);
-	    chart.getStyler().setAvailableSpaceFill(1);
 	    chart.getStyler().setPlotGridLinesVisible(false);
 	    chart.getStyler().setPlotGridVerticalLinesVisible(false);
-	    chart.getStyler().setXAxisTicksVisible(false);
 
 	    // Series
-        chart.addSeries("histogram", table.getColumnValues(0), table.getColumnValues(1));
-
+        double[] xdata = table.getColumnValues(0);
+        double[] ydata = table.getColumnValues(1);
+        XYSeries series = chart.addSeries("Histogram", xdata, ydata);
+        series.setXYSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Area);
+        series.setMarker(SeriesMarkers.NONE);
+     
         ImagoChartFrame.displayChart(parentFrame, "Histogram", chart);
 	}
 
@@ -283,6 +267,46 @@ public class ImageHistogram implements Plugin
         ImagoChartFrame.displayChart(parentFrame, "Color Histogram", chart);
 	}
 
+//    private double[] convertXData(double[] input)
+//    {
+//        int n = input.length;
+//        if (n < 2)
+//        {
+//            throw new IllegalArgumentException("Requires at least two inputs");
+//        }
+//        
+//        double[] output = new double[n*2];
+//        
+//        output[0] = input[0] - (input[1] - input[0]) / 2;
+//        for (int i = 1; i < n-1; i++)
+//        {
+//            output[2*i - 1] = input[i] - 1e-8;
+//            output[2*i] = input[i] + 1e-8;
+//        }
+//        output[2*n-1] = input[n-1] + (input[n-1] - input[n-2]) / 2;
+//
+//        return output;
+//    }
+//    
+//    private double[] convertYData(double[] input)
+//    {
+//        int n = input.length;
+//        if (n < 2)
+//        {
+//            throw new IllegalArgumentException("Requires at least two inputs");
+//        }
+//        
+//        double[] output = new double[n*2];
+//        
+//        for (int i = 0; i < n; i++)
+//        {
+//            output[2 * i] = input[i];
+//            output[2 * i + 1] = input[i];
+//        }
+//
+//        return output;
+//    }
+    
 	private String createTitleString(String baseTitle, String imageName)
     {
         if (imageName != null)
