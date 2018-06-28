@@ -62,6 +62,7 @@ import imago.plugin.image.file.OpenDemoImage;
 import imago.plugin.image.file.OpenDemoStack;
 import imago.plugin.image.file.OpenImage;
 import imago.plugin.image.file.ReadImageTiff;
+import imago.plugin.image.file.ReadTiffStackSlice;
 import imago.plugin.image.process.BinaryImageChamferDistanceMap;
 import imago.plugin.image.process.BinaryImageConnectedComponentsLabeling;
 import imago.plugin.image.process.BinaryImageOverlay;
@@ -215,36 +216,14 @@ public class GuiBuilder
 	
 	/**
 	 * Creates the sub-menu for the "File" item in the main menu bar.
-     */
-    private JMenu createTableFileMenu()
-    {
-        JMenu fileMenu = new JMenu("File");
-        
-        addPlugin(fileMenu, new OpenTable(), "Open Table...");
-        
-        fileMenu.addSeparator();
-        addPlugin(fileMenu, new SaveTable(), "Save Table...");
-
-        fileMenu.addSeparator();
-        addPlugin(fileMenu, new TableScatterPlot(), "Scatter Plot...");
-        addPlugin(fileMenu, new TableLinePlot(), "Line Plot...");
-
-        fileMenu.addSeparator();
-        addPlugin(fileMenu, new CloseCurrentFrame(), "Close", !(frame instanceof ImagoEmptyFrame));
-        addPlugin(fileMenu, new QuitApplication(), "Quit");
-
-        return fileMenu;
-    }
-
-	/**
-	 * Creates the sub-menu for the "File" item in the main menu bar.
 	 */
 	private JMenu createImageFileMenu()
 	{
 		JMenu fileMenu = new JMenu("File");
 		addPlugin(fileMenu, new CreateNewImage(), "New Image...");
 		addPlugin(fileMenu, new OpenImage(), "Open...");
-		addPlugin(fileMenu, new ReadImageTiff(), "Read TIFF...");
+        addPlugin(fileMenu, new ReadImageTiff(), "Read TIFF...");
+        addPlugin(fileMenu, new ReadTiffStackSlice(), "Read TIFF Slice");
 
 		// Import demo images
 		JMenu demoMenu = new JMenu("Open Demo Image");
@@ -523,6 +502,29 @@ public class GuiBuilder
         
 		return menu;
 	}
+
+    /**
+     * Creates the sub-menu for the "File" item in the main menu bar.
+     */
+    private JMenu createTableFileMenu()
+    {
+        JMenu fileMenu = new JMenu("File");
+        
+        addPlugin(fileMenu, new OpenTable(), "Open Table...");
+        
+        fileMenu.addSeparator();
+        addPlugin(fileMenu, new SaveTable(), "Save Table...");
+
+        fileMenu.addSeparator();
+        addPlugin(fileMenu, new TableScatterPlot(), "Scatter Plot...");
+        addPlugin(fileMenu, new TableLinePlot(), "Line Plot...");
+
+        fileMenu.addSeparator();
+        addPlugin(fileMenu, new CloseCurrentFrame(), "Close", !(frame instanceof ImagoEmptyFrame));
+        addPlugin(fileMenu, new QuitApplication(), "Quit");
+
+        return fileMenu;
+    }
 
 	private JMenu createHelpMenu()
 	{
