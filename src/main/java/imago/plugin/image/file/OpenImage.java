@@ -35,10 +35,9 @@ public class OpenImage implements Plugin
     public void run(ImagoFrame frame, String args)
     {
         // create file dialog if it doesn't exist
-        if (openWindow == null)
+        if (this.openWindow == null)
         {
-            openWindow = new JFileChooser(".");
-            // openWindow.setFileFilter(fileFilter);
+            createFileChooserFrame();
         }
         
         // Open dialog to choose the file
@@ -80,6 +79,12 @@ public class OpenImage implements Plugin
         
         // add the image document to GUI
         frame.getGui().addNewDocument(image);
+    }
+    
+    private void createFileChooserFrame()
+    {
+        this.openWindow = new JFileChooser("."); 
+        // openWindow.setFileFilter(fileFilter);
     }
     
 }

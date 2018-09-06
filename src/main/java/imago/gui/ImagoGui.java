@@ -83,6 +83,15 @@ public class ImagoGui
 	
 	private void setupLookAndFeel()
 	{
+	    try
+	    {
+	        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+	    }
+	    catch (Exception ex)
+	    {
+	        ex.printStackTrace();
+	    }
+	    
 		// set up default font
 		UIManager.put("swing.boldMetal", Boolean.FALSE);
         UIManager.put("ComboBox.background", UIManager.get("TextArea.background"));
