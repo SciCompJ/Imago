@@ -52,7 +52,8 @@ public class PrintImageInfos implements Plugin
             if (axis instanceof NumericalAxis)
             {
                 NumericalAxis axis2 = (NumericalAxis) axis;
-                System.out.print(axis2.getSpacing() + " " + axis2.getUnitName());
+//                System.out.print(axis2.getSpacing() + " " + axis2.getUnitName());
+                System.out.print(axis2);
             }
             System.out.println();
         }

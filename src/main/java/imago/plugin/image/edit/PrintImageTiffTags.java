@@ -33,7 +33,7 @@ public class PrintImageTiffTags implements Plugin
 		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
 		Image image = doc.getImage();
 
-		for (TiffTag tag : image.tiffTags)
+		for (TiffTag tag : image.tiffTags.values())
 		{
 			String desc = tag.name == null ? "" : " (" + tag.name + ")";
 			String info = String.format("Tag code: %5d %-30s", tag.code, desc);
