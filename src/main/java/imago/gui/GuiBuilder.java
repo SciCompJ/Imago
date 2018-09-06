@@ -7,6 +7,7 @@ import imago.app.ImagoDoc;
 import imago.gui.action.RunPluginAction;
 import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectPolygonTool;
+import imago.gui.tool.SelectRectangleTool;
 import imago.gui.tool.SelectionTool;
 import imago.plugin.BoxFilter3x3FloatPlugin;
 import imago.plugin.CloseCurrentFrame;
@@ -272,6 +273,9 @@ public class GuiBuilder
 			addPlugin(editMenu, 
                     new ChangeCurrentTool(new SelectLineSegmentTool(viewer, "selectLineSegment")),
                     "Select Line", hasImage);
+            addPlugin(editMenu, 
+                    new ChangeCurrentTool(new SelectRectangleTool(viewer, "selectRectangle")),
+                    "Select Rectangle", hasImage);
 			addPlugin(editMenu, 
                     new ChangeCurrentTool(new SelectPolygonTool(viewer, "selectPolygon")),
                     "Select Polygon", hasImage);

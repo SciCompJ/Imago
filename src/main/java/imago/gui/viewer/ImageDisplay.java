@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 
 import imago.app.shape.ImagoShape;
 import net.sci.geom.Geometry;
+import net.sci.geom.geom2d.Box2D;
 import net.sci.geom.geom2d.Curve2D;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.Point2D;
@@ -309,6 +310,11 @@ public class ImageDisplay extends JPanel
             LineSegment2D line = (LineSegment2D) geom;
             drawLineSegment(g2, line);
         }
+        else if (geom instanceof Box2D)
+        {
+            Box2D box = (Box2D) geom;
+            drawPolygon(g2, box.getRectangle());
+        }
         else if (geom instanceof PolygonalDomain2D)
         {
         	PolygonalDomain2D poly = (PolygonalDomain2D) geom;
@@ -333,7 +339,7 @@ public class ImageDisplay extends JPanel
         else
         {
             // basic check to avoid errors
-            System.out.println("can not handle geometry of class: " + geom.getClass());
+            System.out.println("[Image Display] can not handle geometry of class: " + geom.getClass());
         }
     }
 
