@@ -3,6 +3,8 @@
  */
 package imago.gui;
 
+import java.util.ArrayList;
+
 import javax.swing.JFrame;
 
 /**
@@ -20,7 +22,9 @@ public abstract class ImagoFrame
 	 */
 	ImagoGui gui;
 
-	ImagoFrame parentFrame = null;
+	ImagoFrame parent = null;
+	
+	ArrayList<ImagoFrame> children = new ArrayList<>(0);
 	
 	/**
 	 * The Swing widget used to display this frame.
@@ -54,7 +58,8 @@ public abstract class ImagoFrame
 	 */
 	protected ImagoFrame(ImagoFrame parent)
 	{
-	    this.parentFrame = parent;
+	    this.parent = parent;
+	    this.parent.addChild(this);
 		this.gui = parent.gui;
 	}
 
@@ -73,6 +78,8 @@ public abstract class ImagoFrame
 	protected ImagoFrame(ImagoFrame parent, String name)
 	{
 		this(name);
+        this.parent = parent;
+        this.parent.addChild(this);
 		this.gui = parent.gui;
 	}
 	
@@ -133,12 +140,22 @@ public abstract class ImagoFrame
 	// ===================================================================
     // Management of parent / children frames
 	
-	public ImagoFrame getParentFrame()
+	public ImagoFrame getParent()
 	{
-	    return this.parentFrame;
+	    return this.parent;
 	}
 
+    public void addChild(ImagoFrame frame)
+    {
+        this.children.add(frame);
+    }
 
+    public void removeChild(ImagoFrame frame)
+	{
+        this.children.remove(frame);	    
+	}
+
+    
     // ===================================================================
     // Overload some methods from the inner JFrame
 
@@ -159,6 +176,28 @@ public abstract class ImagoFrame
     
     public void close()
     {
+        // remove from GUI
+        gui.removeFrame(this);
+        
+        // remove from children if any
+        for (ImagoFrame child : children)
+        {
+            child.parent = null;
+        }
+        
+        // remove widget
         this.jFrame.dispose();
+    }
+    
+    public void closeChildren()
+    {
+        // close children
+        for (ImagoFrame child : this.children)
+        {
+            child.closeChildren();
+            child.close();
+        }
+        
+        this.children.clear();
     }
 }

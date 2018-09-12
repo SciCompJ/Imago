@@ -10,6 +10,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
 import net.sci.image.Image;
+import net.sci.image.process.filter.BoxFilter;
 
 /**
  * Applies box filtering on a multidimensional image.
@@ -17,9 +18,9 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class BoxFilter implements Plugin
+public class ImageBoxFilter implements Plugin
 {
-	public BoxFilter()
+	public ImageBoxFilter()
 	{
 	}
 
@@ -62,7 +63,7 @@ public class BoxFilter implements Plugin
 		}
 
 		// create operator box filtering operator
-		net.sci.image.process.filter.BoxFilter filter = new net.sci.image.process.filter.BoxFilter(diameters);
+		BoxFilter filter = new BoxFilter(diameters);
 		filter.addAlgoListener((ImagoDocViewer) frame);
 		
 		// apply operator on current image
@@ -70,7 +71,7 @@ public class BoxFilter implements Plugin
 		result.setName(image.getName() + "-filt");
 		
 		// add the image document to GUI
-		frame.getGui().addNewDocument(result);
+		frame.addChild(frame.getGui().addNewDocument(result));
 	}
 	
     /**

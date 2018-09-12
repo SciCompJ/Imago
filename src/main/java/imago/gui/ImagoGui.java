@@ -101,16 +101,35 @@ public class ImagoGui
 	// ===================================================================
 	// General methods
 
-	public void showEmptyFrame(boolean b) 
-	{
-		if (this.emptyFrame == null) 
-		{
-			this.emptyFrame = new ImagoEmptyFrame(this);
-		}
-
-		this.emptyFrame.setVisible(b);
-	}
 	
+	
+
+	// ===================================================================
+    // Creation of new viewers
+
+    /** 
+     * Creates a new document from an image, adds it to the application, 
+     * and returns a new frame associated to this document. 
+     */
+    public ImagoDocViewer createImagoDocViewer(Image image, ImagoFrame parentFrame)
+    {
+        // create the document from image
+        ImagoDocViewer viewer; 
+        if (parentFrame instanceof ImagoDocViewer)
+        {
+            ImagoDoc parentDoc = ((ImagoDocViewer) parentFrame).getDocument();
+            viewer = addNewDocument(image, parentDoc);
+        }
+        else
+        {
+            viewer = addNewDocument(image);
+        }
+        
+        // create the frame associated to the document
+        parentFrame.addChild(viewer);
+        return viewer;
+    }
+
     /** 
 	 * Creates a new document from an image, adds it to the application, 
 	 * and returns a new frame associated to this document. 
@@ -121,10 +140,10 @@ public class ImagoGui
 		ImagoDoc doc = this.app.addNewDocument(image);
 		
 		// create the frame associated to the document
-		return createDocumentFrame(doc);
+		return createImagoDocViewer(doc);
 	}
 
-	/** 
+    /** 
 	 * Creates a new document from an image, using settings given in parent 
 	 * document, and adds the new document to the GUI 
 	 */
@@ -137,15 +156,17 @@ public class ImagoGui
 		this.app.addDocument(doc);
 		
 		// display in a new frame
-		return createDocumentFrame(doc);
+		return createImagoDocViewer(doc);
 	}
 		
-	public ImagoApp getAppli()
-	{
-		return this.app;
-	}
-	
-	public ImagoDocViewer createDocumentFrame(ImagoDoc doc) 
+	/**
+     * Creates the viewer for the document, ensuring name is unique.
+     * 
+     * @param doc
+     *            the document to view
+     * @return a viewer for the document
+     */
+	public ImagoDocViewer createImagoDocViewer(ImagoDoc doc) 
 	{
 		ImagoDocViewer frame = new ImagoDocViewer(this, doc);
 		
@@ -166,43 +187,6 @@ public class ImagoGui
 		
 		frame.setVisible(true);
 		return frame;
-	}
-	
-	public boolean addFrame(ImagoFrame frame)
-	{
-		return this.frames.add(frame);
-	}
-
-	public boolean removeFrame(ImagoFrame frame)
-	{
-		if (frame instanceof ImagoDocViewer)
-		{
-			ImagoDocViewer viewer = (ImagoDocViewer) frame;
-			ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
-			ArrayList<ImagoFrame> frameList = docFrames.get(doc.getName());
-			if (!frameList.contains(frame))
-			{
-			    System.err.println("Warning: frame " + frame.getWidget().getName() + " is not referenced by document " + doc.getName());
-			}
-			
-			frameList.remove(frame);
-			
-			if (frameList.size() == 0)
-			{
-			    app.removeDocument(viewer.getDocument());
-			}
-		}
-		return this.frames.remove(frame);
-	}
-	
-	public Collection<ImagoFrame> getFrames()
-	{
-		return Collections.unmodifiableList(this.frames);
-	}
-
-	public void disposeEmptyFrame()
-	{
-		this.emptyFrame.getWidget().dispose();
 	}
 	
 	public Collection<ImagoDocViewer> getDocumentViewers()
@@ -237,4 +221,64 @@ public class ImagoGui
 	    
 	    throw new RuntimeException("Could not find a document viewer for document with name: " + doc.getName());
 	}
+
+	
+    // ===================================================================
+    // Frame management
+    
+    public boolean removeFrame(ImagoFrame frame)
+    {
+    	if (frame instanceof ImagoDocViewer)
+    	{
+    		ImagoDocViewer viewer = (ImagoDocViewer) frame;
+    		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+    		ArrayList<ImagoFrame> frameList = docFrames.get(doc.getName());
+    		if (!frameList.contains(frame))
+    		{
+    		    System.err.println("Warning: frame " + frame.getWidget().getName() + " is not referenced by document " + doc.getName());
+    		}
+    		
+    		frameList.remove(frame);
+    		
+    		if (frameList.size() == 0)
+    		{
+    		    app.removeDocument(viewer.getDocument());
+    		}
+    	}
+    	return this.frames.remove(frame);
+    }
+
+    public void showEmptyFrame(boolean b) 
+    {
+    	if (this.emptyFrame == null) 
+    	{
+    		this.emptyFrame = new ImagoEmptyFrame(this);
+    	}
+    
+    	this.emptyFrame.setVisible(b);
+    }
+
+    public boolean addFrame(ImagoFrame frame)
+    {
+    	return this.frames.add(frame);
+    }
+
+    public Collection<ImagoFrame> getFrames()
+    {
+        return Collections.unmodifiableList(this.frames);
+    }
+
+    public void disposeEmptyFrame()
+    {
+        this.emptyFrame.getWidget().dispose();
+    }
+    
+
+	// ===================================================================
+    // Getters / setters
+
+    public ImagoApp getAppli()
+    {
+    	return this.app;
+    }
  }

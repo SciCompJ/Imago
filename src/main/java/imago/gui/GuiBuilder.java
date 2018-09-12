@@ -11,6 +11,7 @@ import imago.gui.tool.SelectRectangleTool;
 import imago.gui.tool.SelectionTool;
 import imago.plugin.BoxFilter3x3FloatPlugin;
 import imago.plugin.CloseCurrentFrame;
+import imago.plugin.CloseWithChildren;
 import imago.plugin.QuitApplication;
 import imago.plugin.edit.ChangeCurrentTool;
 import imago.plugin.edit.DocClearShapes;
@@ -68,7 +69,7 @@ import imago.plugin.image.process.BinaryImageChamferDistanceMap;
 import imago.plugin.image.process.BinaryImageConnectedComponentsLabeling;
 import imago.plugin.image.process.BinaryImageOverlay;
 import imago.plugin.image.process.BinaryImageSkeleton;
-import imago.plugin.image.process.BoxFilter;
+import imago.plugin.image.process.ImageBoxFilter;
 import imago.plugin.image.process.ColorImageExtractChannel;
 import imago.plugin.image.process.Image3DGetCurrentSlice;
 import imago.plugin.image.process.Image3DGetSlice;
@@ -211,7 +212,7 @@ public class GuiBuilder
             this.hasBinaryImage = image.isBinaryImage();
             this.hasVectorImage = image.isVectorImage();
             this.hasColorImage = image.isColorImage();
-            this.hasVectorImage = array instanceof RGB8Array;
+            this.hasRGB8Image = array instanceof RGB8Array;
         }
 	}
 	
@@ -250,7 +251,8 @@ public class GuiBuilder
         addPlugin(fileMenu, new ShowDemoTable(), "Show Demo Table");
         
 		fileMenu.addSeparator();
-		addPlugin(fileMenu, new CloseCurrentFrame(), "Close", !(frame instanceof ImagoEmptyFrame));
+        addPlugin(fileMenu, new CloseCurrentFrame(), "Close", !(frame instanceof ImagoEmptyFrame));
+        addPlugin(fileMenu, new CloseWithChildren(), "Close With Children", !(frame instanceof ImagoEmptyFrame));
 		addPlugin(fileMenu, new QuitApplication(), "Quit");
 		return fileMenu;
 	}
@@ -429,11 +431,11 @@ public class GuiBuilder
 		menu.addSeparator();
 
 		// Noise reduction filters
-        addPlugin(menu, new BoxFilter(), "Box Filter");
+        addPlugin(menu, new ImageBoxFilter(), "Box Filter...");
 		addPlugin(menu, new BoxFilter3x3FloatPlugin(), "Box Filter 2D 3x3 (float)", hasScalarImage);
-        addPlugin(menu, new ImageBoxMedianFilter(), "Median Filter");
-        addPlugin(menu, new ImageBoxMinMaxFilter(), "Min/Max Filter");
-		addPlugin(menu, new ImageBoxVarianceFilter(), "Variance Filter");
+        addPlugin(menu, new ImageBoxMedianFilter(), "Median Filter...");
+        addPlugin(menu, new ImageBoxMinMaxFilter(), "Min/Max Filter...");
+		addPlugin(menu, new ImageBoxVarianceFilter(), "Variance Filter...");
 		menu.addSeparator();
 		
 		// Gradient filters
@@ -446,12 +448,12 @@ public class GuiBuilder
 		menu.addSeparator();
 		
 		JMenu morphologyMenu = new JMenu("Mathematical Morphology");
-		addPlugin(morphologyMenu, new ImageMorphologicalFilter(), "Morphological Filtering");
+		addPlugin(morphologyMenu, new ImageMorphologicalFilter(), "Morphological Filtering...");
 
 		morphologyMenu.addSeparator();
-        addPlugin(morphologyMenu, new ImageRegionalExtrema(), "Regional Min./Max.", hasScalarImage);
-		addPlugin(morphologyMenu, new ImageExtendedExtrema(), "Extended Min./Max.", hasScalarImage);
-		addPlugin(morphologyMenu, new ImageMorphologicalReconstruction(), "Morphological Reconstruction");
+        addPlugin(morphologyMenu, new ImageRegionalExtrema(), "Regional Min./Max...", hasScalarImage);
+		addPlugin(morphologyMenu, new ImageExtendedExtrema(), "Extended Min./Max...", hasScalarImage);
+		addPlugin(morphologyMenu, new ImageMorphologicalReconstruction(), "Morphological Reconstruction...");
 		morphologyMenu.addSeparator();
         addPlugin(morphologyMenu, new ImageFillHoles(), "Fill Holes");
         addPlugin(morphologyMenu, new ImageKillBorders(), "Kill Borders");

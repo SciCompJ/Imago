@@ -27,7 +27,7 @@ public class CloseCurrentFrame implements Plugin
 	public void run(ImagoFrame frame, String args)
 	{
 		System.out.println("Close frame");
-		frame.getGui().removeFrame(frame);
+//		frame.getGui().removeFrame(frame);
 		frame.close();
 	}
 }
