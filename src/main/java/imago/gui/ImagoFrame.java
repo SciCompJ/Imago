@@ -20,6 +20,11 @@ public abstract class ImagoFrame
 	 */
 	ImagoGui gui;
 
+	ImagoFrame parentFrame = null;
+	
+	/**
+	 * The Swing widget used to display this frame.
+	 */
 	JFrame jFrame;
 	
 	/**
@@ -49,6 +54,7 @@ public abstract class ImagoFrame
 	 */
 	protected ImagoFrame(ImagoFrame parent)
 	{
+	    this.parentFrame = parent;
 		this.gui = parent.gui;
 	}
 
@@ -123,6 +129,16 @@ public abstract class ImagoFrame
 	    return this.jFrame;
 	}
 	
+
+	// ===================================================================
+    // Management of parent / children frames
+	
+	public ImagoFrame getParentFrame()
+	{
+	    return this.parentFrame;
+	}
+
+
     // ===================================================================
     // Overload some methods from the inner JFrame
 
@@ -141,7 +157,7 @@ public abstract class ImagoFrame
         this.jFrame.setTitle(title);
     }
     
-    public void dispose()
+    public void close()
     {
         this.jFrame.dispose();
     }

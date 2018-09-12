@@ -69,7 +69,7 @@ public class ImagoTableFrame extends ImagoFrame
             public void windowClosing(WindowEvent evt)
             {
                 gui.removeFrame(ImagoTableFrame.this);
-                ImagoTableFrame.this.dispose();
+                ImagoTableFrame.this.close();
             }           
         });
         

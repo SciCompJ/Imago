@@ -28,6 +28,6 @@ public class CloseCurrentFrame implements Plugin
 	{
 		System.out.println("Close frame");
 		frame.getGui().removeFrame(frame);
-		frame.dispose();
+		frame.close();
 	}
 }

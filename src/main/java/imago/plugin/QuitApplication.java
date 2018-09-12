@@ -33,7 +33,7 @@ public class QuitApplication implements Plugin
 		for (ImagoFrame frm : gui.getFrames())
 		{
 			System.out.println("  need to close: " + frm.getWidget().getName());
-			frm.dispose();
+			frm.close();
 		}
 		
 		gui.disposeEmptyFrame();
