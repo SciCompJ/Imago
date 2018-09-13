@@ -96,6 +96,7 @@ import imago.plugin.image.process.ImageReshape;
 import imago.plugin.image.process.ImageRotateAroundCenter;
 import imago.plugin.image.process.ImageSplitChannels;
 import imago.plugin.image.process.MergeChannelImages;
+import imago.plugin.image.process.VectorImageChannelView;
 import imago.plugin.image.vectorize.BinaryImageBoundaryGraph;
 import imago.plugin.image.vectorize.ImageFindNonZeroPixels;
 import imago.plugin.image.vectorize.ImageIsocontour;
@@ -349,6 +350,10 @@ public class GuiBuilder
         // "colorToGray",
         // new Gray8Converter()), "RGB -> Gray8", hasColorImage);
         menu.add(colorMenu);
+
+        JMenu vectorMenu = new JMenu("Vector");
+        addPlugin(vectorMenu, new VectorImageChannelView(), "Channel View", hasVectorImage);
+        menu.add(vectorMenu);
 
         // add Colormap utils
         JMenu colormapMenu = new JMenu("Color Maps");

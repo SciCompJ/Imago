@@ -109,8 +109,8 @@ public class ImageBivariateHistogram implements Plugin
         // Iterate over pixel positions to compute bivariate histogram
         for (int[] pos : array1.positions())
         {
-            double value1 = array1.getValue(pos);
-            double value2 = array2.getValue(pos);
+            double value1 = ((ScalarArray<?>) array1).getValue(pos);
+            double value2 = ((ScalarArray<?>) array2).getValue(pos);
             int ind1 = (int) Math.min(Math.max(Math.floor(nBins1 * (value1 - minBound1) / (maxBound1 - minBound1)), 0), nBins1-1);
             int ind2 = (int) Math.min(Math.max(Math.floor(nBins2 * (value2 - minBound2) / (maxBound2 - minBound2)), 0), nBins2-1);
             histo.setInt(ind1, ind2, histo.getInt(ind1, ind2) + 1);

@@ -9,6 +9,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
 import net.sci.array.scalar.Float64Array;
+import net.sci.array.scalar.ScalarArray;
 import net.sci.image.Image;
 
 
@@ -43,8 +44,12 @@ public class ConvertImageToFloat64 implements Plugin
 		{
 			return;
 		}
+        if (!(array instanceof ScalarArray))
+        {
+            return;
+        }
 		
-		Float64Array result = Float64Array.convert(array);
+		Float64Array result = Float64Array.convert((ScalarArray<?>) array);
 		Image resultImage = new Image(result, image);
 				
 		// add the image document to GUI

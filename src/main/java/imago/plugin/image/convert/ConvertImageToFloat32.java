@@ -9,6 +9,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
 import net.sci.array.scalar.Float32Array;
+import net.sci.array.scalar.ScalarArray;
 import net.sci.image.Image;
 
 
@@ -43,8 +44,12 @@ public class ConvertImageToFloat32 implements Plugin
 		{
 			return;
 		}
-		
-		Float32Array result = Float32Array.convert(array);
+		if (!(array instanceof ScalarArray))
+		{
+		    return;
+		}
+
+		Float32Array result = Float32Array.convert((ScalarArray<?>) array);
 		Image resultImage = new Image(result, image);
 				
 		// add the image document to GUI
