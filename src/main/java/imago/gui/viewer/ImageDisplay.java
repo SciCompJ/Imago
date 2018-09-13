@@ -294,10 +294,6 @@ public class ImageDisplay extends JPanel
         {
             throw new RuntimeException("Geometry should not be null");
         }
-        if (!geom.isBounded())
-        {
-            throw new RuntimeException("Can not draw unbounded geometries");
-        }
 
         // Process various geometry cases
         if (geom instanceof Point2D)
