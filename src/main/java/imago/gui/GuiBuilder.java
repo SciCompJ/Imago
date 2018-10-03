@@ -5,6 +5,7 @@ package imago.gui;
 
 import imago.app.ImagoDoc;
 import imago.gui.action.RunPluginAction;
+import imago.gui.tool.DrawValueTool;
 import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectPolygonTool;
 import imago.gui.tool.SelectRectangleTool;
@@ -279,11 +280,19 @@ public class GuiBuilder
             addPlugin(editMenu, 
                     new ChangeCurrentTool(new SelectRectangleTool(viewer, "selectRectangle")),
                     "Select Rectangle", hasImage);
-			addPlugin(editMenu, 
+            addPlugin(editMenu, 
                     new ChangeCurrentTool(new SelectPolygonTool(viewer, "selectPolygon")),
                     "Select Polygon", hasImage);
 
-			editMenu.addSeparator();
+            editMenu.addSeparator();
+            addPlugin(editMenu, 
+                    new ChangeCurrentTool(new DrawValueTool(viewer, "drawWhite", Double.MAX_VALUE)),
+                    "Draw White", hasScalarImage);
+            addPlugin(editMenu, 
+                    new ChangeCurrentTool(new DrawValueTool(viewer, "drawBlack", 0.0)),
+                    "Draw Black", hasScalarImage);
+
+            editMenu.addSeparator();
 		}
 
 		// zoom items
