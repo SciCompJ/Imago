@@ -53,6 +53,7 @@ import imago.plugin.image.edit.ImageSetColorMapFactory;
 import imago.plugin.image.edit.ImageSetScale;
 import imago.plugin.image.edit.PrintImageInfos;
 import imago.plugin.image.edit.PrintImageTiffTags;
+import imago.plugin.image.edit.RefreshDisplay;
 import imago.plugin.image.edit.SetImageDisplayRange;
 import imago.plugin.image.edit.SetImageDisplayRangeToData;
 import imago.plugin.image.edit.SetImageDisplayRangeToDataType;
@@ -299,6 +300,7 @@ public class GuiBuilder
 		addPlugin(editMenu, new ZoomIn(), "Zoom In", hasImage);
 		addPlugin(editMenu, new ZoomOut(), "Zoom Out", hasImage);
 		addPlugin(editMenu, new ZoomOne(), "Zoom One", hasImage);
+        addPlugin(editMenu, new RefreshDisplay(), "Refresh Display", hasImage);
 		
         // add utility
 		editMenu.addSeparator();
