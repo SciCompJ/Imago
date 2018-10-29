@@ -312,12 +312,14 @@ public class GuiBuilder
 	}
 
 	/**
-	 * Creates the sub-menu for the "IMAGE" item in the main Menu bar.
+	 * Creates the sub-menu for the "Image" item in the main Menu bar.
 	 */
 	private JMenu createImageMenu()
 	{
 		JMenu menu = new JMenu("Image");
 		
+        addPlugin(menu, new PrintImageInfos(), "Print Image Info", hasImage);
+
         JMenu imageTypeMenu = new JMenu("Image Type");
         addPlugin(imageTypeMenu, new SetImageTypeToLabel(), "Set to Label Image", hasScalarImage);
         menu.add(imageTypeMenu);
@@ -429,7 +431,6 @@ public class GuiBuilder
         
 		menu.addSeparator();
         addPlugin(menu, new PrintImageTiffTags(), "Print TIFF Tags", hasImage);
-        addPlugin(menu, new PrintImageInfos(), "Print Image Info", hasImage);
 		return menu;
 	}
 
