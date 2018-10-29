@@ -3,6 +3,7 @@
  */
 package imago.gui;
 
+import java.awt.Point;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -51,6 +52,15 @@ public abstract class ImagoFrame
 		this.gui = gui;
 	}
 
+    /**
+     * Creates a new frame and specifies the title.
+     */
+    protected ImagoFrame(ImagoGui gui, String name)
+    {
+        this(name);
+        this.gui = gui;
+    }
+
 	/**
 	 * Creates a new frame by specifying the parent frame.
 	 * 
@@ -61,15 +71,10 @@ public abstract class ImagoFrame
 	    this.parent = parent;
 	    this.parent.addChild(this);
 		this.gui = parent.gui;
-	}
-
-	/**
-	 * Creates a new frame and specifies the title.
-	 */
-	protected ImagoFrame(ImagoGui gui, String name)
-	{
-		this(name);
-		this.gui = gui;
+		
+		// default positioning of the frame
+		Point pos = this.parent.jFrame.getLocation();
+		this.jFrame.setLocation(pos.x + 40, pos.y + 25);
 	}
 
 	/**
@@ -81,6 +86,10 @@ public abstract class ImagoFrame
         this.parent = parent;
         this.parent.addChild(this);
 		this.gui = parent.gui;
+        
+        // default positioning of the frame
+        Point pos = this.parent.jFrame.getLocation();
+        this.jFrame.setLocation(pos.x + 40, pos.y + 25);
 	}
 	
     private ImagoFrame()
