@@ -42,6 +42,7 @@ import imago.plugin.image.convert.ConvertImageToInt32;
 import imago.plugin.image.convert.ConvertImageToUInt16;
 import imago.plugin.image.convert.ConvertImageToUInt8;
 import imago.plugin.image.convert.ConvertRGB8ImageToUInt8;
+import imago.plugin.image.convert.ConvertScalarImageToUInt8;
 import imago.plugin.image.edit.CreateColorCubeImage3D;
 import imago.plugin.image.edit.CreateDistanceToOctahedronImage3D;
 import imago.plugin.image.edit.ImageFillDisk;
@@ -325,6 +326,7 @@ public class GuiBuilder
         menu.add(imageTypeMenu);
         
 	      // Type conversion items
+        addPlugin(menu, new ConvertScalarImageToUInt8(), "Convert to Gray8", hasScalarImage);
         JMenu convertDataTypeMenu = new JMenu("Convert Data-Type");
         convertDataTypeMenu.setEnabled(hasImage);
         addPlugin(convertDataTypeMenu, new ConvertImageToBinary(), "Binary", hasScalarImage);
