@@ -75,7 +75,12 @@ public class ImageBoxMedianFilter implements Plugin
 	}
 
     /**
-     * Returns true if the current frame contains a scalar image.
+     * Returns true if the current frame contains a scalar image or a vector
+     * image.
+     * 
+     * @param frame
+     *            the frame containing reference to this plugin
+     * @return true if the frame contains a scalar or vector image.
      */
     @Override
     public boolean isEnabled(ImagoFrame frame)
@@ -90,6 +95,6 @@ public class ImageBoxMedianFilter implements Plugin
         if (image == null)
             return false;
 
-        return image.isScalarImage();
+        return image.isScalarImage() || image.isVectorImage();
     }
 }
