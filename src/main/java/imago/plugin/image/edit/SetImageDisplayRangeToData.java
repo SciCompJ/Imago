@@ -51,7 +51,7 @@ public class SetImageDisplayRangeToData implements Plugin
 		double[] extent = scalarArray.valueRange();
 		System.out.println("Array value range: [" + extent[0] + " ; " + extent[1] + "]");
 		
-		image.setDisplayRange(extent);
+		image.getDisplaySettings().setDisplayRange(extent);
 
 		// refresh display
 		ImageViewer viewer = ((ImagoDocViewer) frame).getImageView();

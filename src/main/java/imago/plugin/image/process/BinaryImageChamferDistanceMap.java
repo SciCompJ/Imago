@@ -14,6 +14,7 @@ import net.sci.array.scalar.BinaryArray2D;
 import net.sci.array.scalar.BinaryArray3D;
 import net.sci.array.color.RGB8;
 import net.sci.image.ColorMaps;
+import net.sci.image.DisplaySettings;
 import net.sci.image.Image;
 import net.sci.image.binary.ChamferWeights2D;
 import net.sci.image.binary.ChamferWeights3D;
@@ -123,8 +124,9 @@ public class BinaryImageChamferDistanceMap implements Plugin
 		Image resultImage = new Image(result, image);
 		
 		// compute JET lut by default
-		resultImage.setColorMap(ColorMaps.JET.createColorMap(255));
-		resultImage.setBackgroundColor(RGB8.WHITE);
+		DisplaySettings settings = resultImage.getDisplaySettings();
+		settings.setColorMap(ColorMaps.JET.createColorMap(255));
+		settings.setBackgroundColor(RGB8.WHITE);
 		
 		// add the image document to GUI
 		frame.getGui().addNewDocument(resultImage);

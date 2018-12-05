@@ -70,7 +70,7 @@ public class ImageHistogram implements Plugin
         }
         else if (array instanceof ScalarArray)
 		{
-			double[] range = image.getDisplayRange();
+			double[] range = image.getDisplaySettings().getDisplayRange();
 			System.out.println(String.format("Display range for histogram: (%f ; %f)", range[0], range[1]));
 			return histogram((ScalarArray<?>) array, range, 256);
 		}

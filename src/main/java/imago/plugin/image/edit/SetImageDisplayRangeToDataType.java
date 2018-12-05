@@ -64,7 +64,7 @@ public class SetImageDisplayRangeToDataType implements Plugin
 		}
 		System.out.println("  New value range: [" + extent[0] + " ; " + extent[1] + "]");
 		
-		metaImage.setDisplayRange(extent);
+		metaImage.getDisplaySettings().setDisplayRange(extent);
 		
 		ImageViewer viewer = ((ImagoDocViewer) frame).getImageView();
 		

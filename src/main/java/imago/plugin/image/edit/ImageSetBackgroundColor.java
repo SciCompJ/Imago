@@ -52,7 +52,7 @@ public class ImageSetBackgroundColor implements Plugin
 		
         // parse dialog results
 		Color bgColor = CommonColors.fromLabel(gd.getNextChoice()).getColor();
-		image.setBackgroundColor(bgColor);
+		image.getDisplaySettings().setBackgroundColor(bgColor);
 
 		ImageViewer imageViewer = viewer.getImageView();
 		imageViewer.refreshDisplay();

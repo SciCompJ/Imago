@@ -53,7 +53,7 @@ public class SetImageDisplayRange implements Plugin
 		
 		// Compute min and max values within the array 
 		double[] extent = scalarArray.valueRange();
-		double[] displayRange = image.getDisplayRange();
+		double[] displayRange = image.getDisplaySettings().getDisplayRange();
 		
 		// Create new dialog populated with widgets
 		GenericDialog gd = new GenericDialog(frame, "Set Display Range");
@@ -75,7 +75,7 @@ public class SetImageDisplayRange implements Plugin
 		extent = new double[]{minRange, maxRange};
 
 		// update display settings
-		image.setDisplayRange(extent);
+		image.getDisplaySettings().setDisplayRange(extent);
 		
 		// refresh display
 		ImageViewer viewer = ((ImagoDocViewer) frame).getImageView();

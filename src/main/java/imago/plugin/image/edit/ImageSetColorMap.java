@@ -41,7 +41,7 @@ public class ImageSetColorMap implements Plugin
 		ImagoDoc doc = viewer.getDocument();
 		Image image	= doc.getImage();
 
-		image.setColorMap(this.colorMap);
+		image.getDisplaySettings().setColorMap(this.colorMap);
 		//TODO: notify change ?
 		
 		viewer.getImageView().refreshDisplay();

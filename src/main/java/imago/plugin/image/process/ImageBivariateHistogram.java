@@ -145,7 +145,7 @@ public class ImageBivariateHistogram implements Plugin
         
         Image resultImage = new Image(result);
 		resultImage.setName(image1.getName() + "-" + image2.getName() + "-jointHist");
-		resultImage.setColorMap(ColorMaps.JET.createColorMap(256));
+		resultImage.getDisplaySettings().setColorMap(ColorMaps.JET.createColorMap(256));
 		
 		// add the image document to GUI
 		gui.addNewDocument(resultImage);

@@ -52,7 +52,7 @@ public class ImageUtils
 	public static final java.awt.image.BufferedImage createAwtImage(Image image)
 	{
 		// extract LUT from image, or create one otherwise
-		ColorMap lut = image.getColorMap();
+		ColorMap lut = image.getDisplaySettings().getColorMap();
 		if (lut == null)
 		{
 		    lut = ColorMaps.GRAY.createColorMap(256); 
@@ -81,7 +81,7 @@ public class ImageUtils
             {
                 throw new RuntimeException("Label images assume inner array implements IntArray2D");
             }
-		    return labelToAwtImage((IntArray2D<?>) array, lut, image.getBackgroundColor());
+		    return labelToAwtImage((IntArray2D<?>) array, lut, image.getDisplaySettings().getBackgroundColor());
 		}
 		else if (image.isColorImage())
 		{
@@ -105,7 +105,7 @@ public class ImageUtils
 		if (array instanceof ScalarArray2D)
  		{
  			// scalar images use display range and current LUT
- 			double[] displayRange = image.getDisplayRange();
+ 			double[] displayRange = image.getDisplaySettings().getDisplayRange();
  			return createAwtImage((ScalarArray2D<?>) array, displayRange, lut);
  		}
 		else if (array instanceof VectorArray)
@@ -114,7 +114,7 @@ public class ImageUtils
 			ScalarArray<?> norm = VectorArray.norm((VectorArray<?>) array);
 			
 			// convert image of the norm to AWT image
-			double[] displayRange = image.getDisplayRange();
+			double[] displayRange = image.getDisplaySettings().getDisplayRange();
  			return createAwtImage((ScalarArray2D<?>) norm, displayRange, lut);
 		} 
 

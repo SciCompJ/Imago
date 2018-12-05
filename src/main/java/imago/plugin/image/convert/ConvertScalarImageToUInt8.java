@@ -53,18 +53,23 @@ public class ConvertScalarImageToUInt8 implements Plugin
 			return;
 		}
 		
-		// cast to scalar array
-		ScalarArray<?> scalarArray = (ScalarArray<?>) array;
+		// extract range, and convert to UInt8
+		double[] range = image.getDisplaySettings().getDisplayRange();
+		UInt8Array result = processScalar((ScalarArray<?>) array, range);
 		
-		// compute ratio 
-		double[] range = image.getDisplayRange();
-		double ratio = 255 / (range[1] - range[0]);
-		
-		UInt8Array result = UInt8Array.convert(scalarArray.minus(range[0]).times(ratio));
+		// create image
 		Image resultImage = new Image(result, image);
 				
 		// add the image document to GUI
 		frame.getGui().addNewDocument(resultImage); 
 	}
-
+	
+	public UInt8Array processScalar(ScalarArray<?> array, double[] range)
+	{
+        // compute ratio 
+	    double ratio = 255 / (range[1] - range[0]);
+	    
+	    // remove min, rescale and convert type
+        return UInt8Array.convert(array.minus(range[0]).times(ratio));
+	}
 }

@@ -89,7 +89,7 @@ public class ImageRoiHistogram implements Plugin
 		Array<?> array = image.getData();
 		if (array instanceof ScalarArray2D)
 		{
-			double[] range = image.getDisplayRange();
+			double[] range = image.getDisplaySettings().getDisplayRange();
 			System.out.println(String.format("Display range for histogram: (%f ; %f)", range[0], range[1]));
 			return histogram((ScalarArray2D<?>) array, domain, range, 256);
 		}

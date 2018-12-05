@@ -12,6 +12,7 @@ import net.sci.array.Array;
 import net.sci.array.color.RGB8;
 import net.sci.array.scalar.BinaryArray;
 import net.sci.image.ColorMaps;
+import net.sci.image.DisplaySettings;
 import net.sci.image.Image;
 import net.sci.image.binary.FloodFillComponentsLabeling2D;
 import net.sci.image.binary.FloodFillComponentsLabeling3D;
@@ -98,9 +99,10 @@ public class BinaryImageConnectedComponentsLabeling implements Plugin
 		
 		// compute JET lut by default
 		// TODO: update by scaling?
-		int nColors = (int) Math.min(result.getDisplayRange()[1], 255);
-		result.setColorMap(ColorMaps.JET.createColorMap(nColors));
-		result.setBackgroundColor(RGB8.WHITE);
+		DisplaySettings settings = result.getDisplaySettings();
+		int nColors = (int) Math.min(settings.getDisplayRange()[1], 255);
+		settings.setColorMap(ColorMaps.JET.createColorMap(nColors));
+		settings.setBackgroundColor(RGB8.WHITE);
 		
 		// add the image document to GUI
 		frame.getGui().addNewDocument(result);

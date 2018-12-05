@@ -57,7 +57,7 @@ public class SetImageTypeToLabel implements Plugin
 		// recompute display range to ensure labels are displayed with full colormap range
 		double[] minMax = ((ScalarArray<?>) array).valueRange();
 		minMax[0] = 0;
-		image.setDisplayRange(minMax);
+		image.getDisplaySettings().setDisplayRange(minMax);
 		
 		// update widgets
 		viewer.getImageView().refreshDisplay();

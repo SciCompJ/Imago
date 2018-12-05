@@ -59,7 +59,7 @@ public class ImageSetColorMapFactory implements Plugin
 		int nColors = 256;
 		if (image.isLabelImage())
 		{
-            nColors = (int) image.getDisplayRange()[1];
+            nColors = (int) image.getDisplaySettings().getDisplayRange()[1];
 		}
 		
 		System.out.println("number of colors for colormap: " + nColors);
@@ -73,7 +73,7 @@ public class ImageSetColorMapFactory implements Plugin
         if (image.isLabelImage())
         {
             ArrayList<Color> newColors = new ArrayList<Color>(nColors + 1);
-            newColors.add(image.getBackgroundColor());
+            newColors.add(image.getDisplaySettings().getBackgroundColor());
             for (int i = 0; i < nColors; i++)
             {
                 newColors.add(colorMap.getColor(i));
@@ -81,7 +81,7 @@ public class ImageSetColorMapFactory implements Plugin
             colorMap = new DefaultColorMap(newColors);
         }
 		
-		image.setColorMap(colorMap);
+		image.getDisplaySettings().setColorMap(colorMap);
 		//TODO: notify change ?
 		
 		viewer.getImageView().refreshDisplay();
