@@ -43,6 +43,7 @@ import imago.plugin.image.convert.ConvertImageToUInt16;
 import imago.plugin.image.convert.ConvertImageToUInt8;
 import imago.plugin.image.convert.ConvertRGB8ImageToUInt8;
 import imago.plugin.image.convert.ConvertScalarImageToUInt8;
+import imago.plugin.image.convert.ConvertStackToMovie;
 import imago.plugin.image.edit.CreateColorCubeImage3D;
 import imago.plugin.image.edit.CreateDistanceToOctahedronImage3D;
 import imago.plugin.image.edit.ImageFillDisk;
@@ -340,6 +341,9 @@ public class GuiBuilder
         addPlugin(convertDataTypeMenu, new ConvertImageToFloat64(), "Float64", hasImage);
         menu.add(convertDataTypeMenu);
         
+        // image type conversion items
+        addPlugin(menu, new ConvertStackToMovie(), "Convert stack to movie", hasImage3D);
+
         menu.addSeparator();
 		JMenu displayRangeMenu = new JMenu("Display Range");
 		addPlugin(displayRangeMenu, new SetImageDisplayRangeToDataType(), "Set Data Type Display Range", hasScalarImage);

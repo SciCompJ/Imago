@@ -8,6 +8,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
+import net.sci.image.Calibration;
 import net.sci.image.Image;
 
 /**
@@ -63,7 +64,8 @@ public class ImageSetScale implements Plugin
 		}
 		String unitName = gd.getNextString();
 
-		image.setSpatialCalibration(resolList, unitName);
+		Calibration calib = image.getCalibration();
+		calib.setSpatialCalibration(resolList, unitName);
 		
 		viewer.repaint();
 	}
