@@ -36,15 +36,8 @@ public class MergeChannelImages implements Plugin
 		ImagoApp app = frame.getGui().getAppli();
 		
 		// collect the names of documents containing UInt8 images
-		ArrayList<String> imageNames = new ArrayList<>();
-		app.getDocuments().stream()
-			.filter(doc -> {
-				Image img = doc.getImage();
-				if (img == null) return false;
-				return img.getData() instanceof UInt8Array;
-			})
-			.forEach(doc -> imageNames.add(doc.getName()));
-
+		ArrayList<String> imageNames = findUInt8ArrayNameList(app);
+		
 		// do not continue if no UInt8 image is loaded
 		if (imageNames.size() == 0)
 		{
@@ -56,7 +49,7 @@ public class MergeChannelImages implements Plugin
 		String firstImageName = imageNameArray[0];
 				
 		// Create Dialog for choosing image names
-		GenericDialog dialog = new GenericDialog("Merge Channels");
+		GenericDialog dialog = new GenericDialog(frame, "Merge Channels");
 		dialog.addChoice("Red channel:", imageNameArray, firstImageName);
 		dialog.addChoice("Green channel:", imageNameArray, firstImageName);
 		dialog.addChoice("Blue channel:", imageNameArray, firstImageName);
@@ -87,5 +80,18 @@ public class MergeChannelImages implements Plugin
 
 		// add the image document to GUI
 		frame.getGui().addNewDocument(rgbImage);
+	}
+	
+	private ArrayList<String> findUInt8ArrayNameList(ImagoApp app)
+	{
+	    ArrayList<String> imageNames = new ArrayList<>();
+        app.getDocuments().stream()
+            .filter(doc -> {
+                Image img = doc.getImage();
+                if (img == null) return false;
+                return img.getData() instanceof UInt8Array;
+            })
+            .forEach(doc -> imageNames.add(doc.getName()));
+        return imageNames;
 	}
 }
