@@ -114,7 +114,8 @@ public class ImageUtils
 			ScalarArray<?> norm = VectorArray.norm((VectorArray<?>) array);
 			
 			// convert image of the norm to AWT image
-			double[] displayRange = image.getDisplaySettings().getDisplayRange();
+			double[] valueRange = norm.finiteValueRange();
+			double[] displayRange = new double[]{0.0, valueRange[1]};
  			return createAwtImage((ScalarArray2D<?>) norm, displayRange, lut);
 		} 
 
