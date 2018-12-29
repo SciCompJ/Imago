@@ -74,6 +74,7 @@ import imago.plugin.image.process.BinaryImageConnectedComponentsLabeling;
 import imago.plugin.image.process.BinaryImageOverlay;
 import imago.plugin.image.process.BinaryImageSkeleton;
 import imago.plugin.image.process.ImageApplyMathFunction;
+import imago.plugin.image.process.ImageArrayBinaryMathOperator;
 import imago.plugin.image.process.ImageBoxFilter;
 import imago.plugin.image.process.ColorImageExtractChannel;
 import imago.plugin.image.process.Image3DGetCurrentSlice;
@@ -452,6 +453,7 @@ public class GuiBuilder
         addPlugin(mathsMenu, new ImageApplyMathFunction(), "Math Function...", hasScalarImage);
         addArrayOperatorPlugin(mathsMenu, new Sqrt(), "Sqrt", hasScalarImage);
         addArrayOperatorPlugin(mathsMenu, new PowerOfTwo(), "Power Of Two", hasScalarImage);
+        addPlugin(mathsMenu, new ImageArrayBinaryMathOperator(), "Image operator");
 		menu.add(mathsMenu);
 		menu.addSeparator();
 
