@@ -14,20 +14,28 @@ import java.util.function.BiFunction;
 
 import net.sci.array.Array;
 import net.sci.array.Arrays;
+import net.sci.array.process.Math;
 import net.sci.array.scalar.Float32Array;
 import net.sci.array.scalar.Float64Array;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.image.Image;
 
 /**
- * Apply a simple math function chosen from a list.
+ * Apply a simple math function between two image arrays.
  * 
  * @author David Legland
  *
  */
 public class ImageArrayBinaryMathOperator implements Plugin
 {
+    /**
+     * The list of functions that can be applied.
+     */
     String[] functionNames = new String[]{"Plus", "Minus", "Times", "Divides", "Min", "Max"};
+    
+    /**
+     * Control the type of output array.
+     */
     String[] outputTypeNames = new String[]{"Same as Image 1", "Same as Image 2", "Float32", "Float64"};
     
 	public ImageArrayBinaryMathOperator()
@@ -61,7 +69,7 @@ public class ImageArrayBinaryMathOperator implements Plugin
 		GenericDialog gd = new GenericDialog(frame, "Bianry Math Operator");
 		gd.addChoice("Image 1", imageNames, imageNames[0]);
         gd.addChoice("Operation", functionNames, functionNames[0]);
-        gd.addChoice("Image 2", imageNames, imageNames[imageNames.length > 0 ? 1 : 0]);
+        gd.addChoice("Image 2", imageNames, imageNames[imageNames.length > 1 ? 1 : 0]);
         gd.addChoice("OutputT Type", outputTypeNames, outputTypeNames[0]);
 		gd.showDialog();
 		
@@ -133,19 +141,16 @@ public class ImageArrayBinaryMathOperator implements Plugin
             fun = (x, y) -> x / y;
             break;
         case "Min":
-            fun = (x, y) -> Math.min(x, y);
+            fun = (x, y) -> java.lang.Math.min(x, y);
             break;
         case "Max":
-            fun = (x, y) -> Math.max(x, y);
+            fun = (x, y) -> java.lang.Math.max(x, y);
             break;
         default: throw new RuntimeException("Unknown function name: " + functionName); 
 		}
 
         // apply operator on current images
-		for (int[] pos : array1.positions())
-		{
-		    result.setValue(pos, fun.apply(array1.getValue(pos), array2.getValue(pos)));
-		}
+		Math.apply(array1, array2, result, fun);
 		
 		Image resultImage = new Image(result, image);
 		resultImage.setName(image.getName() + "-" + functionName);
@@ -161,12 +166,6 @@ public class ImageArrayBinaryMathOperator implements Plugin
         if (!(frame instanceof ImagoDocViewer))
             return false;
         
-        // check image
-        ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
-        Image image = doc.getImage();
-        if (image == null)
-            return false;
-
-        return image.isScalarImage();
+        return true;
     }
 }

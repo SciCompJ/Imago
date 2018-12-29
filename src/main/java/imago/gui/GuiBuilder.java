@@ -449,7 +449,7 @@ public class GuiBuilder
 	{
 		JMenu menu = new JMenu("Process");
 
-		JMenu mathsMenu = new JMenu("Maths");
+		JMenu mathsMenu = new JMenu("Math");
         addPlugin(mathsMenu, new ImageApplyMathFunction(), "Math Function...", hasScalarImage);
         addArrayOperatorPlugin(mathsMenu, new Sqrt(), "Sqrt", hasScalarImage);
         addArrayOperatorPlugin(mathsMenu, new PowerOfTwo(), "Power Of Two", hasScalarImage);
