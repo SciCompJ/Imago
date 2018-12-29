@@ -73,6 +73,7 @@ import imago.plugin.image.process.BinaryImageChamferDistanceMap;
 import imago.plugin.image.process.BinaryImageConnectedComponentsLabeling;
 import imago.plugin.image.process.BinaryImageOverlay;
 import imago.plugin.image.process.BinaryImageSkeleton;
+import imago.plugin.image.process.ImageApplyMathFunction;
 import imago.plugin.image.process.ImageBoxFilter;
 import imago.plugin.image.process.ColorImageExtractChannel;
 import imago.plugin.image.process.Image3DGetCurrentSlice;
@@ -448,6 +449,7 @@ public class GuiBuilder
 		JMenu menu = new JMenu("Process");
 
 		JMenu mathsMenu = new JMenu("Maths");
+        addPlugin(mathsMenu, new ImageApplyMathFunction(), "Math Function...", hasScalarImage);
         addArrayOperatorPlugin(mathsMenu, new Sqrt(), "Sqrt", hasScalarImage);
         addArrayOperatorPlugin(mathsMenu, new PowerOfTwo(), "Power Of Two", hasScalarImage);
 		menu.add(mathsMenu);
