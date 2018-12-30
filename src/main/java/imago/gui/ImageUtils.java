@@ -229,6 +229,10 @@ public class ImageUtils
             for (int x = 0; x < sizeX; x++)
             {
                 double value = array.getValue(x, y);
+                if (!Double.isFinite(value))
+                {
+                    continue;
+                }
                 int sample = (int) Math.min(Math.max(255 * (value - displayRange[0]) / extent, 0), 255);
                 raster.setSample(x, y, 0, sample); 
             }
@@ -260,6 +264,10 @@ public class ImageUtils
             for (int x = 0; x < sizeX; x++)
             {
                 double value = array.getValue(x, y);
+                if (!Double.isFinite(value))
+                {
+                    continue;
+                }
                 int sample = (int) Math.min(Math.max(255 * (value - displayRange[0]) / extent, 0), 255);
                 raster.setSample(x, y, 0, sample); 
             }
