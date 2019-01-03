@@ -13,7 +13,7 @@ import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.ScalarArray2D;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.geom2d.polygon.SimplePolygon2D;
+import net.sci.geom.geom2d.polygon.DefaultPolygon2D;
 import net.sci.image.Image;
 import net.sci.table.DataTable;
 
@@ -54,13 +54,13 @@ public class ImageMeanValue implements Plugin
         
         PlanarImageViewer piv = (PlanarImageViewer) viewer;
         Geometry2D selection = piv.getSelection();
-        if (!(selection instanceof SimplePolygon2D))
+        if (!(selection instanceof DefaultPolygon2D))
         {
             System.out.println("requires selection to be a simple polygon");
             return;
         }
         
-        SimplePolygon2D poly = (SimplePolygon2D) selection;
+        DefaultPolygon2D poly = (DefaultPolygon2D) selection;
         
         // manage clockwise and counter-clockwise polygons
         boolean clockWise = poly.signedArea() < 0;

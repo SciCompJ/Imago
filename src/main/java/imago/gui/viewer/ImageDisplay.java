@@ -422,7 +422,7 @@ public class ImageDisplay extends JPanel
     private void drawPolyline(Graphics2D g2, Polyline2D poly)
     {
         // check size
-        int nv = poly.vertices().size();
+        int nv = poly.vertexNumber();
         if (nv < 2)
         {
             return;
@@ -432,7 +432,7 @@ public class ImageDisplay extends JPanel
         int[] px = new int[nv];
         int[] py = new int[nv];
 
-        Iterator<Point2D> iter = poly.vertices().iterator();
+        Iterator<Point2D> iter = poly.vertexPositions().iterator();
         for (int i = 0; i < nv; i++)
         {
             Point2D point = iter.next();
@@ -458,7 +458,7 @@ public class ImageDisplay extends JPanel
     private void drawPolygon(Graphics2D g2, PolygonalDomain2D poly)
     {
     	// check size
-    	int nv = poly.vertices().size();
+    	int nv = poly.vertexNumber();
     	if (nv < 2)
     	{
     		return;
@@ -468,13 +468,14 @@ public class ImageDisplay extends JPanel
     	int[] px = new int[nv];
     	int[] py = new int[nv];
 
-    	Iterator<Point2D> iter = poly.vertices().iterator();
-    	for (int i = 0; i < nv; i++)
+    	// iterate over vertex positions
+    	int i = 0;
+    	for (Point2D point : poly.vertexPositions())
     	{
-    		Point2D point = iter.next();
     		point = imageToDisplay(point);
     		px[i] = (int) point.getX();
     		py[i] = (int) point.getY();
+    		i++;
     	}
 
     	// display the polygon

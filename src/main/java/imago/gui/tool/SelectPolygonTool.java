@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.polygon.Polygon2D;
-import net.sci.geom.geom2d.polygon.SimplePolygon2D;
+import net.sci.geom.geom2d.polygon.DefaultPolygon2D;
 
 /**
  * Select a polygon region of interest on a planar viewer.
@@ -141,7 +141,7 @@ public class SelectPolygonTool extends ImagoTool
         // update vertices, add corresponding polygon, and remove last vertex
         int nv = this.selectedPoints.size();
         this.selectedPoints.add(pos);
-        display.setSelection(new SimplePolygon2D(selectedPoints));
+        display.setSelection(new DefaultPolygon2D(selectedPoints));
         this.selectedPoints.remove(nv);
         
         this.viewer.repaint();
