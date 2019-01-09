@@ -90,8 +90,8 @@ public class SelectRectangleTool extends ImagoTool
             {
                 Box2D box = new Box2D(x1, x2, y1, y2);
                 
-//                PlanarImageViewer piv = (PlanarImageViewer) this.viewer.getImageView();
-//                piv.setSelection(box);
+                PlanarImageViewer piv = (PlanarImageViewer) this.viewer.getImageView();
+                piv.setSelection(box);
                 display.setSelection(box);
             }  
         }

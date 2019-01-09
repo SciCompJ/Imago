@@ -49,7 +49,7 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 	protected ImagoTool currentTool = null;
 	
 	/**
-	 * The shape of the current selection, usually a polyline or a rectangle
+	 * The shape of the current selection, usually a polyline or a rectangle, in pixels coordinates.
 	 */
 	protected Geometry2D selection = null;
 	
