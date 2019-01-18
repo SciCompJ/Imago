@@ -11,8 +11,8 @@ import imago.gui.viewer.PlanarImageViewer;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 
+import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.geom2d.line.LineSegment2D;
 
 /**
  * Select a line segment on a planar viewer
