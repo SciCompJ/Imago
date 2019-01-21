@@ -20,10 +20,10 @@ import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Box2D;
 import net.sci.geom.geom2d.Curve2D;
 import net.sci.geom.geom2d.Geometry2D;
+import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.curve.Ellipse2D;
 import net.sci.geom.geom2d.graph.SimpleGraph2D;
-import net.sci.geom.geom2d.line.LineSegment2D;
 import net.sci.geom.geom2d.polygon.PolygonalDomain2D;
 import net.sci.geom.geom2d.polygon.Polyline2D;
 

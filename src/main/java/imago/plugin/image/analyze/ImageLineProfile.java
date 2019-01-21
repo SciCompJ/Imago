@@ -28,8 +28,8 @@ import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.ScalarArray2D;
 import net.sci.array.vector.VectorArray2D;
 import net.sci.geom.geom2d.Geometry2D;
+import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.geom2d.line.LineSegment2D;
 import net.sci.image.Image;
 import net.sci.table.DataTable;
 
