@@ -15,7 +15,7 @@ import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.polygon.DefaultPolygon2D;
 import net.sci.image.Image;
-import net.sci.table.DataTable;
+import net.sci.table.DefaultNumericTable;
 
 /**
  * Compute mean value within the whole image or within the current region selection.
@@ -65,7 +65,7 @@ public class ImageMeanValue implements Plugin
         // manage clockwise and counter-clockwise polygons
         boolean clockWise = poly.signedArea() < 0;
         
-        DataTable table = null;
+        DefaultNumericTable table = null;
         if (array instanceof ScalarArray)
         {
         	ScalarArray2D<?> array2d = ScalarArray2D.wrap((ScalarArray<?>) array);
@@ -89,7 +89,7 @@ public class ImageMeanValue implements Plugin
             }
 
             double meanValue = count == 0 ? Double.NaN : sum / count;
-            table = new DataTable(1, 3);
+            table = new DefaultNumericTable(1, 3);
             table.setColumnNames(new String[] { "Mean", "Sum", "Count" });
             table.setValue(0, 0, meanValue);
             table.setValue(0, 1, sum);

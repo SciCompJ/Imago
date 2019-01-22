@@ -31,7 +31,7 @@ import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.image.Image;
-import net.sci.table.DataTable;
+import net.sci.table.DefaultNumericTable;
 
 /**
  * Simple demo for line profile that computes profile along image diagonal.
@@ -81,7 +81,7 @@ public class ImageLineProfile implements ImagePlugin
         Point2D p1 = line.getP1();
         Point2D p2 = line.getP2();
         
-        DataTable table = null;
+        DefaultNumericTable table = null;
         if (array instanceof ScalarArray)
         {
         	ScalarArray2D<?> array2d = ScalarArray2D.wrap((ScalarArray<?>) array);
@@ -105,7 +105,7 @@ public class ImageLineProfile implements ImagePlugin
         
     }
     
-    private DataTable intensityProfile(ScalarArray2D<?> array, Point2D p1, Point2D p2, int n)
+    private DefaultNumericTable intensityProfile(ScalarArray2D<?> array, Point2D p1, Point2D p2, int n)
     {
         double x0 = p1.getX();
         double y0 = p1.getY();
@@ -113,7 +113,7 @@ public class ImageLineProfile implements ImagePlugin
         double dy = (p2.getY() - y0) / n;
         
         LinearInterpolator2D interp = new LinearInterpolator2D(array);
-        DataTable table = new DataTable(n, 1);
+        DefaultNumericTable table = new DefaultNumericTable(n, 1);
         for (int i = 0; i < n; i++)
         {
             double x = x0 + i * dx;
@@ -125,14 +125,14 @@ public class ImageLineProfile implements ImagePlugin
         return table;
     }
     
-    private DataTable colorProfile(RGB8Array2D array, Point2D p1, Point2D p2, int n)
+    private DefaultNumericTable colorProfile(RGB8Array2D array, Point2D p1, Point2D p2, int n)
     {
         double x0 = p1.getX();
         double y0 = p1.getY();
         double dx = (p2.getX() - x0) / n;
         double dy = (p2.getY() - y0) / n;
         
-        DataTable table = new DataTable(n, 3);
+        DefaultNumericTable table = new DefaultNumericTable(n, 3);
         table.setColumnNames(new String[] { "Red", "Green", "Blue" });
         
         for (int c = 0; c < 3; c++)
@@ -153,9 +153,9 @@ public class ImageLineProfile implements ImagePlugin
     /**
      * Display a line profile.
      */
-    private void plotIntensityProfile(ImagoFrame parentFrame, DataTable table)
+    private void plotIntensityProfile(ImagoFrame parentFrame, DefaultNumericTable table)
     {
-        int nValues = table.getRowNumber();
+        int nValues = table.rowNumber();
 
         // Default name for table
         String tableName = table.getName();
@@ -195,10 +195,10 @@ public class ImageLineProfile implements ImagePlugin
         chartFrame.setTitle("Intensity Profile");
     }
     
-    private void plotRGB8LineProfile(ImagoFrame parentFrame, DataTable table)
+    private void plotRGB8LineProfile(ImagoFrame parentFrame, DefaultNumericTable table)
     {
-        int nChannels = table.getColumnNumber();
-        int nValues = table.getRowNumber();
+        int nChannels = table.columnNumber();
+        int nValues = table.rowNumber();
         String[] colNames = table.getColumnNames();
         
         // Default name for table

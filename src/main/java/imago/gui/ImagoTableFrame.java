@@ -86,8 +86,8 @@ public class ImagoTableFrame extends ImagoFrame
         String[] colNames = table.getColumnNames();
          
         // Convert numeric values to table of objects
-        int nRows = table.getRowNumber();
-        int nCols = table.getColumnNumber();
+        int nRows = table.rowNumber();
+        int nCols = table.columnNumber();
         Object[][] data = new Object[nRows][nCols];
         for (int i = 0; i < nRows; i++)
         {

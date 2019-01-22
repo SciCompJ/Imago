@@ -13,7 +13,7 @@ import net.sci.array.color.RGB8Array;
 import net.sci.array.process.Histogram;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.image.Image;
-import net.sci.table.DataTable;
+import net.sci.table.DefaultNumericTable;
 
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
@@ -48,9 +48,9 @@ public class ImageHistogram implements Plugin
 		ImagoDocViewer iframe = (ImagoDocViewer) frame;
 		Image image = iframe.getDocument().getImage();
 
-		DataTable histo = computeHistogram(image);
+		DefaultNumericTable histo = computeHistogram(image);
 		
-        int nChannels = histo.getColumnNumber();
+        int nChannels = histo.columnNumber();
         if (nChannels == 2)
         {
             showIntensityHistogram(frame, histo);
@@ -61,7 +61,7 @@ public class ImageHistogram implements Plugin
         }
 	}
 
-	private DataTable computeHistogram(Image image)
+	private DefaultNumericTable computeHistogram(Image image)
 	{
 		Array<?> array = image.getData();
 		if (array instanceof RGB8Array)            
@@ -96,9 +96,9 @@ public class ImageHistogram implements Plugin
 	 *            the range of values for histogram computation
 	 * @param nBins
 	 *            the number of bins of the resulting histogram
-	 * @return a new instance of DataTable containing the resulting histogram
+	 * @return a new instance of DefaultNumericTable containing the resulting histogram
 	 */
-	public static final DataTable histogram(ScalarArray<?> array, double[] range, int nBins)
+	public static final DefaultNumericTable histogram(ScalarArray<?> array, double[] range, int nBins)
 	{
 		// compute the sizeX of an individual bin
 		double binWidth = (range[1] - range[0]) / (nBins - 1);
@@ -107,7 +107,7 @@ public class ImageHistogram implements Plugin
 		int[] histo = Histogram.histogram(array, range, nBins);
 
 		// format the result into data table
-		DataTable table = new DataTable(nBins, 2);
+		DefaultNumericTable table = new DefaultNumericTable(nBins, 2);
 		for (int i = 0; i < nBins; i++)
 		{
 			table.setValue(i, 0, range[0] + i * binWidth);
@@ -129,15 +129,15 @@ public class ImageHistogram implements Plugin
      * 
      * @param array
      *            the input array of RGB8 elements
-     * @return a new instance of DataTable containing the resulting histogram.
+     * @return a new instance of DefaultNumericTable containing the resulting histogram.
      */
-    public static final DataTable histogram(RGB8Array array)
+    public static final DefaultNumericTable histogram(RGB8Array array)
     {
         // allocate memory for result
         int[][] histo = Histogram.histogram(array);
 
         // format the result into data table
-        DataTable table = new DataTable(256, 4);
+        DefaultNumericTable table = new DefaultNumericTable(256, 4);
         for (int i = 0; i < 256; i++)
         {
             table.setValue(i, 0, i);
@@ -161,15 +161,15 @@ public class ImageHistogram implements Plugin
      * 
      * @param array
      *            the input array of RGB16 elements
-     * @return a new instance of DataTable containing the resulting histogram.
+     * @return a new instance of DefaultNumericTable containing the resulting histogram.
      */
-    public static final DataTable histogramRGB16(RGB16Array array)
+    public static final DefaultNumericTable histogramRGB16(RGB16Array array)
     {
         // allocate memory for result
         int[][] histo = Histogram.histogramRGB16(array);
 
         // format the result into data table
-        DataTable table = new DataTable(256, 4);
+        DefaultNumericTable table = new DefaultNumericTable(256, 4);
         for (int i = 0; i < 256; i++)
         {
             table.setValue(i, 0, histo[0][i]);
@@ -186,7 +186,7 @@ public class ImageHistogram implements Plugin
 	/**
 	 * Display histogram of 256 gray scale images.
 	 */
-	private void showIntensityHistogram(ImagoFrame parentFrame, DataTable table)
+	private void showIntensityHistogram(ImagoFrame parentFrame, DefaultNumericTable table)
 	{
         // Title of the plot
         ImagoDocViewer iframe = (ImagoDocViewer) parentFrame;
@@ -217,10 +217,10 @@ public class ImageHistogram implements Plugin
         ImagoChartFrame.displayChart(parentFrame, "Histogram", chart);
 	}
 
-	private void showColorHistogram(ImagoFrame parentFrame, DataTable table)
+	private void showColorHistogram(ImagoFrame parentFrame, DefaultNumericTable table)
 	{
-		int nChannels = table.getColumnNumber() - 1;
-		int nValues = table.getRowNumber();
+		int nChannels = table.columnNumber() - 1;
+		int nValues = table.rowNumber();
         String[] colNames = table.getColumnNames();
         
         // Default name for table

@@ -32,7 +32,7 @@ import net.sci.geom.geom2d.Domain2D;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.image.Image;
 import net.sci.image.analyze.RegionHistogram;
-import net.sci.table.DataTable;
+import net.sci.table.DefaultNumericTable;
 
 /**
  * Computes and display histogram computed within current ROI.
@@ -79,12 +79,12 @@ public class ImageRoiHistogram implements Plugin
         
         Domain2D domain = (Domain2D) selection;
 
-		DataTable table = computeHistogram(image, domain);
+		DefaultNumericTable table = computeHistogram(image, domain);
 		
 		showHistogram(frame, table);
 	}
 
-	private DataTable computeHistogram(Image image, Domain2D domain)
+	private DefaultNumericTable computeHistogram(Image image, Domain2D domain)
 	{
 		Array<?> array = image.getData();
 		if (array instanceof ScalarArray2D)
@@ -115,9 +115,9 @@ public class ImageRoiHistogram implements Plugin
 	 *            the range of values for histogram computation
 	 * @param nBins
 	 *            the number of bins of the resulting histogram
-	 * @return a new instance of DataTable containing the resulting histogram
+	 * @return a new instance of DefaultNumericTable containing the resulting histogram
 	 */
-	public static final DataTable histogram(ScalarArray2D<?> array, Domain2D domain, double[] range, int nBins)
+	public static final DefaultNumericTable histogram(ScalarArray2D<?> array, Domain2D domain, double[] range, int nBins)
 	{
 		// compute the sizeX of an individual bin
 		double binWidth = (range[1] - range[0]) / (nBins - 1);
@@ -126,7 +126,7 @@ public class ImageRoiHistogram implements Plugin
 		int[] histo = RegionHistogram.histogram2d(array, domain, range, nBins);
 
 		// format the result into data table
-		DataTable table = new DataTable(nBins, 2);
+		DefaultNumericTable table = new DefaultNumericTable(nBins, 2);
 		for (int i = 0; i < nBins; i++)
 		{
 			table.setValue(i, 0, range[0] + i * binWidth);
@@ -148,15 +148,15 @@ public class ImageRoiHistogram implements Plugin
 	 * 
 	 * @param array
 	 *            the input array of RGB8 elements
-	 * @return a new instance of DataTable containing the resulting histogram.
+	 * @return a new instance of DefaultNumericTable containing the resulting histogram.
 	 */
-	public static final DataTable histogram(RGB8Array2D array, Domain2D domain)
+	public static final DefaultNumericTable histogram(RGB8Array2D array, Domain2D domain)
 	{
 		// allocate memory for result
 		int[][] histo = RegionHistogram.histogram2d(array, domain);
 
 		// format the result into data table
-		DataTable table = new DataTable(256, 4);
+		DefaultNumericTable table = new DefaultNumericTable(256, 4);
 		for (int i = 0; i < 256; i++)
 		{
 			table.setValue(i, 0, i);
@@ -170,7 +170,7 @@ public class ImageRoiHistogram implements Plugin
 		return table;
 	}
 
-	// private void showHistogram(DataTable histo) {
+	// private void showHistogram(DefaultNumericTable histo) {
 	// int nChannels = histo.geColumnNumber();
 	// int nValues = histo.getRowNumber();
 	//
@@ -215,9 +215,9 @@ public class ImageRoiHistogram implements Plugin
 	// frame.setVisible(true);
 	// }
 
-	private void showHistogram(ImagoFrame parentFrame, DataTable histo)
+	private void showHistogram(ImagoFrame parentFrame, DefaultNumericTable histo)
 	{
-		int nChannels = histo.getColumnNumber();
+		int nChannels = histo.columnNumber();
 		if (nChannels == 2)
 		{
 			showGray8Histogram(parentFrame, histo);
@@ -235,9 +235,9 @@ public class ImageRoiHistogram implements Plugin
 	/**
 	 * Display histogram of 256 gray scale images.
 	 */
-	private void showGray8Histogram(ImagoFrame parentFrame, DataTable histo)
+	private void showGray8Histogram(ImagoFrame parentFrame, DefaultNumericTable histo)
 	{
-		int nValues = histo.getRowNumber();
+		int nValues = histo.rowNumber();
 
 		// count element number
 		int nElements = 0;
@@ -305,10 +305,10 @@ public class ImageRoiHistogram implements Plugin
 		frame.setVisible(true);
 	}
 
-	private void showRGB8Histogram(ImagoFrame parentFrame, DataTable histo)
+	private void showRGB8Histogram(ImagoFrame parentFrame, DefaultNumericTable histo)
 	{
-		int nChannels = histo.getColumnNumber() - 1;
-		int nValues = histo.getRowNumber();
+		int nChannels = histo.columnNumber() - 1;
+		int nValues = histo.rowNumber();
 
 		XYSeriesCollection dataset = new XYSeriesCollection();
 		String[] colNames = histo.getColumnNames();
