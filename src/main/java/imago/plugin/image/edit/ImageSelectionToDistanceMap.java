@@ -67,8 +67,8 @@ public class ImageSelectionToDistanceMap implements Plugin
         Geometry2D selection = piv.getSelection();
 
         // create array for result
-        int sizeX = array.getSize(0);
-        int sizeY = array.getSize(1);
+        int sizeX = array.size(0);
+        int sizeY = array.size(1);
         Float32Array2D distMap = Float32Array2D.create(sizeX, sizeY);
         
         // iterate over output pixels 

@@ -70,8 +70,8 @@ public class ImageMeanValue implements Plugin
         {
         	ScalarArray2D<?> array2d = ScalarArray2D.wrap((ScalarArray<?>) array);
         	
-            int sizeX = array2d.getSize(0);
-            int sizeY = array2d.getSize(1);
+            int sizeX = array2d.size(0);
+            int sizeY = array2d.size(1);
             
             double sum = 0;
             int count = 0;

@@ -51,7 +51,7 @@ public class ImageSplitChannels implements Plugin
 			return; 
 		}
 		
-		int nc = ((VectorArray<?>) array).getVectorLength();
+		int nc = ((VectorArray<?>) array).channelNumber();
 		
 		// Create an array with the name of each channel
 		String[] channelNames;

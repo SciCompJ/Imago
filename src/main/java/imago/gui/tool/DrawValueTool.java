@@ -99,7 +99,7 @@ public class DrawValueTool extends ImagoTool
         int yi = (int) Math.round(y);
         if (xi < 0 || yi < 0) return;
         if (xi < 0 || yi < 0) return;
-        if (xi >= array.getSize(0) || yi > array.getSize(1)) return;
+        if (xi >= array.size(0) || yi > array.size(1)) return;
 
         if (array.dimensionality() == 2)
         {

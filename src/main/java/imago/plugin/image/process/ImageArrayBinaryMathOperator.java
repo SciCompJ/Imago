@@ -110,16 +110,16 @@ public class ImageArrayBinaryMathOperator implements Plugin
 		switch (typeName)
         {
         case "Same As Image 1":
-            result = inputArray.newInstance(array1.getSize());
+            result = inputArray.newInstance(array1.size());
             break;
         case "Same As Image 2":
-            result = inputArray.newInstance(array2.getSize());
+            result = inputArray.newInstance(array2.size());
             break;
         case "Float32":
-            result = Float32Array.create(array.getSize());
+            result = Float32Array.create(array.size());
             break;
         case "Float64":
-            result = Float64Array.create(array.getSize());
+            result = Float64Array.create(array.size());
             break;
         default:
             throw new RuntimeException("Unknown type name: " + typeName);

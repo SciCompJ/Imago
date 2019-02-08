@@ -49,8 +49,8 @@ public class ImageFillEllipse implements Plugin
 		    throw new RuntimeException("Requires an image containing a ScalarArray2D");
 		}
 		
-        int sizeX = array.getSize(0);
-        int sizeY = array.getSize(1);
+        int sizeX = array.size(0);
+        int sizeY = array.size(1);
         
         // create dialog to input ellipse parameters
 		GenericDialog gd = new GenericDialog(frame, "Fill Disk");
@@ -58,7 +58,7 @@ public class ImageFillEllipse implements Plugin
         gd.addNumericField("Y Center ", sizeY / 2, 2);
         gd.addNumericField("Radius 1 ", Math.min(sizeX, sizeY) / 4, 2);
         gd.addNumericField("Radius 2 ", Math.min(sizeX, sizeY) / 4, 2);
-        gd.addNumericField("Orientation (�) ", 0, 2);
+        gd.addNumericField("Orientation (degrees) ", 0, 2);
         gd.addNumericField("Value ", 255, 2);
 		
 		gd.showDialog();

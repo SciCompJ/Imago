@@ -126,8 +126,8 @@ public class ImageUtils
 	
 	public static final java.awt.image.BufferedImage createAwtImage(UInt8Array2D array, int[][] lut)
 	{
-		int sizeX = array.getSize(0);
-		int sizeY = array.getSize(1);
+		int sizeX = array.size(0);
+		int sizeY = array.size(1);
 		
 		// Computes the color model
 		byte[] red = new byte[256];
@@ -172,8 +172,8 @@ public class ImageUtils
 	public static final java.awt.image.BufferedImage createAwtImage(
 			BinaryArray2D array, Color fgColor, Color bgColor)
 	{
-		int sizeX = array.getSize(0);
-		int sizeY = array.getSize(1);
+		int sizeX = array.size(0);
+		int sizeY = array.size(1);
 		
 		// Computes the color model
 		byte[] red = new byte[256];
@@ -209,8 +209,8 @@ public class ImageUtils
     public static final java.awt.image.BufferedImage createAwtImage(
             ScalarArray2D<?> array, double[] displayRange, int[][] colormap)
     {
-        int sizeX = array.getSize(0);
-        int sizeY = array.getSize(1);
+        int sizeX = array.size(0);
+        int sizeY = array.size(1);
         
         // Computes the color model
         IndexColorModel cm = createIndexColorModel(colormap);  
@@ -244,8 +244,8 @@ public class ImageUtils
     public static final java.awt.image.BufferedImage createAwtImage(
             ScalarArray2D<?> array, double[] displayRange, ColorMap colormap)
     {
-        int sizeX = array.getSize(0);
-        int sizeY = array.getSize(1);
+        int sizeX = array.size(0);
+        int sizeY = array.size(1);
         
         // Computes the color model
         IndexColorModel cm = createIndexColorModel(colormap);  
@@ -279,8 +279,8 @@ public class ImageUtils
     public static final java.awt.image.BufferedImage labelToAwtImage(
             IntArray2D<?> array, ColorMap colormap, Color backgroundColor)
     {
-        int sizeX = array.getSize(0);
-        int sizeY = array.getSize(1);
+        int sizeX = array.size(0);
+        int sizeY = array.size(1);
         
         // Computes the color model
         IndexColorModel cm = createIndexColorModel(colormap, backgroundColor);  
@@ -384,8 +384,8 @@ public class ImageUtils
 	public static final java.awt.image.BufferedImage createAwtImageRGB8(
 			UInt8Array array)
 	{
-		int sizeX = array.getSize(0);
-		int sizeY = array.getSize(1);
+		int sizeX = array.size(0);
+		int sizeY = array.size(1);
 		
 		int type = java.awt.image.BufferedImage.TYPE_INT_RGB;
 		
@@ -412,8 +412,8 @@ public class ImageUtils
 
     public static final java.awt.image.BufferedImage createAwtImageRGB8(RGB8Array array)
     {
-        int sizeX = array.getSize(0);
-        int sizeY = array.getSize(1);
+        int sizeX = array.size(0);
+        int sizeY = array.size(1);
         
         int type = java.awt.image.BufferedImage.TYPE_INT_RGB;
         
@@ -441,8 +441,8 @@ public class ImageUtils
 
     public static final java.awt.image.BufferedImage createAwtImageRGB16(RGB16Array array)
     {
-        int sizeX = array.getSize(0);
-        int sizeY = array.getSize(1);
+        int sizeX = array.size(0);
+        int sizeY = array.size(1);
         
         // determines max red, green and blue values
         int rMax = 0, gMax = 0, bMax = 0;

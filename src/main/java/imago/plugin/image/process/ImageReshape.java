@@ -37,7 +37,7 @@ public class ImageReshape implements Plugin
 
 		int nd = array.dimensionality();
 		
-		int[] newDims = array.getSize();
+		int[] newDims = array.size();
 		while(true)
 		{
 		    GenericDialog gd = new GenericDialog(frame, "Reshape");
@@ -59,7 +59,7 @@ public class ImageReshape implements Plugin
 		    }
 		    
 		    // If compatibility of dimensions is met, break loop 
-		    int numel = cumProd(array.getSize());
+		    int numel = cumProd(array.size());
 		    if (cumProd(newDims) == numel)
 		    {
 		        break;

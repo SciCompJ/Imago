@@ -46,7 +46,7 @@ public class BoxFilter3x3FloatPlugin implements Plugin
 		}
 
 		// create result image with specified type
-		Float32Array output = Float32Array.create(array.getSize());
+		Float32Array output = Float32Array.create(array.size());
 
 		// create operator and apply
 		BoxFilter3x3 filter = new BoxFilter3x3();

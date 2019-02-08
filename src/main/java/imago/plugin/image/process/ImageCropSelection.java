@@ -69,7 +69,7 @@ public class ImageCropSelection implements Plugin
         for (int d = 0;d < 2; d++)
         {
             minInds[d] = Math.max((int) box.getMin(0), 0); 
-            maxInds[d] = Math.min((int) box.getMax(0) + 1, array.getSize(d)); 
+            maxInds[d] = Math.min((int) box.getMax(0) + 1, array.size(d)); 
         }
         
 		// create operator box filtering operator

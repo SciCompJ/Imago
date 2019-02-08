@@ -69,9 +69,9 @@ public class ImageApplyMathFunction implements Plugin
 		ScalarArray<?> resultArray;
 		switch (typeName)
 		{
-        case "Same": resultArray = inputArray.newInstance(array.getSize()); break;
-        case "Float32": resultArray = Float32Array.create(array.getSize()); break;
-        case "Float64": resultArray = Float64Array.create(array.getSize()); break;
+        case "Same": resultArray = inputArray.newInstance(array.size()); break;
+        case "Float32": resultArray = Float32Array.create(array.size()); break;
+        case "Float64": resultArray = Float64Array.create(array.size()); break;
         default: throw new RuntimeException("Unknown type name: " + typeName); 
 		}
 		

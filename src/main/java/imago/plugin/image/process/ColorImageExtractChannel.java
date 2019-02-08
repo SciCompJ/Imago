@@ -77,11 +77,11 @@ public class ColorImageExtractChannel implements Plugin
         ScalarArray<?> channelArray = null;
         if (convertToUInt8)
         {
-            channelArray = UInt8Array.create(array.getSize());
+            channelArray = UInt8Array.create(array.size());
         }
         else
         {
-            channelArray = Float64Array.create(array.getSize());
+            channelArray = Float64Array.create(array.size());
         }
         
         // create iterators

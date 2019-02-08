@@ -64,7 +64,7 @@ public class ImageManualThreshold implements Plugin
         boolean dark = gd.getNextBoolean();
 
         // create output array
-        BinaryArray result = BinaryArray.create(array.getSize());
+        BinaryArray result = BinaryArray.create(array.size());
         
         // create array iterators
         ScalarArray.Iterator<?> iter1 = array.iterator(); 

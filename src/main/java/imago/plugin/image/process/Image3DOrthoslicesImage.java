@@ -72,9 +72,9 @@ public class Image3DOrthoslicesImage implements Plugin
 
 	private <T> Array<T> process(Array<T> array, int[] refPos)
 	{
-		int sizeX = array.getSize(0);
-		int sizeY = array.getSize(1);
-		int sizeZ = array.getSize(2);
+		int sizeX = array.size(0);
+		int sizeY = array.size(1);
+		int sizeZ = array.size(2);
 
 		int sizeX2 = sizeX + sizeZ;
 		int sizeY2 = sizeY + sizeZ;

@@ -47,7 +47,7 @@ public class ImageCropDialog implements Plugin
 		for (int d = 0; d < nd; d++)
 		{
             gd.addNumericField("Min index. " + (d+1) + " (incl.)", 0, 0);
-            gd.addNumericField("Max index. " + (d+1) + " (excl.)", array.getSize(d), 0);
+            gd.addNumericField("Max index. " + (d+1) + " (excl.)", array.size(d), 0);
 		}
 		gd.showDialog();
 		

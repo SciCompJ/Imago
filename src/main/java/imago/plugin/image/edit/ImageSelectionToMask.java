@@ -77,8 +77,8 @@ public class ImageSelectionToMask implements Plugin
         boolean clockWise = poly.signedArea() < 0;
 
         // create array for result
-        int sizeX = array.getSize(0);
-        int sizeY = array.getSize(1);
+        int sizeX = array.size(0);
+        int sizeY = array.size(1);
         BinaryArray2D mask = BinaryArray2D.create(sizeX, sizeY);
         
         // iterate over output pixels 

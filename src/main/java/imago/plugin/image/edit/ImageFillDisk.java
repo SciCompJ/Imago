@@ -47,8 +47,8 @@ public class ImageFillDisk  implements Plugin
 		    throw new RuntimeException("Requires an image containing a ScalarArray2D");
 		}
 		
-        int sizeX = array.getSize(0);
-        int sizeY = array.getSize(1);
+        int sizeX = array.size(0);
+        int sizeY = array.size(1);
         
 		GenericDialog gd = new GenericDialog(frame, "Fill Disk");
         gd.addNumericField("X Center ", sizeX / 2, 2);
