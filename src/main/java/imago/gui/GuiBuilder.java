@@ -32,6 +32,7 @@ import imago.plugin.image.vectorize.*;
 import imago.plugin.table.OpenTable;
 import imago.plugin.table.SaveTable;
 import imago.plugin.table.ShowDemoTable;
+import imago.plugin.table.edit.TableKeepNumericColumns;
 import imago.plugin.table.plot.TableLinePlot;
 import imago.plugin.table.plot.TableScatterPlot;
 
@@ -110,7 +111,8 @@ public class GuiBuilder
 		}
 		else if (frame instanceof ImagoTableFrame)
 		{
-		    menuBar.add(createTableFileMenu());
+            menuBar.add(createTableFileMenu());
+            menuBar.add(createTableEditMenu());
 		}
 		menuBar.add(createHelpMenu());
 
@@ -482,6 +484,18 @@ public class GuiBuilder
         addPlugin(fileMenu, new QuitApplication(), "Quit");
 
         return fileMenu;
+    }
+
+    /**
+     * Creates the sub-menu for the "Edit" item in the main menu bar.
+     */
+    private JMenu createTableEditMenu()
+    {
+        JMenu editMenu = new JMenu("Edit");
+        
+        addPlugin(editMenu, new TableKeepNumericColumns(), "Keep Numeric Columns");
+        
+        return editMenu;
     }
 
 	private JMenu createHelpMenu()
