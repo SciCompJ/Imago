@@ -3,18 +3,22 @@
  */
 package imago.gui;
 
-import imago.app.ImagoApp;
-import imago.app.ImagoDoc;
-
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 
+import imago.app.ImagoApp;
+import imago.app.ImagoDoc;
 import net.sci.image.Image;
 
 
@@ -42,6 +46,36 @@ public class ImagoGui
         JOptionPane.showMessageDialog(
                 frame.getWidget(), message, title, 
                 JOptionPane.ERROR_MESSAGE);
+    }
+    
+    public static final void showExceptionDialog(ImagoFrame frame, Exception ex, String title)
+    {
+        // create error frame
+        JFrame errorFrame = new JFrame(title);
+        errorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // creates text area
+        JTextArea textArea = new JTextArea(15, 80);
+        textArea.setForeground(Color.RED);
+        textArea.setEditable ( false ); // set textArea non-editable
+        JScrollPane scroll = new JScrollPane ( textArea );
+        scroll.setVerticalScrollBarPolicy ( ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS );
+
+        
+        // populates text area with stack trace
+        textArea.append(ex.toString());
+        for (StackTraceElement item : ex.getStackTrace())
+        {
+            textArea.append("\n    at " + item.toString());
+        }
+        
+        // add Textarea in to middle panel
+        errorFrame.add ( scroll );
+
+        // display error frame
+        errorFrame.setLocationRelativeTo(frame.getWidget());
+        errorFrame.pack();
+        errorFrame.setVisible(true);
     }
     
     

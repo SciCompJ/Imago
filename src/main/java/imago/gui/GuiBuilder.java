@@ -14,6 +14,7 @@ import imago.plugin.BoxFilter3x3FloatPlugin;
 import imago.plugin.CloseCurrentFrame;
 import imago.plugin.CloseWithChildren;
 import imago.plugin.QuitApplication;
+import imago.plugin.developer.DisplayExceptionDialog;
 import imago.plugin.edit.ChangeCurrentTool;
 import imago.plugin.edit.DocClearShapes;
 import imago.plugin.edit.PrintDocumentList;
@@ -114,7 +115,8 @@ public class GuiBuilder
             menuBar.add(createTableFileMenu());
             menuBar.add(createTableEditMenu());
 		}
-		menuBar.add(createHelpMenu());
+        menuBar.add(createDeveloperMenu());
+        menuBar.add(createHelpMenu());
 
 		frame.getWidget().setJMenuBar(menuBar);
 	}
@@ -498,7 +500,14 @@ public class GuiBuilder
         return editMenu;
     }
 
-	private JMenu createHelpMenu()
+    private JMenu createDeveloperMenu()
+    {
+        JMenu menu = new JMenu("Developer");
+        addPlugin(menu, new DisplayExceptionDialog(), "Show Demo Exception");
+        return menu;
+    }
+
+    private JMenu createHelpMenu()
 	{
 		JMenu menu = new JMenu("Help");
 		addMenuItem(menu, null, "About...", true);

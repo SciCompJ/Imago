@@ -5,6 +5,7 @@ package imago.gui.action;
 
 import imago.gui.ImagoAction;
 import imago.gui.ImagoFrame;
+import imago.gui.ImagoGui;
 import imago.gui.Plugin;
 
 import java.awt.event.ActionEvent;
@@ -46,9 +47,18 @@ public class RunPluginAction extends ImagoAction
         {
             public void run()
             {
-                plugin.run(frame, null);
+                try 
+                {
+                    plugin.run(frame, null);
+                }
+                catch (Exception ex)
+                {
+                    ex.printStackTrace(System.err);
+                    ImagoGui.showExceptionDialog(frame, ex, plugin.getClass().getSimpleName() + " Plugin Error");
+                }
             }
         };
+        
         t.start();
     }
 
