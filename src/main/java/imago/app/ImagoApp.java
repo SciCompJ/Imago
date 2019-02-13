@@ -183,6 +183,7 @@ public class ImagoApp
 			{
 				break;
 			}
+			lastIndex--;
 		}
 		
 		// check end of name matches an indexed image name pattern
