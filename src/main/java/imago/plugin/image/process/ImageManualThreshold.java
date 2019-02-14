@@ -15,6 +15,8 @@ import net.sci.image.process.segment.OtsuThreshold;
 
 
 /**
+ * Opens a dialog to choose a threshold, and creates a new binary image.
+ *  
  * @author David Legland
  *
  */
@@ -30,7 +32,7 @@ public class ImageManualThreshold implements Plugin
 	@Override
 	public void run(ImagoFrame frame, String args) 
 	{
-		System.out.println("Otsu Threshold");
+		System.out.println("Manual Threshold");
 		
 		// get current frame
 		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
@@ -43,6 +45,7 @@ public class ImageManualThreshold implements Plugin
 		}
 		
 		// Extract min/max values
+        System.out.println("Compute threshold value guess");
 		ScalarArray<?> array = (ScalarArray<?>) image.getData();
 		double[] range = array.finiteValueRange();
 		double initValue = new OtsuThreshold().computeThresholdValue(array);
@@ -65,18 +68,14 @@ public class ImageManualThreshold implements Plugin
 
         // create output array
         BinaryArray result = BinaryArray.create(array.size());
-        
-        // create array iterators
-        ScalarArray.Iterator<?> iter1 = array.iterator(); 
-        BinaryArray.Iterator iter2 = result.iterator();
-        
-        // iterate on both arrays for computing segmented values
-        while(iter1.hasNext() && iter2.hasNext())
+               
+        // iterate on array positions for computing segmented values
+        for (int[] pos : result.positions())
         {
             if (dark)
-                iter2.setNextBoolean(iter1.nextValue() >= threshold);
+                result.setBoolean(pos, array.getValue(pos) >= threshold);
             else
-                iter2.setNextBoolean(iter1.nextValue() <= threshold);
+                result.setBoolean(pos, array.getValue(pos) <= threshold);
         }
 
 		Image resultImage = new Image(result, image);

@@ -33,7 +33,7 @@ public class Image3DOrthoslicesImage implements Plugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("box filter (generic)");
+		System.out.println("Create orthoslice Image");
 
 		// get current image data
 		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
@@ -45,7 +45,7 @@ public class Image3DOrthoslicesImage implements Plugin
 		GenericDialog gd = new GenericDialog(frame, "Create orthoslice Image");
 		for (int d = 0; d < nd; d++)
 		{
-			gd.addNumericField("Ref. pos. " + (d+1), 3, 0);
+			gd.addNumericField("Ref. pos. " + (d+1), (int) (array.size(d) / 2), 0);
 		}
 		gd.showDialog();
 		
