@@ -452,6 +452,8 @@ public class GuiBuilder
         addPlugin(menu, new ImageBivariateHistogram(), "Bivariate Histogram");
 		menu.addSeparator();
 		addPlugin(menu, new ImageLineProfile(), "Line Profile", hasImage);
+        menu.addSeparator();
+        addPlugin(menu, new ImagePlotChannels(), "Channel Profile", hasImage);
 
         menu.addSeparator();
         addPlugin(menu, new LabelImageBoundingBoxes(), "Bounding Boxes", (hasImage2D || hasImage3D) && hasLabelImage);

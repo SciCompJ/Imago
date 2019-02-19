@@ -3,11 +3,6 @@
  */
 package imago.plugin.image.analyze;
 
-import java.awt.Point;
-
-import javax.swing.JFrame;
-
-import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries;
@@ -17,6 +12,7 @@ import org.knowm.xchart.style.colors.XChartSeriesColors;
 import org.knowm.xchart.style.markers.SeriesMarkers;
 
 import imago.gui.ImageViewer;
+import imago.gui.ImagoChartFrame;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import imago.gui.viewer.PlanarImageViewer;
@@ -188,11 +184,7 @@ public class ImageLineProfile implements ImagePlugin
         series.setMarker(SeriesMarkers.NONE);
         
         // Show it
-        @SuppressWarnings({ "rawtypes", "unchecked" })
-        JFrame chartFrame = new SwingWrapper(chart).displayChart();
-        Point pos0 = parentFrame.getWidget().getLocation();
-        chartFrame.setLocation(pos0.x + 30, pos0.y + 20);
-        chartFrame.setTitle("Intensity Profile");
+        ImagoChartFrame.displayChart(parentFrame, "Intensity Profile", chart);
     }
     
     private void plotRGB8LineProfile(ImagoFrame parentFrame, DefaultNumericTable table)
@@ -242,11 +234,7 @@ public class ImageLineProfile implements ImagePlugin
         series[2].setLineColor(XChartSeriesColors.BLUE);
         
         // Show it
-        @SuppressWarnings({ "rawtypes", "unchecked" })
-        JFrame chartFrame = new SwingWrapper(chart).displayChart();
-        Point pos0 = parentFrame.getWidget().getLocation();
-        chartFrame.setLocation(pos0.x + 30, pos0.y + 20);
-        chartFrame.setTitle("Color Profile");
+        ImagoChartFrame.displayChart(parentFrame, "Color Profile", chart);
     }
     
     private String createTitleString(String baseTitle, String imageName)
@@ -260,16 +248,16 @@ public class ImageLineProfile implements ImagePlugin
     
     /**
      * Generate a linear vectors containing values starting from 1, 2... to
-     * nRows.
+     * nValues.
      * 
-     * @param nRows
+     * @param nValues
      *            the number of values
      * @return a linear vector of nRows values
      */
-    private double[] generateLinearVector(int nRows, double startValue)
+    private double[] generateLinearVector(int nValues, double startValue)
     {
-        double[] values = new double[nRows];
-        for (int i = 0; i < nRows; i++)
+        double[] values = new double[nValues];
+        for (int i = 0; i < nValues; i++)
         {
             values[i] = startValue + i;
         }
