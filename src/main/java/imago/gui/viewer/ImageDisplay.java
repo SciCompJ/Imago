@@ -229,7 +229,9 @@ public class ImageDisplay extends JPanel
 
 	public void paintComponent(Graphics g) 
 	{
-	    paintImage(g);
+        super.paintComponent(g);
+
+        paintImage(g);
 	    paintAnnotations(g);
 	    
 	    paintSelection(g);
