@@ -50,6 +50,7 @@ public class SaveTable implements TablePlugin
 		// Check the chosen file
 		File file = saveWindow.getSelectedFile();
 	
+		// get table references by the frame
 		Table table = ((ImagoTableFrame) frame).getTable();
 		
 		try

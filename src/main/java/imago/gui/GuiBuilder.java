@@ -36,6 +36,7 @@ import imago.plugin.table.ShowDemoTable;
 import imago.plugin.table.edit.TableKeepNumericColumns;
 import imago.plugin.table.plot.TableLinePlot;
 import imago.plugin.table.plot.TableScatterPlot;
+import imago.plugin.table.process.TablePca;
 
 import java.awt.image.BufferedImage;
 
@@ -114,6 +115,7 @@ public class GuiBuilder
 		{
             menuBar.add(createTableFileMenu());
             menuBar.add(createTableEditMenu());
+            menuBar.add(createTableProcessMenu());
 		}
         menuBar.add(createDeveloperMenu());
         menuBar.add(createHelpMenu());
@@ -500,6 +502,18 @@ public class GuiBuilder
         addPlugin(editMenu, new TableKeepNumericColumns(), "Keep Numeric Columns");
         
         return editMenu;
+    }
+
+    /**
+     * Creates the sub-menu for the "Process" item in the main menu bar.
+     */
+    private JMenu createTableProcessMenu()
+    {
+        JMenu processMenu = new JMenu("Process");
+        
+        addPlugin(processMenu, new TablePca(), "Principal Components Analysis");
+        
+        return processMenu;
     }
 
     private JMenu createDeveloperMenu()
