@@ -34,6 +34,7 @@ import imago.plugin.table.OpenTable;
 import imago.plugin.table.SaveTable;
 import imago.plugin.table.ShowDemoTable;
 import imago.plugin.table.edit.TableKeepNumericColumns;
+import imago.plugin.table.edit.TableSelectColumns;
 import imago.plugin.table.plot.TableLinePlot;
 import imago.plugin.table.plot.TableScatterPlot;
 import imago.plugin.table.process.TablePca;
@@ -499,6 +500,7 @@ public class GuiBuilder
     {
         JMenu editMenu = new JMenu("Edit");
         
+        addPlugin(editMenu, new TableSelectColumns(), "Select Columns");
         addPlugin(editMenu, new TableKeepNumericColumns(), "Keep Numeric Columns");
         
         return editMenu;
