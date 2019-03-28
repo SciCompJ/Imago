@@ -71,7 +71,7 @@ public class VectorImageChannelView implements Plugin
         int channelIndex = (int) dlg.getNextNumber();
         if (channelIndex < 0 || channelIndex >= nChannels)
         {
-            ImagoGui.showErrorDialog(frame, "Channele index mst be comprised between 0 and " + (nChannels-1), "Input Error");
+            ImagoGui.showErrorDialog(frame, "Channel index must be comprised between 0 and " + (nChannels-1), "Input Error");
             return;
         }
 
