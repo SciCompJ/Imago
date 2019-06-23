@@ -15,11 +15,8 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSlider;
-import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -34,6 +31,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
+//TODO: should implement an interface "Image3DViewer" 
 public class StackSliceViewer extends ImageViewer implements ChangeListener, ActionListener, ComponentListener 
 {	
 	// ===================================================================
@@ -50,8 +48,8 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 	// GUI items
 	JScrollPane scroll;
 	ImageDisplay imageDisplay;
-	JSlider sliceSlider;
-	JTextField sliceEdit;
+//	JSlider sliceSlider;
+//	JTextField sliceEdit;
 	
 	/**
      * The shape of the current selection, usually a polyline or a rectangle, in pixels coordinates.
@@ -96,30 +94,30 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 		scroll.setBackground(Color.WHITE);
 
 		// create a slider for changing slice state
-		int nz = image.getSize(2);
-		int z0 = (int) Math.round(nz / 2.0);
-		sliceSlider = new JSlider(JSlider.VERTICAL, 0, nz-1, z0);
-		sliceSlider.setInverted(true);
-		sliceSlider.setMinorTickSpacing(10);
-		sliceSlider.setMajorTickSpacing(nz-1);
-		sliceSlider.setPaintLabels(true);
-		sliceSlider.addChangeListener(this);
+//		int nz = image.getSize(2);
+//		int z0 = (int) Math.round(nz / 2.0);
+//		sliceSlider = new JSlider(JSlider.VERTICAL, 0, nz-1, z0);
+//		sliceSlider.setInverted(true);
+////		sliceSlider.setMinorTickSpacing(10);
+////		sliceSlider.setMajorTickSpacing(nz-1);
+//		sliceSlider.setPaintTicks(true);
+//		sliceSlider.addChangeListener(this);
 
-		// create a text field for changing slice state
-		sliceEdit = new JTextField(Integer.toString(z0), 4);
-		sliceEdit.setHorizontalAlignment(JTextField.CENTER);
-		sliceEdit.addActionListener(this);
+//		// create a text field for changing slice state
+//		sliceEdit = new JTextField(Integer.toString(z0), 4);
+//		sliceEdit.setHorizontalAlignment(JTextField.CENTER);
+//		sliceEdit.addActionListener(this);
 		
 		// Setup the general layout
 		this.panel.setLayout(new BorderLayout());
 		this.panel.add(scroll, BorderLayout.CENTER);
-		JPanel sliderPanel = new JPanel(new BorderLayout());
-		JLabel label = new JLabel("Slice");
-		label.setHorizontalAlignment(JTextField.CENTER);
-		sliderPanel.add(label, BorderLayout.NORTH);
-		sliderPanel.add(sliceSlider, BorderLayout.CENTER);
-		sliderPanel.add(sliceEdit, BorderLayout.SOUTH);
-		this.panel.add(sliderPanel, BorderLayout.WEST);
+//		JPanel sliderPanel = new JPanel(new BorderLayout());
+//		JLabel label = new JLabel("Slice");
+//		label.setHorizontalAlignment(JTextField.CENTER);
+//		sliderPanel.add(label, BorderLayout.NORTH);
+////		sliderPanel.add(sliceSlider, BorderLayout.CENTER);
+////		sliderPanel.add(sliceEdit, BorderLayout.SOUTH);
+//		this.panel.add(sliderPanel, BorderLayout.WEST);
 		
 		// Add listeners
 		this.panel.addComponentListener(this);
@@ -137,10 +135,10 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 	{
 		this.sliceIndex = index;
 		
-		// update widgets
-		String txt = Integer.toString(index);
-		this.sliceSlider.setValue(index);
-		this.sliceEdit.setText(txt);
+//		// update widgets
+//		String txt = Integer.toString(index);
+//		this.sliceSlider.setValue(index);
+//		this.sliceEdit.setText(txt);
 		
 //		// also update document containing the image
 //		ImagoDocViewer viewer = this.getViewer();
@@ -252,8 +250,8 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 	@Override
 	public void stateChanged(ChangeEvent evt)
 	{
-		int index = sliceSlider.getValue();
-		this.setSliceIndex(index);
+//		int index = sliceSlider.getValue();
+//		this.setSliceIndex(index);
 		updateSliceImage();
 		this.panel.repaint();
 	}
@@ -263,15 +261,15 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 
 	public void actionPerformed(ActionEvent evt) 
 	{
-	    String text = sliceEdit.getText();
-	    int index = Integer.parseInt(text);
-	    if (index < 0 || index >= this.image.getSize(2)) 
-	    {
-			this.setSliceIndex(sliceIndex);
-	    	return;
-	    }
-	    
-		this.setSliceIndex(index);
+//	    String text = sliceEdit.getText();
+//	    int index = Integer.parseInt(text);
+//	    if (index < 0 || index >= this.image.getSize(2)) 
+//	    {
+//			this.setSliceIndex(sliceIndex);
+//	    	return;
+//	    }
+//	    
+//		this.setSliceIndex(index);
 		updateSliceImage();
 		this.panel.repaint();
 	}

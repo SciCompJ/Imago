@@ -3,6 +3,13 @@
  */
 package imago.gui;
 
+import imago.app.ImagoDoc;
+import imago.gui.panel.ImageDisplayOptionsPanel;
+import imago.gui.panel.StatusBar;
+import imago.gui.tool.DisplayCurrentValueTool;
+import imago.gui.viewer.PlanarImageViewer;
+import imago.gui.viewer.StackSliceViewer;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -12,12 +19,8 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 
-import imago.app.ImagoDoc;
-import imago.gui.panel.StatusBar;
-import imago.gui.tool.DisplayCurrentValueTool;
-import imago.gui.viewer.PlanarImageViewer;
-import imago.gui.viewer.StackSliceViewer;
 import net.sci.algo.AlgoEvent;
 import net.sci.algo.AlgoListener;
 import net.sci.image.Image;
@@ -26,6 +29,12 @@ import net.sci.image.Image;
 /**
  * Displays an image into a frame, with menu, and several sub-panels.
  * 
+ * Contains at least an instance of ImageViewer, and a status bar.
+ * CAn also contains an ImageDisplayOptionsPanel.
+ * 
+ * @see ImageViewer
+ * @see imago.gui.panel.StatusBar
+ * @see imago.gui.panel.DisplayOptionsPanel
  * 
  * @author David Legland
  * 
@@ -41,7 +50,8 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
 	ImagoDoc doc;
 	Image image;
 
-	ImageViewer imageView;
+    ImageViewer imageView;
+    ImageDisplayOptionsPanel imageDisplayOptionsPanel;
 	StatusBar statusBar;
 	
 	
@@ -117,17 +127,29 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
 ////            sliceViewer.setSliceIndex(this.doc.getCurrentSliceIndex());
 //            this.imageView = sliceViewer;
         }
+        
+        this.imageDisplayOptionsPanel = new ImageDisplayOptionsPanel(this.imageView);
+        
     }
 
     private void setupLayout() 
 	{
+        this.imageDisplayOptionsPanel.setPreferredSize(new Dimension(100, 100));
+        this.imageDisplayOptionsPanel.setMinimumSize(new Dimension(50, 50));
+        
 		// put into global layout
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		mainPanel.setBackground(Color.GREEN);
 		mainPanel.add((JPanel) imageView.getWidget(), BorderLayout.CENTER);
 		mainPanel.add(this.statusBar, BorderLayout.SOUTH);
 		
-		this.jFrame.setContentPane(mainPanel);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+                imageDisplayOptionsPanel, mainPanel);
+        splitPane.setResizeWeight(0.2);
+        splitPane.setOneTouchExpandable(true);
+        splitPane.setContinuousLayout(true);
+
+        this.jFrame.setContentPane(splitPane);
 	}
 	
 	private void putFrameMiddleScreen()

@@ -16,7 +16,7 @@ import javax.swing.JProgressBar;
 public class StatusBar extends JPanel
 {
 	/**
-	 * 
+	 * to comply with Swing conventions
 	 */
 	private static final long serialVersionUID = 1L;
 
