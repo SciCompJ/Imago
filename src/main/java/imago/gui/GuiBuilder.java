@@ -267,6 +267,8 @@ public class GuiBuilder
         addPlugin(convertDataTypeMenu, new ConvertImageToUInt8(), "UInt8", hasScalarImage);
         addPlugin(convertDataTypeMenu, new ConvertImageToUInt16(), "UInt16", hasScalarImage);
         convertDataTypeMenu.addSeparator();
+        addPlugin(convertDataTypeMenu, new CreateScaledUInt8View(), "UInt8 View", hasScalarImage);
+        convertDataTypeMenu.addSeparator();
         addPlugin(convertDataTypeMenu, new ConvertImageToInt16(), "Int16", hasScalarImage);
         addPlugin(convertDataTypeMenu, new ConvertImageToInt32(), "Int32", hasScalarImage);
         convertDataTypeMenu.addSeparator();

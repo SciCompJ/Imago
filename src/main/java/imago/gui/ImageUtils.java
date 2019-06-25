@@ -102,11 +102,23 @@ public class ImageUtils
 		}
 		
 		// Process array depending on its data type
-		if (array instanceof ScalarArray2D)
+		if (array instanceof ScalarArray)
  		{
  			// scalar images use display range and current LUT
  			double[] displayRange = image.getDisplaySettings().getDisplayRange();
- 			return createAwtImage((ScalarArray2D<?>) array, displayRange, lut);
+ 			// convert to ScalarArray2D either by class cast or by wrapping
+//            ScalarArray2D<?> array2d = (array instanceof ScalarArray2D) ? (ScalarArray2D<?>) array
+//                    : (ScalarArray2D<?>) ScalarArray2D.wrap(array);
+ 			ScalarArray2D<?> array2d;
+ 			if (array instanceof ScalarArray2D)
+ 			{
+ 			    array2d = (ScalarArray2D<?>) array;
+ 			}
+ 			else
+ 			{
+ 			    array2d = (ScalarArray2D<?>) ScalarArray2D.wrapScalar2d((ScalarArray<?>) array);
+ 			}
+ 			return createAwtImage(array2d, displayRange, lut);
  		}
 		else if (array instanceof VectorArray)
 		{
