@@ -28,10 +28,12 @@ import net.sci.image.process.shape.ImageSlicer;
 
 /**
  * Collection of methods for managing images.
- * 
+ *
+ * @deprecated replaced by net.sci.image.BufferedImageUtils
  * @author dlegland
  *
  */
+@Deprecated
 public class ImageUtils
 {
 

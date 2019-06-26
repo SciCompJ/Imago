@@ -3,7 +3,6 @@
  */
 package imago.gui.viewer;
 
-import imago.gui.ImageUtils;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoTool;
 
@@ -17,6 +16,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JScrollPane;
 
 import net.sci.geom.geom2d.Geometry2D;
+import net.sci.image.BufferedImageUtils;
 import net.sci.image.Image;
 
 
@@ -65,7 +65,7 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 			throw new IllegalArgumentException("Requires a planar image as input");
 		}
 		
-		this.awtImage = ImageUtils.createAwtImage(image);
+		this.awtImage = BufferedImageUtils.createAwtImage(image);
 		
 		setupLayout();
 	}
@@ -172,7 +172,7 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 	{
 //		imageDisplay.updateOffset();
 //		Image image = this.getImageToDisplay();
-//		this.awtImage = ImageUtils.createAwtImage(image);
+//		this.awtImage = BufferedImageUtils.createAwtImage(image);
 	    updateAwtImage();
 	    
 		this.imageDisplay.setBufferedImage(this.awtImage);
@@ -186,7 +186,7 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 	public void updateAwtImage()
 	{
         Image image = this.getImageToDisplay();
-        this.awtImage = ImageUtils.createAwtImage(image);
+        this.awtImage = BufferedImageUtils.createAwtImage(image);
 	}
 	
 	public void repaint()

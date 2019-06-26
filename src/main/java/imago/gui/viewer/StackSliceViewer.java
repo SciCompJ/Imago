@@ -3,6 +3,9 @@
  */
 package imago.gui.viewer;
 
+import imago.gui.ImageViewer;
+import imago.gui.ImagoTool;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -20,9 +23,7 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import imago.gui.ImageUtils;
-import imago.gui.ImageViewer;
-import imago.gui.ImagoTool;
+import net.sci.image.BufferedImageUtils;
 import net.sci.image.Image;
 
 
@@ -70,7 +71,7 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 		int depth = image.getSize(2);
 		sliceIndex = (int) Math.floor(depth / 2);
 		
-		awtImage = ImageUtils.createAwtImage(image, sliceIndex);
+		awtImage = BufferedImageUtils.createAwtImage(image, sliceIndex);
 		setupLayout();
 	}
 	
@@ -79,7 +80,7 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 		super(image);
 		this.sliceIndex = sliceIndex;
 		
-		awtImage = ImageUtils.createAwtImage(image, sliceIndex);
+		awtImage = BufferedImageUtils.createAwtImage(image, sliceIndex);
 		setupLayout();
 	}
 	
@@ -189,7 +190,7 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 	public void updateSliceImage() 
 	{
 //	    System.out.println("update slice image");
-		awtImage = ImageUtils.createAwtImage(image, sliceIndex);
+		awtImage = BufferedImageUtils.createAwtImage(image, sliceIndex);
 		imageDisplay.setBufferedImage(awtImage);
 	}
 
@@ -225,7 +226,7 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
         Image image = this.getImageToDisplay();
 //        System.out.println("refresh StackSLiceViewer display");
         
-        this.awtImage = ImageUtils.createAwtImage(image, this.sliceIndex);
+        this.awtImage = BufferedImageUtils.createAwtImage(image, this.sliceIndex);
         this.imageDisplay.setBufferedImage(this.awtImage);
         this.imageDisplay.repaint();
     }

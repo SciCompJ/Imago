@@ -3,7 +3,6 @@
  */
 package imago.gui.viewer;
 
-import imago.gui.ImageUtils;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoTool;
 
@@ -23,6 +22,7 @@ import javax.swing.JScrollPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import net.sci.image.BufferedImageUtils;
 import net.sci.image.Image;
 import net.sci.image.process.shape.ImageSlicer;
 
@@ -165,9 +165,9 @@ public class OrthoSlicesViewer extends ImageViewer implements ChangeListener, Ac
 	public void updateSliceImage() 
 	{
         // create AWT images corresponding to each slice
-        awtImageXY = ImageUtils.createAwtImage(ImageSlicer.slice2d(image, 0, 1, this.slicesCenter));
-        awtImageZY = ImageUtils.createAwtImage(ImageSlicer.slice2d(image, 2, 1, this.slicesCenter));
-        awtImageXZ = ImageUtils.createAwtImage(ImageSlicer.slice2d(image, 0, 2, this.slicesCenter));
+        awtImageXY = BufferedImageUtils.createAwtImage(ImageSlicer.slice2d(image, 0, 1, this.slicesCenter));
+        awtImageZY = BufferedImageUtils.createAwtImage(ImageSlicer.slice2d(image, 2, 1, this.slicesCenter));
+        awtImageXZ = BufferedImageUtils.createAwtImage(ImageSlicer.slice2d(image, 0, 2, this.slicesCenter));
 	}
 
 	// ===================================================================
