@@ -11,32 +11,32 @@ import imago.gui.ImagoGui;
 import imago.gui.Plugin;
 import net.sci.array.Array;
 import net.sci.array.color.RGB8Array;
-import net.sci.array.scalar.ScalarArray;
-import net.sci.array.scalar.UInt8Array;
+import net.sci.array.color.VectorArrayRGB8View;
 import net.sci.array.vector.VectorArray;
 import net.sci.image.Image;
 
+
 /**
- * @see CreateVectorImageRGB8View
+ * 
+ * @see VectorImageConvertToRGB
  * 
  * @author David Legland
  *
  */
-public class VectorImageConvertToRGB implements Plugin
+public class CreateVectorImageRGB8View implements Plugin
 {
-	public VectorImageConvertToRGB()
+	public CreateVectorImageRGB8View() 
 	{
+		super();
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	
+	/* (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
+		System.out.println("create vector image RGB View");
         // get current frame
         ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
         Image image = doc.getImage();
@@ -73,51 +73,33 @@ public class VectorImageConvertToRGB implements Plugin
         }
         
         // extract user choices
-        int redChannelIndex = (int) dlg.getNextNumber();
-        if (redChannelIndex < 0 || redChannelIndex >= nChannels)
+        int indR = (int) dlg.getNextNumber();
+        if (indR < 0 || indR >= nChannels)
         {
             ImagoGui.showErrorDialog(frame, "Red Channel index must be comprised between 0 and " + (nChannels-1), "Input Error");
             return;
         }
-        int greenChannelIndex = (int) dlg.getNextNumber();
-        if (greenChannelIndex < 0 || greenChannelIndex >= nChannels)
+        int indG = (int) dlg.getNextNumber();
+        if (indG < 0 || indG >= nChannels)
         {
             ImagoGui.showErrorDialog(frame, "Green Channel index must be comprised between 0 and " + (nChannels-1), "Input Error");
             return;
         }
-        int blueChannelIndex = (int) dlg.getNextNumber();
-        if (blueChannelIndex < 0 || blueChannelIndex >= nChannels)
+        int indB = (int) dlg.getNextNumber();
+        if (indB < 0 || indB >= nChannels)
         {
             ImagoGui.showErrorDialog(frame, "Blue Channel index must be comprised between 0 and " + (nChannels-1), "Input Error");
             return;
         }
         
-
-        ScalarArray<?> redChannel = vectorArray.channel(redChannelIndex);
-        ScalarArray<?> greenChannel = vectorArray.channel(greenChannelIndex);
-        ScalarArray<?> blueChannel = vectorArray.channel(blueChannelIndex);
-        double[] redValuesRange = redChannel.finiteValueRange();
-        double[] greenValuesRange = greenChannel.finiteValueRange();
-        double[] blueValuesRange = blueChannel.finiteValueRange();
+        RGB8Array rgbArray = new VectorArrayRGB8View(vectorArray, indR, indG, indB);
         
-        
-		// convert arrays to UInt8
-        UInt8Array redChannel8 = UInt8Array.convert(redChannel, redValuesRange[0],
-                redValuesRange[1]);
-        UInt8Array greenChannel8 = UInt8Array.convert(greenChannel, greenValuesRange[0],
-                greenValuesRange[1]);
-        UInt8Array blueChannel8 = UInt8Array.convert(blueChannel, blueValuesRange[0],
-                blueValuesRange[1]);
-		
-		// concatenate the three channels to create an RGB8 array
-		RGB8Array rgbArray = RGB8Array.mergeChannels(redChannel8, greenChannel8, blueChannel8);
-		
-		// create the image corresponding to channels concatenation
-		Image rgbImage = new Image(rgbArray, image);
-		rgbImage.setName(image.getName() + "-RGB");
+        // create the image corresponding to channels concatenation
+        Image rgbImage = new Image(rgbArray, image);
+        rgbImage.setName(image.getName() + "-RGB");
 
-		// add the image document to GUI
-		frame.getGui().addNewDocument(rgbImage);
+        // add the image document to GUI
+        frame.getGui().addNewDocument(rgbImage);
 	}
-	
+
 }
