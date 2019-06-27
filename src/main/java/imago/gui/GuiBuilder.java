@@ -38,6 +38,7 @@ import imago.plugin.table.edit.TableKeepNumericColumns;
 import imago.plugin.table.edit.TableSelectColumns;
 import imago.plugin.table.plot.TableLinePlot;
 import imago.plugin.table.plot.TableScatterPlot;
+import imago.plugin.table.process.TableKMeans;
 import imago.plugin.table.process.TablePca;
 
 import java.awt.image.BufferedImage;
@@ -520,6 +521,8 @@ public class GuiBuilder
         JMenu processMenu = new JMenu("Process");
         
         addPlugin(processMenu, new TablePca(), "Principal Components Analysis");
+        processMenu.addSeparator();
+        addPlugin(processMenu, new TableKMeans(), "K-Means");
         
         return processMenu;
     }
