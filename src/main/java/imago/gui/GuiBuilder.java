@@ -396,22 +396,26 @@ public class GuiBuilder
 		menu.addSeparator();
 
 		// Noise reduction filters
-        addPlugin(menu, new ImageBoxFilter(), "Box Filter...");
-		addPlugin(menu, new BoxFilter3x3FloatPlugin(), "Box Filter 2D 3x3 (float)", hasScalarImage);
-        addPlugin(menu, new ImageBoxMedianFilter(), "Median Filter...");
-        addPlugin(menu, new ImageBoxMinMaxFilter(), "Min/Max Filter...");
-		addPlugin(menu, new ImageBoxVarianceFilter(), "Variance Filter...");
-		menu.addSeparator();
-		
+        JMenu filtersMenu = new JMenu("Filters");
+        addPlugin(filtersMenu, new ImageBoxFilter(), "Box Filter...");
+		addPlugin(filtersMenu, new BoxFilter3x3FloatPlugin(), "Box Filter 2D 3x3 (float)", hasScalarImage);
+        addPlugin(filtersMenu, new ImageBoxMedianFilter(), "Median Filter...");
+        addPlugin(filtersMenu, new ImageBoxMinMaxFilter(), "Min/Max Filter...");
+        filtersMenu.addSeparator();
+		addPlugin(filtersMenu, new ImageBoxVarianceFilter(), "Variance Filter...");
+		menu.add(filtersMenu);
+        
 		// Gradient filters
-        addImageOperatorPlugin(menu, new SobelGradient(), "Sobel Gradient", hasScalarImage);
-		addImageOperatorPlugin(menu, new SobelGradientNorm(), "Sobel Gradient Norm", hasScalarImage);
-		addImageOperatorPlugin(menu, new VectorArrayNorm(), "Vector Image Norm", hasVectorImage);
+        JMenu gradientFiltersMenu = new JMenu("Gradient Filters");
+        addImageOperatorPlugin(gradientFiltersMenu, new SobelGradient(), "Sobel Gradient", hasScalarImage);
+		addImageOperatorPlugin(gradientFiltersMenu, new SobelGradientNorm(), "Sobel Gradient Norm", hasScalarImage);
+		addImageOperatorPlugin(gradientFiltersMenu, new VectorArrayNorm(), "Vector Image Norm", hasVectorImage);
 		// addMenuItem(menu, new ImageOperatorAction(frame, "vectorAngle",
 		// new VectorImageAngle()),
 		// "Array<?> Angle", hasImage);
-		menu.addSeparator();
-		
+        menu.add(gradientFiltersMenu);
+//		menu.addSeparator();
+        
 		JMenu morphologyMenu = new JMenu("Mathematical Morphology");
 		addPlugin(morphologyMenu, new ImageMorphologicalFilter(), "Morphological Filtering...");
 
@@ -423,6 +427,7 @@ public class GuiBuilder
         addPlugin(morphologyMenu, new ImageFillHoles(), "Fill Holes");
         addPlugin(morphologyMenu, new ImageKillBorders(), "Kill Borders");
 		menu.add(morphologyMenu);
+        menu.addSeparator();
 
 		// operators specific to binary images
 		JMenu binaryMenu = new JMenu("Binary Images");
@@ -435,11 +440,15 @@ public class GuiBuilder
         addPlugin(binaryMenu, new BinaryImageBoundaryGraph(),
                 "Boundary Graph", hasImage2D && hasBinaryImage);
 		menu.add(binaryMenu);
-
 		menu.addSeparator();
 
-		addPlugin(menu, new ImageOtsuThreshold(), "Otsu Threshold", hasScalarImage);
-        addPlugin(menu, new ImageManualThreshold(), "Manual Threshold", hasScalarImage);
+        // operators specific to binary images
+        JMenu segmentationMenu = new JMenu("Segmentation");
+		addPlugin(segmentationMenu, new ImageOtsuThreshold(), "Otsu Threshold", hasScalarImage);
+        addPlugin(segmentationMenu, new ImageManualThreshold(), "Manual Threshold", hasScalarImage);
+        menu.add(segmentationMenu);
+        menu.addSeparator();
+
         addPlugin(menu, new ImageFindNonZeroPixels(),
                 "Find Non-Zeros Elements", hasImage2D && hasScalarImage);
         addPlugin(menu, new ImageIsocontour(), "Isocontour...");
