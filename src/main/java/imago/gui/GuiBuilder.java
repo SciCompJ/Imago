@@ -165,6 +165,7 @@ public class GuiBuilder
 		addPlugin(fileMenu, new OpenImage(), "Open...");
         addPlugin(fileMenu, new ReadImageTiff(), "Read TIFF...");
         addPlugin(fileMenu, new ReadTiffStackSlice(), "Read TIFF Slice");
+        addPlugin(fileMenu, new ImportImageSeries(), "Import Image Series...");
 
 		// Import demo images
 		JMenu demoMenu = new JMenu("Open Demo Image");
