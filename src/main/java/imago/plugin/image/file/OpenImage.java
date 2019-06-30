@@ -3,14 +3,15 @@
  */
 package imago.plugin.image.file;
 
+import imago.Imago;
+import imago.gui.ImagoFrame;
+import imago.gui.ImagoGui;
+import imago.gui.Plugin;
+
 import java.io.File;
-import java.io.IOException;
 
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 
-import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
 import net.sci.image.Image;
 
 /**
@@ -51,31 +52,18 @@ public class OpenImage implements Plugin
         File file = openWindow.getSelectedFile();
         if (!file.isFile())
         {
+            ImagoGui.showErrorDialog(frame,
+                    "Could not find the selected file: " + file.getName(),
+                    "Image I/O Error");
             return;
         }
         
-        Image image;
-        try
+        // Try to read the image
+        Image image = Imago.readImage(file, frame);
+        if (image == null)
         {
-            image = Image.readImage(file);
-        }
-        catch (IOException ex)
-        {
-            ex.printStackTrace(System.err);
-            // custom title, error icon
-            JOptionPane.showMessageDialog(frame.getWidget(), "Could not read the image.",
-                    "Image I/O Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        catch (Exception ex)
-        {
-            JOptionPane.showMessageDialog(frame.getWidget(), "Could not read the image.",
-                    "Image I/O Error", JOptionPane.ERROR_MESSAGE);
-            ex.printStackTrace(System.err);
-            return;
-        }
-        
-        image.setName(file.getName());
         
         // add the image document to GUI
         frame.getGui().addNewDocument(image);
