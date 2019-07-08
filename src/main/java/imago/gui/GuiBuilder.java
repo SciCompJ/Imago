@@ -479,6 +479,7 @@ public class GuiBuilder
         addPlugin(menu, new LabelImageCentroids(), "Regions Centroids", (hasImage2D || hasImage3D) && hasLabelImage);
         addPlugin(menu, new LabelImageEquivalentDisks(), "Regions Equivalent Disks", hasImage2D && hasLabelImage);
         addPlugin(menu, new LabelImageInertiaEllipses(), "Regions Inertia Ellipses", hasImage2D && hasLabelImage);
+        addPlugin(menu, new LabelImageAdjacencies(), "Regions Adjacencies", hasImage2D && hasLabelImage);
 
         menu.addSeparator();
         addPlugin(menu, new GrayLevelImageCooccurenceMatrix(), "Gray Level Co-Occurence Matrix", hasImage2D && hasScalarImage);
