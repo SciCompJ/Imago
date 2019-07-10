@@ -447,6 +447,8 @@ public class GuiBuilder
         JMenu segmentationMenu = new JMenu("Segmentation");
 		addPlugin(segmentationMenu, new ImageOtsuThreshold(), "Otsu Threshold", hasScalarImage);
         addPlugin(segmentationMenu, new ImageManualThreshold(), "Manual Threshold", hasScalarImage);
+        segmentationMenu.addSeparator();
+        addPlugin(segmentationMenu, new ImageWatershed(), "Watershed", hasScalarImage);
         menu.add(segmentationMenu);
         menu.addSeparator();
 
