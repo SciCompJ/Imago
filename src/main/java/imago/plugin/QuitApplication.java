@@ -3,6 +3,8 @@
  */
 package imago.plugin;
 
+import java.util.Collection;
+
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.Plugin;
@@ -30,10 +32,15 @@ public class QuitApplication implements Plugin
 		System.out.println("Quit application");
 
 		ImagoGui gui = frame.getGui();
-		for (ImagoFrame frm : gui.getFrames())
+		Collection<ImagoFrame> frames = gui.getFrames();
+        System.out.println("Need to close " + frames.size() + " frames");
+		for (ImagoFrame frm :frames)
 		{
 			System.out.println("  need to close: " + frm.getWidget().getName());
-			frm.close();
+			if (gui.containsFrame(frm))
+			{
+			    frm.close();
+			}
 		}
 		
 		gui.disposeEmptyFrame();
