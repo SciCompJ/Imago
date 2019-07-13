@@ -8,7 +8,7 @@ import imago.gui.Plugin;
 import net.sci.array.scalar.BufferedUInt8Array3D;
 import net.sci.array.scalar.UInt8Array3D;
 import net.sci.geom.geom3d.Point3D;
-import net.sci.geom.geom3d.mesh.DefaultTriMesh3D;
+import net.sci.geom.mesh.DefaultTriMesh3D;
 import net.sci.image.Image;
 
 /**
