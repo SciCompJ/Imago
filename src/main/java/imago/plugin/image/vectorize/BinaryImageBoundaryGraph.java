@@ -11,7 +11,7 @@ import imago.gui.Plugin;
 import net.sci.array.Array;
 import net.sci.array.scalar.BinaryArray;
 import net.sci.array.scalar.BinaryArray2D;
-import net.sci.geom.geom2d.graph.SimpleGraph2D;
+import net.sci.geom.graph.Graph2D;
 import net.sci.image.Image;
 import net.sci.image.vectorize.BinaryImage2DBoundaryGraph;
 
@@ -55,11 +55,11 @@ public class BinaryImageBoundaryGraph implements Plugin
 			return;
 		}
 
-		// TODO: use BinaryArray2D.wrap(...)
-		BinaryArray2D binary = (BinaryArray2D) array;
+		// wrap into a binary 2D
+		BinaryArray2D binary = BinaryArray2D.wrap((BinaryArray) array);
 		
 		// create median box operator
-		SimpleGraph2D graph = new BinaryImage2DBoundaryGraph().process(binary);
+		Graph2D graph = new BinaryImage2DBoundaryGraph().process(binary);
 
 		// add to the document
         doc.addShape(new ImagoShape(graph));

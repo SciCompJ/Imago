@@ -3,6 +3,8 @@
  */
 package imago.gui.viewer;
 
+import imago.app.shape.ImagoShape;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -15,7 +17,6 @@ import java.util.Iterator;
 
 import javax.swing.JPanel;
 
-import imago.app.shape.ImagoShape;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Box2D;
 import net.sci.geom.geom2d.Curve2D;
@@ -23,9 +24,9 @@ import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.curve.Ellipse2D;
-import net.sci.geom.geom2d.graph.SimpleGraph2D;
 import net.sci.geom.geom2d.polygon.PolygonalDomain2D;
 import net.sci.geom.geom2d.polygon.Polyline2D;
+import net.sci.geom.graph.Graph2D;
 
 
 /**
@@ -329,10 +330,10 @@ public class ImageDisplay extends JPanel
             Polyline2D poly = curve.asPolyline(120);
             drawPolyline(g2, poly);
         }
-        else if (geom instanceof SimpleGraph2D)
+        else if (geom instanceof Graph2D)
         {
-            drawGraphEdges(g2, (SimpleGraph2D) geom);
-            drawGraphVertices(g2, (SimpleGraph2D) geom);
+            drawGraphEdges(g2, (Graph2D) geom);
+            drawGraphVertices(g2, (Graph2D) geom);
         }
         else
         {
@@ -354,11 +355,11 @@ public class ImageDisplay extends JPanel
      * @param graph
      *            the graph whose edge need to be paint
      */
-    private void drawGraphVertices(Graphics2D g2, SimpleGraph2D graph)
+    private void drawGraphVertices(Graphics2D g2, Graph2D graph)
     {
-        for (Point2D v : graph.vertices())
+        for (Graph2D.Vertex v : graph.vertices())
         {
-            drawPoint(g2, v);
+            drawPoint(g2, v.position());
         }
     }
     
@@ -371,11 +372,11 @@ public class ImageDisplay extends JPanel
      * @param graph
      *            the graph whose edge need to be paint
      */
-    private void drawGraphEdges(Graphics2D g2, SimpleGraph2D graph)
+    private void drawGraphEdges(Graphics2D g2, Graph2D graph)
     {
-        for (int iEdge = 0; iEdge < graph.edgeNumber(); iEdge++)
+        for (Graph2D.Edge edge : graph.edges())
         {
-            drawLineSegment(g2, graph.getEdgeCurve(iEdge));
+            drawLineSegment(g2, edge.curve());
         }
     }
 
