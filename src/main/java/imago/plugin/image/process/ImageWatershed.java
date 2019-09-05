@@ -12,11 +12,14 @@ import net.sci.array.Array;
 import net.sci.array.scalar.IntArray;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.ScalarArray2D;
+import net.sci.array.scalar.ScalarArray3D;
 import net.sci.array.scalar.UInt8Array;
 import net.sci.image.Image;
 import net.sci.image.data.Connectivity2D;
+import net.sci.image.data.Connectivity3D;
 import net.sci.image.morphology.MinimaAndMaxima;
 import net.sci.image.morphology.watershed.Watershed2D;
+import net.sci.image.morphology.watershed.Watershed3D;
 
 /**
  * Computes watershed of a scalar image resulting in set of catchment basins
@@ -88,6 +91,14 @@ public class ImageWatershed implements Plugin
 			ScalarArray2D<?> minima = MinimaAndMaxima.extendedMinima(array2d, dynamic, conn);
 			ScalarArray2D<?> imposed = MinimaAndMaxima.imposeMinima(array2d, minima, conn);
 			result = new Watershed2D(conn).process(imposed);
+		}
+		else if (nd == 3)
+		{
+		    ScalarArray3D<?> array3d = (ScalarArray3D<?>) ScalarArray3D.wrapScalar3d((ScalarArray<?>) array);
+		    Connectivity3D conn = connIndex == 0 ? Connectivity3D.C6 : Connectivity3D.C26;
+		    ScalarArray3D<?> minima = MinimaAndMaxima.extendedMinima(array3d, dynamic, conn);
+		    ScalarArray3D<?> imposed = MinimaAndMaxima.imposeMinima(array3d, minima, conn);
+		    result = new Watershed3D(conn).process(imposed);
 		}
 		else
 		{
