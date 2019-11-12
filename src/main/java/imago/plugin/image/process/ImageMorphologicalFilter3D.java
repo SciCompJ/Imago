@@ -9,9 +9,10 @@ import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
+import net.sci.array.scalar.ScalarArray3D;
 import net.sci.image.Image;
 import net.sci.image.morphology.MorphologicalFilter.Operation;
-import net.sci.image.morphology.strel.Strel2D;
+import net.sci.image.morphology.strel.Strel3D;
 
 /**
  * Applies various types of morphological filtering on a multidimensional image.
@@ -19,14 +20,14 @@ import net.sci.image.morphology.strel.Strel2D;
  * @author David Legland
  *
  */
-public class ImageMorphologicalFilter implements Plugin
+public class ImageMorphologicalFilter3D implements Plugin
 {
 	Operation op = Operation.DILATION;
-	Strel2D.Shape shape = Strel2D.Shape.SQUARE;
+	Strel3D.Shape shape = Strel3D.Shape.CUBE;
 	int radius = 2;
 	boolean showStrel;
 
-	public ImageMorphologicalFilter()
+	public ImageMorphologicalFilter3D()
 	{
 	}
 
@@ -39,7 +40,7 @@ public class ImageMorphologicalFilter implements Plugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("morphological filter (2d)");
+		System.out.println("morphological filter (3D)");
 
 		// get current image data
 		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
@@ -47,16 +48,16 @@ public class ImageMorphologicalFilter implements Plugin
 		Array<?> array = image.getData();
 
 		int nd = array.dimensionality();
-		if (nd != 2)
+		if (nd != 3)
 		{
-			System.err.println("Requires image of dimensionality equal to 2");
+			System.err.println("Requires image of dimensionality equal to 3");
 			return;
 		}
 		
 		GenericDialog gd = new GenericDialog(frame, "Morphological Filter");
 		gd.addChoice("Operation", Operation.getAllLabels(), 
 				this.op.toString());
-		gd.addChoice("Element", Strel2D.Shape.getAllLabels(), 
+		gd.addChoice("Element", Strel3D.Shape.getAllLabels(), 
 				this.shape.toString());
 		gd.addNumericField("Radius (in pixels)", this.radius, 0);
 //		gd.addCheckbox("Show Element", false);
@@ -71,13 +72,13 @@ public class ImageMorphologicalFilter implements Plugin
 		// parse dialog results
 		// extract chosen parameters
 		this.op 		= Operation.fromLabel(gd.getNextChoice());
-		this.shape 		= Strel2D.Shape.fromLabel(gd.getNextChoice());
+		this.shape 		= Strel3D.Shape.fromLabel(gd.getNextChoice());
 		this.radius 	= (int) gd.getNextNumber();		
 //		this.showStrel 	= gd.getNextBoolean();
 //		this.previewing = gd.getPreviewCheckbox().getState();
 
 		// Create structuring element of the given shape and size
-		Strel2D strel = shape.fromRadius(radius);
+		Strel3D strel = shape.fromRadius(radius);
 		
 		// add some listeners
 		strel.addAlgoListener((ImagoDocViewer) frame); 
@@ -89,7 +90,7 @@ public class ImageMorphologicalFilter implements Plugin
 //		}
 		
 		// Execute core of the plugin on the original image
-		Array<?> result = op.process(array, strel);
+		Array<?> result = op.process((ScalarArray3D<?>) array, strel);
 
 //    	if (previewing) 
 //    	{
