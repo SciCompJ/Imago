@@ -81,9 +81,12 @@ public class Image3DOrthoslicesImage implements Plugin
 		
 		Array<T> result = array.newInstance(new int[]{sizeX2, sizeY2});
 		
-		Array<T> sliceXY = Slicer.slice2d(array, 0, 1, refPos);
-		Array<T> sliceZY = Slicer.slice2d(array, 2, 1, refPos);
-		Array<T> sliceXZ = Slicer.slice2d(array, 0, 2, refPos);
+        Array<T> sliceXY = new Slicer(new int[]{0, 1}, refPos).process(array);
+        Array<T> sliceZY = new Slicer(new int[]{2, 1}, refPos).process(array);
+        Array<T> sliceXZ = new Slicer(new int[]{0, 2}, refPos).process(array);
+//		Array<T> sliceXY = SimpleSlicer.slice2d(array, 0, 1, refPos);
+//		Array<T> sliceZY = SimpleSlicer.slice2d(array, 2, 1, refPos);
+//		Array<T> sliceXZ = SimpleSlicer.slice2d(array, 0, 2, refPos);
 		
 		int[] srcPos = new int[2];
 		int[] tgtPos = new int[2];

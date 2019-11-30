@@ -7,7 +7,7 @@ import imago.app.ImagoDoc;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
-import net.sci.array.process.shape.Slicer;
+import net.sci.array.process.shape.SimpleSlicer;
 import net.sci.image.Image;
 
 
@@ -44,7 +44,7 @@ public class Image3DMiddleSlice implements Plugin
 		int index = Math.max((image.getSize(2)) / 2 - 1, 0);
 		
 		// compute resulting slice
-		Slicer filter = new Slicer(2, index);
+		SimpleSlicer filter = new SimpleSlicer(2, index);
 		Image result = image.apply(filter);
 				
 		// add the image document to GUI
