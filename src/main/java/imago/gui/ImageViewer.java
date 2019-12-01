@@ -4,25 +4,21 @@
 package imago.gui;
 
 
-import javax.swing.JPanel;
-
 import net.sci.image.Image;
 
 
 /**
  * Displays a 2D or 3D image together with some widgets for modifying the view.
  * The type of image representation is left to the sub-classes.
- *  
+ * 
+ * @see imago.gui.viewer.PlanarImageViewer
+ * @see imago.gui.viewer.StackSliceViewer
+ * 
  * @author David Legland
  *
  */
-public abstract class ImageViewer extends JPanel 
+public abstract class ImageViewer 
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	// ===================================================================
 	// Class variables
 
@@ -141,8 +137,23 @@ public abstract class ImageViewer extends JPanel
 ////		System.out.println("refresh display");
 //	}
 
-//	public void repaint() {
-//		super.repaint();
-//		System.out.println("repaint Image Viewer");
-//	}
+	/**
+	 * @return the GUI widget associated with this viewer, usually as an instance of JPanel.
+	 */
+	public abstract Object getWidget();
+	
+	public void repaint() 
+	{
+		System.out.println("repaint Image Viewer");
+	}
+
+	public void invalidate() 
+    {
+        System.out.println("invalidate Image Viewer");
+    }
+
+	public void validate() 
+    {
+        System.out.println("validate Image Viewer");
+    }
 }

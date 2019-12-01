@@ -35,18 +35,11 @@ import net.sci.image.process.shape.ImageSlicer;
  */
 public class OrthoSlicesViewer extends ImageViewer implements ChangeListener, ActionListener, ComponentListener 
 {
-
-	// ===================================================================
-	// static class variables
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
 	// ===================================================================
 	// Class variables
 
+    JPanel panel;
+    
     BufferedImage awtImageXY; // upper left display
     BufferedImage awtImageZY; // upper right display
     BufferedImage awtImageXZ; // lower left display
@@ -86,7 +79,9 @@ public class OrthoSlicesViewer extends ImageViewer implements ChangeListener, Ac
 	
 	private void setupLayout() 
 	{
-		this.setBackground(Color.MAGENTA); //TODO: temporary
+	    this.panel = new JPanel();
+	    this.panel.setBackground(Color.MAGENTA); //TODO: temporary
+	    
 		// create the main display panel
         this.imageDisplayXY = new ImageDisplay(awtImageXY);
         this.imageDisplayXZ = new ImageDisplay(awtImageXZ);
@@ -101,7 +96,7 @@ public class OrthoSlicesViewer extends ImageViewer implements ChangeListener, Ac
         scrollZY.setBackground(Color.BLUE);
 
 		// Setup the general layout
-		setLayout(new BorderLayout());
+        this.panel.setLayout(new BorderLayout());
 		
 		JPanel displayPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -121,10 +116,10 @@ public class OrthoSlicesViewer extends ImageViewer implements ChangeListener, Ac
         c.gridy = 1;
         displayPanel.add(scrollXZ, c);
 
-        this.add(displayPanel, BorderLayout.CENTER);
+        this.panel.add(displayPanel, BorderLayout.CENTER);
 		
 		// Add listeners
-		this.addComponentListener(this);
+        this.panel.addComponentListener(this);
 	}
 	
 	// ===================================================================
@@ -220,7 +215,7 @@ public class OrthoSlicesViewer extends ImageViewer implements ChangeListener, Ac
 	public void actionPerformed(ActionEvent evt) 
 	{
 		updateSliceImage();
-		repaint();
+		this.panel.repaint();
 	}
 	
 	// ===================================================================
@@ -244,4 +239,10 @@ public class OrthoSlicesViewer extends ImageViewer implements ChangeListener, Ac
 
 	@Override
 	public void componentShown(ComponentEvent evt) {}
+
+    @Override
+    public Object getWidget()
+    {
+        return this.panel;
+    }
 }

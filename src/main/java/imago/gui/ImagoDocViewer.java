@@ -124,7 +124,7 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
 		// put into global layout
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		mainPanel.setBackground(Color.GREEN);
-		mainPanel.add(imageView, BorderLayout.CENTER);
+		mainPanel.add((JPanel) imageView.getWidget(), BorderLayout.CENTER);
 		mainPanel.add(this.statusBar, BorderLayout.SOUTH);
 		
 		this.jFrame.setContentPane(mainPanel);

@@ -12,6 +12,9 @@ import javax.swing.JFrame;
  * The superclass of all Imago frames. 
  * Keeps a reference to the current ImagoGui instance.
  * 
+ * @see imageo.gui.ImagoDocViewer
+ * @see imageo.gui.ImagoTableFrame
+ * 
  * @author David Legland
  *
  */

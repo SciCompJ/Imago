@@ -103,7 +103,7 @@ public class ImageExtendedExtrema implements Plugin
 		resultImage.setName(image.getName() + suffix);
 		
 		// add the image document to GUI
-		frame.getGui().addNewDocument(resultImage);
+		frame.getGui().createImagoDocViewer(resultImage, frame);
 	}
 
 	/**

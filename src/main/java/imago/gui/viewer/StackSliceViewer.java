@@ -34,19 +34,12 @@ import net.sci.image.Image;
  *
  */
 public class StackSliceViewer extends ImageViewer implements ChangeListener, ActionListener, ComponentListener 
-{
-
-	// ===================================================================
-	// static class variables
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
+{	
 	// ===================================================================
 	// Class variables
 
+	JPanel panel;
+	
 	BufferedImage awtImage;
 
 	ZoomMode zoomMode = ZoomMode.FILL;
@@ -86,7 +79,9 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 	
 	private void setupLayout() 
 	{
-		this.setBackground(Color.WHITE);
+	    this.panel = new JPanel();
+	    this.panel.setBackground(Color.WHITE);
+	    
 		// create the main display panel
 		this.imageDisplay = new ImageDisplay(awtImage);
 		
@@ -110,18 +105,18 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 		sliceEdit.addActionListener(this);
 		
 		// Setup the general layout
-		setLayout(new BorderLayout());
-		add(scroll, BorderLayout.CENTER);
+		this.panel.setLayout(new BorderLayout());
+		this.panel.add(scroll, BorderLayout.CENTER);
 		JPanel sliderPanel = new JPanel(new BorderLayout());
 		JLabel label = new JLabel("Slice");
 		label.setHorizontalAlignment(JTextField.CENTER);
 		sliderPanel.add(label, BorderLayout.NORTH);
 		sliderPanel.add(sliceSlider, BorderLayout.CENTER);
 		sliderPanel.add(sliceEdit, BorderLayout.SOUTH);
-		add(sliderPanel, BorderLayout.WEST);
+		this.panel.add(sliderPanel, BorderLayout.WEST);
 		
 		// Add listeners
-		this.addComponentListener(this);
+		this.panel.addComponentListener(this);
 	}
 	
 	// ===================================================================
@@ -167,7 +162,7 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 	{
 		imageDisplay.setZoom(zoom);		
 		imageDisplay.invalidate();
-		validate();
+		this.panel.validate();
 		imageDisplay.updateOffset();		
 	}
 
@@ -240,7 +235,7 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 		int index = sliceSlider.getValue();
 		this.setSliceIndex(index);
 		updateSliceImage();
-		repaint();
+		this.panel.repaint();
 	}
 
 	// ===================================================================
@@ -258,7 +253,7 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 	    
 		this.setSliceIndex(index);
 		updateSliceImage();
-		repaint();
+		this.panel.repaint();
 	}
 	
 	// ===================================================================
@@ -282,4 +277,10 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 
 	@Override
 	public void componentShown(ComponentEvent evt) {}
+
+    @Override
+    public Object getWidget()
+    {
+        return this.panel;
+    }
 }

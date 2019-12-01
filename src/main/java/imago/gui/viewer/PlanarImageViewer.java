@@ -13,6 +13,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import net.sci.geom.geom2d.Geometry2D;
@@ -29,16 +30,10 @@ import net.sci.image.Image;
 public class PlanarImageViewer extends ImageViewer implements ComponentListener 
 {
 	// ===================================================================
-	// static class variables
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	// ===================================================================
 	// Class variables
 	
+    JPanel panel;
+    
 	JScrollPane scroll;
 	ImageDisplay imageDisplay;
 	
@@ -79,14 +74,15 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 		scroll = new JScrollPane(this.imageDisplay);
 		scroll.setBackground(Color.WHITE);
 		
-		this.setLayout(new BorderLayout());
-		this.add(scroll, BorderLayout.CENTER);
+		this.panel = new JPanel();
+		this.panel.setLayout(new BorderLayout());
+		this.panel.add(scroll, BorderLayout.CENTER);
 
-		this.setBackground(Color.WHITE);
+		this.panel.setBackground(Color.WHITE);
 		
 		// Add listeners
 		// (mouse listeners are added from ImagoDocViewer, when component is build)
-		this.addComponentListener(this);
+		this.panel.addComponentListener(this);
 	}
 	
 	// ===================================================================
@@ -119,7 +115,7 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 	{
 		imageDisplay.setZoom(zoom);		
 		imageDisplay.invalidate();
-		validate();
+		this.panel.validate();
 		imageDisplay.updateOffset();		
 	}
 
@@ -191,7 +187,7 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 	
 	public void repaint()
 	{
-		super.repaint();
+	    this.panel.repaint();
 	}
 
 
@@ -223,4 +219,10 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 	public void componentShown(ComponentEvent evt)
 	{
 	}
+
+    @Override
+    public Object getWidget()
+    {
+        return this.panel;
+    }
 }
