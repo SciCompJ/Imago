@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.plugin.image.process;
+package imago.plugin.image.shape;
 
 import java.util.Collection;
 
