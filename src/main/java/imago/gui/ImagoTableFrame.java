@@ -81,13 +81,41 @@ public class ImagoTableFrame extends ImagoFrame
         // put into global layout
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(Color.GREEN);
-
-        // Table header
-        String[] colNames = table.getColumnNames();
-         
-        // Convert numeric values to table of objects
+        
+        JTable jtable = createJTable();
+        
+        //add the table to the frame
+        JScrollPane scrollPane = new JScrollPane(jtable);
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
+        
+        // decorate the scroll panel with label column
+        JTable rowTable = new RowNumberTable(jtable);
+        scrollPane.setRowHeaderView(rowTable);
+        scrollPane.setCorner(JScrollPane.UPPER_LEFT_CORNER, rowTable.getTableHeader());
+        
+        this.jFrame.setContentPane(mainPanel);
+    }
+    
+    private JTable createJTable()
+    {
+        // table size
         int nRows = table.rowNumber();
         int nCols = table.columnNumber();
+
+        // Ensure the table has valid column names
+        String[] colNames = table.getColumnNames();
+        if (colNames == null)
+        {
+            colNames = new String[nCols];
+            int nDigits = (int) Math.ceil(Math.log10(nCols));
+            String pattern = "%0" + nDigits + "d";
+            for (int c = 0;c < nCols; c++)
+            {
+                colNames[c] = String.format(pattern, c);
+            }
+        }
+         
+        // Convert numeric values to table of objects
         Object[][] data = new Object[nRows][nCols];
         for (int i = 0; i < nRows; i++)
         {
@@ -102,19 +130,7 @@ public class ImagoTableFrame extends ImagoFrame
         // create JTable object
         JTable jtable = new JTable(data, colNames);
         
-        //add the table to the frame
-        JScrollPane scrollPane = new JScrollPane(jtable);
-        mainPanel.add(scrollPane, BorderLayout.CENTER);
-        
-        // decorate the scroll panel with label column
-        JTable rowTable = new RowNumberTable(jtable);
-        scrollPane.setRowHeaderView(rowTable);
-        scrollPane.setCorner(JScrollPane.UPPER_LEFT_CORNER, rowTable.getTableHeader());
-        
-//        mainPanel.add(imageView);
-//        mainPanel.add(this.statusBar, BorderLayout.SOUTH);
-        
-        this.jFrame.setContentPane(mainPanel);
+        return jtable;
     }
     
     private void putFrameMiddleScreen()

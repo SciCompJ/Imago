@@ -321,6 +321,7 @@ public class GuiBuilder
         addPlugin(vectorMenu, new VectorImageChannelView(), "Channel View", hasVectorImage);
         addPlugin(vectorMenu, new VectorImageConvertToRGB(), "Convert to RGB", hasVectorImage);
         addPlugin(vectorMenu, new CreateVectorImageRGB8View(), "Create RGB View", hasVectorImage);
+        addPlugin(vectorMenu, new VectorImageToTable(), "Convert To Table", hasVectorImage);
         menu.add(vectorMenu);
 
         // add Colormap utils
