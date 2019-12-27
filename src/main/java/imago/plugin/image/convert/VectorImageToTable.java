@@ -12,6 +12,8 @@ import imago.gui.ImagoTableFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
 import net.sci.array.vector.VectorArray;
+import net.sci.axis.CategoricalAxis;
+import net.sci.image.Calibration;
 import net.sci.image.Image;
 import net.sci.table.Table;
 
@@ -70,16 +72,19 @@ public class VectorImageToTable implements Plugin
 
         boolean includeCoords = dlg.getNextBoolean();
         
-        // create default channel names
-        String[] channelNames = new String[nChannels];
-        int nDigits = (int) Math.ceil(Math.log10(nChannels));
-        String pattern = "C%0" + nDigits + "d";
-        for (int c = 0; c < nChannels; c++)
-        {
-            channelNames[c] = String.format(pattern, c);
-        }
+        // input image dimensions
         int nRows = array.elementNumber();
         int nDims = array.dimensionality();
+        
+        Calibration calib = image.getCalibration();
+        
+        // get channel names from image calibration
+        CategoricalAxis channelAxis = calib.getChannelAxis();
+        String[] channelNames = new String[nChannels];
+        for (int c = 0; c < nChannels; c++)
+        {
+            channelNames[c] = channelAxis.getItemName(c);
+        }
         
         // create the table
         Table table;
@@ -105,10 +110,9 @@ public class VectorImageToTable implements Plugin
             String[] colNames = new String[nCols];
 
             // create column names for dimensions
-            String[] dimDigits = new String[]{"X", "Y", "Z", "T", "U", "V"};
             for (int d = 0; d < nDims; d++)
             {
-                colNames[d] = dimDigits[d];
+                colNames[d] = calib.getAxis(d).getShortName();
             }
 
             // create column names for channels
