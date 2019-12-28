@@ -37,6 +37,7 @@ import imago.plugin.image.shape.ImageCropDialog;
 import imago.plugin.image.shape.ImageCropSelection;
 import imago.plugin.image.shape.ImageDownsample;
 import imago.plugin.image.shape.ImageFlip;
+import imago.plugin.image.shape.ImagePermuteDims;
 import imago.plugin.image.shape.ImageReshape;
 import imago.plugin.image.shape.ImageRotateAroundCenter;
 import imago.plugin.image.vectorize.*;
@@ -249,6 +250,10 @@ public class GuiBuilder
 		addPlugin(editMenu, new ZoomOne(), "Zoom One", hasImage);
         addPlugin(editMenu, new RefreshDisplay(), "Refresh Display", hasImage);
 		
+        // crop tools
+        addPlugin(editMenu, new ImageCropSelection(), "Crop Selection", hasImage2D);
+        addPlugin(editMenu, new ImageCropDialog(), "Crop...", hasImage);
+
         // add utility
 		editMenu.addSeparator();
 		addPlugin(editMenu, new PrintFrameList(), "Print Frame List");
@@ -352,14 +357,13 @@ public class GuiBuilder
         addArrayOperatorPlugin(geometryMenu, new Rotate90(-1), "Rotate Left", hasImage2D);
         addArrayOperatorPlugin(geometryMenu, new Rotate90(+1), "Rotate Right", hasImage2D);
 		addPlugin(geometryMenu, new ImageRotateAroundCenter(), "Rotate...", hasImage2D);
-        addPlugin(geometryMenu, new Image3DRotate90(), "Rotate 3D by 90°", hasImage3D);
+        addPlugin(geometryMenu, new Image3DRotate90(), "Rotate 3D by 90 degrees", hasImage3D);
         geometryMenu.addSeparator();
         addPlugin(geometryMenu, new ImageReshape(), "Reshape Image", hasImage);
-        addPlugin(geometryMenu, new ImageCropSelection(), "Crop Selection", hasImage2D);
-        addPlugin(geometryMenu, new ImageCropDialog(), "Crop...", hasImage);
-        addPlugin(geometryMenu, new ImageDownsample(), "Downsample Image", hasImage);
+        addPlugin(geometryMenu, new ImagePermuteDims(), "Permute Image Dimensions", hasImage);
         geometryMenu.addSeparator();
         addPlugin(geometryMenu, new ImageConcatenate(), "Concatenate");
+        addPlugin(geometryMenu, new ImageDownsample(), "Downsample Image", hasImage);
         
 		menu.add(geometryMenu);
 
