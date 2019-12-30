@@ -8,6 +8,7 @@ import imago.gui.viewer.StackSliceViewer;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -76,11 +77,15 @@ public class ImageDisplayOptionsPanel extends JPanel
         
         if (this.image.isVectorImage())
         {
-            this.add(createChannelPanel());
+            JPanel panel = createChannelPanel();
+            panel.setBorder(BorderFactory.createEtchedBorder());
+            this.add(new CollapsiblePanel("Channels Display", panel));
         }
         if (this.image.getDimension() > 2)
         {
-            this.add(createZSlicePanel());
+            JPanel panel = createZSlicePanel();
+            panel.setBorder(BorderFactory.createEtchedBorder());
+            this.add(new CollapsiblePanel("Z-Slice", panel));
         }
         this.add(Box.createVerticalGlue());
 
@@ -176,21 +181,20 @@ public class ImageDisplayOptionsPanel extends JPanel
             
             slider = new JSlider(JSlider.HORIZONTAL, minValue, maxValue, value);
             // TODO: determine tick spacing
-            slider.setMajorTickSpacing(20);
+            int spacing = (int) Math.max(Math.floor((maxValue + 1) / 8), 1);
+            slider.setMajorTickSpacing(spacing);
             slider.setPaintTicks(true);
             slider.setPaintLabels(true);
 
             // setup global layout
-            this.setBorder( BorderFactory.createTitledBorder( title ) );
             this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
+            String text = String.format(Locale.ENGLISH, "%s (%d->%d)     ", title, minValue, maxValue);
             JPanel textLine = new JPanel();
             textLine.setLayout(new BoxLayout(textLine, BoxLayout.X_AXIS));
-            textLine.add(new JLabel("0"));
-            textLine.add(Box.createHorizontalGlue());
+            textLine.add(new JLabel(text));
             textLine.add(textField);
             textLine.add(Box.createHorizontalGlue());
-            textLine.add(new JLabel(String.format("%d",  this.maxValue)));
 
             this.add(textLine);
             this.add(slider);
