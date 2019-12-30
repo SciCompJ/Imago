@@ -103,6 +103,11 @@ public class ImagoGui
 	 */
 	ImagoFrame emptyFrame = null;
 	
+	/**
+	 * Some global settings.
+	 */
+	public Settings settings = new Settings();
+	
 	
 	// ===================================================================
 	// Constructor

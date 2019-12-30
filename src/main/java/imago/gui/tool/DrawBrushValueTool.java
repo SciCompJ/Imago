@@ -19,14 +19,14 @@ import net.sci.geom.geom2d.Point2D;
 import net.sci.image.Image;
 
 /**
- * Draw current value on current position when user clicks.
+ * Draw current value as a large dot around current position when user clicks.
  * 
  * Requires scalar image.
  * 
  * @author dlegland
  *
  */
-public class DrawValueTool extends ImagoTool
+public class DrawBrushValueTool extends ImagoTool
 {
     /**
      * Basic constructor.
@@ -36,7 +36,7 @@ public class DrawValueTool extends ImagoTool
      * @param name
      *            the name of this tool
      */
-    public DrawValueTool(ImagoDocViewer viewer, String name)
+    public DrawBrushValueTool(ImagoDocViewer viewer, String name)
     {
         super(viewer, name);
     }
@@ -87,11 +87,29 @@ public class DrawValueTool extends ImagoTool
         if (xi >= sizeX || yi >= sizeY) return;
         
         double value = this.viewer.getGui().settings.brushValue;
-
+        double radius = this.viewer.getGui().settings.brushRadius;
+        double r2 = (radius + 0.5) * (radius + 0.5);
+        int ri = (int) Math.ceil(radius);
+        
         if (array.dimensionality() == 2)
         {
             ScalarArray2D<?> array2d = ScalarArray2D.wrap((ScalarArray<?>) array);
-            array2d.setValue(xi, yi, value);
+            for (int y2 = yi - ri; y2 <= yi + ri; y2++)
+            {
+                if (y2 < 0 || y2 > sizeY-1) continue;
+                double dy2 = (y2 - yi) * (y2 - yi);
+                
+                for (int x2 = xi - ri; x2 <= xi + ri; x2++)
+                {
+                    if (x2 < 0 || x2 > sizeX-1) continue;
+                    
+                    double d2 = (x2 - xi) * (x2 - xi) + dy2;
+                    if (d2 < r2)
+                    {
+                        array2d.setValue(x2, y2, value);
+                    }
+                }
+            }
         }
         else if (array.dimensionality() == 3)
         {

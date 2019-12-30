@@ -5,6 +5,7 @@ package imago.gui;
 
 import imago.app.ImagoDoc;
 import imago.gui.action.RunPluginAction;
+import imago.gui.tool.DrawBrushValueTool;
 import imago.gui.tool.DrawValueTool;
 import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectPolygonTool;
@@ -16,6 +17,8 @@ import imago.plugin.CloseWithChildren;
 import imago.plugin.QuitApplication;
 import imago.plugin.developer.DisplayExceptionDialog;
 import imago.plugin.edit.ChangeCurrentTool;
+import imago.plugin.edit.ChooseBrushRadius;
+import imago.plugin.edit.ChooseBrushValue;
 import imago.plugin.edit.DocClearShapes;
 import imago.plugin.edit.PrintDocumentList;
 import imago.plugin.edit.PrintFrameList;
@@ -235,11 +238,14 @@ public class GuiBuilder
 
             editMenu.addSeparator();
             addPlugin(editMenu, 
-                    new ChangeCurrentTool(new DrawValueTool(viewer, "drawWhite", Double.MAX_VALUE)),
-                    "Draw White", hasScalarImage);
+                    new ChangeCurrentTool(new DrawValueTool(viewer, "drawValue")),
+                    "Draw (Dot)", hasScalarImage);
             addPlugin(editMenu, 
-                    new ChangeCurrentTool(new DrawValueTool(viewer, "drawBlack", 0.0)),
-                    "Draw Black", hasScalarImage);
+                    new ChangeCurrentTool(new DrawBrushValueTool(viewer, "drawBrushValue")),
+                    "Draw (Brush)", hasScalarImage);
+//            addPlugin(editMenu, 
+//                    new ChangeCurrentTool(new DrawValueTool(viewer, "drawBlack", 0.0)),
+//                    "Draw Black", hasScalarImage);
 
             editMenu.addSeparator();
 		}
@@ -260,6 +266,12 @@ public class GuiBuilder
 		addPlugin(editMenu, new PrintDocumentList(), "Print Document List");
 		addPlugin(editMenu, new DocClearShapes(), "Clear Shapes");
 		
+        editMenu.addSeparator();
+        JMenu settingsMenu = new JMenu("Settings");
+        addPlugin(settingsMenu, new ChooseBrushValue(), "Choose Brush Value...");
+        addPlugin(settingsMenu, new ChooseBrushRadius(), "Choose Brush Radius...");
+        
+        editMenu.add(settingsMenu);
 		return editMenu;
 	}
 
