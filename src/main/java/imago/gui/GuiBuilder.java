@@ -475,6 +475,8 @@ public class GuiBuilder
 		menu.add(binaryMenu);
 		menu.addSeparator();
 
+		addPlugin(menu, new Image3DKymograph(), "Kymograph", hasImage3D && hasScalarImage);
+        
         // operators specific to binary images
         JMenu segmentationMenu = new JMenu("Segmentation");
 		addPlugin(segmentationMenu, new ImageOtsuThreshold(), "Otsu Threshold", hasScalarImage);
