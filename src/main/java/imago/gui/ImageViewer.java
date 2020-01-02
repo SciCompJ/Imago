@@ -4,6 +4,7 @@
 package imago.gui;
 
 
+import net.sci.geom.geom2d.Geometry2D;
 import net.sci.image.Image;
 
 
@@ -51,6 +52,13 @@ public abstract class ImageViewer
 		this.image = image;
 	}
 	
+    // ===================================================================
+    // General methods
+
+	public abstract Geometry2D getSelection();
+
+	public abstract void setSelection(Geometry2D shape);
+
 	
 	// ===================================================================
 	// General methods

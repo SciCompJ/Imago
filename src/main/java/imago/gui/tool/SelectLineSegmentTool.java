@@ -3,10 +3,12 @@
  */
 package imago.gui.tool;
 
+import imago.gui.ImageViewer;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoTool;
 import imago.gui.viewer.ImageDisplay;
 import imago.gui.viewer.PlanarImageViewer;
+import imago.gui.viewer.StackSliceViewer;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -86,13 +88,21 @@ public class SelectLineSegmentTool extends ImagoTool
             this.x2 = x;
             this.y2 = y;
             this.state = 0;
-            
-            if ((this.viewer.getImageView() instanceof PlanarImageViewer))
+            ImageViewer imageView = this.viewer.getImageView(); 
+            if (imageView instanceof PlanarImageViewer)
             {
                 LineSegment2D line = new LineSegment2D(new Point2D(x1, y1), new Point2D(x2, y2));
                 
-                PlanarImageViewer piv = (PlanarImageViewer) this.viewer.getImageView();
-                piv.setSelection(line);
+//                PlanarImageViewer piv = (PlanarImageViewer) imageView;
+                imageView .setSelection(line);
+                display.setSelection(line);
+            }
+            else if (imageView instanceof StackSliceViewer)
+            {
+                LineSegment2D line = new LineSegment2D(new Point2D(x1, y1), new Point2D(x2, y2));
+                
+//                PlanarImageViewer piv = (PlanarImageViewer) this.viewer.getImageView();
+                imageView .setSelection(line);
                 display.setSelection(line);
             }  
         }
@@ -114,7 +124,14 @@ public class SelectLineSegmentTool extends ImagoTool
         double x = pos.getX();
         double y = pos.getY();
      
-        if ((this.viewer.getImageView() instanceof PlanarImageViewer))
+        ImageViewer imageView = this.viewer.getImageView(); 
+        if (imageView instanceof PlanarImageViewer)
+        {
+            LineSegment2D line = new LineSegment2D(new Point2D(x1, y1), new Point2D(x, y));
+            display.setSelection(line);
+            this.viewer.repaint();
+        }  
+        else if (imageView instanceof StackSliceViewer)
         {
             LineSegment2D line = new LineSegment2D(new Point2D(x1, y1), new Point2D(x, y));
             display.setSelection(line);

@@ -23,6 +23,7 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import net.sci.geom.geom2d.Geometry2D;
 import net.sci.image.BufferedImageUtils;
 import net.sci.image.Image;
 
@@ -52,6 +53,11 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 	JSlider sliceSlider;
 	JTextField sliceEdit;
 	
+	/**
+     * The shape of the current selection, usually a polyline or a rectangle, in pixels coordinates.
+     */
+    protected Geometry2D selection = null;
+
 	protected ImagoTool currentTool = null;
 
 	
@@ -149,7 +155,21 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 	{
 		return imageDisplay;
 	}
+	
+	
+    // ===================================================================
+    // Selection management
 
+	public Geometry2D getSelection()
+    {
+        return this.selection;
+    }
+
+    public void setSelection(Geometry2D shape)
+    {
+        this.selection = shape;
+    }
+	    
 	// ===================================================================
 	// Display methods
 

@@ -22,6 +22,7 @@ import javax.swing.JScrollPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import net.sci.geom.geom2d.Geometry2D;
 import net.sci.image.BufferedImageUtils;
 import net.sci.image.Image;
 import net.sci.image.process.shape.ImageSlicer;
@@ -58,7 +59,12 @@ public class OrthoSlicesViewer extends ImageViewer implements ChangeListener, Ac
     
 	protected ImagoTool currentTool = null;
 
-	
+	/**
+     * The shape of the current selection, usually a polyline or a rectangle, in pixels coordinates.
+     */
+    protected Geometry2D selection = null;
+
+    
 	// ===================================================================
 	// Constructors
 
@@ -165,6 +171,20 @@ public class OrthoSlicesViewer extends ImageViewer implements ChangeListener, Ac
         awtImageXZ = BufferedImageUtils.createAwtImage(ImageSlicer.slice2d(image, 0, 2, this.slicesCenter));
 	}
 
+
+    // ===================================================================
+    // selection management
+
+	public Geometry2D getSelection()
+    {
+        return this.selection;
+    }
+    
+    public void setSelection(Geometry2D shape)
+    {
+        this.selection = shape;
+    }
+    
 	// ===================================================================
 	// tool management
 
