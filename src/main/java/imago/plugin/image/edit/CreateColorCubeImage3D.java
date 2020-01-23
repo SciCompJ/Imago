@@ -39,7 +39,7 @@ public class CreateColorCubeImage3D implements Plugin
 			{
 				for (int x = 0; x < sizeX; x++) 
 				{
-					rgb3d.set(x, y, z, new RGB8(x * 2, y * 2, z * 2));
+					rgb3d.set(new RGB8(x * 2, y * 2, z * 2), x, y, z);
 				}
 			}
 		}

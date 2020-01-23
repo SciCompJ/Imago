@@ -113,7 +113,7 @@ public class ImageBivariateHistogram implements Plugin
             double value2 = ((ScalarArray<?>) array2).getValue(pos);
             int ind1 = (int) Math.min(Math.max(Math.floor(nBins1 * (value1 - minBound1) / (maxBound1 - minBound1)), 0), nBins1-1);
             int ind2 = (int) Math.min(Math.max(Math.floor(nBins2 * (value2 - minBound2) / (maxBound2 - minBound2)), 0), nBins2-1);
-            histo.setInt(ind1, ind2, histo.getInt(ind1, ind2) + 1);
+            histo.setInt(histo.getInt(ind1, ind2) + 1, ind1, ind2);
         }
 
         ScalarArray2D<?> result = histo;
@@ -124,7 +124,7 @@ public class ImageBivariateHistogram implements Plugin
             {
                 for (int ind1 = 0; ind1 < nBins1; ind1++)
                 {
-                    result.setValue(ind1, ind2, Math.log(histo.getValue(ind1, ind2) + 1));
+                    result.setValue(Math.log(histo.getValue(ind1, ind2) + 1), ind1, ind2);
                 }
             }
         }
@@ -136,7 +136,7 @@ public class ImageBivariateHistogram implements Plugin
             {
                 for (int ind1 = 0; ind1 < nBins1 - 1; ind1++)
                 {
-                    result2.setValue(new int[] {ind1, ind2}, result.getValue(ind1, ind2));
+                    result2.setValue(result.getValue(ind1 + 1, ind2 + 1), ind1, ind2);
                 }
             }
             result = result2;

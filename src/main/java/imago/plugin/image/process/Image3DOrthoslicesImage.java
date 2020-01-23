@@ -99,7 +99,7 @@ public class Image3DOrthoslicesImage implements Plugin
 			{
 				srcPos[0] = x;
 				tgtPos[0] = x;
-				result.set(tgtPos, sliceXY.get(srcPos));
+				result.set(sliceXY.get(srcPos), tgtPos);
 			}
 		}
 				
@@ -111,7 +111,7 @@ public class Image3DOrthoslicesImage implements Plugin
 			{
 				srcPos[0] = z;
 				tgtPos[0] = z + sizeX;
-				result.set(tgtPos, sliceZY.get(srcPos));
+				result.set(sliceZY.get(srcPos), tgtPos);
 			}
 		}
 				
@@ -123,7 +123,7 @@ public class Image3DOrthoslicesImage implements Plugin
 			{
 				srcPos[0] = x;
 				tgtPos[0] = x;
-				result.set(tgtPos, sliceXZ.get(srcPos));
+				result.set(sliceXZ.get(srcPos), tgtPos);
 			}
 		}
 				

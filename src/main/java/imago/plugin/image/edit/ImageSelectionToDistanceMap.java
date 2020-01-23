@@ -76,7 +76,7 @@ public class ImageSelectionToDistanceMap implements Plugin
         {
             for (int x = 0; x < sizeX; x++)
             {
-                distMap.setValue(x, y, selection.distance(new Point2D(x, y)));
+                distMap.setValue(selection.distance(new Point2D(x, y)), x, y);
             }
         }
         

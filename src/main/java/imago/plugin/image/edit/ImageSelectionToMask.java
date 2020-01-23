@@ -88,7 +88,7 @@ public class ImageSelectionToMask implements Plugin
             {
                 if (poly.contains(new Point2D(x, y)) ^ clockWise)
                 {
-                    mask.setBoolean(x, y, true);
+                    mask.setBoolean(true, x, y);
                 }
             }
         }

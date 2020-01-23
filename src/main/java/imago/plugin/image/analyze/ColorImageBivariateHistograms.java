@@ -58,9 +58,9 @@ public class ColorImageBivariateHistograms implements Plugin
 			int r = rgb[0];
 			int g = rgb[1];
 			int b = rgb[2];
-			RGHist.setInt(r, g, RGHist.getInt(r, g) + 1);		
-			RBHist.setInt(r, b, RBHist.getInt(r, b) + 1);		
-			GBHist.setInt(g, b, GBHist.getInt(g, b) + 1);		
+			RGHist.setInt(RGHist.getInt(r, g) + 1, r, g);		
+			RBHist.setInt(RBHist.getInt(r, b) + 1, r, b);		
+			GBHist.setInt(GBHist.getInt(g, b) + 1, g, b);		
 		}
 		
 		// apply operator on current image

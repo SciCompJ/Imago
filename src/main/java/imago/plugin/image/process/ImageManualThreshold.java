@@ -73,9 +73,9 @@ public class ImageManualThreshold implements Plugin
         for (int[] pos : result.positions())
         {
             if (dark)
-                result.setBoolean(pos, array.getValue(pos) >= threshold);
+                result.setBoolean(array.getValue(pos) >= threshold, pos);
             else
-                result.setBoolean(pos, array.getValue(pos) <= threshold);
+                result.setBoolean(array.getValue(pos) <= threshold, pos);
         }
 
 		Image resultImage = new Image(result, image);
