@@ -4,7 +4,6 @@
 package imago.gui.panel;
 
 import imago.gui.ImageViewer;
-import imago.gui.viewer.StackSliceViewer;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -19,6 +18,7 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeListener;
 
+import net.sci.image.Calibration;
 import net.sci.image.Image;
 
 /**
@@ -57,6 +57,9 @@ public class ImageDisplayOptionsPanel extends JPanel
     
     ValueSliderPanel zSlicePanel;
     
+    ValueSliderPanel framePanel;
+    
+    JPanel[] axisPanels;
     
     
     public ImageDisplayOptionsPanel(ImageViewer imageViewer)
@@ -81,12 +84,17 @@ public class ImageDisplayOptionsPanel extends JPanel
             panel.setBorder(BorderFactory.createEtchedBorder());
             this.add(new CollapsiblePanel("Channels Display", panel));
         }
-        if (this.image.getDimension() > 2)
+        
+        int nd = this.image.getDimension();
+        Calibration calib = image.getCalibration();
+        this.axisPanels = new JPanel[nd];
+        for (int d = 2; d < nd; d++)
         {
-            JPanel panel = createZSlicePanel();
-            panel.setBorder(BorderFactory.createEtchedBorder());
-            this.add(new CollapsiblePanel("Z-Slice", panel));
+            axisPanels[d] = createAxisPanel(d);
+            axisPanels[d].setBorder(BorderFactory.createEtchedBorder());
+            this.add(new CollapsiblePanel(calib.getAxis(d).getName(), axisPanels[d]));
         }
+        
         this.add(Box.createVerticalGlue());
 
         this.invalidate();
@@ -113,40 +121,38 @@ public class ImageDisplayOptionsPanel extends JPanel
         
         return this.channelPanel;
     }
-
-    private JPanel createZSlicePanel()
+    
+    private JPanel createAxisPanel(int d)
     {
-        int zMax = image.getSize(2);
-        if (zMax == 1)
+        int vMax = image.getSize(d);
+        if (vMax <= 1)
         {
-            throw new RuntimeException("Requires an image with at least 2 slices");
+            throw new RuntimeException("Requires an image with at least 2 element in direction " + d);
         }
         
-        this.zSlicePanel = new ValueSliderPanel("Z-Slice", 0, zMax-1, 50);
-        
-        zSlicePanel.slider.addChangeListener(evt ->
-        {
-//            System.out.println("update slice from slider");
-            int sliceIndex = this.zSlicePanel.slider.getValue();
-            String text = String.format("%d", sliceIndex);
-            zSlicePanel.textField.setText(text);
+        String name = String.format(Locale.ENGLISH, "Axis %d index", d);
+        ValueSliderPanel panel = new ValueSliderPanel(name, 0, vMax-1, 0);
 
-            StackSliceViewer image3dViewer = (StackSliceViewer) imageViewer;
-            image3dViewer.setSliceIndex(sliceIndex);
-            image3dViewer.updateSliceImage();
-            image3dViewer.refreshDisplay();
-//            image3dViewer.repaint();
-        });
-        
-        zSlicePanel.textField.addActionListener(evt -> 
+        panel.slider.addChangeListener(evt ->
         {
-//            System.out.println("update slice from text");
-            String text = this.zSlicePanel.textField.getText();
-            this.zSlicePanel.slider.setValue(Integer.parseInt(text));
+            int sliceIndex = panel.slider.getValue();
+            String text = String.format("%d", sliceIndex);
+            panel.textField.setText(text);
+
+            imageViewer.setSlicingPosition(d, sliceIndex);
+            imageViewer.updateSliceImage();
+            imageViewer.refreshDisplay();
         });
         
-        return this.zSlicePanel;
+        panel.textField.addActionListener(evt -> 
+        {
+            String text = panel.textField.getText();
+            panel.slider.setValue(Integer.parseInt(text));
+        });
+        
+        return panel;
     }
+
 
     class ValueSliderPanel extends JPanel
     {

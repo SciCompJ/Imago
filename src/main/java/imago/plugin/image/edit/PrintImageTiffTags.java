@@ -19,7 +19,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import imago.gui.util.RowNumberTable;
 import net.sci.image.Image;
-import net.sci.image.io.TiffTag;
+import net.sci.image.io.tiff.TiffTag;
 
 /**
  * @author dlegland
@@ -97,7 +97,7 @@ public class PrintImageTiffTags implements Plugin
             mainPanel.setBackground(Color.GREEN);
 
             // Table header
-            String[] colNames = new String[]{"Code", "Name", "Value"};
+            String[] colNames = new String[]{"Code", "Name", "Origin", "Value"};
             int nRows = image.tiffTags.size();
              
             // Convert numeric values to table of objects
@@ -109,7 +109,8 @@ public class PrintImageTiffTags implements Plugin
                 Object[] row = new Object[nCols];
                 row[0] = tag.code;
                 row[1] = tag.name;
-                row[2] = createContentString(tag.content);
+                row[2] = tag.tagSet == null ? "Unknown" : tag.tagSet.getName();
+                row[3] = createContentString(tag.content);
                 data[iRow++] = row;
             }
             
@@ -152,6 +153,10 @@ public class PrintImageTiffTags implements Plugin
                 {
                     return "Array (unknown type)";
                 }
+            }
+            else if (obj == null)
+            {
+                return "null";
             }
             else
             {
@@ -238,8 +243,5 @@ public class PrintImageTiffTags implements Plugin
             buffer.append("}");
             return buffer.toString();
         }
-        
 	}
-	
-
 }

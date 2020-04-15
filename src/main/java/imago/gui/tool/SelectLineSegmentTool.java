@@ -93,7 +93,7 @@ public class SelectLineSegmentTool extends ImagoTool
             {
                 LineSegment2D line = new LineSegment2D(new Point2D(x1, y1), new Point2D(x2, y2));
                 
-//                PlanarImageViewer piv = (PlanarImageViewer) imageView;
+//                PlanarImageViewer piv = (PlanarImageViewer) imageViewer;
                 imageView .setSelection(line);
                 display.setSelection(line);
             }

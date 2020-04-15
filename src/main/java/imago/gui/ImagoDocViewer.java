@@ -7,6 +7,7 @@ import imago.app.ImagoDoc;
 import imago.gui.panel.ImageDisplayOptionsPanel;
 import imago.gui.panel.StatusBar;
 import imago.gui.tool.DisplayCurrentValueTool;
+import imago.gui.viewer.Image5DXYSliceViewer;
 import imago.gui.viewer.PlanarImageViewer;
 import imago.gui.viewer.StackSliceViewer;
 
@@ -30,7 +31,7 @@ import net.sci.image.Image;
  * Displays an image into a frame, with menu, and several sub-panels.
  * 
  * Contains at least an instance of ImageViewer, and a status bar.
- * CAn also contains an ImageDisplayOptionsPanel.
+ * Can also contains an optional ImageDisplayOptionsPanel.
  * 
  * @see ImageViewer
  * @see imago.gui.panel.StatusBar
@@ -46,13 +47,24 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
 
 	// ===================================================================
 	// Class variables
+    
+    /** The document that contains the image to display.*/
+    ImagoDoc doc;
 
-	ImagoDoc doc;
-	Image image;
-
-    ImageViewer imageView;
+    /** The image to display.*/
+    Image image;
+    
+    /** The image viewer panel. */
+    ImageViewer imageViewer;
+    
+    /** The panel containing display options: Z,T slice index...*/ 
     ImageDisplayOptionsPanel imageDisplayOptionsPanel;
+    
+    /** Used to display information about image, cursor, current process... */
 	StatusBar statusBar;
+	
+	
+	JSplitPane splitPane;
 	
 	
 	// ===================================================================
@@ -76,12 +88,11 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
 		GuiBuilder builder = new GuiBuilder(this);
 		builder.createMenuBar();
 		
-        // Create a status bar
+		// Create the different panels
+		createImageViewer();
+        this.imageDisplayOptionsPanel = new ImageDisplayOptionsPanel(this.imageViewer);
         this.statusBar = new StatusBar();
 
-		// create default viewer for image
-		createDefaultImageViewer();
-        
 		// layout the frame
 		setupLayout();
 		jFrame.doLayout();
@@ -102,50 +113,57 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
 		
 		// Initialize the current tool
 		ImagoTool tool = new DisplayCurrentValueTool(this, "showValue");
-		this.imageView.setCurrentTool(tool);
+		this.imageViewer.setCurrentTool(tool);
 		
 		putFrameMiddleScreen();
 	}
     
-    private void createDefaultImageViewer()
+    private void createImageViewer()
     {
         // create the image viewer
-        if (image.getDimension() == 2) 
+        if (image.getDimension() == 2)
         {
             PlanarImageViewer viewer = new PlanarImageViewer(image);
 
             viewer.getImageDisplay().setShapes(doc.getShapes());
 
-            this.imageView = viewer;
+            this.imageViewer = viewer;
         }
-        else 
+        else if (image.getDimension() == 3) 
         {
             StackSliceViewer sliceViewer = new StackSliceViewer(image);
             sliceViewer.setSliceIndex(this.doc.getCurrentSliceIndex());
-            this.imageView = sliceViewer;
-//          OrthoSlicesViewer sliceViewer = new OrthoSlicesViewer(image);
-////            sliceViewer.setSliceIndex(this.doc.getCurrentSliceIndex());
-//            this.imageView = sliceViewer;
+            this.imageViewer = sliceViewer;
         }
-        
-        this.imageDisplayOptionsPanel = new ImageDisplayOptionsPanel(this.imageView);
-        
+        else 
+        {
+            Image5DXYSliceViewer sliceViewer = new Image5DXYSliceViewer(image);
+            sliceViewer.setSliceIndex(this.doc.getCurrentSliceIndex());
+            this.imageViewer = sliceViewer;
+        }
     }
 
     private void setupLayout() 
 	{
-        this.imageDisplayOptionsPanel.setPreferredSize(new Dimension(100, 100));
-        this.imageDisplayOptionsPanel.setMinimumSize(new Dimension(50, 50));
+        this.imageDisplayOptionsPanel.setPreferredSize(new Dimension(0, 0));
+        this.imageDisplayOptionsPanel.setMinimumSize(new Dimension(0, 0));
         
 		// put into global layout
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		mainPanel.setBackground(Color.GREEN);
-		mainPanel.add((JPanel) imageView.getWidget(), BorderLayout.CENTER);
+		mainPanel.add((JPanel) imageViewer.getWidget(), BorderLayout.CENTER);
 		mainPanel.add(this.statusBar, BorderLayout.SOUTH);
 		
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
                 imageDisplayOptionsPanel, mainPanel);
-        splitPane.setResizeWeight(0.2);
+        if (image.getDimension() < 4)
+        {
+            splitPane.setResizeWeight(0.0);
+        }
+        else
+        {
+            splitPane.setResizeWeight(0.25);
+        }
         splitPane.setOneTouchExpandable(true);
         splitPane.setContinuousLayout(true);
 
@@ -157,7 +175,7 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
 		// set up frame size depending on screen size
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = Math.min(800, screenSize.width - 100);
-		int height = Math.min(700, screenSize.width - 100);
+		int height = Math.min(600, screenSize.width - 100);
 		Dimension frameSize = new Dimension(width, height);
 		this.jFrame.setSize(frameSize);
 
@@ -207,7 +225,7 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
 	
 	public ImageViewer getImageView()
 	{
-		return this.imageView;
+		return this.imageViewer;
 	}
 	
 	/**
@@ -219,18 +237,18 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
         System.out.println("update image view");
         ImagoTool currentTool = null;
         
-        if (this.imageView != null)
+        if (this.imageViewer != null)
         {
-            currentTool = this.imageView.getCurrentTool();
+            currentTool = this.imageViewer.getCurrentTool();
         }
         
-        this.imageView = view;
+        this.imageViewer = view;
         setupLayout();
         jFrame.doLayout();
         
         if (currentTool != null)
         {
-            this.imageView.setCurrentTool(currentTool);
+            this.imageViewer.setCurrentTool(currentTool);
         }
     }
     

@@ -43,6 +43,14 @@ public abstract class ImageViewer
 
 	protected double zoom = 1;
 	
+    /**
+     * For 3D+ images, the position of a point visible in the image, used to compute slice images.
+     * 
+     * The first two indices correspond to the X and Y indices. The other ones
+     * correspond to indices of the slice in the other dimensions.
+     */
+	protected int[] slicingPosition;
+	
 	
 	// ===================================================================
 	// Constructor
@@ -50,6 +58,14 @@ public abstract class ImageViewer
 	public ImageViewer(Image image) 
 	{
 		this.image = image;
+		
+		// initialize slicing position
+        int nd = image.getDimension();
+        this.slicingPosition = new int[nd];
+        for (int d = 0; d < nd; d++)
+        {
+            this.slicingPosition[d] = (int) Math.floor(image.getSize(d) / 2);
+        }
 	}
 	
     // ===================================================================
@@ -102,6 +118,11 @@ public abstract class ImageViewer
 		this.previewImage = previewImage;
 	}
 
+	public void updateSliceImage()
+	{
+	    
+	}
+	
 //	/**
 //	 * Returns the instance of ImagoDocViewer that contains this Image view,
 //	 * or null if no one is found.
@@ -138,8 +159,23 @@ public abstract class ImageViewer
 	{
 		this.zoom = zoom;
 	}
+	
+	public void setSlicingPosition(int[] pos)
+	{
+	    this.slicingPosition = pos;
+	}
 
+    public void setSlicingPosition(int dim, int pos)
+    {
+        this.slicingPosition[dim] = pos;
+    }
 
+	public int getSlicingPosition(int dim)
+	{
+	    return this.slicingPosition[dim];
+	}
+
+	
 	public abstract void refreshDisplay();
 //	{
 ////		System.out.println("refresh display");
