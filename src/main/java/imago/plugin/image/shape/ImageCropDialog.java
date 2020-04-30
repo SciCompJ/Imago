@@ -66,7 +66,7 @@ public class ImageCropDialog implements Plugin
 		}
 
 		// create operator box filtering operator
-		Crop op= new Crop(minDims, maxDims);
+		Crop op = Crop.fromMinMax(minDims, maxDims);
 		op.addAlgoListener((ImagoDocViewer) frame);
 		
 		// apply operator on current image array

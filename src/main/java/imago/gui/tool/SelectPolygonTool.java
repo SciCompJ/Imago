@@ -6,7 +6,6 @@ package imago.gui.tool;
 import imago.gui.ImagoDocViewer;
 import imago.gui.ImagoTool;
 import imago.gui.viewer.ImageDisplay;
-import imago.gui.viewer.PlanarImageViewer;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -117,9 +116,8 @@ public class SelectPolygonTool extends ImagoTool
         }
 
         display.setSelection(poly);
-        PlanarImageViewer piv = (PlanarImageViewer) this.viewer.getImageView();
-        piv.setSelection(poly);
-
+        this.viewer.getImageView().setSelection(poly);
+        
         this.viewer.repaint();
     }
     

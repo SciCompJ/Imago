@@ -73,7 +73,7 @@ public class ImageCropSelection implements Plugin
         }
         
 		// create operator box filtering operator
-		Crop op= new Crop(minInds, maxInds);
+		Crop op = Crop.fromMinMax(minInds, maxInds);
 		op.addAlgoListener((ImagoDocViewer) frame);
 		
 		// apply operator on current image array
