@@ -3,8 +3,8 @@
  */
 package imago.plugin.image.convert;
 
-import imago.app.ImagoDoc;
-import imago.gui.ImagoDocViewer;
+import imago.app.ImageHandle;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.image.Calibration;
@@ -34,8 +34,8 @@ public class ConvertStackToMovie implements Plugin
         System.out.println("convert 3D image to movie");
 
         // get current image data
-        ImagoDocViewer viewer = (ImagoDocViewer) frame;
-        ImagoDoc doc = viewer.getDocument();
+        ImageFrame viewer = (ImageFrame) frame;
+        ImageHandle doc = viewer.getDocument();
         Image image = doc.getImage();
 
         int nd = image.getDimension();

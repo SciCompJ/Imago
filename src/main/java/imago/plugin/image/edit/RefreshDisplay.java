@@ -4,7 +4,7 @@
 package imago.plugin.image.edit;
 
 import imago.gui.ImageViewer;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 
@@ -28,7 +28,7 @@ public class RefreshDisplay implements Plugin
 		System.out.println("refresh display");
 		
 		// get current frame
-        ImageViewer viewer = ((ImagoDocViewer) frame).getImageView();
+        ImageViewer viewer = ((ImageFrame) frame).getImageView();
         viewer.refreshDisplay();
         frame.repaint();
     }

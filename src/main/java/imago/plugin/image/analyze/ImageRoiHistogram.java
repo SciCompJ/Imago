@@ -21,7 +21,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import imago.gui.ImageViewer;
 import imago.gui.ImagoChartFrame;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import imago.gui.viewer.PlanarImageViewer;
@@ -57,9 +57,9 @@ public class ImageRoiHistogram implements Plugin
 	public void run(ImagoFrame frame, String args)
 	{
 		// Check type is image frame
-		if (!(frame instanceof ImagoDocViewer))
+		if (!(frame instanceof ImageFrame))
 			return;
-		ImagoDocViewer iframe = (ImagoDocViewer) frame;
+		ImageFrame iframe = (ImageFrame) frame;
 		Image image = iframe.getDocument().getImage();
 		
         ImageViewer viewer = iframe.getImageView();
@@ -185,7 +185,7 @@ public class ImageRoiHistogram implements Plugin
 	// }
 	//
 	// // Title of the plot
-	// ImagoDocViewer iframe = (ImagoDocViewer) frame;
+	// ImageFrame iframe = (ImageFrame) frame;
 	// MetaImage image = iframe.getDocument().getMetaImage();
 	// String imageName = image.getName();
 	// String titleString = "Histogram of " + imageName;
@@ -268,7 +268,7 @@ public class ImageRoiHistogram implements Plugin
 		}
 
 		// Title of the plot
-		ImagoDocViewer iframe = (ImagoDocViewer) parentFrame;
+		ImageFrame iframe = (ImageFrame) parentFrame;
 		Image image = iframe.getDocument().getImage();
 		String imageName = image.getName();
 		String titleString;
@@ -332,7 +332,7 @@ public class ImageRoiHistogram implements Plugin
 		}
 
 		// Title of the plot
-		ImagoDocViewer iframe = (ImagoDocViewer) parentFrame;
+		ImageFrame iframe = (ImageFrame) parentFrame;
 		Image image = iframe.getDocument().getImage();
 		String imageName = image.getName();
 		String titleString;

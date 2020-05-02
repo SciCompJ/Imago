@@ -3,7 +3,7 @@
  */
 package imago.plugin.image.process;
 
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
@@ -33,9 +33,9 @@ public class ImageSplitChannels implements Plugin
 	public void run(ImagoFrame frame, String args)
 	{
 		// Check type is image frame
-		if (!(frame instanceof ImagoDocViewer))
+		if (!(frame instanceof ImageFrame))
 			return;
-		ImagoDocViewer iframe = (ImagoDocViewer) frame;
+		ImageFrame iframe = (ImageFrame) frame;
 		Image image = iframe.getDocument().getImage();
 
 		// requires a vector image (color)

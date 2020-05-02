@@ -3,7 +3,7 @@
  */
 package imago.gui;
 
-import imago.app.ImagoDoc;
+import imago.app.ImageHandle;
 import imago.gui.action.RunPluginAction;
 import imago.gui.tool.DrawBrushValueTool;
 import imago.gui.tool.DrawValueTool;
@@ -22,6 +22,7 @@ import imago.plugin.edit.ChooseBrushValue;
 import imago.plugin.edit.DocClearShapes;
 import imago.plugin.edit.PrintDocumentList;
 import imago.plugin.edit.PrintFrameList;
+import imago.plugin.edit.PrintWorkspaceContent;
 import imago.plugin.edit.ZoomIn;
 import imago.plugin.edit.ZoomOne;
 import imago.plugin.edit.ZoomOut;
@@ -120,7 +121,7 @@ public class GuiBuilder
 	    computeFlags();
 	    
 		JMenuBar menuBar = new JMenuBar();
-		if (frame instanceof ImagoDocViewer || frame instanceof ImagoEmptyFrame)
+		if (frame instanceof ImageFrame || frame instanceof ImagoEmptyFrame)
 		{
 	        menuBar.add(createImageFileMenu());
     		menuBar.add(createImageEditMenu());
@@ -128,7 +129,7 @@ public class GuiBuilder
     		menuBar.add(createImageProcessMenu());
     		menuBar.add(createImageAnalyzeMenu());
 		}
-		else if (frame instanceof ImagoTableFrame)
+		else if (frame instanceof TableFrame)
 		{
             menuBar.add(createTableFileMenu());
             menuBar.add(createTableEditMenu());
@@ -142,10 +143,10 @@ public class GuiBuilder
 
 	private void computeFlags()
 	{
-	    ImagoDoc doc = null;
-        if (frame instanceof ImagoDocViewer)
+	    ImageHandle doc = null;
+        if (frame instanceof ImageFrame)
         {
-            doc = ((ImagoDocViewer) frame).getDocument();
+            doc = ((ImageFrame) frame).getDocument();
 
             this.hasDoc = doc != null;
             if (!hasDoc) 
@@ -218,11 +219,11 @@ public class GuiBuilder
 	{
 		JMenu editMenu = new JMenu("Edit");
 
-		// tool selection items
-		if (frame instanceof ImagoDocViewer)
+		// tool selection handles
+		if (frame instanceof ImageFrame)
 		{
 			ImagoTool tool;
-			ImagoDocViewer viewer = (ImagoDocViewer) frame;
+			ImageFrame viewer = (ImageFrame) frame;
 
 			tool = new SelectionTool(viewer, "select");
 			addPlugin(editMenu, new ChangeCurrentTool(tool), "Select", hasImage);
@@ -250,7 +251,7 @@ public class GuiBuilder
             editMenu.addSeparator();
 		}
 
-		// zoom items
+		// zoom handles
 		addPlugin(editMenu, new ZoomIn(), "Zoom In", hasImage);
 		addPlugin(editMenu, new ZoomOut(), "Zoom Out", hasImage);
 		addPlugin(editMenu, new ZoomOne(), "Zoom One", hasImage);
@@ -264,6 +265,7 @@ public class GuiBuilder
 		editMenu.addSeparator();
 		addPlugin(editMenu, new PrintFrameList(), "Print Frame List");
 		addPlugin(editMenu, new PrintDocumentList(), "Print Document List");
+        addPlugin(editMenu, new PrintWorkspaceContent(), "Print Workspace Content");
 		addPlugin(editMenu, new DocClearShapes(), "Clear Shapes");
 		
         editMenu.addSeparator();
@@ -288,7 +290,7 @@ public class GuiBuilder
         addPlugin(imageTypeMenu, new SetImageTypeToLabel(), "Set to Label Image", hasScalarImage);
         menu.add(imageTypeMenu);
         
-	      // Type conversion items
+	      // Type conversion handles
         addPlugin(menu, new ConvertScalarImageToUInt8(), "Convert to Gray8", hasScalarImage);
         JMenu convertDataTypeMenu = new JMenu("Convert Data-Type");
         convertDataTypeMenu.setEnabled(hasImage);
@@ -305,7 +307,7 @@ public class GuiBuilder
         addPlugin(convertDataTypeMenu, new ConvertImageToFloat64(), "Float64", hasImage);
         menu.add(convertDataTypeMenu);
         
-        // image type conversion items
+        // image type conversion handles
         addPlugin(menu, new ConvertStackToMovie(), "Convert stack to movie", hasImage3D);
 
         menu.addSeparator();
@@ -321,7 +323,7 @@ public class GuiBuilder
 		addArrayOperatorPlugin(menu, new DynamicAdjustment(.01), "Adjust Grayscale Dynamic", hasScalarImage);
 
         
-        // Color conversion items
+        // Color conversion handles
         menu.addSeparator();
         JMenu colorMenu = new JMenu("Color");
         // editMenu.add(convertTypeMenu);

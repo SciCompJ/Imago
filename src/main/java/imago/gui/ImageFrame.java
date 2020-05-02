@@ -3,7 +3,7 @@
  */
 package imago.gui;
 
-import imago.app.ImagoDoc;
+import imago.app.ImageHandle;
 import imago.gui.panel.ImageDisplayOptionsPanel;
 import imago.gui.panel.StatusBar;
 import imago.gui.tool.DisplayCurrentValueTool;
@@ -40,7 +40,7 @@ import net.sci.image.Image;
  * @author David Legland
  * 
  */
-public class ImagoDocViewer extends ImagoFrame implements AlgoListener
+public class ImageFrame extends ImagoFrame implements AlgoListener
 {
 	// ===================================================================
 	// Static class variables
@@ -48,8 +48,8 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
 	// ===================================================================
 	// Class variables
     
-    /** The document that contains the image to display.*/
-    ImagoDoc doc;
+    /** The handle to the image displayed in this frame.*/
+    ImageHandle doc;
 
     /** The image to display.*/
     Image image;
@@ -70,7 +70,7 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
 	// ===================================================================
 	// Constructor
 
-    public ImagoDocViewer(ImagoGui gui, ImagoDoc doc) 
+    public ImageFrame(ImagoGui gui, ImageHandle doc) 
 	{
 		super(gui, "Image Frame");
 		this.doc = doc;
@@ -106,8 +106,8 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
             @Override
             public void windowClosing(WindowEvent evt)
             {
-                gui.removeFrame(ImagoDocViewer.this);
-                ImagoDocViewer.this.jFrame.dispose();
+                gui.removeFrame(ImageFrame.this);
+                ImageFrame.this.jFrame.dispose();
             }           
         });
 		
@@ -218,7 +218,7 @@ public class ImagoDocViewer extends ImagoFrame implements AlgoListener
 		this.setTitle(titleString);
 	}
 	
-	public ImagoDoc getDocument() 
+	public ImageHandle getDocument() 
 	{
 		return this.doc;
 	}

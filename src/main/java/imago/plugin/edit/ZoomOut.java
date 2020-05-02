@@ -4,7 +4,7 @@
 package imago.plugin.edit;
 
 import imago.gui.ImageViewer;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 
@@ -28,9 +28,9 @@ public class ZoomOut implements Plugin
     public void run(ImagoFrame frame, String args)
     {
         // Check type is image frame
-        if (!(frame instanceof ImagoDocViewer))
+        if (!(frame instanceof ImageFrame))
             return;
-        ImagoDocViewer iframe = (ImagoDocViewer) frame;
+        ImageFrame iframe = (ImageFrame) frame;
         
         ImageViewer view = iframe.getImageView();
         double zoom = view.getZoom();

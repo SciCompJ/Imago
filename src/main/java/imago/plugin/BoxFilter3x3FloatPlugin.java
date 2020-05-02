@@ -3,8 +3,8 @@
  */
 package imago.plugin;
 
-import imago.app.ImagoDoc;
-import imago.gui.ImagoDocViewer;
+import imago.app.ImageHandle;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
@@ -35,7 +35,7 @@ public class BoxFilter3x3FloatPlugin implements Plugin
 		System.out.println("box filter 3x3 float");
 		
 		// get current image data
-		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getDocument();
 		Image metaImage = doc.getImage();
 		Array<?> array = metaImage.getData();
 
@@ -50,9 +50,9 @@ public class BoxFilter3x3FloatPlugin implements Plugin
 
 		// create operator and apply
 		BoxFilter3x3 filter = new BoxFilter3x3();
-		if (frame instanceof ImagoDocViewer)
+		if (frame instanceof ImageFrame)
 		{
-		    filter.addAlgoListener((ImagoDocViewer) frame);
+		    filter.addAlgoListener((ImageFrame) frame);
 		}
 		filter.processScalar((ScalarArray<?>) array, output);
 		Image result = new Image(output, metaImage);

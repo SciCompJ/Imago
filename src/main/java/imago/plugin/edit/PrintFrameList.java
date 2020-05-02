@@ -5,7 +5,7 @@ package imago.plugin.edit;
 
 import java.util.Collection;
 
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 
@@ -29,10 +29,10 @@ public class PrintFrameList implements Plugin
 		System.out.println(String.format("Current GUI contains %d frames: ", nFrames));
 		for (ImagoFrame frm : frameList)
 		{
-		    if (frm instanceof ImagoDocViewer)
+		    if (frm instanceof ImageFrame)
 		    {
-		        String docName = ((ImagoDocViewer) frm).getDocument().getName();
-                System.out.println("  frame: " + frm.getWidget().getName() + ", doc: " + docName);
+		        String docName = ((ImageFrame) frm).getDocument().getName();
+                System.out.println("  frame: " + frm.getWidget().getName() + ", handle: " + docName);
 		    }
 		    else
 		    {

@@ -6,9 +6,9 @@ package imago.plugin.image.analyze;
 import java.util.Set;
 import java.util.TreeMap;
 
-import imago.app.ImagoDoc;
+import imago.app.ImageHandle;
 import imago.app.shape.ImagoShape;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
@@ -41,13 +41,13 @@ public class LabelImageAdjacencies implements Plugin
     public void run(ImagoFrame frame, String args)
     {
         // Check type is image frame
-        if (!(frame instanceof ImagoDocViewer))
+        if (!(frame instanceof ImageFrame))
         {
             return;
         }
         
         // retrieve image data
-        ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getDocument();
         Image image = doc.getImage();
         if (!image.isLabelImage())
         {

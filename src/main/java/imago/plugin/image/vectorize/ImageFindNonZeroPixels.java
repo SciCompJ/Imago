@@ -5,9 +5,9 @@ package imago.plugin.image.vectorize;
 
 import java.util.Collection;
 
-import imago.app.ImagoDoc;
+import imago.app.ImageHandle;
 import imago.app.shape.ImagoShape;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
@@ -38,7 +38,7 @@ public class ImageFindNonZeroPixels implements Plugin
         System.out.println("image find non zero pixels");
 
         // get current image data
-        ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getDocument();
         Image image = doc.getImage();
         Array<?> array = image.getData();
 

@@ -45,7 +45,7 @@ public class ImageBivariateHistogram implements Plugin
 
 		ImagoGui gui = frame.getGui();
 		ImagoApp app = gui.getAppli();
-		Collection<String> imageNames = app.getImageDocumentNames();
+		Collection<String> imageNames = app.getImageHandleNames();
 
 		// Case of no open document with image
 		if (imageNames.size() < 2)
@@ -78,11 +78,11 @@ public class ImageBivariateHistogram implements Plugin
 		}
 		
 		// parse dialog results
-		Image image1 = app.getDocumentFromName(gd.getNextChoice()).getImage();
+		Image image1 = app.getImageHandleFromName(gd.getNextChoice()).getImage();
         double minBound1 = gd.getNextNumber();
         double maxBound1 = gd.getNextNumber();
         int nBins1 = (int) gd.getNextNumber();
-		Image image2 = app.getDocumentFromName(gd.getNextChoice()).getImage();
+		Image image2 = app.getImageHandleFromName(gd.getNextChoice()).getImage();
         double minBound2 = gd.getNextNumber();
         double maxBound2 = gd.getNextNumber();
         int nBins2 = (int) gd.getNextNumber();

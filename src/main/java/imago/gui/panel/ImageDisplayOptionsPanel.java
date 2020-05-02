@@ -27,7 +27,7 @@ import net.sci.image.Image;
  * 
  * Keeps a reference to the ImageViewer to setup.
  * 
- * Layout: contained within an ImagoDocViewer. 
+ * Layout: contained within an ImageFrame. 
  *
  * @see imago.gui.ImageViewer
  * @see imago.gui.ImageDocViewer

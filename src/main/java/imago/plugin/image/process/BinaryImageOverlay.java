@@ -35,7 +35,7 @@ public class BinaryImageOverlay implements Plugin
 		System.out.println("binary image overlay");
 
 		ImagoApp app = frame.getGui().getAppli();
-		Collection<String> imageNames = app.getImageDocumentNames();
+		Collection<String> imageNames = app.getImageHandleNames();
 
 		// Case of no open document with image
 		if (imageNames.size() == 0)
@@ -60,8 +60,8 @@ public class BinaryImageOverlay implements Plugin
 		}
 		
 		// parse dialog results
-		Image baseImage = app.getDocumentFromName(gd.getNextChoice()).getImage();
-        Image maskImage = app.getDocumentFromName(gd.getNextChoice()).getImage();
+		Image baseImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
+        Image maskImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
         RGB8 color = new RGB8(CommonColors.fromLabel(gd.getNextChoice()).getColor());
 
 		Array<?> baseArray = baseImage.getData();

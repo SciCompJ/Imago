@@ -3,9 +3,9 @@
  */
 package imago.plugin.image.edit;
 
-import imago.app.ImagoDoc;
+import imago.app.ImageHandle;
 import imago.gui.ImageViewer;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import imago.gui.viewer.PlanarImageViewer;
@@ -40,9 +40,9 @@ public class ImageSelectionToMask implements Plugin
 		System.out.println("selection to mask");
 
 		// Check type is image frame
-        if (!(frame instanceof ImagoDocViewer))
+        if (!(frame instanceof ImageFrame))
             return;
-        ImagoDocViewer iframe = (ImagoDocViewer) frame;
+        ImageFrame iframe = (ImageFrame) frame;
         
         
         ImageViewer viewer = iframe.getImageView();
@@ -53,7 +53,7 @@ public class ImageSelectionToMask implements Plugin
         }
 
 		// get current image data
-		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getDocument();
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();
 

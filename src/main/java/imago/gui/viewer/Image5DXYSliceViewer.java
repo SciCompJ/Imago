@@ -43,7 +43,7 @@ public class Image5DXYSliceViewer extends ImageViewer implements ChangeListener,
 
 	ZoomMode zoomMode = ZoomMode.FILL;
 	
-	// GUI items
+	// GUI handles
 	JScrollPane scroll;
 	
 	/**

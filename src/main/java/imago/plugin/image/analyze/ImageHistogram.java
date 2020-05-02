@@ -4,7 +4,7 @@
 package imago.plugin.image.analyze;
 
 import imago.gui.ImagoChartFrame;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
@@ -43,9 +43,9 @@ public class ImageHistogram implements Plugin
 	public void run(ImagoFrame frame, String args)
 	{
 		// Check type is image frame
-		if (!(frame instanceof ImagoDocViewer))
+		if (!(frame instanceof ImageFrame))
 			return;
-		ImagoDocViewer iframe = (ImagoDocViewer) frame;
+		ImageFrame iframe = (ImageFrame) frame;
 		Image image = iframe.getDocument().getImage();
 
 		DefaultNumericTable histo = computeHistogram(image);
@@ -189,7 +189,7 @@ public class ImageHistogram implements Plugin
 	private void showIntensityHistogram(ImagoFrame parentFrame, DefaultNumericTable table)
 	{
         // Title of the plot
-        ImagoDocViewer iframe = (ImagoDocViewer) parentFrame;
+        ImageFrame iframe = (ImageFrame) parentFrame;
         Image image = iframe.getDocument().getImage();
 		String titleString = createTitleString("Histogram", image.getName());
 
@@ -231,7 +231,7 @@ public class ImageHistogram implements Plugin
         }
 
         // Title of the plot
-        ImagoDocViewer iframe = (ImagoDocViewer) parentFrame;
+        ImageFrame iframe = (ImageFrame) parentFrame;
         Image image = iframe.getDocument().getImage();
         String titleString = createTitleString("Histogram", image.getName());
         

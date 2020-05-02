@@ -9,7 +9,7 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.image.Image;
@@ -90,7 +90,7 @@ public class ImportImageVgi implements Plugin
 		image.setName(file.getName());
 		
 		// add the image document to GUI
-        ImagoDocViewer newFrame = frame.getGui().addNewDocument(image);
+        ImageFrame newFrame = frame.getGui().addNewDocument(image);
         newFrame.setLastOpenPath(path);
 	}
 

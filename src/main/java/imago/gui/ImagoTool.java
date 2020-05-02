@@ -8,7 +8,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 /**
- * Abstract class for processing mouse event on an ImagoDocViewer.
+ * Abstract class for processing mouse event on an ImageFrame.
  * 
  * @author David Legland
  *
@@ -18,7 +18,7 @@ public abstract class ImagoTool implements MouseListener, MouseMotionListener
 	// ===================================================================
 	// Class variables
 
-	protected ImagoDocViewer viewer;
+	protected ImageFrame viewer;
 
 	protected String name;
 
@@ -26,7 +26,7 @@ public abstract class ImagoTool implements MouseListener, MouseMotionListener
 	// ===================================================================
 	// Constructor
 
-	protected ImagoTool(ImagoDocViewer viewer, String name)
+	protected ImagoTool(ImageFrame viewer, String name)
 	{
 		this.viewer = viewer;
 		this.name = name;

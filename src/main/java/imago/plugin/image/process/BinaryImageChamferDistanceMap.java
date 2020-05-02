@@ -3,9 +3,9 @@
  */
 package imago.plugin.image.process;
 
-import imago.app.ImagoDoc;
+import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
@@ -49,7 +49,7 @@ public class BinaryImageChamferDistanceMap implements Plugin
 		System.out.println("Chamfer distance map");
 
 		// get current image data
-		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getDocument();
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();
 		if (!(array instanceof BinaryArray))
@@ -102,7 +102,7 @@ public class BinaryImageChamferDistanceMap implements Plugin
 		    {
                 op = new ChamferDistanceTransform2DFloat(weights, normalize); 
 		    }
-		    op.addAlgoListener((ImagoDocViewer) frame);
+		    op.addAlgoListener((ImageFrame) frame);
 		    result = op.process2d((BinaryArray2D) image.getData());
 		}
 		else
@@ -118,7 +118,7 @@ public class BinaryImageChamferDistanceMap implements Plugin
             {
                 op = new ChamferDistanceTransform3DFloat(weights, normalize); 
             }
-            op.addAlgoListener((ImagoDocViewer) frame);
+            op.addAlgoListener((ImageFrame) frame);
             result = op.process3d((BinaryArray3D) image.getData());
 		}
 		Image resultImage = new Image(result, image);
@@ -143,11 +143,11 @@ public class BinaryImageChamferDistanceMap implements Plugin
     public boolean isEnabled(ImagoFrame frame)
     {
         // check frame class
-        if (!(frame instanceof ImagoDocViewer))
+        if (!(frame instanceof ImageFrame))
             return false;
         
         // check image
-        ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getDocument();
         Image image = doc.getImage();
         if (image == null)
             return false;

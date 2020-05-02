@@ -3,8 +3,8 @@
  */
 package imago.plugin.image.analyze;
 
-import imago.app.ImagoDoc;
-import imago.gui.ImagoDocViewer;
+import imago.app.ImageHandle;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.Plugin;
@@ -37,7 +37,7 @@ public class ColorImageBivariateHistograms implements Plugin
 		System.out.println("RGB8 to bivariate histograms");
 
 		// get current image data
-		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getDocument();
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();
 

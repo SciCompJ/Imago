@@ -17,22 +17,28 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class ImagoDoc 
+public class ImageHandle extends ObjectHandle
 {
 
 	// =============================================================
 	// Class variables
 	
-	/**
-	 * The name of the document (should be unique among all open documents).
-	 * Usually initialized with image name.
-	 */
-	String name;
+//	/**
+//	 * The name of the document (should be unique among all open documents).
+//	 * Usually initialized with image name.
+//	 */
+//	String name;
 	
 	/**
 	 * The image displayed by this document.
 	 */
 	Image image;
+
+//    /**
+//     * The tag of the image, used to identify it in the workspace. Should be
+//     * unique in the workspace.
+//     */
+//	String tag;
 	
 	Collection<ImagoShape> shapes = new ArrayList<ImagoShape>();
 	
@@ -45,36 +51,22 @@ public class ImagoDoc
 	// =============================================================
 	// Constructors
 	
-	/**
-	 * Initializes a new document for the given image
-	 * 
-	 * @param image
-	 *            the image that will be contained in the document
-	 */
-	public ImagoDoc(Image image) 
-	{
-		this(image.getName(), image);
-	}
+//	/**
+//	 * Initializes a new document for the given image
+//	 * 
+//	 * @param image
+//	 *            the image that will be contained in the document
+//	 */
+//	public ImageHandle(Image image) 
+//	{
+//		this(image, image.getName());
+//	}
 	
-	/**
-	 * Initializes a new document for the given image, keeping some settings from
-	 * the parent document.
-	 * 
-	 * @param image
-	 *            the image contained in the document
-	 * @param parent
-	 *            the parent document providing settings
-	 */
-	public ImagoDoc(Image image, ImagoDoc parent) 
+	public ImageHandle(Image image, String name, String tag) 
 	{
-		this(image.getName(), image);
-		
-		copyDisplaySettings(parent);
-	}
-	
-	public ImagoDoc(String name, Image image) 
-	{
-		// initialize name
+        super(tag);
+
+        // initialize name
 		this.name = name;
 		if (name == null || name.length() == 0)
 		{
@@ -92,11 +84,6 @@ public class ImagoDoc
 
 	// =============================================================
 	// Accessors
-	
-	public String getName() 
-	{
-		return this.name;
-	}
 	
 	public Image getImage() 
 	{
@@ -138,7 +125,7 @@ public class ImagoDoc
 	// =============================================================
 	// General methods
 	
-	public void copyDisplaySettings(ImagoDoc doc) 
+	public void copyDisplaySettings(ImageHandle doc) 
 	{
 		if (this.image.getDimension() > 2) 
 		{
@@ -146,4 +133,9 @@ public class ImagoDoc
 		}	
 	}
 	
+    public Object getObject()
+    {
+        return this.image;
+    }
+
 }

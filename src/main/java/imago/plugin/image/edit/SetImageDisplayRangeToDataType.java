@@ -3,9 +3,9 @@
  */
 package imago.plugin.image.edit;
 
-import imago.app.ImagoDoc;
+import imago.app.ImageHandle;
 import imago.gui.ImageViewer;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
@@ -38,7 +38,7 @@ public class SetImageDisplayRangeToDataType implements Plugin
         System.out.println("set display range to data type");
 		
 		// get current frame
-		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getDocument();
 		Image metaImage = doc.getImage();
 
 		Array<?> array = metaImage.getData();
@@ -66,7 +66,7 @@ public class SetImageDisplayRangeToDataType implements Plugin
 		
 		metaImage.getDisplaySettings().setDisplayRange(extent);
 		
-		ImageViewer viewer = ((ImagoDocViewer) frame).getImageView();
+		ImageViewer viewer = ((ImageFrame) frame).getImageView();
 		
 		// update display
 		viewer.refreshDisplay();

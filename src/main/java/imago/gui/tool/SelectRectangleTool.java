@@ -6,7 +6,7 @@ package imago.gui.tool;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoTool;
 import imago.gui.viewer.ImageDisplay;
 import imago.gui.viewer.PlanarImageViewer;
@@ -29,7 +29,7 @@ public class SelectRectangleTool extends ImagoTool
     // state: 0 for first point, 1 for second point, to for waiting state.
     int state = 0;
     
-    public SelectRectangleTool(ImagoDocViewer viewer, String name)
+    public SelectRectangleTool(ImageFrame viewer, String name)
     {
         super(viewer, name);
     }

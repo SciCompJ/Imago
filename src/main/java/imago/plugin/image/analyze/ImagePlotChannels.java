@@ -18,7 +18,7 @@ import org.knowm.xchart.style.markers.SeriesMarkers;
 
 import imago.gui.ImageViewer;
 import imago.gui.ImagoChartFrame;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import imago.gui.viewer.PlanarImageViewer;
@@ -44,9 +44,9 @@ public class ImagePlotChannels implements Plugin
     public void run(ImagoFrame frame, String args)
     {
         // Check type is image frame
-        if (!(frame instanceof ImagoDocViewer))
+        if (!(frame instanceof ImageFrame))
             return;
-        ImagoDocViewer iframe = (ImagoDocViewer) frame;
+        ImageFrame iframe = (ImageFrame) frame;
         Image meta = iframe.getDocument().getImage();
         
         Array<?> array = meta.getData();
@@ -102,7 +102,7 @@ public class ImagePlotChannels implements Plugin
         int nValues = values.length;
 
         // Title of the plot
-        ImagoDocViewer iframe = (ImagoDocViewer) parentFrame;
+        ImageFrame iframe = (ImageFrame) parentFrame;
         Image image = iframe.getDocument().getImage();
         String titleString = createTitleString("Channel profile", image.getName());
 
@@ -136,7 +136,7 @@ public class ImagePlotChannels implements Plugin
         int nValues = values.length;
 
         // Title of the plot
-        ImagoDocViewer iframe = (ImagoDocViewer) parentFrame;
+        ImageFrame iframe = (ImageFrame) parentFrame;
         Image image = iframe.getDocument().getImage();
         String titleString = createTitleString("Channel profile", image.getName());
 

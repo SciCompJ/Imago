@@ -3,8 +3,8 @@
  */
 package imago.plugin.image.process;
 
-import imago.app.ImagoDoc;
-import imago.gui.ImagoDocViewer;
+import imago.app.ImageHandle;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import imago.gui.viewer.OrthoSlicesViewer;
@@ -34,8 +34,8 @@ public class Image3DSetOrthoSlicesDisplay implements Plugin
 		System.out.println("set 3D display to orthoslices");
 
 		// get current image data
-		ImagoDocViewer docViewer = (ImagoDocViewer) frame;
-		ImagoDoc doc = docViewer.getDocument();
+		ImageFrame docViewer = (ImageFrame) frame;
+		ImageHandle doc = docViewer.getDocument();
 		Image image	= doc.getImage();
 
 		if (image.getDimension() < 3)

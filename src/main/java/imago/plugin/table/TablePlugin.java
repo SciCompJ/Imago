@@ -4,7 +4,7 @@
 package imago.plugin.table;
 
 import imago.gui.ImagoFrame;
-import imago.gui.ImagoTableFrame;
+import imago.gui.TableFrame;
 import imago.gui.Plugin;
 
 /**
@@ -21,7 +21,7 @@ public interface TablePlugin extends Plugin
     /**
      * Defines whether this plugin should be enabled for the given frame.
      * 
-     * Returns true if the calling frame is an instance of ImagoDocViewer and it
+     * Returns true if the calling frame is an instance of ImageFrame and it
      * contains a valid image.
      * 
      * @param frame
@@ -30,7 +30,7 @@ public interface TablePlugin extends Plugin
      */
     public default boolean isEnabled(ImagoFrame frame)
     {
-        if (!(frame instanceof ImagoTableFrame))
+        if (!(frame instanceof TableFrame))
         {
             return false;
         }

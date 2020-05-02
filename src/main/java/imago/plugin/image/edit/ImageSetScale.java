@@ -3,9 +3,9 @@
  */
 package imago.plugin.image.edit;
 
-import imago.app.ImagoDoc;
+import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.image.Calibration;
@@ -36,8 +36,8 @@ public class ImageSetScale implements Plugin
 		System.out.println("image set scale");
 
 		// get current image data
-		ImagoDocViewer viewer = (ImagoDocViewer) frame;
-		ImagoDoc doc = viewer.getDocument();
+		ImageFrame viewer = (ImageFrame) frame;
+		ImageHandle doc = viewer.getDocument();
 		Image image	= doc.getImage();
 
 		int nd = image.getDimension();

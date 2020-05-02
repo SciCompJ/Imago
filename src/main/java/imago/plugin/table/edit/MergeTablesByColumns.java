@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.ImagoTableFrame;
+import imago.gui.TableFrame;
 import imago.gui.Plugin;
 
 /**
@@ -56,8 +56,8 @@ public class MergeTablesByColumns implements Plugin
     {
         ArrayList<String> tableNames = new ArrayList<>();
         gui.getFrames().stream()
-            .filter(frame -> frame instanceof ImagoTableFrame)
-            .forEach(frame -> tableNames.add(((ImagoTableFrame) frame).getTable().getName()));
+            .filter(frame -> frame instanceof TableFrame)
+            .forEach(frame -> tableNames.add(((TableFrame) frame).getTable().getName()));
         return tableNames;
     }
 }

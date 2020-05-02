@@ -3,7 +3,7 @@
  */
 package imago.gui.tool;
 
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoTool;
 import imago.gui.viewer.ImageDisplay;
 import imago.gui.viewer.StackSliceViewer;
@@ -36,7 +36,7 @@ public class DrawBrushValueTool extends ImagoTool
      * @param name
      *            the name of this tool
      */
-    public DrawBrushValueTool(ImagoDocViewer viewer, String name)
+    public DrawBrushValueTool(ImageFrame viewer, String name)
     {
         super(viewer, name);
     }

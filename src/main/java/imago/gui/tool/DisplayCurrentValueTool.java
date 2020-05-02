@@ -4,7 +4,7 @@
 package imago.gui.tool;
 
 import imago.gui.ImageViewer;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoTool;
 import imago.gui.panel.StatusBar;
 import imago.gui.viewer.ImageDisplay;
@@ -30,7 +30,7 @@ import net.sci.image.Image;
 public class DisplayCurrentValueTool extends ImagoTool
 {
 
-	public DisplayCurrentValueTool(ImagoDocViewer viewer, String name)
+	public DisplayCurrentValueTool(ImageFrame viewer, String name)
 	{
 		super(viewer, name);
 	}

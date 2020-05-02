@@ -49,7 +49,7 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 		
 //	int sliceIndex = 0;
 
-	// GUI items
+	// GUI handles
 	JScrollPane scroll;
 	ImageDisplay imageDisplay;
 	JSlider sliceSlider;
@@ -144,11 +144,11 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 		this.sliceEdit.setText(txt);
 		
 //		// also update document containing the image
-//		ImagoDocViewer viewer = this.getViewer();
+//		ImageFrame viewer = this.getViewer();
 //		if (viewer != null)
 //		{
-//			ImagoDoc doc = viewer.getDocument();
-//			doc.setCurrentSliceIndex(index);
+//			ImageHandle handle = viewer.getDocument();
+//			handle.setCurrentSliceIndex(index);
 //		}
 	}
 

@@ -4,7 +4,7 @@
 package imago.plugin.edit;
 
 import imago.gui.ImageViewer;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoTool;
 import imago.gui.Plugin;
@@ -36,7 +36,7 @@ public class ChangeCurrentTool implements Plugin
         System.out.println("Select tool: " + tool.getName());
         
         // get current frame
-        ImageViewer viewer = ((ImagoDocViewer) frame).getImageView();
+        ImageViewer viewer = ((ImageFrame) frame).getImageView();
         viewer.setCurrentTool(tool);
     }
     

@@ -3,10 +3,10 @@
  */
 package imago.plugin.image.edit;
 
-import imago.app.ImagoDoc;
+import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
 import imago.gui.ImageViewer;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
@@ -36,7 +36,7 @@ public class SetImageDisplayRange implements Plugin
         System.out.println("set manual display range");
         
 		// get current frame
-		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getDocument();
 		Image image = doc.getImage();
 
 		Array<?> array = image.getData();
@@ -78,7 +78,7 @@ public class SetImageDisplayRange implements Plugin
 		image.getDisplaySettings().setDisplayRange(extent);
 		
 		// refresh display
-		ImageViewer viewer = ((ImagoDocViewer) frame).getImageView();
+		ImageViewer viewer = ((ImageFrame) frame).getImageView();
 		viewer.refreshDisplay();
 		viewer.repaint();
 	}

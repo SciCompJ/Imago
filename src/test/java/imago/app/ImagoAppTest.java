@@ -15,10 +15,10 @@ public class ImagoAppTest {
 		ImagoApp app = new ImagoApp();
 		
 		Array2D<?> array = UInt8Array2D.create(320, 200);
-		Image img = new Image(array);
-		ImagoDoc doc = new ImagoDoc("doc1", img);
-		app.addDocument(doc);
+		Image image = new Image(array);
 		
-		assertEquals(1, app.documentNumber());
+		app.createImageHandle(image);
+		
+		assertEquals(1, app.imageHandleNumber());
 	}
 }

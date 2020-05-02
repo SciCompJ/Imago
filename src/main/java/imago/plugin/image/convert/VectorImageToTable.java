@@ -3,12 +3,11 @@
  */
 package imago.plugin.image.convert;
 
-import imago.app.ImagoDoc;
+import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.ImagoTableFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
 import net.sci.array.vector.VectorArray;
@@ -39,7 +38,7 @@ public class VectorImageToTable implements Plugin
 		System.out.println("convert a vector image into a data table");
 		
 		// get current frame
-		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getDocument();
 		Image image = doc.getImage();
 		
 		if (image == null)
@@ -141,11 +140,8 @@ public class VectorImageToTable implements Plugin
         }
         
         table.setName(image.getName() + "-values");
-        ImagoTableFrame tableFrame = new ImagoTableFrame(frame, table);
-        
+
         // add the new frame to the GUI
-        frame.getGui().addFrame(tableFrame); 
-
+        frame.getGui().createTableFrame(table, frame);
 	}
-
 }

@@ -3,8 +3,8 @@
  */
 package imago.plugin.image.shape;
 
-import imago.app.ImagoDoc;
-import imago.gui.ImagoDocViewer;
+import imago.app.ImageHandle;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.process.shape.Flip;
@@ -35,7 +35,7 @@ public class ImageFlip implements Plugin
 		System.out.println("flip image");
 		
 		// get current frame
-		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getDocument();
 		Image image = doc.getImage();
 
 		if (this.dim > image.getDimension())
@@ -55,11 +55,11 @@ public class ImageFlip implements Plugin
 	public boolean isEnabled(ImagoFrame frame)
 	{
 	    // check frame class
-	    if (!(frame instanceof ImagoDocViewer))
+	    if (!(frame instanceof ImageFrame))
 	        return false;
 	    
 	    // check image
-        ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getDocument();
         Image image = doc.getImage();
         if (image == null)
             return false;

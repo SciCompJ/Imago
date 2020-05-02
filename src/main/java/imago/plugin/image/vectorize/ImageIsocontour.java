@@ -3,10 +3,10 @@
  */
 package imago.plugin.image.vectorize;
 
-import imago.app.ImagoDoc;
+import imago.app.ImageHandle;
 import imago.app.shape.ImagoShape;
 import imago.gui.GenericDialog;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
@@ -41,7 +41,7 @@ public class ImageIsocontour implements Plugin
 		System.out.println("image isocontour");
 
 		// get current image data
-		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getDocument();
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();
 		if (!(array instanceof ScalarArray))
@@ -78,7 +78,7 @@ public class ImageIsocontour implements Plugin
         doc.addShape(new ImagoShape(graph));
                 
         // TODO: maybe propagating events would be better
-        ImagoDocViewer viewer = (ImagoDocViewer) frame;
+        ImageFrame viewer = (ImageFrame) frame;
         viewer.repaint(); 
 	}
 

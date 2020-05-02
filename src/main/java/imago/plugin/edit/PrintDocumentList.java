@@ -4,7 +4,7 @@
 package imago.plugin.edit;
 
 import imago.app.ImagoApp;
-import imago.app.ImagoDoc;
+import imago.app.ImageHandle;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 
@@ -24,9 +24,9 @@ public class PrintDocumentList implements Plugin
     public void run(ImagoFrame frame, String args)
 	{
 		ImagoApp app = frame.getGui().getAppli();
-		int nDocs = app.documentNumber();
+		int nDocs = app.imageHandleNumber();
 		System.out.println(String.format("Current application contains %d documents: ", nDocs));
-		for (ImagoDoc doc : app.getDocuments())
+		for (ImageHandle doc : app.getImageHandles())
 		{
 			System.out.println("  " + doc.getName());
 		}

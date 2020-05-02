@@ -81,7 +81,7 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 		this.panel.setBackground(Color.WHITE);
 		
 		// Add listeners
-		// (mouse listeners are added from ImagoDocViewer, when component is build)
+		// (mouse listeners are added from ImageFrame, when component is build)
 		this.panel.addComponentListener(this);
 	}
 	

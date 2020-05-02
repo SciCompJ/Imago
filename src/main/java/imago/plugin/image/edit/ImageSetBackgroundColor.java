@@ -3,10 +3,10 @@
  */
 package imago.plugin.image.edit;
 
-import imago.app.ImagoDoc;
+import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
 import imago.gui.ImageViewer;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.color.Color;
@@ -37,8 +37,8 @@ public class ImageSetBackgroundColor implements Plugin
 		System.out.println("image set background color");
 
 		// get current image data
-		ImagoDocViewer viewer = (ImagoDocViewer) frame;
-		ImagoDoc doc = viewer.getDocument();
+		ImageFrame viewer = (ImageFrame) frame;
+		ImageHandle doc = viewer.getDocument();
 		Image image	= doc.getImage();
 
 		GenericDialog gd = new GenericDialog(frame, "Set Image Scale");

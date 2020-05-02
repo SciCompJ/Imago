@@ -3,16 +3,16 @@
  */
 package imago.plugin.image.analyze;
 
-import java.util.Collection;
-
-import imago.app.ImagoDoc;
+import imago.app.ImageHandle;
 import imago.app.shape.ImagoShape;
 import imago.gui.GenericDialog;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.ImagoTableFrame;
 import imago.gui.Plugin;
+
+import java.util.Collection;
+
 import net.sci.array.Array;
 import net.sci.array.scalar.IntArray2D;
 import net.sci.geom.geom2d.Point2D;
@@ -45,13 +45,13 @@ public class LabelImageEquivalentDisks implements Plugin
     public void run(ImagoFrame frame, String args)
     {
         // Check type is image frame
-        if (!(frame instanceof ImagoDocViewer))
+        if (!(frame instanceof ImageFrame))
         {
             return;
         }
         
         // retrieve image data
-        ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getDocument();
         Image image = doc.getImage();
         if (!image.isLabelImage())
         {
@@ -72,7 +72,7 @@ public class LabelImageEquivalentDisks implements Plugin
         GenericDialog dlg = new GenericDialog(frame, "Equivalent Disks");
         dlg.addCheckBox("Display Table ", true);
         dlg.addCheckBox("Overlay Results ", true);
-        Collection<String> imageNames = gui.getAppli().getImageDocumentNames();
+        Collection<String> imageNames = gui.getAppli().getImageHandleNames();
         String[] imageNameArray = imageNames.toArray(new String[]{});
         String firstImageName = doc.getName();
         dlg.addChoice("Image to Overlay ", imageNameArray, firstImageName);
@@ -90,25 +90,26 @@ public class LabelImageEquivalentDisks implements Plugin
         if (showTable)
         {
             // Convert ellipse to table, and display
-            Table tab = Table.create(ellipses.length, 3);
-            tab.setColumnNames(new String[]{"Center.X", "Center.Y", "Radius"});
+            Table table = Table.create(ellipses.length, 3);
+            table.setColumnNames(new String[]{"Center.X", "Center.Y", "Radius"});
             for (int i = 0; i < ellipses.length; i++)
             {
                 Ellipse2D elli = ellipses[i];
                 Point2D center = elli.center();
-                tab.setValue(i, 0, center.getX());
-                tab.setValue(i, 1, center.getY());
+                table.setValue(i, 0, center.getX());
+                table.setValue(i, 1, center.getY());
                 double radius = Math.sqrt(elli.semiMajorAxisLength() * elli.semiMinorAxisLength());
-                tab.setValue(i, 2, radius);
+                table.setValue(i, 2, radius);
             }
             
-            gui.addFrame(new ImagoTableFrame(frame, tab));
+            // add the new frame to the GUI
+            gui.createTableFrame(table, frame);
         }
         
         if (overlay)
         {
-            ImagoDoc ovrDoc = gui.getAppli().getDocumentFromName(imageToOverlay);
-            ImagoDocViewer viewer = gui.getDocumentViewer(ovrDoc);
+            ImageHandle ovrDoc = gui.getAppli().getImageHandleFromName(imageToOverlay);
+            ImageFrame viewer = gui.getDocumentViewer(ovrDoc);
             
             // add to the document
             for (int i = 0; i < ellipses.length; i++)

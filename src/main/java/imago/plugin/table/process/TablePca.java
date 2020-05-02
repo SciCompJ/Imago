@@ -3,7 +3,7 @@ package imago.plugin.table.process;
 import net.sci.table.Table;
 import net.sci.table.transform.PCA;
 import imago.gui.ImagoFrame;
-import imago.gui.ImagoTableFrame;
+import imago.gui.TableFrame;
 import imago.plugin.table.TablePlugin;
 
 /**
@@ -22,15 +22,13 @@ public class TablePca implements TablePlugin
     public void run(ImagoFrame frame, String args)
     {
         // get table references by the frame
-        Table table = ((ImagoTableFrame) frame).getTable();
+        Table table = ((TableFrame) frame).getTable();
 
         PCA pca = new PCA().fit(table);
         
-        frame.getGui().addFrame(new ImagoTableFrame(frame, pca.eigenValues())); 
-        
-        frame.getGui().addFrame(new ImagoTableFrame(frame, pca.loadings())); 
-
-        frame.getGui().addFrame(new ImagoTableFrame(frame, pca.scores())); 
+        // add new frames to the GUI
+        frame.getGui().createTableFrame(pca.eigenValues(), frame);
+        frame.getGui().createTableFrame(pca.loadings(), frame);
+        frame.getGui().createTableFrame(pca.scores(), frame);
     }
-
 }

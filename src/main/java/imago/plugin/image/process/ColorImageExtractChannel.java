@@ -3,9 +3,9 @@
  */
 package imago.plugin.image.process;
 
-import imago.app.ImagoDoc;
+import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.Plugin;
@@ -38,7 +38,7 @@ public class ColorImageExtractChannel implements Plugin
 		System.out.println("extract a channel from color image");
 		
 		// get current frame
-		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getDocument();
 		Image image = doc.getImage();
 		
 		if (image == null)

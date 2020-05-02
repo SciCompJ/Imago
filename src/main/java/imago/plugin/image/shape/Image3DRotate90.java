@@ -3,9 +3,9 @@
  */
 package imago.plugin.image.shape;
 
-import imago.app.ImagoDoc;
+import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
@@ -36,7 +36,7 @@ public class Image3DRotate90 implements Plugin
 		System.out.println("Apply 3D rotation to 3D image");
 
 		// get current image data
-		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getDocument();
 		Image image	= doc.getImage();
 
 		GenericDialog gd = new GenericDialog(frame, "Rotate 3D by 90°");

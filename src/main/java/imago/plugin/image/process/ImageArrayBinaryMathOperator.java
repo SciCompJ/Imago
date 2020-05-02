@@ -3,9 +3,9 @@
  */
 package imago.plugin.image.process;
 
-import imago.app.ImagoDoc;
+import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.Plugin;
@@ -54,7 +54,7 @@ public class ImageArrayBinaryMathOperator implements Plugin
 		System.out.println("apply math function");
 
 		// get current image data
-		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getDocument();
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();
 		if (!(array instanceof ScalarArray))
@@ -64,7 +64,7 @@ public class ImageArrayBinaryMathOperator implements Plugin
 		}
 		ScalarArray<?> inputArray = (ScalarArray<?>) array;
 
-		String[] imageNames = frame.getGui().getAppli().getImageDocumentNames().toArray(new String[]{});
+		String[] imageNames = frame.getGui().getAppli().getImageHandleNames().toArray(new String[]{});
 		
 		GenericDialog gd = new GenericDialog(frame, "Bianry Math Operator");
 		gd.addChoice("Image 1", imageNames, imageNames[0]);
@@ -84,7 +84,7 @@ public class ImageArrayBinaryMathOperator implements Plugin
         String image2Name = gd.getNextChoice();
 		String typeName = gd.getNextChoice();
         
-        Image image1 = frame.getGui().getAppli().getDocumentFromName(image1Name).getImage();
+        Image image1 = frame.getGui().getAppli().getImageHandleFromName(image1Name).getImage();
         if (!image1.isScalarImage())
         {
             ImagoGui.showErrorDialog(frame, "Requires an image containing a scalar array");
@@ -92,7 +92,7 @@ public class ImageArrayBinaryMathOperator implements Plugin
         }
         ScalarArray<?> array1 = (ScalarArray<?>) image1.getData();
 
-        Image image2 = frame.getGui().getAppli().getDocumentFromName(image2Name).getImage();
+        Image image2 = frame.getGui().getAppli().getImageHandleFromName(image2Name).getImage();
         if (!image2.isScalarImage())
         {
             ImagoGui.showErrorDialog(frame, "Requires an image containing a scalar array");
@@ -163,7 +163,7 @@ public class ImageArrayBinaryMathOperator implements Plugin
     public boolean isEnabled(ImagoFrame frame)
     {
         // check frame class
-        if (!(frame instanceof ImagoDocViewer))
+        if (!(frame instanceof ImageFrame))
             return false;
         
         return true;

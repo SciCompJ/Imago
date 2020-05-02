@@ -13,7 +13,7 @@ import org.knowm.xchart.style.markers.SeriesMarkers;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoChartFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.ImagoTableFrame;
+import imago.gui.TableFrame;
 import imago.plugin.table.TablePlugin;
 import net.sci.table.Table;
 
@@ -37,11 +37,11 @@ public class TableLinePlot implements TablePlugin
     public void run(ImagoFrame frame, String args)
 	{
 	    // Get the data table
-	    if (!(frame instanceof ImagoTableFrame))
+	    if (!(frame instanceof TableFrame))
 	    {
 	        return;
 	    }
-	    Table table = ((ImagoTableFrame) frame).getTable();
+	    Table table = ((TableFrame) frame).getTable();
 
 	    // get general info from table
 	    int nRows = table.rowNumber();

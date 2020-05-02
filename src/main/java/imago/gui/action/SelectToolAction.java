@@ -5,7 +5,7 @@ package imago.gui.action;
 
 import imago.gui.ImageViewer;
 import imago.gui.ImagoAction;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoTool;
 
 import java.awt.event.ActionEvent;
@@ -23,7 +23,7 @@ public class SelectToolAction extends ImagoAction {
 
 	ImagoTool tool;
 	
-	public SelectToolAction(ImagoDocViewer viewer, ImagoTool tool) {
+	public SelectToolAction(ImageFrame viewer, ImagoTool tool) {
 		super(viewer, "select-" + tool.getName());
 		this.tool = tool;
 	}
@@ -36,7 +36,7 @@ public class SelectToolAction extends ImagoAction {
 		System.out.println("Select tool: " + tool.getName());
 		
 		// get current frame
-		ImageViewer viewer = ((ImagoDocViewer) this.frame).getImageView();
+		ImageViewer viewer = ((ImageFrame) this.frame).getImageView();
 		viewer.setCurrentTool(tool);
 	}
 

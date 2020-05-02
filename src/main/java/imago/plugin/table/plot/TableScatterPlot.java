@@ -9,7 +9,7 @@ import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
 
 import imago.gui.ImagoChartFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.ImagoTableFrame;
+import imago.gui.TableFrame;
 import imago.plugin.table.TablePlugin;
 import net.sci.table.Table;
 
@@ -33,11 +33,11 @@ public class TableScatterPlot implements TablePlugin
     public void run(ImagoFrame frame, String args)
 	{
 	    // Get the data table
-	    if (!(frame instanceof ImagoTableFrame))
+	    if (!(frame instanceof TableFrame))
 	    {
 	        return;
 	    }
-	    Table table = ((ImagoTableFrame) frame).getTable();
+	    Table table = ((TableFrame) frame).getTable();
 
 	    int col1 = 0;
 	    int col2 = 1;

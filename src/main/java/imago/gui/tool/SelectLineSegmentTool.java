@@ -4,7 +4,7 @@
 package imago.gui.tool;
 
 import imago.gui.ImageViewer;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoTool;
 import imago.gui.viewer.ImageDisplay;
 import imago.gui.viewer.PlanarImageViewer;
@@ -32,7 +32,7 @@ public class SelectLineSegmentTool extends ImagoTool
     // state: 0 for first point, 1 for second point.
     int state = 0;
     
-    public SelectLineSegmentTool(ImagoDocViewer viewer, String name)
+    public SelectLineSegmentTool(ImageFrame viewer, String name)
     {
         super(viewer, name);
     }

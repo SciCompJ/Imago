@@ -4,7 +4,7 @@
 package imago.plugin.image.process;
 
 import imago.gui.ImageViewer;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.plugin.image.ImagePlugin;
 import net.sci.array.Array;
@@ -43,9 +43,9 @@ public class Image3DKymograph implements ImagePlugin
     public void run(ImagoFrame frame, String args)
     {
         // Check type is image frame
-        if (!(frame instanceof ImagoDocViewer))
+        if (!(frame instanceof ImageFrame))
             return;
-        ImagoDocViewer iframe = (ImagoDocViewer) frame;
+        ImageFrame iframe = (ImageFrame) frame;
         
         ImageViewer viewer = iframe.getImageView();
 //        if (!(viewer instanceof PlanarImageViewer))

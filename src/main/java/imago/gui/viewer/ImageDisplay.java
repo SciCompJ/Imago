@@ -112,14 +112,14 @@ public class ImageDisplay extends JPanel
         this.selection = shape;
     }
     
-//	public ImagoDocViewer getViewer() 
+//	public ImageFrame getViewer() 
 //	{
 //		Container container = this.getParent();
-//		while (!(container instanceof ImagoDocViewer))
+//		while (!(container instanceof ImageFrame))
 //		{
 //			container = container.getParent();
 //		}
-//		return (ImagoDocViewer) container;
+//		return (ImageFrame) container;
 //	}
 	
 	

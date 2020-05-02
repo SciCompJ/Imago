@@ -3,9 +3,9 @@
  */
 package imago.plugin.image.process;
 
-import imago.app.ImagoDoc;
+import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
@@ -41,7 +41,7 @@ public class ImageRegionalExtrema implements Plugin
 		System.out.println("Regional minima/maxima");
 
 		// get current image data
-		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getDocument();
 		Image image	= doc.getImage();
 		
 		// current dimensionality
@@ -117,11 +117,11 @@ public class ImageRegionalExtrema implements Plugin
     public boolean isEnabled(ImagoFrame frame)
     {
         // check frame class
-        if (!(frame instanceof ImagoDocViewer))
+        if (!(frame instanceof ImageFrame))
             return false;
         
         // check image
-        ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getDocument();
         Image image = doc.getImage();
         if (image == null)
             return false;

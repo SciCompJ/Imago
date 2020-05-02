@@ -3,14 +3,14 @@
  */
 package imago.plugin.image.analyze;
 
+import imago.app.ImageHandle;
+import imago.app.shape.ImagoShape;
+import imago.gui.ImageFrame;
+import imago.gui.ImagoFrame;
+import imago.gui.Plugin;
+
 import java.util.Map;
 
-import imago.app.ImagoDoc;
-import imago.app.shape.ImagoShape;
-import imago.gui.ImagoDocViewer;
-import imago.gui.ImagoFrame;
-import imago.gui.ImagoTableFrame;
-import imago.gui.Plugin;
 import net.sci.array.Array;
 import net.sci.array.scalar.IntArray;
 import net.sci.array.scalar.IntArray3D;
@@ -41,13 +41,13 @@ public class LabelImageCentroids implements Plugin
     public void run(ImagoFrame frame, String args)
     {
         // Check type is image frame
-        if (!(frame instanceof ImagoDocViewer))
+        if (!(frame instanceof ImageFrame))
         {
             return;
         }
         
         // retrieve image data
-        ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getDocument();
         Image image = doc.getImage();
         if (!image.isLabelImage())
         {
@@ -79,11 +79,12 @@ public class LabelImageCentroids implements Plugin
             }
 
             Table table = algo.createTable(centroids);
-            frame.getGui().addFrame(new ImagoTableFrame(frame, table));
+            // add the new frame to the GUI
+            frame.getGui().createTableFrame(table, frame);
 //            // add to the document
 //            for (int i = 0; i < centroids.length; i++)
 //            {
-//                doc.addShape(new ImagoShape(centroids[i]));
+//                handle.addShape(new ImagoShape(centroids[i]));
 //            }
             frame.repaint();
         }
@@ -102,18 +103,19 @@ public class LabelImageCentroids implements Plugin
             Point3D[] centroids = RegionAnalysis3D.centroids(array3d, labels);
             
             // Convert centroid array to table, and display
-            Table tab = Table.create(centroids.length, 3);
-            tab.setColumnNames(new String[]{"Centroid.X", "Centroid.Y", "Centroid.Z"});
+            Table table = Table.create(centroids.length, 3);
+            table.setColumnNames(new String[]{"Centroid.X", "Centroid.Y", "Centroid.Z"});
             for (int i = 0; i < centroids.length; i++)
             {
                 Point3D centroid = centroids[i];
-                tab.setValue(i, 0, centroid.getX());
-                tab.setValue(i, 1, centroid.getY());
-                tab.setValue(i, 2, centroid.getZ());
+                table.setValue(i, 0, centroid.getX());
+                table.setValue(i, 1, centroid.getY());
+                table.setValue(i, 2, centroid.getZ());
             }
-            tab.setName(image.getName() + "-Centroids");
+            table.setName(image.getName() + "-Centroids");
 
-            frame.getGui().addFrame(new ImagoTableFrame(frame, tab));
+            // add the new frame to the GUI
+            frame.getGui().createTableFrame(table, frame);
         }
     }
 }

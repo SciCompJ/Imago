@@ -42,7 +42,7 @@ public class ImageMorphologicalReconstruction implements Plugin
 
 		ImagoGui gui = frame.getGui();
 		ImagoApp app = gui.getAppli();
-		Collection<String> imageNames = app.getImageDocumentNames();
+		Collection<String> imageNames = app.getImageHandleNames();
 
 		// Case of no open document with image
 		if (imageNames.size() == 0)
@@ -65,8 +65,8 @@ public class ImageMorphologicalReconstruction implements Plugin
 		}
 		
 		// parse dialog results
-		Image markerImage = app.getDocumentFromName(gd.getNextChoice()).getImage();
-		Image maskImage = app.getDocumentFromName(gd.getNextChoice()).getImage();
+		Image markerImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
+		Image maskImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
 
 		// extract arrays and check dimensions
 		Array<?> marker = markerImage.getData();

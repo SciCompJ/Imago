@@ -3,14 +3,14 @@
  */
 package imago.plugin.image.analyze;
 
+import imago.app.ImageHandle;
+import imago.app.shape.ImagoShape;
+import imago.gui.ImageFrame;
+import imago.gui.ImagoFrame;
+import imago.gui.Plugin;
+
 import java.util.Map;
 
-import imago.app.ImagoDoc;
-import imago.app.shape.ImagoShape;
-import imago.gui.ImagoDocViewer;
-import imago.gui.ImagoFrame;
-import imago.gui.ImagoTableFrame;
-import imago.gui.Plugin;
 import net.sci.array.Array;
 import net.sci.array.scalar.IntArray;
 import net.sci.geom.geom2d.polygon.Polygon2D;
@@ -37,13 +37,13 @@ public class LabelImageConvexHulls implements Plugin
     public void run(ImagoFrame frame, String args)
     {
         // Check type is image frame
-        if (!(frame instanceof ImagoDocViewer))
+        if (!(frame instanceof ImageFrame))
         {
             return;
         }
         
         // retrieve image data
-        ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getDocument();
         Image image = doc.getImage();
         if (!image.isLabelImage())
         {
@@ -75,11 +75,12 @@ public class LabelImageConvexHulls implements Plugin
             }
 
             Table table = algo.createTable(convexHulls);
-            frame.getGui().addFrame(new ImagoTableFrame(frame, table));
+            // add the new frame to the GUI
+            frame.getGui().createTableFrame(table, frame);
 //            // add to the document
 //            for (int i = 0; i < centroids.length; i++)
 //            {
-//                doc.addShape(new ImagoShape(centroids[i]));
+//                handle.addShape(new ImagoShape(centroids[i]));
 //            }
             frame.repaint();
         }
@@ -91,13 +92,13 @@ public class LabelImageConvexHulls implements Plugin
     
     public boolean isEnabled(ImagoFrame frame)
     {
-        if (!(frame instanceof ImagoDocViewer))
+        if (!(frame instanceof ImageFrame))
         {
             return false;
         }
         
         // retrieve image data
-        ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getDocument();
         Image image = doc.getImage();
         if (!image.isLabelImage())
         {

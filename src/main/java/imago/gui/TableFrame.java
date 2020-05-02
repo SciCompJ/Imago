@@ -3,6 +3,9 @@
  */
 package imago.gui;
 
+import imago.app.TableHandle;
+import imago.gui.util.RowNumberTable;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -15,30 +18,39 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import imago.gui.util.RowNumberTable;
 import net.sci.table.Table;
 
 /**
+ * An Imago Frame that displays a Table.
+ * 
  * @author dlegland
  *
  */
-public class ImagoTableFrame extends ImagoFrame
+public class TableFrame extends ImagoFrame
 {
     // ===================================================================
     // Class variables
 
+    /** The handle to the table displayed in this frame.*/
+    TableHandle handle;
+    
+    /**
+     * The table.
+     */
     Table table;
+
     
     // ===================================================================
     // Constructor
     
     /**
-     * @param parent
+     * @param parent 
      */
-    public ImagoTableFrame(ImagoFrame parent, Table table)
+    public TableFrame(ImagoFrame parent, TableHandle handle)
     {
         super(parent, "Table Frame");
-        this.table = table;
+        this.handle = handle;
+        this.table = handle.getTable();
 
         // create menu
         GuiBuilder builder = new GuiBuilder(this);
@@ -68,8 +80,8 @@ public class ImagoTableFrame extends ImagoFrame
             @Override
             public void windowClosing(WindowEvent evt)
             {
-                gui.removeFrame(ImagoTableFrame.this);
-                ImagoTableFrame.this.close();
+                gui.removeFrame(TableFrame.this);
+                TableFrame.this.close();
             }           
         });
         

@@ -3,8 +3,8 @@
  */
 package imago.plugin.image;
 
-import imago.app.ImagoDoc;
-import imago.gui.ImagoDocViewer;
+import imago.app.ImageHandle;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.ArrayOperator;
@@ -37,7 +37,7 @@ public class ImageArrayOperatorPlugin implements Plugin
     public void run(ImagoFrame frame, String args)
     {
         // get current frame
-        ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getDocument();
         Image image = doc.getImage();
 
         Image result = new Image(operator.process(image.getData()), image);
@@ -57,11 +57,11 @@ public class ImageArrayOperatorPlugin implements Plugin
     public boolean isEnabled(ImagoFrame frame)
     {
         // check frame class
-        if (!(frame instanceof ImagoDocViewer))
+        if (!(frame instanceof ImageFrame))
             return false;
         
         // check image
-        ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getDocument();
         Image image = doc.getImage();
         if (image == null)
             return false;

@@ -49,7 +49,7 @@ public class OrthoSlicesViewer extends ImageViewer implements ChangeListener, Ac
 		
 	int[] slicesCenter = new int[3];
 
-	// GUI items
+	// GUI handles
 	JScrollPane scrollXY;
 	JScrollPane scrollZY;
 	JScrollPane scrollXZ;

@@ -437,8 +437,8 @@ public class GenericDialog
      * 
      * @param label
      *            the label for the option
-     * @param items
-     *            the list of enum items
+     * @param handles
+     *            the list of enum handles
      * @param defaultItem
      *            the default choice for this option
      */

@@ -3,8 +3,8 @@
  */
 package imago.plugin.image.edit;
 
-import imago.app.ImagoDoc;
-import imago.gui.ImagoDocViewer;
+import imago.app.ImageHandle;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.image.ColorMap;
@@ -37,8 +37,8 @@ public class ImageSetColorMap implements Plugin
 		System.out.println("image set colormap");
 
 		// get current image data
-		ImagoDocViewer viewer = (ImagoDocViewer) frame;
-		ImagoDoc doc = viewer.getDocument();
+		ImageFrame viewer = (ImageFrame) frame;
+		ImageHandle doc = viewer.getDocument();
 		Image image	= doc.getImage();
 
 		image.getDisplaySettings().setColorMap(this.colorMap);

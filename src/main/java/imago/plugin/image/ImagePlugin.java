@@ -3,7 +3,7 @@
  */
 package imago.plugin.image;
 
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.image.Image;
@@ -22,7 +22,7 @@ public interface ImagePlugin extends Plugin
     /**
      * Defines whether this plugin should be enabled for the given frame.
      * 
-     * Returns true if the calling frame is an instance of ImagoDocViewer and it
+     * Returns true if the calling frame is an instance of ImageFrame and it
      * contains a valid image.
      * 
      * @param frame
@@ -31,12 +31,12 @@ public interface ImagePlugin extends Plugin
      */
     public default boolean isEnabled(ImagoFrame frame)
     {
-        if (!(frame instanceof ImagoDocViewer))
+        if (!(frame instanceof ImageFrame))
         {
             return false;
         }
         
-        Image image = ((ImagoDocViewer) frame).getDocument().getImage();
+        Image image = ((ImageFrame) frame).getDocument().getImage();
         
         return image != null;
     }

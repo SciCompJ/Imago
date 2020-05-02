@@ -62,9 +62,9 @@ public class MergeChannelImages implements Plugin
 		}
 		
 		// Retrieve images from document names
-		Image redChannelImage 	= app.getDocumentFromName(dialog.getNextChoice()).getImage();
-		Image greenChannelImage = app.getDocumentFromName(dialog.getNextChoice()).getImage();
-		Image blueChannelImage 	= app.getDocumentFromName(dialog.getNextChoice()).getImage();
+		Image redChannelImage 	= app.getImageHandleFromName(dialog.getNextChoice()).getImage();
+		Image greenChannelImage = app.getImageHandleFromName(dialog.getNextChoice()).getImage();
+		Image blueChannelImage 	= app.getImageHandleFromName(dialog.getNextChoice()).getImage();
 		
 		// extract arrays containing image data
 		UInt8Array redChannel 	= (UInt8Array) redChannelImage.getData();
@@ -85,7 +85,7 @@ public class MergeChannelImages implements Plugin
 	private ArrayList<String> findUInt8ArrayNameList(ImagoApp app)
 	{
 	    ArrayList<String> imageNames = new ArrayList<>();
-        app.getDocuments().stream()
+        app.getImageHandles().stream()
             .filter(doc -> {
                 Image img = doc.getImage();
                 if (img == null) return false;

@@ -3,8 +3,8 @@
  */
 package imago.plugin.image.edit;
 
-import imago.app.ImagoDoc;
-import imago.gui.ImagoDocViewer;
+import imago.app.ImageHandle;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.axis.Axis;
@@ -31,7 +31,7 @@ public class PrintImageInfos implements Plugin
 		System.out.println("print image info:");
 		
 		// get current frame
-		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getDocument();
 		Image image = doc.getImage();
 
 		int nd = image.getDimension();

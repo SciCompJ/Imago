@@ -124,18 +124,18 @@ public abstract class ImageViewer
 	}
 	
 //	/**
-//	 * Returns the instance of ImagoDocViewer that contains this Image view,
+//	 * Returns the instance of ImageFrame that contains this Image view,
 //	 * or null if no one is found.
 //	 */
-//	public ImagoDocViewer getViewer() 
+//	public ImageFrame getViewer() 
 //	{
 //		Container container = this.getParent();
-//		while (!(container instanceof ImagoDocViewer) && container != null) 
+//		while (!(container instanceof ImageFrame) && container != null) 
 //		{
 //			container = container.getParent();
 //		}
 //		
-//		return (ImagoDocViewer) container;
+//		return (ImageFrame) container;
 //	}	
 
 	

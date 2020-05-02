@@ -3,9 +3,9 @@
  */
 package imago.plugin.image.shape;
 
-import imago.app.ImagoDoc;
+import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
@@ -36,7 +36,7 @@ public class ImageCropDialog implements Plugin
 		System.out.println("crop");
 
 		// get current image data
-		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getDocument();
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();
 
@@ -67,7 +67,7 @@ public class ImageCropDialog implements Plugin
 
 		// create operator box filtering operator
 		Crop op = Crop.fromMinMax(minDims, maxDims);
-		op.addAlgoListener((ImagoDocViewer) frame);
+		op.addAlgoListener((ImageFrame) frame);
 		
 		// apply operator on current image array
 		Array<?> result = op.process(array);
@@ -89,11 +89,11 @@ public class ImageCropDialog implements Plugin
     public boolean isEnabled(ImagoFrame frame)
     {
         // check frame class
-        if (!(frame instanceof ImagoDocViewer))
+        if (!(frame instanceof ImageFrame))
             return false;
         
         // check image
-        ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getDocument();
         Image image = doc.getImage();
         if (image == null)
             return false;

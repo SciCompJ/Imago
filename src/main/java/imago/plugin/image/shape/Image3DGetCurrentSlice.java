@@ -3,9 +3,9 @@
  */
 package imago.plugin.image.shape;
 
-import imago.app.ImagoDoc;
+import imago.app.ImageHandle;
 import imago.gui.ImageViewer;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import imago.gui.viewer.StackSliceViewer;
@@ -36,8 +36,8 @@ public class Image3DGetCurrentSlice implements Plugin
 		System.out.println("extract current slice from 3D image");
 
 		// get current image data
-		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
-		ImageViewer viewer = ((ImagoDocViewer) frame).getImageView();
+		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageViewer viewer = ((ImageFrame) frame).getImageView();
 
 		Image image	= doc.getImage();
 

@@ -3,9 +3,9 @@
  */
 package imago.gui.action;
 
-import imago.app.ImagoDoc;
+import imago.app.ImageHandle;
 import imago.gui.ImagoAction;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 
 import java.awt.event.ActionEvent;
@@ -43,7 +43,7 @@ public class ImageOperatorAction extends ImagoAction
 	public void actionPerformed(ActionEvent evt)
 	{
 		// get current frame
-		ImagoDoc doc = ((ImagoDocViewer) this.frame).getDocument();
+		ImageHandle doc = ((ImageFrame) this.frame).getDocument();
 		Image image = doc.getImage();
 
 		Image result = operator.process(image);

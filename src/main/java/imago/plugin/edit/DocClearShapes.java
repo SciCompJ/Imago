@@ -3,8 +3,8 @@
  */
 package imago.plugin.edit;
 
-import imago.app.ImagoDoc;
-import imago.gui.ImagoDocViewer;
+import imago.app.ImageHandle;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 
@@ -29,7 +29,7 @@ public class DocClearShapes implements Plugin
 		System.out.println("clear shapes");
 		
 		// get current frame
-		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getDocument();
 		doc.clearShapes();
 		
 		frame.repaint();

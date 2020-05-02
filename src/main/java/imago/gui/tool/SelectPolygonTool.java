@@ -3,7 +3,7 @@
  */
 package imago.gui.tool;
 
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoTool;
 import imago.gui.viewer.ImageDisplay;
 
@@ -38,7 +38,7 @@ public class SelectPolygonTool extends ImagoTool
      */
     boolean polygonStarted = false;
     
-    public SelectPolygonTool(ImagoDocViewer viewer, String name)
+    public SelectPolygonTool(ImageFrame viewer, String name)
     {
         super(viewer, name);
     }

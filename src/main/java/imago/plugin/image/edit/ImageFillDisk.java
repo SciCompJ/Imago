@@ -3,9 +3,9 @@
  */
 package imago.plugin.image.edit;
 
-import imago.app.ImagoDoc;
+import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
@@ -38,7 +38,7 @@ public class ImageFillDisk  implements Plugin
 		System.out.println("fill disk");
 
 		// get current image data
-		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getDocument();
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();
 
@@ -72,7 +72,7 @@ public class ImageFillDisk  implements Plugin
         Phantoms2D.fillDisk((ScalarArray2D<?>) array, new Point2D(centerX, centerY), radius, value);
 		
 		// apply operator on current image
-        ((ImagoDocViewer) frame).getImageView().refreshDisplay();
+        ((ImageFrame) frame).getImageView().refreshDisplay();
 		frame.repaint();
 	}
 }

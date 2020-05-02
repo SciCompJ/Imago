@@ -10,7 +10,7 @@ import javax.swing.JFileChooser;
 
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.ImagoTableFrame;
+import imago.gui.TableFrame;
 import net.sci.table.Table;
 import net.sci.table.io.DelimitedTableWriter;
 
@@ -51,7 +51,7 @@ public class SaveTable implements TablePlugin
 		File file = saveWindow.getSelectedFile();
 	
 		// get table references by the frame
-		Table table = ((ImagoTableFrame) frame).getTable();
+		Table table = ((TableFrame) frame).getTable();
 		
 		try
 		{

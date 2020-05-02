@@ -2,7 +2,7 @@ package imago.plugin.table.process;
 
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
-import imago.gui.ImagoTableFrame;
+import imago.gui.TableFrame;
 import imago.plugin.table.TablePlugin;
 import net.sci.table.Table;
 import net.sci.table.cluster.KMeans;
@@ -23,7 +23,7 @@ public class TableKMeans implements TablePlugin
     public void run(ImagoFrame frame, String args)
     {
         // get table references by the frame
-        Table table = ((ImagoTableFrame) frame).getTable();
+        Table table = ((TableFrame) frame).getTable();
 
         // TODO: check table is all numeric
         GenericDialog dlg = new GenericDialog("KMeans");
@@ -42,7 +42,8 @@ public class TableKMeans implements TablePlugin
 
         Table classes = km.predict(table);
         
-        frame.getGui().addFrame(new ImagoTableFrame(frame, classes)); 
+        // add the new frame to the GUI
+        frame.getGui().createTableFrame(classes, frame);
     }
 
 }

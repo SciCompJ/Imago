@@ -3,9 +3,9 @@
  */
 package imago.plugin.image.process;
 
-import imago.app.ImagoDoc;
+import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
@@ -41,7 +41,7 @@ public class BinaryImageConnectedComponentsLabeling implements Plugin
 		System.out.println("connected components labeling");
 
 		// get current image data
-		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getDocument();
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();
 		if (!(array instanceof BinaryArray))
@@ -86,13 +86,13 @@ public class BinaryImageConnectedComponentsLabeling implements Plugin
 		if (nd == 2)
 		{
 		    FloodFillComponentsLabeling2D algo = new FloodFillComponentsLabeling2D(conn, bitDepth);
-		    algo.addAlgoListener((ImagoDocViewer) frame);
+		    algo.addAlgoListener((ImageFrame) frame);
 		    result = algo.process(image);
 		}
 		else
 		{
             FloodFillComponentsLabeling3D algo = new FloodFillComponentsLabeling3D(conn, bitDepth);
-            algo.addAlgoListener((ImagoDocViewer) frame);
+            algo.addAlgoListener((ImageFrame) frame);
             result = algo.process(image);
 		}
 		result.setType(Image.Type.LABEL);
@@ -119,11 +119,11 @@ public class BinaryImageConnectedComponentsLabeling implements Plugin
     public boolean isEnabled(ImagoFrame frame)
     {
         // check frame class
-        if (!(frame instanceof ImagoDocViewer))
+        if (!(frame instanceof ImageFrame))
             return false;
         
         // check image
-        ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getDocument();
         Image image = doc.getImage();
         if (image == null)
             return false;

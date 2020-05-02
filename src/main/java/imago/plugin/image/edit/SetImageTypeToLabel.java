@@ -3,8 +3,8 @@
  */
 package imago.plugin.image.edit;
 
-import imago.app.ImagoDoc;
-import imago.gui.ImagoDocViewer;
+import imago.app.ImageHandle;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.Plugin;
@@ -32,8 +32,8 @@ public class SetImageTypeToLabel implements Plugin
 		System.out.println("convert image type to label");
 		
 		// get current frame
-		ImagoDocViewer viewer = (ImagoDocViewer) frame;
-        ImagoDoc doc = viewer.getDocument();
+		ImageFrame viewer = (ImageFrame) frame;
+        ImageHandle doc = viewer.getDocument();
 		Image image = doc.getImage();
 		
 		if (image == null)

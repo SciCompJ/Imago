@@ -3,7 +3,7 @@
  */
 package imago.gui.tool;
 
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoTool;
 import imago.gui.viewer.ImageDisplay;
 
@@ -23,7 +23,7 @@ public class SelectionTool extends ImagoTool {
 	double x2, y2;
 	int state = 0;
 	
-	public SelectionTool(ImagoDocViewer viewer, String name) {
+	public SelectionTool(ImageFrame viewer, String name) {
 		super(viewer, name);
 	}
 

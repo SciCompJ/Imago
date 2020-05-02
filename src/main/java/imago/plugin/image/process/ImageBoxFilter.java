@@ -3,9 +3,9 @@
  */
 package imago.plugin.image.process;
 
-import imago.app.ImagoDoc;
+import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
@@ -36,7 +36,7 @@ public class ImageBoxFilter implements Plugin
 		System.out.println("box filter (generic)");
 
 		// get current image data
-		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getDocument();
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();
 
@@ -64,7 +64,7 @@ public class ImageBoxFilter implements Plugin
 
 		// create operator box filtering operator
 		BoxFilter filter = new BoxFilter(diameters);
-		filter.addAlgoListener((ImagoDocViewer) frame);
+		filter.addAlgoListener((ImageFrame) frame);
 		
 		// apply operator on current image
 		Image result = filter.process(image);
@@ -85,11 +85,11 @@ public class ImageBoxFilter implements Plugin
     public boolean isEnabled(ImagoFrame frame)
     {
         // check frame class
-        if (!(frame instanceof ImagoDocViewer))
+        if (!(frame instanceof ImageFrame))
             return false;
         
         // check image
-        ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getDocument();
         Image image = doc.getImage();
         if (image == null)
             return false;

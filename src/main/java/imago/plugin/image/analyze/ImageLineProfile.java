@@ -13,7 +13,7 @@ import org.knowm.xchart.style.markers.SeriesMarkers;
 
 import imago.gui.ImageViewer;
 import imago.gui.ImagoChartFrame;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.viewer.PlanarImageViewer;
 import imago.plugin.image.ImagePlugin;
@@ -51,9 +51,9 @@ public class ImageLineProfile implements ImagePlugin
     public void run(ImagoFrame frame, String args)
     {
         // Check type is image frame
-        if (!(frame instanceof ImagoDocViewer))
+        if (!(frame instanceof ImageFrame))
             return;
-        ImagoDocViewer iframe = (ImagoDocViewer) frame;
+        ImageFrame iframe = (ImageFrame) frame;
         Image meta = iframe.getDocument().getImage();
         Array<?> array = meta.getData();
         
@@ -161,7 +161,7 @@ public class ImageLineProfile implements ImagePlugin
         }
 
         // Title of the plot
-        ImagoDocViewer iframe = (ImagoDocViewer) parentFrame;
+        ImageFrame iframe = (ImageFrame) parentFrame;
         Image image = iframe.getDocument().getImage();
         String titleString = createTitleString("Intensity profile", image.getName());
 
@@ -201,7 +201,7 @@ public class ImageLineProfile implements ImagePlugin
         }
 
         // Title of the plot
-        ImagoDocViewer iframe = (ImagoDocViewer) parentFrame;
+        ImageFrame iframe = (ImageFrame) parentFrame;
         Image image = iframe.getDocument().getImage();
         String titleString = createTitleString("Color profile", image.getName());
         

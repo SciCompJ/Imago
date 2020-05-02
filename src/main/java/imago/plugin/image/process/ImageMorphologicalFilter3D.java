@@ -3,9 +3,9 @@
  */
 package imago.plugin.image.process;
 
-import imago.app.ImagoDoc;
+import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
-import imago.gui.ImagoDocViewer;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
@@ -43,7 +43,7 @@ public class ImageMorphologicalFilter3D implements Plugin
 		System.out.println("morphological filter (3D)");
 
 		// get current image data
-		ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getDocument();
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();
 
@@ -81,7 +81,7 @@ public class ImageMorphologicalFilter3D implements Plugin
 		Strel3D strel = shape.fromRadius(radius);
 		
 		// add some listeners
-		strel.addAlgoListener((ImagoDocViewer) frame); 
+		strel.addAlgoListener((ImageFrame) frame); 
 		
 //		// Eventually display the structuring element used for processing 
 //		if (showStrel) 

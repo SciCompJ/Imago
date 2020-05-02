@@ -3,8 +3,8 @@
  */
 package imago.plugin.image.convert;
 
-import imago.app.ImagoDoc;
-import imago.gui.ImagoDocViewer;
+import imago.app.ImageHandle;
+import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.Plugin;
@@ -37,7 +37,7 @@ public class ConvertChannelsToDimension implements Plugin
 	    System.out.println("vector image to scalar with one dimension more");
 
         // get current frame
-        ImagoDoc doc = ((ImagoDocViewer) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getDocument();
         Image image = doc.getImage();
         
         if (image == null)

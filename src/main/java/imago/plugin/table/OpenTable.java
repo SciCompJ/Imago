@@ -3,15 +3,15 @@
  */
 package imago.plugin.table;
 
+import imago.gui.ImagoFrame;
+import imago.gui.ImagoGui;
+import imago.gui.Plugin;
+
 import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
 
-import imago.gui.ImagoFrame;
-import imago.gui.ImagoGui;
-import imago.gui.ImagoTableFrame;
-import imago.gui.Plugin;
 import net.sci.table.Table;
 import net.sci.table.io.DelimitedTableReader;
 
@@ -79,7 +79,6 @@ public class OpenTable implements Plugin
 		table.setName(file.getName());
 		
         // add the new frame to the GUI
-		ImagoTableFrame newFrame = new ImagoTableFrame(frame, table);
-        frame.getGui().addFrame(newFrame); 
+        frame.getGui().createTableFrame(table, frame);
 	}
 }
