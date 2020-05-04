@@ -101,6 +101,7 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 	public void setSelection(Geometry2D shape)
 	{
 		this.selection = shape;
+		this.imageDisplay.setSelection(shape);
 	}
 	
 	// ===================================================================
@@ -188,6 +189,10 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 	public void repaint()
 	{
 	    this.panel.repaint();
+	    if (this.selection != null)
+	    {
+	        
+	    }
 	}
 
 

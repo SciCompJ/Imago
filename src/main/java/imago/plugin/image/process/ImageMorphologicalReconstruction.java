@@ -42,7 +42,7 @@ public class ImageMorphologicalReconstruction implements Plugin
 
 		ImagoGui gui = frame.getGui();
 		ImagoApp app = gui.getAppli();
-		Collection<String> imageNames = app.getImageHandleNames();
+        Collection<String> imageNames = app.getImageHandleNames();
 
 		// Case of no open document with image
 		if (imageNames.size() == 0)

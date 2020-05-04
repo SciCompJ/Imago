@@ -260,6 +260,12 @@ public class GuiBuilder
         // crop tools
         addPlugin(editMenu, new ImageCropSelection(), "Crop Selection", hasImage2D);
         addPlugin(editMenu, new ImageCropDialog(), "Crop...", hasImage);
+        
+        // selection sub-menu
+        JMenu selectionMenu = new JMenu("Selection");
+        addPlugin(selectionMenu, new ImageCopySelectionToWorkspace(), "Copy To Workspace");
+        addPlugin(selectionMenu, new ImportSelectionFromWorkspace(), "Import From Workspace");
+        editMenu.add(selectionMenu);
 
         // add utility
 		editMenu.addSeparator();
