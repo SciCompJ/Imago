@@ -7,13 +7,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.TreeMap;
 
-import net.sci.geom.Geometry;
-import net.sci.image.Image;
-import net.sci.table.Table;
-
 /**
+ * Contains a set of <code>ObjectHandle</code> instances, indexed by their tag.
+ * 
+ * @see ObjectHandle
+ * 
  * @author dlegland
- *
  */
 public class Workspace
 {
@@ -21,89 +20,13 @@ public class Workspace
     // class variables
 
     /**
-     * The list of handles managed by the application.
+     * The list of handles managed by the application, indexed by their tag.
      */
-    TreeMap<String, ObjectHandle> handles = new TreeMap<String, ObjectHandle>();
+    private TreeMap<String, ObjectHandle> handles = new TreeMap<String, ObjectHandle>();
     
-
-    // =============================================================
-    // Creation of new handles
-
-    /**
-     * Creates a new handle to the input argument, creates the appropriate tag,
-     * and adds it to the list of handles in the workspace.
-     * 
-     * @param object
-     *            the object to add.
-     * @param name
-     *            the name associated to this object.
-     * @param baseTag
-     *            the string pattern used to build handle tag.
-     * @return the handle created for this object.
-     */
-    public ObjectHandle createHandle(Object object, String name, String baseTag)
-    {
-        if (name == null)
-        {
-            name = "NoName";
-        }
-        
-        ObjectHandle handle;
-        String tag = findNextFreeTag(baseTag);
-        
-        if (object instanceof Image)
-        {
-            handle = new ImageHandle((Image) object, name, tag);
-        }
-        else if (object instanceof Table)
-        {
-            handle = new TableHandle((Table) object, name, tag);
-        }
-        else if (object instanceof Geometry)
-        {
-            handle = new GeometryHandle((Geometry) object, name, tag);
-        }
-        else if (object instanceof String)
-        {
-            handle = new StringHandle((String) object, name, tag);
-        }
-        else
-        {
-            handle  = new GenericHandle(object, name, tag);
-        }
-        
-        this.handles.put(tag, handle);
-        
-        return handle;
-    }
-    
-    public TableHandle createTableHandle(Table table)
-    {
-        String tag = findNextFreeTag("tab");
-        TableHandle handle = new TableHandle(table, table.getName(), tag);
-        this.handles.put(handle.tag, handle);
-        return handle;
-    }
-    
-    /**
-     * Creates a new handle for an image, adds it to the workspace, and return the
-     * handle.
-     * 
-     * @param image
-     *            the image instance
-     * @return the handle to manage the image.
-     */
-    public ImageHandle createImageHandle(Image image)
-    {
-        String tag = findNextFreeTag("img");
-        ImageHandle handle = new ImageHandle(image, image.getName(), tag);
-        this.handles.put(handle.tag, handle);
-        return handle;
-    }
-
     
     // =============================================================
-    // Query handles
+    // Query handles from name or class
     
     /**
      * Returns all the instances of ObjectHandle stored in this workspace whose
@@ -141,35 +64,41 @@ public class Workspace
         return ObjectHandle.getNames(getHandles(objectClass));
     }
     
-    public Collection<ImageHandle> getImageHandles()
+    /**
+     * Returns the first handle whose name matches the specified name.
+     * 
+     * @param name
+     *            the name of the handle.
+     * @return the first handle whose name matches the specified name.
+     */
+    public ObjectHandle getHandleWithName(String name)
     {
-        ArrayList<ImageHandle> res = new ArrayList<ImageHandle>();
         for (ObjectHandle handle : handles.values())
         {
-            if (handle instanceof ImageHandle)
+            if (handle.getName().equals(name))
             {
-                res.add((ImageHandle) handle);
+                return handle;
             }
         }
-        return res;
+
+        throw new RuntimeException("Workspace does not contain any item with name: " + name);
     }
     
-    public Collection<TableHandle> getTableHandles()
+    public boolean hasHandleWithName(String name)
     {
-        ArrayList<TableHandle> res = new ArrayList<TableHandle>();
         for (ObjectHandle handle : handles.values())
         {
-            if (handle instanceof TableHandle)
+            if (handle.getName().equals(name))
             {
-                res.add((TableHandle) handle);
+                return true;
             }
         }
-        return res;
+        return false;
     }
     
 
     // =============================================================
-    // Management of handles
+    // get handles from the workspace
 
     /**
      * Returns the item associated with the specified tag.
@@ -186,12 +115,9 @@ public class Workspace
             throw new RuntimeException("Workspace does not contain any item with tag: " + tag);
     }
     
-    public void removeHandle(String tag)
+    public Collection<ObjectHandle> getHandles()
     {
-        if (this.handles.containsKey(tag))
-            this.handles.remove(tag);
-        else
-            throw new RuntimeException("Workspace does not contain any item with tag: " + tag);
+        return this.handles.values();
     }
     
     public boolean hasHandle(String tag)
@@ -199,14 +125,13 @@ public class Workspace
         return this.handles.containsKey(tag);
     }
 
+
+    // =============================================================
+    // Managment of tags
+
     public Collection<String> getTags()
     {
         return this.handles.keySet();
-    }
-
-    public Collection<ObjectHandle> getHandles()
-    {
-        return this.handles.values();
     }
     
     /**
@@ -218,7 +143,7 @@ public class Workspace
      *            a base tag for the item, for example based on its class.
      * @return a unique tag.
      */
-    private String findNextFreeTag(String baseTag)
+    public String findNextFreeTag(String baseTag)
     {
         // avoid empty tags
         if (baseTag == null || baseTag.isEmpty())
@@ -232,24 +157,36 @@ public class Workspace
         do
         {
             tag = String.format(baseTag + "%02d", index++);
-        } while (hasItemWithTag(tag));
+        } while (handles.containsKey(tag));
         
         return tag;
     }
     
     
-    private boolean hasItemWithTag(String tag)
+    // =============================================================
+    // update list of handles in the workspace
+
+    /**
+     * Adds the specified handle to the workspace. If another handle with the
+     * same tag was stored in the workspace, it is replaced.
+     * 
+     * @param handle
+     *            the handle to add.
+     */
+    public void addHandle(ObjectHandle handle)
     {
-        for (String t : this.handles.keySet())
-        {
-            if (t.equals(tag))
-            {
-                return true;
-            }
-        }
-        return false;
+        String tag = handle.tag;
+        this.handles.put(tag, handle);
     }
-    
+
+    public void removeHandle(String tag)
+    {
+        if (this.handles.containsKey(tag))
+            this.handles.remove(tag);
+        else
+            throw new RuntimeException("Workspace does not contain any item with tag: " + tag);
+    }
+
     /**
      * Removes all handles within workspace.
      */

@@ -4,7 +4,7 @@
 package imago.plugin.image.edit;
 
 import imago.app.ImageHandle;
-import imago.app.Workspace;
+import imago.app.ImagoApp;
 import imago.gui.GenericDialog;
 import imago.gui.ImageFrame;
 import imago.gui.ImageViewer;
@@ -71,7 +71,7 @@ public class ImageCopySelectionToWorkspace implements Plugin
             return;
         }
         
-        Workspace ws = frame.getGui().getAppli().getWorkspace();
+        ImagoApp app = frame.getGui().getAppli();
         
         GenericDialog dlg = new GenericDialog(frame, "Add Selection To Workspace");
         dlg.addTextField("Name", "polygon", 20);
@@ -82,6 +82,6 @@ public class ImageCopySelectionToWorkspace implements Plugin
         }
         
         String name = dlg.getNextString();
-        ws.createHandle(selection, name, "poly");
+        app.createHandle(selection, name, "poly");
 	}
 }

@@ -4,9 +4,12 @@
 package imago.app;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 
+import net.sci.geom.Geometry;
 import net.sci.image.Image;
+import net.sci.table.Table;
 
 /**
  * The main manager of the application. Contains the workspace, and 
@@ -44,26 +47,101 @@ public class ImagoApp
 
 	
     // =============================================================
-    // Management of handles
-	
+    // Creation of new handles
+
     /**
-     * Creates a new handle for an image, adds it to the app, and return the
-     * handle.
+     * Creates a new handle to the input argument, creates the appropriate tag,
+     * and adds it to the list of handles in the workspace.
+     * <p>
+     * 
+     * This methods tries to create the appropriate sub-class of ObjectHAndle,
+     * depending on the class of the input object. For example if
+     * <code>object</code> is an instance of the <code>Image</code> class, an
+     * instance of <code>ImageHandle</code> will be created.
+     * 
+     * @param object
+     *            the object to add.
+     * @param name
+     *            the name associated to this object.
+     * @param baseTag
+     *            the string pattern used to build handle tag.
+     * @return the handle created for this object.
+     */
+    public ObjectHandle createHandle(Object object, String name, String baseTag)
+    {
+        if (name == null)
+        {
+            name = "NoName";
+        }
+        
+        ObjectHandle handle;
+        String tag = workspace.findNextFreeTag(baseTag);
+        name = findNextFreeName(name);
+        
+        if (object instanceof Image)
+        {
+            handle = new ImageHandle((Image) object, name, tag);
+        }
+        else if (object instanceof Table)
+        {
+            handle = new TableHandle((Table) object, name, tag);
+        }
+        else if (object instanceof Geometry)
+        {
+            handle = new GeometryHandle((Geometry) object, name, tag);
+        }
+        else if (object instanceof String)
+        {
+            handle = new StringHandle((String) object, name, tag);
+        }
+        else
+        {
+            handle  = new GenericHandle(object, name, tag);
+        }
+        
+        workspace.addHandle(handle);
+        
+        return handle;
+    }
+    
+    /**
+     * Creates a new handle for an image, adds it to the workspace, and returns
+     * the created handle.
      * 
      * @param image
-     *            the image instance
+     *            the image instance.
      * @return the handle to manage the image.
      */
     public ImageHandle createImageHandle(Image image)
     {
-        ImageHandle handle = workspace.createImageHandle(image);
+        String tag = workspace.findNextFreeTag("img");
+        String name = findNextFreeName(image.getName());
+        ImageHandle handle = new ImageHandle(image, name, tag);
+        workspace.addHandle(handle);
         return handle;
     }
-	
 
-	// =============================================================
-	// Management of documents
+    /**
+     * Creates a new handle for a table, adds it to the workspace, and returns
+     * the created handle.
+     * 
+     * @param table
+     *            the table instance.
+     * @return the handle to manage the table.
+     */
+    public TableHandle createTableHandle(Table table)
+    {
+        String tag = workspace.findNextFreeTag("tab");
+        String name = findNextFreeName(table.getName());
+        TableHandle handle = new TableHandle(table, name, tag);
+        workspace.addHandle(handle);
+        return handle;
+    }
+    
 
+    // =============================================================
+    // Management of image handles
+    
 	public void removeImageHandle(ImageHandle handle)
 	{
 	    workspace.removeHandle(handle.tag);
@@ -71,13 +149,35 @@ public class ImagoApp
 
 	public int imageHandleNumber()
 	{
-		return workspace.getImageHandles().size();
+		return getImageHandles().size();
 	}
-
+	
 	public Collection<ImageHandle> getImageHandles()
 	{
-	    return workspace.getImageHandles();
+	    ArrayList<ImageHandle> res = new ArrayList<ImageHandle>();
+	    for (ObjectHandle handle : workspace.getHandles())
+	    {
+	        if (handle instanceof ImageHandle)
+	        {
+	            res.add((ImageHandle) handle);
+	        }
+	    }
+	    return res;
 	}
+	
+	public Collection<TableHandle> getTableHandles()
+	{
+	    ArrayList<TableHandle> res = new ArrayList<TableHandle>();
+        for (ObjectHandle handle : workspace.getHandles())
+	    {
+	        if (handle instanceof TableHandle)
+	        {
+	            res.add((TableHandle) handle);
+	        }
+	    }
+	    return res;
+	}
+	
 
 	/**
 	 * Get the names of all open image documents.
@@ -91,7 +191,7 @@ public class ImagoApp
 	
 	public ImageHandle getImageHandleFromName(String handleName)
 	{
-		for (ImageHandle handle : workspace.getImageHandles())
+		for (ImageHandle handle : getImageHandles())
 		{
 			if (handle.getName().equals(handleName))
 				return handle;
@@ -99,103 +199,95 @@ public class ImagoApp
 		
 		throw new IllegalArgumentException("App does not contain any image handle with name: " + handleName);
 	}
-	
-	/**
-	 * Display the list of document lists on the console (for debugging).
-	 */
-	public void printImageHandleList()
-	{
-		System.out.println("Image Handle list in app:");
-		for (ImageHandle handle : workspace.getImageHandles())
-		{
-			System.out.println(handle.getName());
-		}
-	}
 
+	
+    // =============================================================
+    // Management of handle names
 
     /**
-     * Creates a unique name for a document, given a base name (file name). If
+     * Creates a unique name for a handle, given a base name (typically a file name). If
      * application already contains a document with same base name, an index is
      * added to make the name unique.
      * 
      * @param baseName
-     *            a base name for the document, for example the file name
-     * @return a unique name based on the filename.
+     *            a base name for the document, for example the file name.
+     * @return a unique name based on proposed name.
      */
-    public String createImageHandleName(String baseName)
+    public String findNextFreeName(String name)
     {
-        // avoid empty document names
-        if (baseName == null || baseName.isEmpty())
+        // avoid empty name
+        if (name == null || name.isEmpty())
         {
-            baseName = "NoName";
+            name = "NoName";
         }
         
-        // if no document with such name exist, just keep it
-        if (!hasImageHandleWithName(baseName))
+        if (!workspace.hasHandleWithName(name))
         {
-            return baseName;
+            return name;
         }
         
-        // otherwise, we first check if name contains an "index"
-        // here: the number(s) at the end of the name, before the extension, separated by a dash
+        // extract base name (before extension if present)
+        String[] fileParts = splitFileNameParts(name);
+        String baseName = fileParts[0];
         
-        // extract the sting containing extension (with final dot)
-        String extString = "";
-        int len = baseName.length();
-        int dotIndex = baseName.lastIndexOf(".");
-        // use extension with up to four characters
-        if (dotIndex !=-1 && (len - dotIndex) < 6) 
-        {
-            extString = baseName.substring(dotIndex, len);
-            baseName = baseName.substring(0, dotIndex);
-        }
-        
-        // identifies the set of digits at the end of name 
-        String digits = new String("0123456789");
-        int lastIndex = baseName.length() - 1;
-        String currentChar = ""; 
-        while (lastIndex > 0)
-        {
-            currentChar = baseName.substring(lastIndex, lastIndex + 1);
-            // iterates until a non digit character is found
-            if (!digits.contains(currentChar))
-            {
-                break;
-            }
-            lastIndex--;
-        }
-        
-        // check end of name matches an indexed image name pattern
-        if (lastIndex < baseName.length() - 1 && currentChar.equals("-"))
-        {
-            baseName = baseName.substring(0, lastIndex);
-        }
-        
+        // remove trailing suffix if present
+        baseName = removeTrailingDigits(baseName);
+            
         // create names with the pattern until we found a non existing one
         int index = 1;
-        while (true)
+        do
         {
-            String newName = baseName + "-" + index + extString;
-            if (!hasImageHandleWithName(newName))
-            {
-                return newName;
-            }
-            index++;
-        }
+            name = buildFileName(String.format("%s-%d", baseName, index++), fileParts[1]);
+        } while (workspace.hasHandleWithName(name));
+        
+        return name;
     }
     
-    private boolean hasImageHandleWithName(String name)
+    private static final String[] splitFileNameParts(String filename) 
     {
-        for (ImageHandle handle : workspace.getImageHandles())
-        {
-            if (handle.getName().equals(name))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
+        // identifies position of extension
+        int extensionIndex = filename.lastIndexOf(".");
 
+        // Case of no extension.
+        if (extensionIndex == -1)
+        {
+            return new String[] {filename, ""};
+        }
+        
+        String baseName = filename.substring(0, extensionIndex); 
+        String extensionName = filename.substring(extensionIndex+1); 
+        
+        return new String[] {baseName, extensionName};
+    }
+    
+    private static String removeTrailingDigits(String name)
+    {
+        // basic check-up
+        if (name.isEmpty()) 
+            return name;
+        
+        // if last character is not a digit, return the base name
+        if (!name.substring(name.length()-1).matches("[0-9]"))
+            return name;
+
+        // remove trailing digits
+        while (!name.isEmpty() && name.substring(name.length()-1).matches("[0-9]"))
+            name = name.substring(0, name.length()-1);
+        // remove trailing '-' characters
+        while (!name.isEmpty() && name.endsWith("-"))
+            name = name.substring(0, name.length()-1);
+        
+        return name;
+    }
+    
+    private String buildFileName(String baseName, String extensionName)
+    {
+        if (extensionName == null || extensionName.isEmpty())
+            return baseName;
+        else
+            return baseName + "." + extensionName;
+    }
+    
 
     // =============================================================
     // Management of workspace

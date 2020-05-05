@@ -21,8 +21,9 @@ public class WorkspaceTest
     public final void testAddNewItem()
     {
         Workspace ws = new Workspace();
-        ObjectHandle handle = ws.createHandle("hello!", "string", "str");
-        assertNotNull(handle.tag);
+        ws.addHandle(new GenericHandle("hello!", "string", "str"));
+        
+        assertTrue(ws.hasHandle("str"));
     }
 
     /**
@@ -32,9 +33,8 @@ public class WorkspaceTest
     public final void testGetItem()
     {
         Workspace ws = new Workspace();
-        ObjectHandle handle = ws.createHandle("hello!", "string", "str");
-        assertNotNull(handle.tag);
-        StringHandle item = (StringHandle) ws.getHandle(handle.tag);
+        ws.addHandle(new StringHandle("hello!", "string", "str"));
+        StringHandle item = (StringHandle) ws.getHandle("str");
         assertEquals(item.getString(), "hello!");
     }
 

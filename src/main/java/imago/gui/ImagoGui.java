@@ -156,7 +156,7 @@ public class ImagoGui
 //	    }
 //
 	    // Create the new handle, keeping the maximum of settings
-        TableHandle handle = this.app.getWorkspace().createTableHandle(table);
+        TableHandle handle = this.app.createTableHandle(table);
         
         // create the frame
         TableFrame frame = new TableFrame(parentFrame, handle);
