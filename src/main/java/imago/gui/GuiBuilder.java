@@ -121,11 +121,12 @@ public class GuiBuilder
 	    computeFlags();
 	    
 		JMenuBar menuBar = new JMenuBar();
-		if (frame instanceof ImageFrame || frame instanceof ImagoEmptyFrame)
+		if (frame instanceof ImageFrame)
 		{
 	        menuBar.add(createImageFileMenu());
     		menuBar.add(createImageEditMenu());
     		menuBar.add(createImageMenu());
+    		menuBar.add(createImageToolsMenu());
     		menuBar.add(createImageProcessMenu());
     		menuBar.add(createImageAnalyzeMenu());
 		}
@@ -134,6 +135,10 @@ public class GuiBuilder
             menuBar.add(createTableFileMenu());
             menuBar.add(createTableEditMenu());
             menuBar.add(createTableProcessMenu());
+		}
+		else if (frame instanceof ImagoEmptyFrame)
+		{
+	        menuBar.add(createImageFileMenu());
 		}
         menuBar.add(createDeveloperMenu());
         menuBar.add(createHelpMenu());
@@ -219,37 +224,37 @@ public class GuiBuilder
 	{
 		JMenu editMenu = new JMenu("Edit");
 
-		// tool selection handles
-		if (frame instanceof ImageFrame)
-		{
-			ImagoTool tool;
-			ImageFrame viewer = (ImageFrame) frame;
-
-			tool = new SelectionTool(viewer, "select");
-			addPlugin(editMenu, new ChangeCurrentTool(tool), "Select", hasImage);
-			addPlugin(editMenu, 
-                    new ChangeCurrentTool(new SelectLineSegmentTool(viewer, "selectLineSegment")),
-                    "Select Line", hasImage);
-            addPlugin(editMenu, 
-                    new ChangeCurrentTool(new SelectRectangleTool(viewer, "selectRectangle")),
-                    "Select Rectangle", hasImage);
-            addPlugin(editMenu, 
-                    new ChangeCurrentTool(new SelectPolygonTool(viewer, "selectPolygon")),
-                    "Select Polygon", hasImage);
-
-            editMenu.addSeparator();
-            addPlugin(editMenu, 
-                    new ChangeCurrentTool(new DrawValueTool(viewer, "drawValue")),
-                    "Draw (Dot)", hasScalarImage);
-            addPlugin(editMenu, 
-                    new ChangeCurrentTool(new DrawBrushValueTool(viewer, "drawBrushValue")),
-                    "Draw (Brush)", hasScalarImage);
+//		// tool selection handles
+//		if (frame instanceof ImageFrame)
+//		{
+//			ImagoTool tool;
+//			ImageFrame viewer = (ImageFrame) frame;
+//
+//			tool = new SelectionTool(viewer, "select");
+//			addPlugin(editMenu, new ChangeCurrentTool(tool), "Select", hasImage);
+//			addPlugin(editMenu, 
+//                    new ChangeCurrentTool(new SelectLineSegmentTool(viewer, "selectLineSegment")),
+//                    "Select Line", hasImage);
 //            addPlugin(editMenu, 
-//                    new ChangeCurrentTool(new DrawValueTool(viewer, "drawBlack", 0.0)),
-//                    "Draw Black", hasScalarImage);
-
-            editMenu.addSeparator();
-		}
+//                    new ChangeCurrentTool(new SelectRectangleTool(viewer, "selectRectangle")),
+//                    "Select Rectangle", hasImage);
+//            addPlugin(editMenu, 
+//                    new ChangeCurrentTool(new SelectPolygonTool(viewer, "selectPolygon")),
+//                    "Select Polygon", hasImage);
+//
+//            editMenu.addSeparator();
+//            addPlugin(editMenu, 
+//                    new ChangeCurrentTool(new DrawValueTool(viewer, "drawValue")),
+//                    "Draw (Dot)", hasScalarImage);
+//            addPlugin(editMenu, 
+//                    new ChangeCurrentTool(new DrawBrushValueTool(viewer, "drawBrushValue")),
+//                    "Draw (Brush)", hasScalarImage);
+////            addPlugin(editMenu, 
+////                    new ChangeCurrentTool(new DrawValueTool(viewer, "drawBlack", 0.0)),
+////                    "Draw Black", hasScalarImage);
+//
+//            editMenu.addSeparator();
+//		}
 
 		// zoom handles
 		addPlugin(editMenu, new ZoomIn(), "Zoom In", hasImage);
@@ -418,6 +423,46 @@ public class GuiBuilder
 		menu.addSeparator();
         addPlugin(menu, new PrintImageTiffTags(), "Print TIFF Tags", hasImage);
 		return menu;
+	}
+
+	/**
+	 * Creates the sub-menu for the "Tools" item in the main menu bar.
+	 */
+	private JMenu createImageToolsMenu()
+	{
+		JMenu toolsMenu = new JMenu("Tools");
+
+		// tool selection handles
+		if (frame instanceof ImageFrame)
+		{
+			ImageFrame viewer = (ImageFrame) frame;
+
+			addPlugin(toolsMenu, new ChangeCurrentTool(new SelectionTool(viewer, "select")), "Select", hasImage);
+			addPlugin(toolsMenu, 
+                    new ChangeCurrentTool(new SelectLineSegmentTool(viewer, "selectLineSegment")),
+                    "Select Line", hasImage);
+            addPlugin(toolsMenu, 
+                    new ChangeCurrentTool(new SelectRectangleTool(viewer, "selectRectangle")),
+                    "Select Rectangle", hasImage);
+            addPlugin(toolsMenu, 
+                    new ChangeCurrentTool(new SelectPolygonTool(viewer, "selectPolygon")),
+                    "Select Polygon", hasImage);
+
+            toolsMenu.addSeparator();
+            addPlugin(toolsMenu, 
+                    new ChangeCurrentTool(new DrawValueTool(viewer, "drawValue")),
+                    "Draw (Dot)", hasScalarImage);
+            addPlugin(toolsMenu, 
+                    new ChangeCurrentTool(new DrawBrushValueTool(viewer, "drawBrushValue")),
+                    "Draw (Brush)", hasScalarImage);
+//            addPlugin(editMenu, 
+//                    new ChangeCurrentTool(new DrawValueTool(viewer, "drawBlack", 0.0)),
+//                    "Draw Black", hasScalarImage);
+
+            toolsMenu.addSeparator();
+		}
+
+		return toolsMenu;
 	}
 
 	/**
