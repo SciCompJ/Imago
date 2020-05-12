@@ -13,7 +13,7 @@ import net.sci.geom.Geometry;
  * @author dlegland
  *
  */
-public class ImagoShape
+public class Shape
 {
     // ===================================================================
     // Class variables
@@ -28,7 +28,7 @@ public class ImagoShape
     // ===================================================================
     // Constructors
     
-    public ImagoShape(Geometry geometry)
+    public Shape(Geometry geometry)
     {
         this.geometry = geometry;
     }

@@ -4,7 +4,7 @@
 package imago.plugin.image.analyze;
 
 import imago.app.ImageHandle;
-import imago.app.shape.ImagoShape;
+import imago.app.shape.Shape;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
@@ -71,7 +71,7 @@ public class LabelImageConvexHulls implements Plugin
             // add to the document
             for (Polygon2D hull : convexHulls.values())
             {
-                doc.addShape(new ImagoShape(hull));
+                doc.addShape(new Shape(hull));
             }
 
             Table table = algo.createTable(convexHulls);

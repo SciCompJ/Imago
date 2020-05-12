@@ -3,13 +3,15 @@
  */
 package imago.gui.viewer;
 
-import imago.app.shape.ImagoShape;
+import imago.app.shape.Shape;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,8 +59,14 @@ public class ImageDisplay extends JPanel
 
 	BufferedImage image;
 	
-	Collection<ImagoShape> shapes = new ArrayList<ImagoShape>();
-	
+	Collection<Shape> shapes = new ArrayList<Shape>();
+
+	/**
+	 * A list of 2D shapes corresponding either to scene items, or to slice
+	 * views of the scene items.
+	 */
+	Collection<Shape> sceneGraphItems = new ArrayList<Shape>();
+
     /**
      * The shape of the current selection, usually a polyline or a rectangle
      */
@@ -87,21 +95,43 @@ public class ImageDisplay extends JPanel
 		return this.image;
 	}
 	
-    public Collection<ImagoShape> getShapes()
+
+	// ===================================================================
+	// Shape management
+
+    public Collection<Shape> getShapes()
     {
         return shapes;
     }
     
-    public void setShapes(Collection<ImagoShape> newShapes)
+    public void setShapes(Collection<Shape> newShapes)
     {
         this.shapes = newShapes;
     }
     
-	public void addShape(ImagoShape shape)
+	public void addShape(Shape shape)
 	{
 	    this.shapes.add(shape);
 	}
 	
+	
+	// ===================================================================
+	// Scene graph items management
+
+	public void addSceneGraphItem(Shape shape)
+	{
+		this.sceneGraphItems.add(shape);
+	}
+
+	public void clearSceneGraphItems()
+	{
+		this.sceneGraphItems.clear();
+	}
+	
+	
+	// ===================================================================
+	// Selection management
+
     public Geometry2D getSelection()
     {
         return this.selection;
@@ -224,6 +254,20 @@ public class ImageDisplay extends JPanel
 		return new Dimension(width, height);
 	}
 	
+	public void drawShape(Shape shape)
+	{
+		System.out.println("ImageDisplay.drawShape");
+		
+        // convert to Graphics2D to have more drawing possibilities
+        Graphics2D g2 = (Graphics2D) this.getGraphics();
+        
+        g2.setColor(shape.getColor());
+        Stroke stroke = new BasicStroke((float) shape.getLineWidth());
+        g2.setStroke(stroke);
+        
+        drawGeometry(g2, (Geometry2D) shape.getGeometry());
+	}
+	
 	
     // ===================================================================
     // paint methods
@@ -234,6 +278,7 @@ public class ImageDisplay extends JPanel
 
         paintImage(g);
 	    paintAnnotations(g);
+	    paintSceneGraphItems(g);
 	    
 	    paintSelection(g);
 	}
@@ -246,23 +291,33 @@ public class ImageDisplay extends JPanel
 	
     private void paintAnnotations(Graphics g)
     {
-        // basic check to avoid errors
-        if (this.shapes == null)
-        {
-            return;            
-        }
-        
         // convert to Graphics2D to have more drawing possibilities
         Graphics2D g2 = (Graphics2D) g;
         
-        for(ImagoShape shape : this.shapes)
+        for(Shape shape : this.shapes)
         {
-            g2.setColor(shape.getColor());
-            Geometry geom = shape.getGeometry();
-            if (geom instanceof Geometry2D)
-            {
-            	drawGeometry(g2, (Geometry2D) geom);
-            }
+            paintShape(g2, shape);
+        }
+    }
+    
+    private void paintSceneGraphItems(Graphics g)
+    {
+        // convert to Graphics2D to have more drawing possibilities
+        Graphics2D g2 = (Graphics2D) g;
+        
+        for(Shape shape : this.sceneGraphItems)
+        {
+            paintShape(g2, shape);
+        }
+    }
+    
+    private void paintShape(Graphics2D g2, Shape shape)
+    {
+        g2.setColor(shape.getColor());
+        Geometry geom = shape.getGeometry();
+        if (geom instanceof Geometry2D)
+        {
+        	drawGeometry(g2, (Geometry2D) geom);
         }
     }
     

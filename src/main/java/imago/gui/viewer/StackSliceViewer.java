@@ -3,6 +3,7 @@
  */
 package imago.gui.viewer;
 
+import imago.app.ImageHandle;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoTool;
 
@@ -66,17 +67,17 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 	// ===================================================================
 	// Constructors
 
-	public StackSliceViewer(Image image) 
+	public StackSliceViewer(ImageHandle handle) 
 	{
-		super(image);
+		super(handle);
 		
 		recomputeAwtImage();
 		setupLayout();
 	}
 	
-	public StackSliceViewer(Image image, int sliceIndex) 
+	public StackSliceViewer(ImageHandle handle, int sliceIndex) 
 	{
-		super(image);
+		super(handle);
         this.slicingPosition[2] = sliceIndex;
 		
         recomputeAwtImage();

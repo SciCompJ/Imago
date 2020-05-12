@@ -4,7 +4,7 @@
 package imago.plugin.image.analyze;
 
 import imago.app.ImageHandle;
-import imago.app.shape.ImagoShape;
+import imago.app.shape.Shape;
 import imago.gui.GenericDialog;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
@@ -117,7 +117,7 @@ public class LabelImageEquivalentDisks implements Plugin
                 Ellipse2D elli = ellipses[i];
                 Point2D center = elli.center();
                 double radius = Math.sqrt(elli.semiMajorAxisLength() * elli.semiMinorAxisLength());
-                ovrDoc.addShape(new ImagoShape(new Circle2D(center, radius)));
+                ovrDoc.addShape(new Shape(new Circle2D(center, radius)));
             }
             
             // TODO: maybe propagating events would be better

@@ -3,6 +3,11 @@
  */
 package imago.gui.viewer;
 
+import imago.app.ImageHandle;
+import imago.app.scene.GroupNode;
+import imago.app.scene.Node;
+import imago.app.scene.ShapeNode;
+import imago.app.shape.Shape;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoTool;
 
@@ -52,9 +57,9 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 	// ===================================================================
 	// Constructor
 
-	public PlanarImageViewer(Image image)
+	public PlanarImageViewer(ImageHandle handle)
 	{
-		super(image);
+		super(handle);
 		if (image.getDimension() != 2) 
 		{
 			throw new IllegalArgumentException("Requires a planar image as input");
@@ -175,8 +180,61 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 		this.imageDisplay.setBufferedImage(this.awtImage);
 		imageDisplay.updateOffset();
 		this.imageDisplay.repaint();
+		
+		refreshSceneGraph();
+	}
+
+	private void refreshSceneGraph()
+	{
+		if (this.imageHandle == null)
+		{
+			return;
+		}
+		
+		this.imageDisplay.clearSceneGraphItems();
+		if (!this.displaySceneGraph)
+		{
+			return;
+		}
+		
+		Node rootNode = this.imageHandle.getRootNode();
+		if (rootNode == null)
+		{
+			return;
+		}
+		
+		displaySceneGraphNode(rootNode);
 	}
 	
+	private void displaySceneGraphNode(Node node)
+	{
+		if (!node.isVisible())
+		{
+			return;
+		}
+		
+		if (node instanceof GroupNode)
+		{
+			for (Node child : node.children())
+			{
+				displaySceneGraphNode(child);
+			}
+		}
+		else if (node instanceof ShapeNode)
+		{
+			Shape shape = ((ShapeNode) node).getShape();
+			if (shape.getGeometry() instanceof Geometry2D)
+			{
+				this.imageDisplay.addSceneGraphItem(shape);
+			}
+		}
+		else
+		{
+			return;
+		}
+	}
+	
+
 	/**
 	 * Updates the AWT Image displayed in the center of the ImageDisplay.
 	 */

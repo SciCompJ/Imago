@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import imago.app.ImageHandle;
-import imago.app.shape.ImagoShape;
+import imago.app.shape.Shape;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
@@ -86,13 +86,13 @@ public class LabelImageAdjacencies implements Plugin
             // add to the document
             for (int i = 0; i < centroids.length; i++)
             {
-                doc.addShape(new ImagoShape(centroids[i]));
+                doc.addShape(new Shape(centroids[i]));
             }
             for (LabelPair adj : adjList)
             {
                 Point2D p1 = centroidMap.get(adj.label1);
                 Point2D p2 = centroidMap.get(adj.label2);
-                doc.addShape(new ImagoShape(new LineSegment2D(p1, p2)));
+                doc.addShape(new Shape(new LineSegment2D(p1, p2)));
             }
             frame.repaint();
         }

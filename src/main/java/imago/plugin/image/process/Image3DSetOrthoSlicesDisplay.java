@@ -34,19 +34,19 @@ public class Image3DSetOrthoSlicesDisplay implements Plugin
 		System.out.println("set 3D display to orthoslices");
 
 		// get current image data
-		ImageFrame docViewer = (ImageFrame) frame;
-		ImageHandle doc = docViewer.getImageHandle();
-		Image image	= doc.getImage();
+		ImageFrame imageFrame = (ImageFrame) frame;
+		ImageHandle handle = imageFrame.getImageHandle();
+		Image image	= handle.getImage();
 
 		if (image.getDimension() < 3)
 		{
 		    return;
 		}
-		OrthoSlicesViewer viewer = new OrthoSlicesViewer(image); 
+		OrthoSlicesViewer viewer = new OrthoSlicesViewer(handle); 
 		viewer.validate();
 		
-		docViewer.setImageView(viewer);
-        docViewer.getWidget().validate();
-        docViewer.repaint();
+		imageFrame.setImageView(viewer);
+        imageFrame.getWidget().validate();
+        imageFrame.repaint();
 	}
 }

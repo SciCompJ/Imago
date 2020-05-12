@@ -4,7 +4,7 @@
 package imago.plugin.image.analyze;
 
 import imago.app.ImageHandle;
-import imago.app.shape.ImagoShape;
+import imago.app.shape.Shape;
 import imago.gui.GenericDialog;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
@@ -123,7 +123,7 @@ public class LabelImageInertiaEllipses implements Plugin
             // add to the document
             for (int i = 0; i < ellipses.length; i++)
             {
-                ovrDoc.addShape(new ImagoShape(ellipses[i]));
+                ovrDoc.addShape(new Shape(ellipses[i]));
             }
             // TODO: maybe propagating events would be better
             viewer.repaint(); 

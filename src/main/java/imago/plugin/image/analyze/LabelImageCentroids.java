@@ -4,7 +4,7 @@
 package imago.plugin.image.analyze;
 
 import imago.app.ImageHandle;
-import imago.app.shape.ImagoShape;
+import imago.app.shape.Shape;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
@@ -75,7 +75,7 @@ public class LabelImageCentroids implements Plugin
             // add to the document
             for (Point2D centroid : centroids.values())
             {
-                doc.addShape(new ImagoShape(centroid));
+                doc.addShape(new Shape(centroid));
             }
 
             Table table = algo.createTable(centroids);

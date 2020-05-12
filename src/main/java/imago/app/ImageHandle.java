@@ -3,11 +3,12 @@
  */
 package imago.app;
 
-import imago.app.shape.ImagoShape;
-
 import java.util.ArrayList;
 import java.util.Collection;
 
+import imago.app.scene.GroupNode;
+import imago.app.scene.Node;
+import imago.app.shape.Shape;
 import net.sci.image.Image;
 
 
@@ -31,7 +32,9 @@ public class ImageHandle extends ObjectHandle
 	/**
 	 * A set of shapes. 
 	 */
-	Collection<ImagoShape> shapes = new ArrayList<ImagoShape>();
+	Collection<Shape> shapes = new ArrayList<Shape>();
+	
+	GroupNode rootNode = new GroupNode("root");
 	
 	/**
 	 * For 3D images, the index of the slice visible in document.
@@ -84,12 +87,12 @@ public class ImageHandle extends ObjectHandle
     // =============================================================
     // Management of shapes
 
-	public Collection<ImagoShape> getShapes()
+	public Collection<Shape> getShapes()
 	{
 	    return this.shapes;
 	}
 	
-    public void addShape(ImagoShape shape)
+    public void addShape(Shape shape)
     {
         this.shapes.add(shape);
     }
@@ -100,6 +103,13 @@ public class ImageHandle extends ObjectHandle
     }
     
 	
+    // =============================================================
+    // Management of scene graph
+
+    public Node getRootNode()
+    {
+    	return this.rootNode;
+    }
 	    
 
 	// =============================================================

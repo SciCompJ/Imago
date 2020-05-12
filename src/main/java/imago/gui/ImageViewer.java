@@ -4,6 +4,7 @@
 package imago.gui;
 
 
+import imago.app.ImageHandle;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.image.Image;
 
@@ -21,7 +22,7 @@ import net.sci.image.Image;
 public abstract class ImageViewer 
 {
 	// ===================================================================
-	// Class variables
+	// Public constants
 
 	/**
 	 * The behavior of the zoom when the component is resized.
@@ -31,6 +32,12 @@ public abstract class ImageViewer
 		FIXED,
 		FILL
 	}
+	
+
+	// ===================================================================
+	// Class variables
+
+	protected ImageHandle imageHandle;
 	
 	protected Image image;
 	
@@ -42,6 +49,11 @@ public abstract class ImageViewer
 	
 
 	protected double zoom = 1;
+
+	protected boolean displayImage = true;
+	
+	protected boolean displaySceneGraph = true;
+	
 	
     /**
      * For 3D+ images, the position of a point visible in the image, used to compute slice images.
@@ -55,9 +67,10 @@ public abstract class ImageViewer
 	// ===================================================================
 	// Constructor
 	
-	public ImageViewer(Image image) 
+	public ImageViewer(ImageHandle handle) 
 	{
-		this.image = image;
+		this.imageHandle = handle;
+		this.image = imageHandle.getImage();
 		
 		// initialize slicing position
         int nd = image.getDimension();
@@ -68,7 +81,8 @@ public abstract class ImageViewer
         }
 	}
 	
-    // ===================================================================
+
+	// ===================================================================
     // General methods
 
 	public abstract Geometry2D getSelection();
@@ -160,6 +174,42 @@ public abstract class ImageViewer
 		this.zoom = zoom;
 	}
 	
+	/**
+	 * @return the displayImage
+	 */
+	public boolean isDisplayImage()
+	{
+		return displayImage;
+	}
+
+
+	/**
+	 * @param displayImage the displayImage to set
+	 */
+	public void setDisplayImage(boolean displayImage)
+	{
+		this.displayImage = displayImage;
+	}
+
+
+	/**
+	 * @return the displaySceneGraph
+	 */
+	public boolean isDisplaySceneGraph()
+	{
+		return displaySceneGraph;
+	}
+
+
+	/**
+	 * @param displaySceneGraph the displaySceneGraph to set
+	 */
+	public void setDisplaySceneGraph(boolean displaySceneGraph)
+	{
+		this.displaySceneGraph = displaySceneGraph;
+	}
+
+
 	public void setSlicingPosition(int[] pos)
 	{
 	    this.slicingPosition = pos;

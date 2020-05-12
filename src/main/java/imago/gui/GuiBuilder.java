@@ -224,38 +224,6 @@ public class GuiBuilder
 	{
 		JMenu editMenu = new JMenu("Edit");
 
-//		// tool selection handles
-//		if (frame instanceof ImageFrame)
-//		{
-//			ImagoTool tool;
-//			ImageFrame viewer = (ImageFrame) frame;
-//
-//			tool = new SelectionTool(viewer, "select");
-//			addPlugin(editMenu, new ChangeCurrentTool(tool), "Select", hasImage);
-//			addPlugin(editMenu, 
-//                    new ChangeCurrentTool(new SelectLineSegmentTool(viewer, "selectLineSegment")),
-//                    "Select Line", hasImage);
-//            addPlugin(editMenu, 
-//                    new ChangeCurrentTool(new SelectRectangleTool(viewer, "selectRectangle")),
-//                    "Select Rectangle", hasImage);
-//            addPlugin(editMenu, 
-//                    new ChangeCurrentTool(new SelectPolygonTool(viewer, "selectPolygon")),
-//                    "Select Polygon", hasImage);
-//
-//            editMenu.addSeparator();
-//            addPlugin(editMenu, 
-//                    new ChangeCurrentTool(new DrawValueTool(viewer, "drawValue")),
-//                    "Draw (Dot)", hasScalarImage);
-//            addPlugin(editMenu, 
-//                    new ChangeCurrentTool(new DrawBrushValueTool(viewer, "drawBrushValue")),
-//                    "Draw (Brush)", hasScalarImage);
-////            addPlugin(editMenu, 
-////                    new ChangeCurrentTool(new DrawValueTool(viewer, "drawBlack", 0.0)),
-////                    "Draw Black", hasScalarImage);
-//
-//            editMenu.addSeparator();
-//		}
-
 		// zoom handles
 		addPlugin(editMenu, new ZoomIn(), "Zoom In", hasImage);
 		addPlugin(editMenu, new ZoomOut(), "Zoom Out", hasImage);
@@ -274,10 +242,18 @@ public class GuiBuilder
 
         // add utility
 		editMenu.addSeparator();
+		JMenu sceneGraphMenu = new JMenu("Scene Graph");
+		addPlugin(sceneGraphMenu, new ToggleSceneGraphDisplay(), "Toggle Scene Graph Display");
+		addPlugin(sceneGraphMenu, new ImageSelectionToSceneGraph(), "Add Selection to scene graph");
+		addPlugin(sceneGraphMenu, new PrintImageSceneGraph(), "Print SceneGraph Tree");
+		editMenu.add(sceneGraphMenu);
+		
+		JMenu editMoreMenu = new JMenu("More");
 		addPlugin(editMenu, new PrintFrameList(), "Print Frame List");
-		addPlugin(editMenu, new PrintDocumentList(), "Print Document List");
-        addPlugin(editMenu, new PrintWorkspaceContent(), "Print Workspace Content");
-		addPlugin(editMenu, new DocClearShapes(), "Clear Shapes");
+		addPlugin(editMoreMenu, new PrintDocumentList(), "Print Document List");
+        addPlugin(editMoreMenu, new PrintWorkspaceContent(), "Print Workspace Content");
+		addPlugin(editMoreMenu, new DocClearShapes(), "Clear Shapes");
+		editMenu.add(editMoreMenu);
 		
         editMenu.addSeparator();
         JMenu settingsMenu = new JMenu("Settings");

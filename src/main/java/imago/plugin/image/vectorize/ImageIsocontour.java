@@ -4,7 +4,7 @@
 package imago.plugin.image.vectorize;
 
 import imago.app.ImageHandle;
-import imago.app.shape.ImagoShape;
+import imago.app.shape.Shape;
 import imago.gui.GenericDialog;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
@@ -75,7 +75,7 @@ public class ImageIsocontour implements Plugin
 		Geometry2D graph = new Isocontour(value).processScalar2d(scalar);
 
 		// add to the document
-        doc.addShape(new ImagoShape(graph));
+        doc.addShape(new Shape(graph));
                 
         // TODO: maybe propagating events would be better
         ImageFrame viewer = (ImageFrame) frame;

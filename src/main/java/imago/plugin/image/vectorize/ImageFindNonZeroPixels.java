@@ -6,7 +6,7 @@ package imago.plugin.image.vectorize;
 import java.util.Collection;
 
 import imago.app.ImageHandle;
-import imago.app.shape.ImagoShape;
+import imago.app.shape.Shape;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
@@ -59,7 +59,7 @@ public class ImageFindNonZeroPixels implements Plugin
         
         for (Point2D point : points)
         {
-            ImagoShape shape = new ImagoShape(point);
+            Shape shape = new Shape(point);
             doc.addShape(shape);
         }
         

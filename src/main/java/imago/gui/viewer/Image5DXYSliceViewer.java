@@ -3,6 +3,7 @@
  */
 package imago.gui.viewer;
 
+import imago.app.ImageHandle;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoTool;
 
@@ -62,22 +63,13 @@ public class Image5DXYSliceViewer extends ImageViewer implements ChangeListener,
 	// ===================================================================
 	// Constructors
 
-	public Image5DXYSliceViewer(Image image) 
+	public Image5DXYSliceViewer(ImageHandle handle) 
 	{
-		super(image);
+		super(handle);
 		
 		recomputeAwtImage();
         setupLayout();
 	}
-	
-//	public Image5DXYSliceViewer(Image image, int sliceIndex) 
-//	{
-//		super(image);
-//		this.zSliceIndex = sliceIndex;
-//		
-//		awtImage = BufferedImageUtils.createAwtImage(image, sliceIndex);
-//		setupLayout();
-//	}
 	
 	private void setupLayout() 
 	{

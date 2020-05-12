@@ -4,7 +4,7 @@
 package imago.plugin.image.analyze;
 
 import imago.app.ImageHandle;
-import imago.app.shape.ImagoShape;
+import imago.app.shape.Shape;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
@@ -77,7 +77,7 @@ public class LabelImageBoundingBoxes implements Plugin
             for (int i = 0; i < nPoints; i++)
             {
             	Polygon2D poly = boxes[i].getRectangle();
-                doc.addShape(new ImagoShape(poly));
+                doc.addShape(new Shape(poly));
             }
             frame.repaint();
         }

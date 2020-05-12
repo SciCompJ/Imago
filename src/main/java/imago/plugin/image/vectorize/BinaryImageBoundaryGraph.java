@@ -4,7 +4,7 @@
 package imago.plugin.image.vectorize;
 
 import imago.app.ImageHandle;
-import imago.app.shape.ImagoShape;
+import imago.app.shape.Shape;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
@@ -62,7 +62,7 @@ public class BinaryImageBoundaryGraph implements Plugin
 		Graph2D graph = new BinaryImage2DBoundaryGraph().process(binary);
 
 		// add to the document
-        doc.addShape(new ImagoShape(graph));
+        doc.addShape(new Shape(graph));
                 
         // TODO: maybe propagating events would be better
         ImageFrame viewer = (ImageFrame) frame;

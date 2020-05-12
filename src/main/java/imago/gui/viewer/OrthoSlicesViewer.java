@@ -3,9 +3,6 @@
  */
 package imago.gui.viewer;
 
-import imago.gui.ImageViewer;
-import imago.gui.ImagoTool;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -22,9 +19,11 @@ import javax.swing.JScrollPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import imago.app.ImageHandle;
+import imago.gui.ImageViewer;
+import imago.gui.ImagoTool;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.image.BufferedImageUtils;
-import net.sci.image.Image;
 import net.sci.image.process.shape.ImageSlicer;
 
 
@@ -68,9 +67,9 @@ public class OrthoSlicesViewer extends ImageViewer implements ChangeListener, Ac
 	// ===================================================================
 	// Constructors
 
-	public OrthoSlicesViewer(Image image) 
+	public OrthoSlicesViewer(ImageHandle handle) 
 	{
-		super(image);
+		super(handle);
 		int[] dims = image.getSize();
 		for (int i = 0; i < 3; i++)
 		{
