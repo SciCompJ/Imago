@@ -23,23 +23,14 @@ public class ImageHandle extends ObjectHandle
 	// =============================================================
 	// Class variables
 	
-//	/**
-//	 * The name of the document (should be unique among all open documents).
-//	 * Usually initialized with image name.
-//	 */
-//	String name;
-	
 	/**
 	 * The image displayed by this document.
 	 */
 	Image image;
 
-//    /**
-//     * The tag of the image, used to identify it in the workspace. Should be
-//     * unique in the workspace.
-//     */
-//	String tag;
-	
+	/**
+	 * A set of shapes. 
+	 */
 	Collection<ImagoShape> shapes = new ArrayList<ImagoShape>();
 	
 	/**
@@ -50,17 +41,6 @@ public class ImageHandle extends ObjectHandle
 	
 	// =============================================================
 	// Constructors
-	
-//	/**
-//	 * Initializes a new document for the given image
-//	 * 
-//	 * @param image
-//	 *            the image that will be contained in the document
-//	 */
-//	public ImageHandle(Image image) 
-//	{
-//		this(image, image.getName());
-//	}
 	
 	public ImageHandle(Image image, String name, String tag) 
 	{
