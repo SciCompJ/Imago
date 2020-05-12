@@ -38,7 +38,7 @@ public class ImageSetColorMap implements Plugin
 
 		// get current image data
 		ImageFrame viewer = (ImageFrame) frame;
-		ImageHandle doc = viewer.getDocument();
+		ImageHandle doc = viewer.getImageHandle();
 		Image image	= doc.getImage();
 
 		image.getDisplaySettings().setColorMap(this.colorMap);

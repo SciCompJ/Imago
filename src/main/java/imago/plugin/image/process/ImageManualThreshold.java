@@ -35,7 +35,7 @@ public class ImageManualThreshold implements Plugin
 		System.out.println("Manual Threshold");
 		
 		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image = doc.getImage();
 
 		// requires scalar array
@@ -81,7 +81,7 @@ public class ImageManualThreshold implements Plugin
 		Image resultImage = new Image(result, image);
 				
 		// add the image document to GUI
-		frame.getGui().addNewDocument(resultImage); 
+		frame.getGui().createImageFrame(resultImage); 
 	}
 
 }

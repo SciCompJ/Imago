@@ -36,7 +36,7 @@ public class SetImageDisplayRange implements Plugin
         System.out.println("set manual display range");
         
 		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image = doc.getImage();
 
 		Array<?> array = image.getData();

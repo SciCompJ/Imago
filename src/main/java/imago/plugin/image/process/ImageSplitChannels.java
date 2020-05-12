@@ -36,7 +36,7 @@ public class ImageSplitChannels implements Plugin
 		if (!(frame instanceof ImageFrame))
 			return;
 		ImageFrame iframe = (ImageFrame) frame;
-		Image image = iframe.getDocument().getImage();
+		Image image = iframe.getImageHandle().getImage();
 
 		// requires a vector image (color)
 		if (!image.isVectorImage())
@@ -67,7 +67,7 @@ public class ImageSplitChannels implements Plugin
 				channelImage.setName(image.getName() + "(" + channelNames[c++] + ")");
 				
 				// add the image document to GUI
-				frame.getGui().addNewDocument(channelImage);
+				frame.getGui().createImageFrame(channelImage);
 			}
 		} 
 		else
@@ -86,7 +86,7 @@ public class ImageSplitChannels implements Plugin
 				channelImage.setName(image.getName() + "(" + channelNames[c++] + ")");
 				
 				// add the image document to GUI
-				frame.getGui().addNewDocument(channelImage);
+				frame.getGui().createImageFrame(channelImage);
 			}
 		}
 	}

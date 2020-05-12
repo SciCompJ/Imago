@@ -36,7 +36,7 @@ public class ImageDownsample implements Plugin
 		System.out.println("downsample");
 
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();
 
@@ -70,7 +70,7 @@ public class ImageDownsample implements Plugin
 		result.setName(image.getName() + "-filt");
 		
 		// add the image document to GUI
-		frame.getGui().addNewDocument(result);
+		frame.getGui().createImageFrame(result);
 	}
 
 }

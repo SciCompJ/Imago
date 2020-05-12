@@ -33,7 +33,7 @@ public class BinaryImageSkeleton implements Plugin
 		System.out.println("skeletonization");
 		
 		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image = doc.getImage();
 
 		Array<?> array = image.getData();
@@ -48,7 +48,7 @@ public class BinaryImageSkeleton implements Plugin
         Image resultImage = new Image(res, image);
         
 		// add the image document to GUI
-		frame.getGui().addNewDocument(resultImage); 
+		frame.getGui().createImageFrame(resultImage); 
 	}
 
     /**
@@ -66,7 +66,7 @@ public class BinaryImageSkeleton implements Plugin
             return false;
         
         // check image
-        ImageHandle doc = ((ImageFrame) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();
         if (image == null)
             return false;

@@ -35,7 +35,7 @@ public class ConvertStackToMovie implements Plugin
 
         // get current image data
         ImageFrame viewer = (ImageFrame) frame;
-        ImageHandle doc = viewer.getDocument();
+        ImageHandle doc = viewer.getImageHandle();
         Image image = doc.getImage();
 
         int nd = image.getDimension();
@@ -51,7 +51,7 @@ public class ConvertStackToMovie implements Plugin
         calib.setAxis(nd-1, new ImageAxis.T());
         
         // add the image document to GUI
-        frame.getGui().addNewDocument(resultImage); 
+        frame.getGui().createImageFrame(resultImage); 
     }
     
 }

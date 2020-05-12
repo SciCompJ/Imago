@@ -54,7 +54,7 @@ public class ImageArrayBinaryMathOperator implements Plugin
 		System.out.println("apply math function");
 
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();
 		if (!(array instanceof ScalarArray))
@@ -156,7 +156,7 @@ public class ImageArrayBinaryMathOperator implements Plugin
 		resultImage.setName(image.getName() + "-" + functionName);
 		
 		// add the image document to GUI
-		frame.getGui().addNewDocument(resultImage);
+		frame.getGui().createImageFrame(resultImage);
 	}
 	
     @Override

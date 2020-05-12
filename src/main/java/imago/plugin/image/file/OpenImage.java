@@ -66,7 +66,7 @@ public class OpenImage implements Plugin
         }
         
         // add the image document to GUI
-        frame.getGui().addNewDocument(image);
+        frame.getGui().createImageFrame(image);
     }
     
     private void createFileChooserFrame()

@@ -79,7 +79,7 @@ public class MergeChannelImages implements Plugin
 		rgbImage.setName(redChannelImage.getName() + "-mergeChannels");
 
 		// add the image document to GUI
-		frame.getGui().addNewDocument(rgbImage);
+		frame.getGui().createImageFrame(rgbImage);
 	}
 	
 	private ArrayList<String> findUInt8ArrayNameList(ImagoApp app)

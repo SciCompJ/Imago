@@ -36,7 +36,7 @@ public class Image3DGetCurrentSlice implements Plugin
 		System.out.println("extract current slice from 3D image");
 
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		ImageViewer viewer = ((ImageFrame) frame).getImageView();
 
 		Image image	= doc.getImage();
@@ -60,6 +60,6 @@ public class Image3DGetCurrentSlice implements Plugin
 		result.setName(image.getName() + "-z" + String.format("%0" + nDigits + "d", sliceIndex));
 		
 		// add the image document to GUI
-		frame.getGui().addNewDocument(result);
+		frame.getGui().createImageFrame(result);
 	}
 }

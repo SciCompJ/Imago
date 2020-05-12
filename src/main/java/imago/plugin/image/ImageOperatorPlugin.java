@@ -38,13 +38,13 @@ public class ImageOperatorPlugin implements Plugin
     public void run(ImagoFrame frame, String args)
     {
         // get current frame
-        ImageHandle doc = ((ImageFrame) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();
 
         Image result = operator.process(image);
 
         // add the image document to GUI
-        frame.getGui().addNewDocument(result, doc);
+        frame.getGui().createImageFrame(result, doc);
     }
 
     /**
@@ -62,7 +62,7 @@ public class ImageOperatorPlugin implements Plugin
             return false;
         
         // check image
-        ImageHandle doc = ((ImageFrame) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();
         if (image == null)
             return false;

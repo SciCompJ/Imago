@@ -148,6 +148,6 @@ public class ImageBivariateHistogram implements Plugin
 		resultImage.getDisplaySettings().setColorMap(ColorMaps.JET.createColorMap(256));
 		
 		// add the image document to GUI
-		gui.addNewDocument(resultImage);
+		gui.createImageFrame(resultImage);
 	}
 }

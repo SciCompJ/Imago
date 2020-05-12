@@ -43,7 +43,7 @@ public class LabelImageConvexHulls implements Plugin
         }
         
         // retrieve image data
-        ImageHandle doc = ((ImageFrame) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();
         if (!image.isLabelImage())
         {
@@ -98,7 +98,7 @@ public class LabelImageConvexHulls implements Plugin
         }
         
         // retrieve image data
-        ImageHandle doc = ((ImageFrame) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();
         if (!image.isLabelImage())
         {

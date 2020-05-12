@@ -86,6 +86,6 @@ public class ImageConcatenate implements Plugin
         Image resultImage = new Image(result, image1);
 		
 		// add the image document to GUI
-		gui.addNewDocument(resultImage);
+		gui.createImageFrame(resultImage);
 	}
 }

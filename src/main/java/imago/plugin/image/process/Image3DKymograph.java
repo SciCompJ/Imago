@@ -97,7 +97,7 @@ public class Image3DKymograph implements ImagePlugin
         resCalib.setAxis(1, calib.getAxis(2));
         
         // add the image document to GUI
-        frame.getGui().createImagoDocViewer(resImage, frame);
+        frame.getGui().createImageFrame(resImage, frame);
     }
     
 }

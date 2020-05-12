@@ -54,7 +54,7 @@ public class ImageLineProfile implements ImagePlugin
         if (!(frame instanceof ImageFrame))
             return;
         ImageFrame iframe = (ImageFrame) frame;
-        Image meta = iframe.getDocument().getImage();
+        Image meta = iframe.getImageHandle().getImage();
         Array<?> array = meta.getData();
         
         ImageViewer viewer = iframe.getImageView();
@@ -162,7 +162,7 @@ public class ImageLineProfile implements ImagePlugin
 
         // Title of the plot
         ImageFrame iframe = (ImageFrame) parentFrame;
-        Image image = iframe.getDocument().getImage();
+        Image image = iframe.getImageHandle().getImage();
         String titleString = createTitleString("Intensity profile", image.getName());
 
         // Create Chart
@@ -202,7 +202,7 @@ public class ImageLineProfile implements ImagePlugin
 
         // Title of the plot
         ImageFrame iframe = (ImageFrame) parentFrame;
-        Image image = iframe.getDocument().getImage();
+        Image image = iframe.getImageHandle().getImage();
         String titleString = createTitleString("Color profile", image.getName());
         
         // Create Chart

@@ -35,7 +35,7 @@ public class Image3DGetSlice implements Plugin
 		System.out.println("extract planar slice from 3D image");
 
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image	= doc.getImage();
 
 		GenericDialog gd = new GenericDialog(frame, "Extract planar slice");
@@ -60,6 +60,6 @@ public class Image3DGetSlice implements Plugin
 		result.setName(image.getName() + "-slices");
 		
 		// add the image document to GUI
-		frame.getGui().addNewDocument(result);
+		frame.getGui().createImageFrame(result);
 	}
 }

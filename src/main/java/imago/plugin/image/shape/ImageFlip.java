@@ -35,7 +35,7 @@ public class ImageFlip implements Plugin
 		System.out.println("flip image");
 		
 		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image = doc.getImage();
 
 		if (this.dim > image.getDimension())
@@ -48,7 +48,7 @@ public class ImageFlip implements Plugin
 		Image result = image.apply(filter);
 				
 		// add the image document to GUI
-		frame.getGui().addNewDocument(result); 
+		frame.getGui().createImageFrame(result); 
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class ImageFlip implements Plugin
 	        return false;
 	    
 	    // check image
-        ImageHandle doc = ((ImageFrame) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();
         if (image == null)
             return false;

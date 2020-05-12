@@ -113,6 +113,6 @@ public class ImageGeodesicDistanceMap implements Plugin
 		resultImage.setName(markerImage.getName() + "-geodDist");
 		
 		// add the image document to GUI
-		gui.addNewDocument(resultImage);
+		gui.createImageFrame(resultImage);
 	}
 }

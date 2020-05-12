@@ -30,7 +30,7 @@ public class Image3DMiddleSlice implements Plugin
 		System.out.println("middle Slice");
 		
 		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image = doc.getImage();
 
 		// check image dimensionality
@@ -48,7 +48,7 @@ public class Image3DMiddleSlice implements Plugin
 		Image result = image.apply(filter);
 				
 		// add the image document to GUI
-		frame.getGui().addNewDocument(result); 
+		frame.getGui().createImageFrame(result); 
 	}
 
 }

@@ -33,7 +33,7 @@ public class ImagePermuteDims implements Plugin
 		System.out.println("flip image dimensions");
 
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();
 
@@ -87,7 +87,7 @@ public class ImagePermuteDims implements Plugin
 		resultImage.setName(image.getName() + "-permDims");
 		
 		// add the image document to GUI
-		frame.getGui().addNewDocument(resultImage);
+		frame.getGui().createImageFrame(resultImage);
 	}
 
     /**

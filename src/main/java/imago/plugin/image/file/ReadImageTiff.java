@@ -104,7 +104,7 @@ public class ReadImageTiff implements Plugin
 		image.setName(file.getName());
 		
 		// add the image document to GUI
-		ImageFrame newFrame = frame.getGui().addNewDocument(image);
+		ImageFrame newFrame = frame.getGui().createImageFrame(image);
 		newFrame.setLastOpenPath(path);
 	}
 

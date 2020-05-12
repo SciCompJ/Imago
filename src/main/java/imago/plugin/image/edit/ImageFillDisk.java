@@ -38,7 +38,7 @@ public class ImageFillDisk  implements Plugin
 		System.out.println("fill disk");
 
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();
 

@@ -47,7 +47,7 @@ public class LabelImageAdjacencies implements Plugin
         }
         
         // retrieve image data
-        ImageHandle doc = ((ImageFrame) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();
         if (!image.isLabelImage())
         {

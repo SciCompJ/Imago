@@ -43,13 +43,13 @@ public class ImageOperatorAction extends ImagoAction
 	public void actionPerformed(ActionEvent evt)
 	{
 		// get current frame
-		ImageHandle doc = ((ImageFrame) this.frame).getDocument();
+		ImageHandle doc = ((ImageFrame) this.frame).getImageHandle();
 		Image image = doc.getImage();
 
 		Image result = operator.process(image);
 
 		// add the image document to GUI
-		this.gui.addNewDocument(result, doc);
+		this.gui.createImageFrame(result, doc);
 	}
 
 }

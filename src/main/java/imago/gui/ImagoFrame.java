@@ -159,7 +159,10 @@ public abstract class ImagoFrame
 
     public void addChild(ImagoFrame frame)
     {
-        this.children.add(frame);
+    	if (!this.children.contains(frame))
+    	{
+    		this.children.add(frame);
+    	}
     }
 
     public void removeChild(ImagoFrame frame)

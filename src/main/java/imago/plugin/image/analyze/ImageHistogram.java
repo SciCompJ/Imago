@@ -46,7 +46,7 @@ public class ImageHistogram implements Plugin
 		if (!(frame instanceof ImageFrame))
 			return;
 		ImageFrame iframe = (ImageFrame) frame;
-		Image image = iframe.getDocument().getImage();
+		Image image = iframe.getImageHandle().getImage();
 
 		DefaultNumericTable histo = computeHistogram(image);
 		
@@ -190,7 +190,7 @@ public class ImageHistogram implements Plugin
 	{
         // Title of the plot
         ImageFrame iframe = (ImageFrame) parentFrame;
-        Image image = iframe.getDocument().getImage();
+        Image image = iframe.getImageHandle().getImage();
 		String titleString = createTitleString("Histogram", image.getName());
 
 		// Create Chart
@@ -232,7 +232,7 @@ public class ImageHistogram implements Plugin
 
         // Title of the plot
         ImageFrame iframe = (ImageFrame) parentFrame;
-        Image image = iframe.getDocument().getImage();
+        Image image = iframe.getImageHandle().getImage();
         String titleString = createTitleString("Histogram", image.getName());
         
         // Create Chart

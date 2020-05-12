@@ -53,7 +53,7 @@ public class ImageSelectionToMask implements Plugin
         }
 
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();
 
@@ -97,7 +97,7 @@ public class ImageSelectionToMask implements Plugin
         Image resultImage = new Image(mask, image);
         
         // add the image document to GUI
-        frame.getGui().addNewDocument(resultImage); 
+        frame.getGui().createImageFrame(resultImage); 
 
 	}
 }

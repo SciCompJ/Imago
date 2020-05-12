@@ -66,7 +66,7 @@ public class OpenDemoStack implements Plugin
         image.setName("Demo Stack");
         
         // add the image document to GUI
-        frame.getGui().addNewDocument(image);
+        frame.getGui().createImageFrame(image);
     }
     
 }

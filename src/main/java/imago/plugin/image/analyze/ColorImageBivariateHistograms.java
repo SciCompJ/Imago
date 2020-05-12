@@ -37,7 +37,7 @@ public class ColorImageBivariateHistograms implements Plugin
 		System.out.println("RGB8 to bivariate histograms");
 
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();
 
@@ -74,9 +74,9 @@ public class ColorImageBivariateHistograms implements Plugin
 		
 		// add the image documents to GUI
 		ImagoGui gui = frame.getGui();
-		gui.addNewDocument(rgImage);
-		gui.addNewDocument(rbImage);
-		gui.addNewDocument(gbImage);
+		gui.createImageFrame(rgImage);
+		gui.createImageFrame(rbImage);
+		gui.createImageFrame(gbImage);
 	}
 
 }

@@ -42,7 +42,7 @@ public class ImageMorphologicalFilter implements Plugin
 		System.out.println("morphological filter (2d)");
 
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();
 
@@ -106,7 +106,7 @@ public class ImageMorphologicalFilter implements Plugin
 		resultImage.setName(image.getName() + "-filt");
 		
 		// add the image document to GUI
-		frame.getGui().addNewDocument(resultImage);
+		frame.getGui().createImageFrame(resultImage);
 	}
 
 }

@@ -46,8 +46,104 @@ public class ImagoApp
 	}
 
 	
+
     // =============================================================
-    // Creation of new handles
+    // Management of image handles
+    
+    /**
+     * Creates a new handle for an image, adds it to the workspace, and returns
+     * the created handle.
+     * 
+     * @param image
+     *            the image instance.
+     * @return the handle to manage the image.
+     */
+    public ImageHandle createImageHandle(Image image)
+    {
+        String tag = workspace.findNextFreeTag("img");
+        String name = createHandleName(image.getName());
+        ImageHandle handle = new ImageHandle(image, name, tag);
+        workspace.addHandle(handle);
+        return handle;
+    }
+
+	public int imageHandleNumber()
+	{
+		return getImageHandles().size();
+	}
+	
+	public Collection<ImageHandle> getImageHandles()
+	{
+	    ArrayList<ImageHandle> res = new ArrayList<ImageHandle>();
+	    for (ObjectHandle handle : workspace.getHandles())
+	    {
+	        if (handle instanceof ImageHandle)
+	        {
+	            res.add((ImageHandle) handle);
+	        }
+	    }
+	    return res;
+	}
+	
+
+	/**
+	 * Get the names of all open image documents.
+	 * 
+	 * @return the list of names of documents containing images.
+	 */
+	public Collection<String> getImageHandleNames()
+	{
+	    return ObjectHandle.getNames(workspace.getHandles(Image.class));
+	}
+	
+	public ImageHandle getImageHandleFromName(String handleName)
+	{
+		for (ImageHandle handle : getImageHandles())
+		{
+			if (handle.getName().equals(handleName))
+				return handle;
+		}
+		
+		throw new IllegalArgumentException("App does not contain any image handle with name: " + handleName);
+	}
+
+
+	// =============================================================
+    // Management of Table handles
+    
+    /**
+     * Creates a new handle for a table, adds it to the workspace, and returns
+     * the created handle.
+     * 
+     * @param table
+     *            the table instance.
+     * @return the handle to manage the table.
+     */
+    public TableHandle createTableHandle(Table table)
+    {
+        String tag = workspace.findNextFreeTag("tab");
+        String name = createHandleName(table.getName());
+        TableHandle handle = new TableHandle(table, name, tag);
+        workspace.addHandle(handle);
+        return handle;
+    }
+    
+	public Collection<TableHandle> getTableHandles()
+	{
+	    ArrayList<TableHandle> res = new ArrayList<TableHandle>();
+        for (ObjectHandle handle : workspace.getHandles())
+	    {
+	        if (handle instanceof TableHandle)
+	        {
+	            res.add((TableHandle) handle);
+	        }
+	    }
+	    return res;
+	}
+	
+	
+    // =============================================================
+    // Global management of handles
 
     /**
      * Creates a new handle to the input argument, creates the appropriate tag,
@@ -76,7 +172,7 @@ public class ImagoApp
         
         ObjectHandle handle;
         String tag = workspace.findNextFreeTag(baseTag);
-        name = findNextFreeName(name);
+        name = createHandleName(name);
         
         if (object instanceof Image)
         {
@@ -104,103 +200,12 @@ public class ImagoApp
         return handle;
     }
     
-    /**
-     * Creates a new handle for an image, adds it to the workspace, and returns
-     * the created handle.
-     * 
-     * @param image
-     *            the image instance.
-     * @return the handle to manage the image.
-     */
-    public ImageHandle createImageHandle(Image image)
-    {
-        String tag = workspace.findNextFreeTag("img");
-        String name = findNextFreeName(image.getName());
-        ImageHandle handle = new ImageHandle(image, name, tag);
-        workspace.addHandle(handle);
-        return handle;
-    }
-
-    /**
-     * Creates a new handle for a table, adds it to the workspace, and returns
-     * the created handle.
-     * 
-     * @param table
-     *            the table instance.
-     * @return the handle to manage the table.
-     */
-    public TableHandle createTableHandle(Table table)
-    {
-        String tag = workspace.findNextFreeTag("tab");
-        String name = findNextFreeName(table.getName());
-        TableHandle handle = new TableHandle(table, name, tag);
-        workspace.addHandle(handle);
-        return handle;
-    }
-    
-
-    // =============================================================
-    // Management of image handles
-    
-	public void removeImageHandle(ImageHandle handle)
+	public void removeHandle(ObjectHandle handle)
 	{
 	    workspace.removeHandle(handle.tag);
 	}
 
-	public int imageHandleNumber()
-	{
-		return getImageHandles().size();
-	}
-	
-	public Collection<ImageHandle> getImageHandles()
-	{
-	    ArrayList<ImageHandle> res = new ArrayList<ImageHandle>();
-	    for (ObjectHandle handle : workspace.getHandles())
-	    {
-	        if (handle instanceof ImageHandle)
-	        {
-	            res.add((ImageHandle) handle);
-	        }
-	    }
-	    return res;
-	}
-	
-	public Collection<TableHandle> getTableHandles()
-	{
-	    ArrayList<TableHandle> res = new ArrayList<TableHandle>();
-        for (ObjectHandle handle : workspace.getHandles())
-	    {
-	        if (handle instanceof TableHandle)
-	        {
-	            res.add((TableHandle) handle);
-	        }
-	    }
-	    return res;
-	}
-	
 
-	/**
-	 * Get the names of all open image documents.
-	 * 
-	 * @return the list of names of documents containing images.
-	 */
-	public Collection<String> getImageHandleNames()
-	{
-	    return ObjectHandle.getNames(workspace.getHandles(Image.class));
-	}
-	
-	public ImageHandle getImageHandleFromName(String handleName)
-	{
-		for (ImageHandle handle : getImageHandles())
-		{
-			if (handle.getName().equals(handleName))
-				return handle;
-		}
-		
-		throw new IllegalArgumentException("App does not contain any image handle with name: " + handleName);
-	}
-
-	
     // =============================================================
     // Management of handle names
 
@@ -209,11 +214,11 @@ public class ImagoApp
      * application already contains a document with same base name, an index is
      * added to make the name unique.
      * 
-     * @param baseName
-     *            a base name for the document, for example the file name.
+     * @param name
+     *            a base name for the handle, for example the file name.
      * @return a unique name based on proposed name.
      */
-    public String findNextFreeName(String name)
+    public String createHandleName(String name)
     {
         // avoid empty name
         if (name == null || name.isEmpty())
@@ -260,7 +265,7 @@ public class ImagoApp
         return new String[] {baseName, extensionName};
     }
     
-    private static String removeTrailingDigits(String name)
+    private static final String removeTrailingDigits(String name)
     {
         // basic check-up
         if (name.isEmpty()) 

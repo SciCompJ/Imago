@@ -36,7 +36,7 @@ public interface ImagePlugin extends Plugin
             return false;
         }
         
-        Image image = ((ImageFrame) frame).getDocument().getImage();
+        Image image = ((ImageFrame) frame).getImageHandle().getImage();
         
         return image != null;
     }

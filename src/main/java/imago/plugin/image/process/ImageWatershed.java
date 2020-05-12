@@ -46,7 +46,7 @@ public class ImageWatershed implements Plugin
 		System.out.println("Watershed");
 
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image	= doc.getImage();
 		
 		// current dimensionality
@@ -115,7 +115,7 @@ public class ImageWatershed implements Plugin
 		resultImage.setName(image.getName() + suffix);
 		
 		// add the image document to GUI
-		frame.getGui().addNewDocument(resultImage);
+		frame.getGui().createImageFrame(resultImage);
 	}
 
 	/**
@@ -133,7 +133,7 @@ public class ImageWatershed implements Plugin
             return false;
         
         // check image
-        ImageHandle doc = ((ImageFrame) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();
         if (image == null)
             return false;

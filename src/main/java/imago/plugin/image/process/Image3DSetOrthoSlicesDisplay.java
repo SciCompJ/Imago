@@ -35,7 +35,7 @@ public class Image3DSetOrthoSlicesDisplay implements Plugin
 
 		// get current image data
 		ImageFrame docViewer = (ImageFrame) frame;
-		ImageHandle doc = docViewer.getDocument();
+		ImageHandle doc = docViewer.getImageHandle();
 		Image image	= doc.getImage();
 
 		if (image.getDimension() < 3)

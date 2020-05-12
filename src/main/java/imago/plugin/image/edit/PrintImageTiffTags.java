@@ -41,7 +41,7 @@ public class PrintImageTiffTags implements Plugin
 	    System.out.println("print image tiff tags:");
 	    
 		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image = doc.getImage();
 
 		if (image.tiffTags.size() == 0)

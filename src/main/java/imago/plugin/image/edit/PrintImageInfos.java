@@ -31,7 +31,7 @@ public class PrintImageInfos implements Plugin
 		System.out.println("print image info:");
 		
 		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image = doc.getImage();
 
 		int nd = image.getDimension();

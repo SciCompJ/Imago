@@ -38,7 +38,7 @@ public class SetImageDisplayRangeToDataType implements Plugin
         System.out.println("set display range to data type");
 		
 		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image metaImage = doc.getImage();
 
 		Array<?> array = metaImage.getData();

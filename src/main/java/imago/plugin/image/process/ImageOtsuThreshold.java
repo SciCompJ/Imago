@@ -30,14 +30,14 @@ public class ImageOtsuThreshold implements Plugin
 		System.out.println("Otsu Threshold");
 		
 		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image = doc.getImage();
 
 		OtsuThreshold op = new OtsuThreshold();
 		Image result = op.process(image);
 				
 		// add the image document to GUI
-		frame.getGui().addNewDocument(result); 
+		frame.getGui().createImageFrame(result); 
 	}
 
 }

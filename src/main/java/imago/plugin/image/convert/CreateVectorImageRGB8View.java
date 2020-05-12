@@ -38,7 +38,7 @@ public class CreateVectorImageRGB8View implements Plugin
 	{
 		System.out.println("create vector image RGB View");
         // get current frame
-        ImageHandle doc = ((ImageFrame) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();
         
         if (image == null)
@@ -99,7 +99,7 @@ public class CreateVectorImageRGB8View implements Plugin
         rgbImage.setName(image.getName() + "-RGB");
 
         // add the image document to GUI
-        frame.getGui().addNewDocument(rgbImage);
+        frame.getGui().createImageFrame(rgbImage);
 	}
 
 }

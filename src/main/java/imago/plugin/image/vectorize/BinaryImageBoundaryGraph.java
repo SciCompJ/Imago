@@ -39,7 +39,7 @@ public class BinaryImageBoundaryGraph implements Plugin
 		System.out.println("boundary graph of binary image");
 
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();
 		if (!(array instanceof BinaryArray))

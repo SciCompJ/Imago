@@ -32,7 +32,7 @@ public class SetImageDisplayRangeToData implements Plugin
 		System.out.println("choose image display extent");
 		
 		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image = doc.getImage();
 
 		Array<?> array = image.getData();

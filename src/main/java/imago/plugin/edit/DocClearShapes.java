@@ -29,7 +29,7 @@ public class DocClearShapes implements Plugin
 		System.out.println("clear shapes");
 		
 		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		doc.clearShapes();
 		
 		frame.repaint();

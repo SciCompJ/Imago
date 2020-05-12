@@ -37,7 +37,7 @@ public class ConvertChannelsToDimension implements Plugin
 	    System.out.println("vector image to scalar with one dimension more");
 
         // get current frame
-        ImageHandle doc = ((ImageFrame) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();
         
         if (image == null)
@@ -87,7 +87,7 @@ public class ConvertChannelsToDimension implements Plugin
 		
 
 		// add the image document to GUI
-		frame.getGui().addNewDocument(resImage);
+		frame.getGui().createImageFrame(resImage);
 	}
 	
 }

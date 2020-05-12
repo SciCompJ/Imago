@@ -100,6 +100,6 @@ public class BinaryImageOverlay implements Plugin
 		resultImage.setName(baseImage.getName() + "-ovr");
 		
 		// add the image document to GUI
-		frame.getGui().addNewDocument(resultImage);
+		frame.getGui().createImageFrame(resultImage);
 	}
 }

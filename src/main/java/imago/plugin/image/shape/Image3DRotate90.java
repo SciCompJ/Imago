@@ -36,7 +36,7 @@ public class Image3DRotate90 implements Plugin
 		System.out.println("Apply 3D rotation to 3D image");
 
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image	= doc.getImage();
 
 		GenericDialog gd = new GenericDialog(frame, "Rotate 3D by 90°");
@@ -60,6 +60,6 @@ public class Image3DRotate90 implements Plugin
 		result.setName(image.getName() + "-rot90");
 		
 		// add the image document to GUI
-		frame.getGui().addNewDocument(result);
+		frame.getGui().createImageFrame(result);
 	}
 }

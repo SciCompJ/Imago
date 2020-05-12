@@ -38,7 +38,7 @@ public class ColorImageExtractChannel implements Plugin
 		System.out.println("extract a channel from color image");
 		
 		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image = doc.getImage();
 		
 		if (image == null)
@@ -137,7 +137,7 @@ public class ColorImageExtractChannel implements Plugin
 		resultImage.setName(name + "-" + channelNames[channelIndex]);
 				
 		// add the image document to GUI
-		frame.getGui().addNewDocument(resultImage); 
+		frame.getGui().createImageFrame(resultImage); 
 	}
 
 }

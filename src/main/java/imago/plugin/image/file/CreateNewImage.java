@@ -96,6 +96,6 @@ public class CreateNewImage implements Plugin
 		Image image = new Image(array);
 		
 		// add the image document to GUI
-		frame.getGui().addNewDocument(image);
+		frame.getGui().createImageFrame(image);
 	}
 }

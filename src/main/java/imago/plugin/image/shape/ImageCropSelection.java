@@ -42,7 +42,7 @@ public class ImageCropSelection implements Plugin
         if (!(frame instanceof ImageFrame))
             return;
         ImageFrame iframe = (ImageFrame) frame;
-        Image image = iframe.getDocument().getImage();
+        Image image = iframe.getImageHandle().getImage();
         Array<?> array = image.getData();
 
         int nd = array.dimensionality();
@@ -82,7 +82,7 @@ public class ImageCropSelection implements Plugin
 		resultImage.setName(image.getName() + "-crop");
 		
 		// add the image document to GUI
-		frame.addChild(frame.getGui().addNewDocument(resultImage));
+		frame.addChild(frame.getGui().createImageFrame(resultImage));
 	}
 	
     /**
@@ -100,7 +100,7 @@ public class ImageCropSelection implements Plugin
             return false;
         
         // check image
-        ImageHandle doc = ((ImageFrame) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();
         if (image == null)
             return false;

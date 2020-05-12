@@ -49,7 +49,7 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
 	// Class variables
     
     /** The handle to the image displayed in this frame.*/
-    ImageHandle doc;
+    ImageHandle handle;
 
     /** The image to display.*/
     Image image;
@@ -70,11 +70,11 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
 	// ===================================================================
 	// Constructor
 
-    public ImageFrame(ImagoGui gui, ImageHandle doc) 
+    public ImageFrame(ImagoGui gui, ImageHandle handle) 
 	{
 		super(gui, "Image Frame");
-		this.doc = doc;
-		this.image = doc.getImage();
+		this.handle = handle;
+		this.image = handle.getImage();
 		if (image != null)
 		{
 		    String filePath = image.getFilePath();
@@ -125,20 +125,20 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         {
             PlanarImageViewer viewer = new PlanarImageViewer(image);
 
-            viewer.getImageDisplay().setShapes(doc.getShapes());
+            viewer.getImageDisplay().setShapes(handle.getShapes());
 
             this.imageViewer = viewer;
         }
         else if (image.getDimension() == 3) 
         {
             StackSliceViewer sliceViewer = new StackSliceViewer(image);
-            sliceViewer.setSliceIndex(this.doc.getCurrentSliceIndex());
+            sliceViewer.setSliceIndex(this.handle.getCurrentSliceIndex());
             this.imageViewer = sliceViewer;
         }
         else 
         {
             Image5DXYSliceViewer sliceViewer = new Image5DXYSliceViewer(image);
-            sliceViewer.setSliceIndex(this.doc.getCurrentSliceIndex());
+            sliceViewer.setSliceIndex(this.handle.getCurrentSliceIndex());
             this.imageViewer = sliceViewer;
         }
     }
@@ -196,7 +196,7 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
 	public void updateTitle()
 	{
 		// use document name for base title
-        String name = this.doc.getName();
+        String name = this.handle.getName();
 
         // string containing image dimensions
 		String dimString = "(unknown size)";
@@ -218,9 +218,14 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
 		this.setTitle(titleString);
 	}
 	
-	public ImageHandle getDocument() 
+	public ImageHandle getImageHandle() 
 	{
-		return this.doc;
+		return this.handle;
+	}
+	
+	public Image getImage() 
+	{
+		return this.image;
 	}
 	
 	public ImageViewer getImageView()

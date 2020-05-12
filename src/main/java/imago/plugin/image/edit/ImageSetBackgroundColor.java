@@ -38,7 +38,7 @@ public class ImageSetBackgroundColor implements Plugin
 
 		// get current image data
 		ImageFrame viewer = (ImageFrame) frame;
-		ImageHandle doc = viewer.getDocument();
+		ImageHandle doc = viewer.getImageHandle();
 		Image image	= doc.getImage();
 
 		GenericDialog gd = new GenericDialog(frame, "Set Image Scale");

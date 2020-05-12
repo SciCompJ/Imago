@@ -33,7 +33,7 @@ public class SetImageTypeToLabel implements Plugin
 		
 		// get current frame
 		ImageFrame viewer = (ImageFrame) frame;
-        ImageHandle doc = viewer.getDocument();
+        ImageHandle doc = viewer.getImageHandle();
 		Image image = doc.getImage();
 		
 		if (image == null)

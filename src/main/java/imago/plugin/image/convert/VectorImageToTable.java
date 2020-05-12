@@ -38,7 +38,7 @@ public class VectorImageToTable implements Plugin
 		System.out.println("convert a vector image into a data table");
 		
 		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image = doc.getImage();
 		
 		if (image == null)

@@ -38,7 +38,7 @@ public class GrayLevelImageCooccurenceMatrix implements Plugin
         System.out.println("Co occurence matrix");
         
         // get current image data
-        ImageHandle doc = ((ImageFrame) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();
         Array<?> array = image.getData();
 
@@ -74,7 +74,7 @@ public class GrayLevelImageCooccurenceMatrix implements Plugin
         
         // add the image documents to GUI
         ImagoGui gui = frame.getGui();
-        gui.addNewDocument(resultImage);
+        gui.createImageFrame(resultImage);
     }
     
 }

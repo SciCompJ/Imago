@@ -60,7 +60,7 @@ public class ImageRoiHistogram implements Plugin
 		if (!(frame instanceof ImageFrame))
 			return;
 		ImageFrame iframe = (ImageFrame) frame;
-		Image image = iframe.getDocument().getImage();
+		Image image = iframe.getImageHandle().getImage();
 		
         ImageViewer viewer = iframe.getImageView();
         if (!(viewer instanceof PlanarImageViewer))
@@ -269,7 +269,7 @@ public class ImageRoiHistogram implements Plugin
 
 		// Title of the plot
 		ImageFrame iframe = (ImageFrame) parentFrame;
-		Image image = iframe.getDocument().getImage();
+		Image image = iframe.getImageHandle().getImage();
 		String imageName = image.getName();
 		String titleString;
 		if (imageName == null)
@@ -333,7 +333,7 @@ public class ImageRoiHistogram implements Plugin
 
 		// Title of the plot
 		ImageFrame iframe = (ImageFrame) parentFrame;
-		Image image = iframe.getDocument().getImage();
+		Image image = iframe.getImageHandle().getImage();
 		String imageName = image.getName();
 		String titleString;
 		if (imageName == null)

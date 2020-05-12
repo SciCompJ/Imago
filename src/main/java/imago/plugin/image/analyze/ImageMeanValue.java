@@ -42,7 +42,7 @@ public class ImageMeanValue implements Plugin
         if (!(frame instanceof ImageFrame))
             return;
         ImageFrame iframe = (ImageFrame) frame;
-        Image meta = iframe.getDocument().getImage();
+        Image meta = iframe.getImageHandle().getImage();
         Array<?> array = meta.getData();
         
         ImageViewer viewer = iframe.getImageView();

@@ -31,7 +31,7 @@ public class PrintFrameList implements Plugin
 		{
 		    if (frm instanceof ImageFrame)
 		    {
-		        String docName = ((ImageFrame) frm).getDocument().getName();
+		        String docName = ((ImageFrame) frm).getImageHandle().getName();
                 System.out.println("  frame: " + frm.getWidget().getName() + ", handle: " + docName);
 		    }
 		    else

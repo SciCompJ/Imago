@@ -94,7 +94,7 @@ public class CreateDistanceToOctahedronImage3D implements Plugin
         image.setName("OctahedronDistMap");
         
         // add the image document to GUI
-        frame.getGui().addNewDocument(image);
+        frame.getGui().createImageFrame(image);
     }
     
 }

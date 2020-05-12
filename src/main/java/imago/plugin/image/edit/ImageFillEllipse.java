@@ -40,7 +40,7 @@ public class ImageFillEllipse implements Plugin
 		System.out.println("fill ellipse");
 
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();
 

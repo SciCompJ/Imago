@@ -37,7 +37,7 @@ public class ImageRotateAroundCenter implements Plugin
 		System.out.println("rotate around center");
 
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();
 
@@ -67,7 +67,7 @@ public class ImageRotateAroundCenter implements Plugin
 		result.setName(image.getName() + "-rot");
 		
 		// add the image document to GUI
-		frame.getGui().addNewDocument(result);
+		frame.getGui().createImageFrame(result);
 	}
 	
     @Override
@@ -78,7 +78,7 @@ public class ImageRotateAroundCenter implements Plugin
             return false;
         
         // check image
-        ImageHandle doc = ((ImageFrame) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();
         if (image == null)
             return false;

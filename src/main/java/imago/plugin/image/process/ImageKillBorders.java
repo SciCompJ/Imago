@@ -35,7 +35,7 @@ public class ImageKillBorders implements Plugin
 		System.out.println("kill borders");
 		
 		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image = doc.getImage();
 
 		Array<?> array = image.getData();
@@ -46,7 +46,7 @@ public class ImageKillBorders implements Plugin
 		Image resultImage = MorphologicalReconstruction.killBorders(image);
 		
 		// add the image document to GUI
-		frame.getGui().addNewDocument(resultImage); 
+		frame.getGui().createImageFrame(resultImage); 
 	}
 	
     /**
@@ -60,7 +60,7 @@ public class ImageKillBorders implements Plugin
             return false;
         
         // check image
-        ImageHandle doc = ((ImageFrame) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();
         if (image == null)
             return false;

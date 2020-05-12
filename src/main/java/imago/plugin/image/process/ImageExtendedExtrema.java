@@ -40,7 +40,7 @@ public class ImageExtendedExtrema implements Plugin
 		System.out.println("Extended minima/maxima");
 
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image	= doc.getImage();
 		
 		// current dimensionality
@@ -103,7 +103,7 @@ public class ImageExtendedExtrema implements Plugin
 		resultImage.setName(image.getName() + suffix);
 		
 		// add the image document to GUI
-		frame.getGui().createImagoDocViewer(resultImage, frame);
+		frame.getGui().createImageFrame(resultImage, frame);
 	}
 
 	/**
@@ -121,7 +121,7 @@ public class ImageExtendedExtrema implements Plugin
             return false;
         
         // check image
-        ImageHandle doc = ((ImageFrame) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();
         if (image == null)
             return false;

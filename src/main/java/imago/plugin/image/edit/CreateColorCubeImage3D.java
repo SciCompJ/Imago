@@ -49,6 +49,6 @@ public class CreateColorCubeImage3D implements Plugin
 		image.setName("Color Cube Image");
 		
 		// add the image document to GUI
-		frame.getGui().addNewDocument(image); 
+		frame.getGui().createImageFrame(image); 
 	}
 }

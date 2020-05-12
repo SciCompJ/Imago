@@ -47,7 +47,7 @@ public class LabelImageInertiaEllipses implements Plugin
         }
         
         // retrieve image data
-        ImageHandle doc = ((ImageFrame) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();
         
         // check image type
@@ -118,7 +118,7 @@ public class LabelImageInertiaEllipses implements Plugin
         if (overlay)
         {
             ImageHandle ovrDoc = gui.getAppli().getImageHandleFromName(imageToOverlay);
-            ImageFrame viewer = gui.getDocumentViewer(ovrDoc);
+            ImageFrame viewer = gui.getImageFrame(ovrDoc);
             
             // add to the document
             for (int i = 0; i < ellipses.length; i++)

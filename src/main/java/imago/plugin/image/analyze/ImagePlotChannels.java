@@ -47,7 +47,7 @@ public class ImagePlotChannels implements Plugin
         if (!(frame instanceof ImageFrame))
             return;
         ImageFrame iframe = (ImageFrame) frame;
-        Image meta = iframe.getDocument().getImage();
+        Image meta = iframe.getImageHandle().getImage();
         
         Array<?> array = meta.getData();
         if (!(array instanceof VectorArray))
@@ -103,7 +103,7 @@ public class ImagePlotChannels implements Plugin
 
         // Title of the plot
         ImageFrame iframe = (ImageFrame) parentFrame;
-        Image image = iframe.getDocument().getImage();
+        Image image = iframe.getImageHandle().getImage();
         String titleString = createTitleString("Channel profile", image.getName());
 
         // Create Chart
@@ -137,7 +137,7 @@ public class ImagePlotChannels implements Plugin
 
         // Title of the plot
         ImageFrame iframe = (ImageFrame) parentFrame;
-        Image image = iframe.getDocument().getImage();
+        Image image = iframe.getImageHandle().getImage();
         String titleString = createTitleString("Channel profile", image.getName());
 
         

@@ -146,7 +146,7 @@ public class GuiBuilder
 	    ImageHandle doc = null;
         if (frame instanceof ImageFrame)
         {
-            doc = ((ImageFrame) frame).getDocument();
+            doc = ((ImageFrame) frame).getImageHandle();
 
             this.hasDoc = doc != null;
             if (!hasDoc) 

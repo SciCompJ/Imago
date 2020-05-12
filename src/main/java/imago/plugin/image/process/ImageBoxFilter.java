@@ -36,8 +36,7 @@ public class ImageBoxFilter implements Plugin
 		System.out.println("box filter (generic)");
 
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
-		Image image	= doc.getImage();
+		Image image	= ((ImageFrame) frame).getImage();
 		Array<?> array = image.getData();
 
 		int nd = array.dimensionality();
@@ -71,7 +70,7 @@ public class ImageBoxFilter implements Plugin
 		result.setName(image.getName() + "-filt");
 		
 		// add the image document to GUI
-		frame.addChild(frame.getGui().addNewDocument(result));
+		frame.addChild(frame.getGui().createImageFrame(result));
 	}
 	
     /**
@@ -89,7 +88,7 @@ public class ImageBoxFilter implements Plugin
             return false;
         
         // check image
-        ImageHandle doc = ((ImageFrame) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();
         if (image == null)
             return false;

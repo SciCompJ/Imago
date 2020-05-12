@@ -35,7 +35,7 @@ public class BoxFilter3x3FloatPlugin implements Plugin
 		System.out.println("box filter 3x3 float");
 		
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image metaImage = doc.getImage();
 		Array<?> array = metaImage.getData();
 
@@ -58,7 +58,7 @@ public class BoxFilter3x3FloatPlugin implements Plugin
 		Image result = new Image(output, metaImage);
 
 		// add the image document to GUI
-		frame.getGui().addNewDocument(result);
+		frame.getGui().createImageFrame(result);
 	}
 
 }

@@ -36,7 +36,7 @@ public class ImageCropDialog implements Plugin
 		System.out.println("crop");
 
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();
 
@@ -75,7 +75,7 @@ public class ImageCropDialog implements Plugin
 		resultImage.setName(image.getName() + "-crop");
 		
 		// add the image document to GUI
-		frame.addChild(frame.getGui().addNewDocument(resultImage));
+		frame.addChild(frame.getGui().createImageFrame(resultImage));
 	}
 	
     /**
@@ -93,7 +93,7 @@ public class ImageCropDialog implements Plugin
             return false;
         
         // check image
-        ImageHandle doc = ((ImageFrame) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();
         if (image == null)
             return false;

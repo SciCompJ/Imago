@@ -33,7 +33,7 @@ public class ConvertImageToBinary implements Plugin
 		System.out.println("convert to binary image");
 		
 		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image = doc.getImage();
 		
 		if (image == null)
@@ -56,7 +56,7 @@ public class ConvertImageToBinary implements Plugin
 		Image resultImage = new Image(result, image);
 				
 		// add the image document to GUI
-		frame.getGui().addNewDocument(resultImage); 
+		frame.getGui().createImageFrame(resultImage); 
 	}
 
 }

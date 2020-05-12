@@ -36,7 +36,7 @@ public class Image3DOrthoslicesImage implements Plugin
 		System.out.println("Create orthoslice Image");
 
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();
 
@@ -67,7 +67,7 @@ public class Image3DOrthoslicesImage implements Plugin
 		result.setName(image.getName() + "-slices");
 		
 		// add the image document to GUI
-		frame.getGui().addNewDocument(result);
+		frame.getGui().createImageFrame(result);
 	}
 
 	private <T> Array<T> process(Array<T> array, int[] refPos)

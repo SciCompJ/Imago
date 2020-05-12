@@ -33,7 +33,7 @@ public class ConvertRGB8ImageToUInt8 implements Plugin
 		System.out.println("convert rgb8 image to uint8 image");
 		
 		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image = doc.getImage();
 		
 		if (image == null)
@@ -55,7 +55,7 @@ public class ConvertRGB8ImageToUInt8 implements Plugin
 		Image resultImage = new Image(result, image);
 				
 		// add the image document to GUI
-		frame.getGui().addNewDocument(resultImage); 
+		frame.getGui().createImageFrame(resultImage); 
 	}
 
 }

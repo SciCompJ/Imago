@@ -34,7 +34,7 @@ public class ConvertDimensionToChannels implements Plugin
 		System.out.println("stack to vector image");
 		
 		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getDocument();
+		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image = doc.getImage();
 		
 		if (image == null)
@@ -81,7 +81,7 @@ public class ConvertDimensionToChannels implements Plugin
         
 				
 		// add the image document to GUI
-		frame.getGui().addNewDocument(resImage); 
+		frame.getGui().createImageFrame(resImage); 
 	}
 
 }

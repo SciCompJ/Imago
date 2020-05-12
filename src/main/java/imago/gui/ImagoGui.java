@@ -98,7 +98,7 @@ public class ImagoGui
      * Used to remove the document from the app instance when the last frame
      * referring to a document is closed.
      */
-	Map<String, ArrayList<ImagoFrame>> docFrames = new HashMap<>(); 
+	Map<String, ArrayList<ImageFrame>> imageFrames = new HashMap<>(); 
 	
 	/**
 	 * An empty frame without document, displayed at startup.
@@ -144,7 +144,7 @@ public class ImagoGui
 	
 
 	// ===================================================================
-    // Creation of new viewers
+    // Creation of new frames for specific objects
 	
 	public ImagoFrame createTableFrame(Table table, ImagoFrame parentFrame)
 	{
@@ -166,22 +166,26 @@ public class ImagoGui
         return frame;
 	}
 	
+
+	// ===================================================================
+    // Creation of new frames for images
+	
     /** 
      * Creates a new document from an image, adds it to the application, 
      * and returns a new frame associated to this document. 
      */
-    public ImageFrame createImagoDocViewer(Image image, ImagoFrame parentFrame)
+    public ImageFrame createImageFrame(Image image, ImagoFrame parentFrame)
     {
         // create the document from image
         ImageFrame viewer; 
         if (parentFrame instanceof ImageFrame)
         {
-            ImageHandle parentDoc = ((ImageFrame) parentFrame).getDocument();
-            viewer = addNewDocument(image, parentDoc);
+            ImageHandle parentHandle = ((ImageFrame) parentFrame).getImageHandle();
+            viewer = createImageFrame(image, parentHandle);
         }
         else
         {
-            viewer = addNewDocument(image);
+            viewer = createImageFrame(image);
         }
         
         // create the frame associated to the document
@@ -193,26 +197,26 @@ public class ImagoGui
 	 * Creates a new document from an image, adds it to the application, 
 	 * and returns a new frame associated to this document. 
 	 */
-	public ImageFrame addNewDocument(Image image)
+	public ImageFrame createImageFrame(Image image)
 	{
 		// create the document from image
 		ImageHandle doc = this.app.createImageHandle(image);
 		
 		// create the frame associated to the document
-		return createImagoDocViewer(doc);
+		return createImageFrame(doc);
 	}
 
     /** 
 	 * Creates a new document from an image, using settings given in parent 
 	 * document, and adds the new document to the GUI 
 	 */
-	public ImageFrame addNewDocument(Image image, ImageHandle parentDoc)
+	public ImageFrame createImageFrame(Image image, ImageHandle parentHandle)
 	{
 	    ImageHandle handle = app.createImageHandle(image);
-	    handle.copyDisplaySettings(parentDoc);
+	    handle.copyDisplaySettings(parentHandle);
 	    
 		// display in a new frame
-		return createImagoDocViewer(handle);
+		return createImageFrame(handle);
 	}
 		
 	/**
@@ -222,30 +226,30 @@ public class ImagoGui
      *            the document to view
      * @return a viewer for the document
      */
-	public ImageFrame createImagoDocViewer(ImageHandle doc) 
+	public ImageFrame createImageFrame(ImageHandle handle) 
 	{
-		ImageFrame frame = new ImageFrame(this, doc);
+		ImageFrame frame = new ImageFrame(this, handle);
 		
 		this.frames.add(frame);
 		
 		// add the frame to the list of frames associated to the document
-		String docName = doc.getName();
-		if (docFrames.containsKey(docName))
+		String docName = handle.getName();
+		if (imageFrames.containsKey(docName))
 		{
-		    docFrames.get(docName).add(frame);
+		    imageFrames.get(docName).add(frame);
 		}
 		else
 		{
-		    ArrayList<ImagoFrame> frameList = new ArrayList<>(1);
+		    ArrayList<ImageFrame> frameList = new ArrayList<>(1);
 		    frameList.add(frame);
-		    docFrames.put(docName, frameList);
+		    imageFrames.put(docName, frameList);
 		}
 		
 		frame.setVisible(true);
 		return frame;
 	}
 	
-	public Collection<ImageFrame> getDocumentViewers()
+	public Collection<ImageFrame> getImageFrames()
 	{
 		ArrayList<ImageFrame> viewers = new ArrayList<ImageFrame>(this.frames.size());
 		for (ImagoFrame frame : this.frames)
@@ -265,11 +269,11 @@ public class ImagoGui
 	 * @param handle the document
 	 * @return an instance of ImageFrame associated to this document
 	 */
-	public ImageFrame getDocumentViewer(ImageHandle doc)
+	public ImageFrame getImageFrame(ImageHandle doc)
 	{
-	    for (ImageFrame viewer : getDocumentViewers())
+	    for (ImageFrame viewer : getImageFrames())
 	    {
-	        if (doc == viewer.getDocument())
+	        if (doc == viewer.getImageHandle())
 	        {
 	            return viewer;
 	        }
@@ -299,8 +303,8 @@ public class ImagoGui
         if (frame instanceof ImageFrame)
         {
             ImageFrame viewer = (ImageFrame) frame;
-            ImageHandle doc = ((ImageFrame) frame).getDocument();
-            ArrayList<ImagoFrame> frameList = docFrames.get(doc.getName());
+            ImageHandle doc = ((ImageFrame) frame).getImageHandle();
+            ArrayList<ImageFrame> frameList = imageFrames.get(doc.getName());
             if (!frameList.contains(frame))
             {
                 System.err.println("Warning: frame " + frame.getWidget().getName() + " is not referenced by document " + doc.getName());
@@ -310,7 +314,7 @@ public class ImagoGui
             
             if (frameList.size() == 0)
             {
-                app.removeImageHandle(viewer.getDocument());
+                app.removeHandle(viewer.getImageHandle());
             }
         }
         return this.frames.remove(frame);

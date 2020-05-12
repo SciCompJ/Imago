@@ -82,6 +82,6 @@ public class ImageMorphologicalReconstruction implements Plugin
 		resultImage.setName(markerImage.getName() + "-morphoRec");
 		
 		// add the image document to GUI
-		gui.addNewDocument(resultImage);
+		gui.createImageFrame(resultImage);
 	}
 }

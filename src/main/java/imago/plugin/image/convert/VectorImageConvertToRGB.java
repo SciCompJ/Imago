@@ -38,7 +38,7 @@ public class VectorImageConvertToRGB implements Plugin
 	public void run(ImagoFrame frame, String args)
 	{
         // get current frame
-        ImageHandle doc = ((ImageFrame) frame).getDocument();
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();
         
         if (image == null)
@@ -117,7 +117,7 @@ public class VectorImageConvertToRGB implements Plugin
 		rgbImage.setName(image.getName() + "-RGB");
 
 		// add the image document to GUI
-		frame.getGui().addNewDocument(rgbImage);
+		frame.getGui().createImageFrame(rgbImage);
 	}
 	
 }
