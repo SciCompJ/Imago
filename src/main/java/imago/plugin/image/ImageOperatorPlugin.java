@@ -3,7 +3,6 @@
  */
 package imago.plugin.image;
 
-import imago.app.ImageHandle;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
@@ -38,13 +37,12 @@ public class ImageOperatorPlugin implements Plugin
     public void run(ImagoFrame frame, String args)
     {
         // get current frame
-        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-        Image image = doc.getImage();
+    	Image image = ((ImageFrame) frame).getImage();
 
         Image result = operator.process(image);
 
         // add the image document to GUI
-        frame.getGui().createImageFrame(result, doc);
+        frame.getGui().createImageFrame(result, frame);
     }
 
     /**
@@ -62,8 +60,7 @@ public class ImageOperatorPlugin implements Plugin
             return false;
         
         // check image
-        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-        Image image = doc.getImage();
+        Image image = ((ImageFrame) frame).getImage();
         if (image == null)
             return false;
 

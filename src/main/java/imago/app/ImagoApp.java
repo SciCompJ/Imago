@@ -60,9 +60,28 @@ public class ImagoApp
      */
     public ImageHandle createImageHandle(Image image)
     {
+        return createImageHandle(image, null);
+    }
+
+    /**
+     * Creates a new handle for an image, adds it to the workspace, and returns
+     * the created handle.
+     * 
+     * @param image
+     *            the image instance.
+     * @param parent
+     *            a parent handle, used to initialize handles fields.
+     * @return the handle to manage the image.
+     */
+    public ImageHandle createImageHandle(Image image, ImageHandle parent)
+    {
         String tag = workspace.findNextFreeTag("img");
         String name = createHandleName(image.getName());
         ImageHandle handle = new ImageHandle(image, name, tag);
+        if (parent != null)
+        {
+        	handle.copyDisplaySettings(parent);
+        }
         workspace.addHandle(handle);
         return handle;
     }
@@ -121,13 +140,32 @@ public class ImagoApp
      */
     public TableHandle createTableHandle(Table table)
     {
+        return createTableHandle(table, null);
+    }
+    
+    /**
+     * Creates a new handle for a table, adds it to the workspace, and returns
+     * the created handle.
+     * 
+     * @param table
+     *            the table instance.
+     * @param parent
+     *            a parent handle, used to initialize handles fields.
+     * @return the handle to manage the image.
+     */
+    public TableHandle createTableHandle(Table table, TableHandle parent)
+    {
         String tag = workspace.findNextFreeTag("tab");
         String name = createHandleName(table.getName());
         TableHandle handle = new TableHandle(table, name, tag);
+        if (parent != null)
+        {
+//        	handle.copyDisplaySettings(parent);
+        }
         workspace.addHandle(handle);
         return handle;
     }
-    
+
 	public Collection<TableHandle> getTableHandles()
 	{
 	    ArrayList<TableHandle> res = new ArrayList<TableHandle>();

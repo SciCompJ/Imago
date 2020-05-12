@@ -3,13 +3,11 @@
  */
 package imago.gui.action;
 
-import imago.app.ImageHandle;
-import imago.gui.ImagoAction;
-import imago.gui.ImageFrame;
-import imago.gui.ImagoFrame;
-
 import java.awt.event.ActionEvent;
 
+import imago.gui.ImageFrame;
+import imago.gui.ImagoAction;
+import imago.gui.ImagoFrame;
 import net.sci.array.Array;
 import net.sci.array.ArrayOperator;
 import net.sci.image.Image;
@@ -46,15 +44,14 @@ public class ArrayOperatorAction extends ImagoAction
 	public void actionPerformed(ActionEvent arg0)
 	{
 		// get current frame
-		ImageHandle doc = ((ImageFrame) this.frame).getImageHandle();
-		Image image = doc.getImage();
-
+		Image image = ((ImageFrame) this.frame).getImage();
+		
 		Array<?> data = image.getData();
 		Array<?> data2 = operator.process(data);
 		Image result = new Image(data2, image);
 
 		// add the image document to GUI
-		this.gui.createImageFrame(result, doc);
+		this.gui.createImageFrame(result, this.frame);
 	}
 
 }

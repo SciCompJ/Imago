@@ -4,8 +4,10 @@
 package imago.gui;
 
 import java.awt.Color;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -69,7 +71,7 @@ public class ImagoGui
             textArea.append("\n    at " + item.toString());
         }
         
-        // add Textarea in to middle panel
+        // add Text area in the middle panel
         errorFrame.add(scroll);
         
         // display error frame
@@ -110,6 +112,22 @@ public class ImagoGui
 	 */
 	public Settings settings = new Settings();
 	
+
+	// ===================================================================
+    // Private constants
+	
+	/**
+	 * The amount of displacement in the x-direction to locate a new frame with
+	 * respect to the parent one
+	 */
+	
+	private static final int FRAME_OFFSET_X = 20;
+	/**
+	 * The amount of displacement in the y-direction to locate a new frame with
+	 * respect to the parent one
+	 */
+	private static final int FRAME_OFFSET_Y = 30;	
+	
 	
 	// ===================================================================
 	// Constructor
@@ -146,7 +164,7 @@ public class ImagoGui
 	// ===================================================================
     // Creation of new frames for specific objects
 	
-	public ImagoFrame createTableFrame(Table table, ImagoFrame parentFrame)
+	public TableFrame createTableFrame(Table table, ImagoFrame parentFrame)
 	{
 //	    // try to get parent table handle
 //	    TableHandle parentHandle = null;
@@ -160,6 +178,12 @@ public class ImagoGui
         
         // create the frame
         TableFrame frame = new TableFrame(parentFrame, handle);
+
+        if (parentFrame != null)
+        {
+			Point pos = parentFrame.getWidget().getLocation();
+			frame.getWidget().setLocation(pos.x + FRAME_OFFSET_X, pos.y + FRAME_OFFSET_Y);
+        }
         
         // add to frame manager
         this.addFrame(frame); 
@@ -171,66 +195,43 @@ public class ImagoGui
     // Creation of new frames for images
 	
     /** 
-     * Creates a new document from an image, adds it to the application, 
-     * and returns a new frame associated to this document. 
-     */
-    public ImageFrame createImageFrame(Image image, ImagoFrame parentFrame)
-    {
-        // create the document from image
-        ImageFrame viewer; 
-        if (parentFrame instanceof ImageFrame)
-        {
-            ImageHandle parentHandle = ((ImageFrame) parentFrame).getImageHandle();
-            viewer = createImageFrame(image, parentHandle);
-        }
-        else
-        {
-            viewer = createImageFrame(image);
-        }
-        
-        // create the frame associated to the document
-        parentFrame.addChild(viewer);
-        return viewer;
-    }
-
-    /** 
 	 * Creates a new document from an image, adds it to the application, 
 	 * and returns a new frame associated to this document. 
 	 */
 	public ImageFrame createImageFrame(Image image)
 	{
-		// create the document from image
-		ImageHandle doc = this.app.createImageHandle(image);
-		
-		// create the frame associated to the document
-		return createImageFrame(doc);
+		return createImageFrame(image, null);
 	}
 
     /** 
-	 * Creates a new document from an image, using settings given in parent 
-	 * document, and adds the new document to the GUI 
-	 */
-	public ImageFrame createImageFrame(Image image, ImageHandle parentHandle)
-	{
-	    ImageHandle handle = app.createImageHandle(image);
-	    handle.copyDisplaySettings(parentHandle);
-	    
-		// display in a new frame
-		return createImageFrame(handle);
-	}
-		
-	/**
-     * Creates the viewer for the document, ensuring name is unique.
-     * 
-     * @param handle
-     *            the document to view
-     * @return a viewer for the document
+     * Creates a new document from an image, adds it to the application, 
+     * and returns a new frame associated to this document. 
      */
-	public ImageFrame createImageFrame(ImageHandle handle) 
-	{
+    public ImageFrame createImageFrame(Image image, ImagoFrame parentFrame)
+    {
+    	// First create a handle for the image
+    	ImageHandle parentHandle = null;
+    	if (parentFrame != null && parentFrame instanceof ImageFrame)
+    	{
+    		parentHandle = ((ImageFrame) parentFrame).getImageHandle();
+    	}
+    	ImageHandle handle = app.createImageHandle(image, parentHandle);
+
+		// Create the frame
 		ImageFrame frame = new ImageFrame(this, handle);
 		
+        if (parentFrame != null)
+        {
+			Point pos = parentFrame.getWidget().getLocation();
+			frame.getWidget().setLocation(pos.x + FRAME_OFFSET_X, pos.y + FRAME_OFFSET_Y);
+        }
+			
+        // link the frames
 		this.frames.add(frame);
+    	if (parentFrame != null)
+    	{
+    		parentFrame.addChild(frame);
+    	}
 		
 		// add the frame to the list of frames associated to the document
 		String docName = handle.getName();
@@ -246,8 +247,8 @@ public class ImagoGui
 		}
 		
 		frame.setVisible(true);
-		return frame;
-	}
+        return frame;
+    }
 	
 	public Collection<ImageFrame> getImageFrames()
 	{
@@ -269,17 +270,17 @@ public class ImagoGui
 	 * @param handle the document
 	 * @return an instance of ImageFrame associated to this document
 	 */
-	public ImageFrame getImageFrame(ImageHandle doc)
+	public ImageFrame getImageFrame(ImageHandle handle)
 	{
-	    for (ImageFrame viewer : getImageFrames())
+	    for (ImageFrame frame : getImageFrames())
 	    {
-	        if (doc == viewer.getImageHandle())
+	        if (handle == frame.getImageHandle())
 	        {
-	            return viewer;
+	            return frame;
 	        }
 	    }
 	    
-	    throw new RuntimeException("Could not find a document viewer for document with name: " + doc.getName());
+	    throw new RuntimeException("Could not find any image frame for handle with name: " + handle.getName());
 	}
 
 	
@@ -288,9 +289,7 @@ public class ImagoGui
     
     public Collection<ImagoFrame> getFrames()
     {
-        ArrayList<ImagoFrame> res = new ArrayList<>(frames.size());
-        res.addAll(this.frames);
-        return res;
+    	return Collections.unmodifiableCollection(this.frames);
     }
 
     public boolean addFrame(ImagoFrame frame)
@@ -302,19 +301,18 @@ public class ImagoGui
     {
         if (frame instanceof ImageFrame)
         {
-            ImageFrame viewer = (ImageFrame) frame;
-            ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-            ArrayList<ImageFrame> frameList = imageFrames.get(doc.getName());
+            ImageHandle handle = ((ImageFrame) frame).getImageHandle();
+            ArrayList<ImageFrame> frameList = imageFrames.get(handle.getName());
             if (!frameList.contains(frame))
             {
-                System.err.println("Warning: frame " + frame.getWidget().getName() + " is not referenced by document " + doc.getName());
+                System.err.println("Warning: frame " + frame.getWidget().getName() + " is not referenced by image handle " + handle.getName());
             }
             
             frameList.remove(frame);
             
             if (frameList.size() == 0)
             {
-                app.removeHandle(viewer.getImageHandle());
+                app.removeHandle(handle);
             }
         }
         return this.frames.remove(frame);

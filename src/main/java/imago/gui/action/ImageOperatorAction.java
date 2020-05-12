@@ -3,13 +3,11 @@
  */
 package imago.gui.action;
 
-import imago.app.ImageHandle;
-import imago.gui.ImagoAction;
-import imago.gui.ImageFrame;
-import imago.gui.ImagoFrame;
-
 import java.awt.event.ActionEvent;
 
+import imago.gui.ImageFrame;
+import imago.gui.ImagoAction;
+import imago.gui.ImagoFrame;
 import net.sci.image.Image;
 import net.sci.image.ImageOperator;
 
@@ -43,13 +41,12 @@ public class ImageOperatorAction extends ImagoAction
 	public void actionPerformed(ActionEvent evt)
 	{
 		// get current frame
-		ImageHandle doc = ((ImageFrame) this.frame).getImageHandle();
-		Image image = doc.getImage();
+		Image image  = ((ImageFrame) this.frame).getImage();
 
 		Image result = operator.process(image);
 
 		// add the image document to GUI
-		this.gui.createImageFrame(result, doc);
+		this.gui.createImageFrame(result, this.frame);
 	}
 
 }

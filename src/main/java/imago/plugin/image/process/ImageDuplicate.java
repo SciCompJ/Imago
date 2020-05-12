@@ -39,6 +39,6 @@ public class ImageDuplicate implements Plugin
         Image result = image.duplicate();
         
         // add the image document to GUI
-        frame.getGui().createImageFrame(result);
+        frame.createImageFrame(result);
     }
 }

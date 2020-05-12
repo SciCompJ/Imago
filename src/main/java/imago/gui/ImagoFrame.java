@@ -8,6 +8,9 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
+import net.sci.image.Image;
+import net.sci.table.Table;
+
 /**
  * The superclass of all Imago frames. 
  * Keeps a reference to the current ImagoGui instance.
@@ -119,7 +122,31 @@ public abstract class ImagoFrame
         ImagoGui.showErrorDialog(this, message, title);
 	}
 	
+	/**
+	 * Creates a new frame for displaying image, using this frame as basis for
+	 * placement.
+	 * 
+	 * @param image the image to display.
+	 * @return a new instance of ImageFrame.
+	 */
+	public ImageFrame createImageFrame(Image image)
+	{
+		return this.gui.createImageFrame(image, this);
+	}
 	
+	/**
+	 * Creates a new frame for displaying table, using this frame as basis for
+	 * placement.
+	 * 
+	 * @param table the table to display.
+	 * @return a new instance of ImageFrame.
+	 */
+	public TableFrame createTableFrame(Table table)
+	{
+		return this.gui.createTableFrame(table, this);
+	}
+	
+
 	// ===================================================================
 	// Getters and setters
 

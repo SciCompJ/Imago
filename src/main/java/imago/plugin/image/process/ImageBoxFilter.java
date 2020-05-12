@@ -70,7 +70,7 @@ public class ImageBoxFilter implements Plugin
 		result.setName(image.getName() + "-filt");
 		
 		// add the image document to GUI
-		frame.addChild(frame.getGui().createImageFrame(result));
+		frame.createImageFrame(result);
 	}
 	
     /**
