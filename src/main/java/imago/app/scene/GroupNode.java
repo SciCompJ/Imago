@@ -17,8 +17,14 @@ import net.sci.geom.geom2d.Point2D;
  */
 public class GroupNode extends Node
 {
+	// ===================================================================
+	// Class members
+
 	ArrayList<Node> children = new ArrayList<Node>();
 	
+
+	// ===================================================================
+	// Constructors
 
 	public GroupNode()
 	{
@@ -26,10 +32,41 @@ public class GroupNode extends Node
 	
 	public GroupNode(String name)
 	{
-		this.name = name;
+		super(name);
 	}
 
 	
+	// ===================================================================
+	// New methods
+	
+	/**
+	 * @param childName the name of a child node
+	 * @return the child node with the specified name, or null if no child has this name.
+	 */
+	public Node getChild(String name)
+	{
+		for (Node child : children)
+		{
+			if (name.equals(child.name))
+			{
+				return child;
+			}
+		}
+		return null;
+	}
+	
+	public boolean hasChildWithName(String name)
+	{
+		for (Node child : children)
+		{
+			if (name.equals(child.name))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public int childrenCount()
 	{
 		return children.size();
@@ -51,6 +88,9 @@ public class GroupNode extends Node
 	}
 	
 	
+	// ===================================================================
+	// Implementation of Node methods
+
 	@Override
 	public Iterable<Node> children()
 	{

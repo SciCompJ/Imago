@@ -4,6 +4,11 @@
 package imago.gui.viewer;
 
 import imago.app.ImageHandle;
+import imago.app.scene.GroupNode;
+import imago.app.scene.ImageSliceNode;
+import imago.app.scene.Node;
+import imago.app.scene.ShapeNode;
+import imago.app.shape.Shape;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoTool;
 
@@ -170,6 +175,10 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
     public void setSelection(Geometry2D shape)
     {
         this.selection = shape;
+        if (this.selection == null)
+        {
+        	this.imageDisplay.selection = null;
+        }
     }
 	    
 	// ===================================================================
@@ -249,7 +258,73 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
         imageDisplay.updateOffset();
         updateSliceImage();
         this.imageDisplay.repaint();
+		
+		refreshSceneGraph();
     }
+    
+	private void refreshSceneGraph()
+	{
+		if (this.imageHandle == null)
+		{
+			return;
+		}
+		
+		this.imageDisplay.clearSceneGraphItems();
+		if (!this.displaySceneGraph)
+		{
+			return;
+		}
+		
+		Node rootNode = this.imageHandle.getRootNode();
+		if (rootNode == null)
+		{
+			return;
+		}
+		
+		displaySceneGraphNode(rootNode);
+	}
+	
+	private void displaySceneGraphNode(Node node)
+	{
+		if (!node.isVisible())
+		{
+			return;
+		}
+		
+		if (node instanceof ImageSliceNode)
+		{
+			// check slice index to display only items of current slice 
+			int index = ((ImageSliceNode) node).getSliceIndex();
+			if (index != this.getSliceIndex())
+			{
+				return;
+			}
+			for (Node child : node.children())
+			{
+				displaySceneGraphNode(child);
+			}
+		}
+		else if (node instanceof GroupNode)
+		{
+			for (Node child : node.children())
+			{
+				displaySceneGraphNode(child);
+			}
+		}
+		else if (node instanceof ShapeNode)
+		{
+			Shape shape = ((ShapeNode) node).getShape();
+			if (shape.getGeometry() instanceof Geometry2D)
+			{
+				this.imageDisplay.addSceneGraphItem(shape);
+			}
+		}
+		else
+		{
+			return;
+		}
+	}
+	
 
     // ===================================================================
 	// Implementation of StateListener interface
@@ -261,6 +336,7 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 		this.setSliceIndex(index);
 		updateSliceImage();
 		this.panel.repaint();
+		refreshSceneGraph();//TODO: split refresh graph and draw graph
 	}
 
 	// ===================================================================

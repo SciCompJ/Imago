@@ -45,6 +45,7 @@ import imago.plugin.image.shape.ImagePermuteDims;
 import imago.plugin.image.shape.ImageReshape;
 import imago.plugin.image.shape.ImageRotateAroundCenter;
 import imago.plugin.image.vectorize.*;
+import imago.plugin.plugin.Crop3D_AddPolygon;
 import imago.plugin.table.OpenTable;
 import imago.plugin.table.SaveTable;
 import imago.plugin.table.ShowDemoTable;
@@ -140,7 +141,7 @@ public class GuiBuilder
 		{
 	        menuBar.add(createImageFileMenu());
 		}
-        menuBar.add(createDeveloperMenu());
+        menuBar.add(createPluginsMenu());
         menuBar.add(createHelpMenu());
 
 		frame.getWidget().setJMenuBar(menuBar);
@@ -604,12 +605,29 @@ public class GuiBuilder
         return processMenu;
     }
 
-    private JMenu createDeveloperMenu()
+    
+    private JMenu createPluginsMenu()
     {
-        JMenu menu = new JMenu("Developer");
-        addPlugin(menu, new DisplayExceptionDialog(), "Show Demo Exception");
+        JMenu menu = new JMenu("Plugins");
+        
+        JMenu devMenu = new JMenu("Developer");
+        addPlugin(devMenu, new DisplayExceptionDialog(), "Show Demo Exception");
+        menu.add(devMenu);
+        menu.addSeparator();
+        
+        JMenu crop3DMenu = new JMenu("Crop 3D");
+        addPlugin(crop3DMenu, new Crop3D_AddPolygon(), "Add polygon");
+        menu.add(crop3DMenu);
+        
         return menu;
     }
+
+//    private JMenu createDeveloperMenu()
+//    {
+//        JMenu menu = new JMenu("Developer");
+//        addPlugin(menu, new DisplayExceptionDialog(), "Show Demo Exception");
+//        return menu;
+//    }
 
     private JMenu createHelpMenu()
 	{

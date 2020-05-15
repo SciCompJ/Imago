@@ -21,6 +21,19 @@ public abstract class Node
 
     
     // =============================================================
+    // Constructor
+    
+    protected Node()
+    {
+    }
+
+    protected Node(String name)
+    {
+    	this.name = name;
+    }
+    
+   
+    // =============================================================
     // General methods
 
     /**
