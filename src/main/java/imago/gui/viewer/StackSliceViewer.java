@@ -4,7 +4,6 @@
 package imago.gui.viewer;
 
 import imago.app.ImageHandle;
-import imago.app.scene.GroupNode;
 import imago.app.scene.ImageSliceNode;
 import imago.app.scene.Node;
 import imago.app.scene.ShapeNode;
@@ -304,7 +303,7 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 				displaySceneGraphNode(child);
 			}
 		}
-		else if (node instanceof GroupNode)
+		else if (!node.isLeaf())
 		{
 			for (Node child : node.children())
 			{

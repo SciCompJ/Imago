@@ -1,0 +1,84 @@
+/**
+ * 
+ */
+package imago.app.scene;
+
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
+
+/**
+ * A group node for items on planar sections of a 3D image, that indexes
+ * children using their slice index.
+ * 
+ * @see ImageSliceNode
+ * @see GroupNode
+ * 
+ * @author dlegland
+ *
+ */
+public class ImageSerialSectionsNode extends Node
+{
+    Map<Integer, ImageSliceNode> children =  new TreeMap<Integer, ImageSliceNode>();
+
+    /**
+     * @param name the name of the items
+     */
+    public ImageSerialSectionsNode(String name)
+    {
+        super(name);
+    }
+    
+    public void addSliceNode(ImageSliceNode node)
+    {
+        int index = node.sliceIndex;
+        if (children.containsKey(index))
+        {
+            throw new RuntimeException("Already contains a slice with index " + index);
+        }
+        children.put(index, node);
+    }
+    
+    public ImageSliceNode getSliceNode(int index)
+    {
+        return children.get(index);
+    }
+
+    public boolean hasSliceNode(int index)
+    {
+        return children.containsKey(index);
+    }
+
+    @Override
+    public Iterable<Node> children()
+    {
+        ArrayList<Node> res = new ArrayList<Node>(children.size());
+        res.addAll(children.values());
+        return res;
+    }
+
+    @Override
+    public boolean isLeaf()
+    {
+        return children.isEmpty();
+    }
+
+    @Override
+    public void printTree(PrintStream stream, int nIndents)
+    {
+        String str = "";
+        for (int i = 0; i < nIndents; i++)
+        {
+            str = str + "  ";
+        }
+        String nameString = (name != null && !name.isEmpty()) ? name : "(no name)";
+        stream.println(str + "[GroupNode] " + nameString);
+        
+        for (Node node : children.values())
+        {
+            node.printTree(stream, nIndents + 1);
+        }
+    }
+
+}
