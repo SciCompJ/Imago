@@ -4,7 +4,7 @@
 package imago.app.scene;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -49,13 +49,19 @@ public class ImageSerialSectionsNode extends Node
     {
         return children.containsKey(index);
     }
+    
+    /**
+     * Removes all the children of this node.
+     */
+    public void clear()
+    {
+        this.children.clear();
+    }
 
     @Override
-    public Iterable<Node> children()
+    public Iterable<ImageSliceNode> children()
     {
-        ArrayList<Node> res = new ArrayList<Node>(children.size());
-        res.addAll(children.values());
-        return res;
+        return Collections.unmodifiableMap(children).values();
     }
 
     @Override

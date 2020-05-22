@@ -39,7 +39,7 @@ public abstract class Node
     /**
      * @return the set of children in this node (if this node is not a leaf).
      */
-    public abstract Iterable<Node> children();
+    public abstract Iterable<? extends Node> children();
     
     /**
      * @return true if this node is a leaf, i.e. it does not contains any other node.

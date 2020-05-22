@@ -379,6 +379,11 @@ public class ImageDisplay extends JPanel
             Polyline2D poly = ((Ellipse2D) geom).asPolyline(120);
             drawPolyline(g2, poly);
         }
+        else if (geom instanceof Polyline2D)
+        {
+            Polyline2D poly = (Polyline2D) geom;
+            drawPolyline(g2, poly);
+        }
         else if (geom instanceof Curve2D)
         {
             Curve2D curve = (Curve2D) geom;

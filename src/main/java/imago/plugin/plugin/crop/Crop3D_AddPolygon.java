@@ -1,12 +1,11 @@
 /**
  * 
  */
-package imago.plugin.plugin;
+package imago.plugin.plugin.crop;
 
 import java.util.Locale;
 
 import imago.app.ImageHandle;
-import imago.app.scene.GroupNode;
 import imago.app.scene.ImageSerialSectionsNode;
 import imago.app.scene.ImageSliceNode;
 import imago.app.scene.Node;
@@ -86,19 +85,7 @@ public class Crop3D_AddPolygon implements Plugin
         
 
         ImageHandle handle = iframe.getImageHandle();
-        GroupNode rootNode = ((GroupNode) handle.getRootNode());
-        GroupNode cropNode; 
-        if (rootNode.hasChildWithName("crop3d"))
-        {
-        	cropNode = (GroupNode) rootNode.getChild("crop3d");
-        }
-        else
-        {
-        	cropNode = new GroupNode("crop3d");
-        	cropNode.addNode(new ImageSerialSectionsNode("polygons"));
-        	rootNode.addNode(cropNode);
-        }
-        ImageSerialSectionsNode polyNode = (ImageSerialSectionsNode) cropNode.getChild("polygons");
+        ImageSerialSectionsNode polyNode = Crop3D.getPolygonsNode(handle);
         
         int nDigits = (int) Math.ceil(Math.log10(array.size(2)));
         String sliceName = String.format(Locale.US, "slice%0" + nDigits + "d", sliceIndex);
