@@ -4,6 +4,7 @@
 package imago.app.scene;
 
 import java.io.PrintStream;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
@@ -45,6 +46,11 @@ public class ImageSerialSectionsNode extends Node
         return children.get(index);
     }
 
+    public Collection<Integer> getSliceIndices()
+    {
+        return children.keySet();
+    }
+    
     public boolean hasSliceNode(int index)
     {
         return children.containsKey(index);

@@ -3,23 +3,17 @@
  */
 package imago.plugin.plugin.crop;
 
-import java.awt.Color;
-import java.util.Locale;
+import java.util.Collection;
+import java.util.Iterator;
 
 import imago.app.ImageHandle;
 import imago.app.scene.ImageSerialSectionsNode;
-import imago.app.scene.ImageSliceNode;
-import imago.app.scene.Node;
-import imago.app.scene.ShapeNode;
-import imago.app.shape.Shape;
 import imago.gui.ImageFrame;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import imago.gui.viewer.StackSliceViewer;
 import net.sci.array.Array;
-import net.sci.geom.geom2d.polygon.LinearRing2D;
-import net.sci.geom.geom2d.polygon.Polygon2D;
 import net.sci.image.Image;
 
 /**
@@ -29,16 +23,16 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class Crop3D_SmoothPolygons implements Plugin
+public class Crop3D_InterpolatePolygons implements Plugin
 {
-	public Crop3D_SmoothPolygons()
+	public Crop3D_InterpolatePolygons()
 	{
 	}
 
 	@Override
     public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("crop3d - smoth polygons");
+		System.out.println("crop3d - interpolate polygons");
 
 		// Check type is image frame
         if (!(frame instanceof ImageFrame))
@@ -67,36 +61,37 @@ public class Crop3D_SmoothPolygons implements Plugin
 
 		// get input and output node references
         ImageHandle handle = iframe.getImageHandle();
-        ImageSerialSectionsNode polyNode = Crop3D.getPolygonsNode(handle); 
         ImageSerialSectionsNode smoothNode = Crop3D.getSmoothPolygonsNode(handle);
+        ImageSerialSectionsNode interpNode = Crop3D.getInterpolatedPolygonsNode(handle);
 
-        // clear output nodes
-        smoothNode.clear();
-        
-        // iterate over polygons to create a smoothed version
-        for (ImageSliceNode sliceNode : polyNode.children())
+        if (smoothNode.isLeaf())
         {
-            int sliceIndex = sliceNode.getSliceIndex(); 
-
-            ShapeNode shapeNode = (ShapeNode) sliceNode.children().iterator().next();
-            Polygon2D poly = (Polygon2D) shapeNode.getShape().getGeometry();
-
-            LinearRing2D ring = poly.rings().iterator().next();
-            LinearRing2D ring2 = ring.resampleBySpacing(5); // every 2 pixels
-
-            Shape shape = new Shape(ring2);
-            shape.setColor(Color.GREEN);
-            shape.setLineWidth(5);
+            System.out.println("smooth node is empty");
+            return;
+        }
+        
+        Collection<Integer> indices = smoothNode.getSliceIndices();
+        // TODO:assume indices are ordererd
+        Iterator<Integer> sliceIndexIter = indices.iterator();
+        if (!sliceIndexIter.hasNext())
+        {
+            return;
+        }
+        
+        
+        int currentSliceIndex = sliceIndexIter.next();
+        while (sliceIndexIter.hasNext())
+        {
+            int nextSliceIndex = sliceIndexIter.next();
+            System.out.println("process slice range " + currentSliceIndex + " - " + nextSliceIndex);
             
-            Node shapeNode2 = new ShapeNode(shape);
-            String sliceName = String.format(Locale.US, "smooth%0" + nDigits + "d", sliceIndex);
-            shapeNode2.setName(sliceName);
-
-            // create the slice for smooth version
-            ImageSliceNode sliceNode2 = new ImageSliceNode(sliceName, sliceIndex);
-            smoothNode.addSliceNode(sliceNode2);
+            for (int sliceIndex = currentSliceIndex + 1; sliceIndex  <nextSliceIndex; sliceIndex++)
+            {
+                System.out.println("process slice " + sliceIndex);
+            }
             
-            sliceNode2.addNode(shapeNode2);
+            
+            currentSliceIndex = nextSliceIndex;
         }
 
         // need to call this to update items to display 

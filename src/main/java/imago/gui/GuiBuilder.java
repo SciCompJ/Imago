@@ -46,6 +46,7 @@ import imago.plugin.image.shape.ImageReshape;
 import imago.plugin.image.shape.ImageRotateAroundCenter;
 import imago.plugin.image.vectorize.*;
 import imago.plugin.plugin.crop.Crop3D_AddPolygon;
+import imago.plugin.plugin.crop.Crop3D_InterpolatePolygons;
 import imago.plugin.plugin.crop.Crop3D_SmoothPolygons;
 import imago.plugin.table.OpenTable;
 import imago.plugin.table.SaveTable;
@@ -618,7 +619,8 @@ public class GuiBuilder
         
         JMenu crop3DMenu = new JMenu("Crop 3D");
         addPlugin(crop3DMenu, new Crop3D_AddPolygon(), "Add polygon");
-        addPlugin(crop3DMenu, new Crop3D_SmoothPolygons(), "Smooth polygon");
+        addPlugin(crop3DMenu, new Crop3D_SmoothPolygons(), "Smooth polygons");
+        addPlugin(crop3DMenu, new Crop3D_InterpolatePolygons(), "Interpolate polygons");
         menu.add(crop3DMenu);
         
         return menu;

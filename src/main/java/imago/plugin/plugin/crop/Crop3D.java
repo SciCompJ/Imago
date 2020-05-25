@@ -59,4 +59,18 @@ public class Crop3D
         return polyNode;
     }
     
+    public static final ImageSerialSectionsNode getInterpolatedPolygonsNode(ImageHandle handle)
+    {
+        GroupNode cropNode = getCrop3dNode(handle);
+        
+        if (cropNode.hasChildWithName("interp"))
+        {
+            return (ImageSerialSectionsNode) cropNode.getChild("interp");
+        }
+        
+        ImageSerialSectionsNode polyNode = new ImageSerialSectionsNode("interp");
+        cropNode.addNode(polyNode);
+        return polyNode;
+    }
+    
 }

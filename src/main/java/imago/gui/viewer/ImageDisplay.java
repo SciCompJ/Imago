@@ -280,7 +280,7 @@ public class ImageDisplay extends JPanel
 	    paintAnnotations(g);
 	    paintSceneGraphItems(g);
 	    
-	    paintSelection(g);
+	    drawSelection(g);
 	}
 
 	private void paintImage(Graphics g)
@@ -296,7 +296,7 @@ public class ImageDisplay extends JPanel
         
         for(Shape shape : this.shapes)
         {
-            paintShape(g2, shape);
+            drawShape(g2, shape);
         }
     }
     
@@ -307,21 +307,25 @@ public class ImageDisplay extends JPanel
         
         for(Shape shape : this.sceneGraphItems)
         {
-            paintShape(g2, shape);
+            drawShape(g2, shape);
         }
     }
     
-    private void paintShape(Graphics2D g2, Shape shape)
+    private void drawShape(Graphics2D g2, Shape shape)
     {
         g2.setColor(shape.getColor());
+        Stroke stroke = new BasicStroke((float) shape.getLineWidth());
+        g2.setColor(shape.getColor());
+        g2.setStroke(stroke);
         Geometry geom = shape.getGeometry();
         if (geom instanceof Geometry2D)
         {
         	drawGeometry(g2, (Geometry2D) geom);
         }
+        g2.setStroke(new BasicStroke());
     }
     
-    private void paintSelection(Graphics g)
+    private void drawSelection(Graphics g)
     {
         // basic check to avoid errors
         if (this.selection == null)
