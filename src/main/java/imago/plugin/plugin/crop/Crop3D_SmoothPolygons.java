@@ -82,11 +82,11 @@ public class Crop3D_SmoothPolygons implements Plugin
             Polygon2D poly = (Polygon2D) shapeNode.getShape().getGeometry();
 
             LinearRing2D ring = poly.rings().iterator().next();
-            LinearRing2D ring2 = ring.resampleBySpacing(5); // every 2 pixels
+            LinearRing2D ring2 = ring.resampleBySpacing(2.0); // every 2 pixels
 
             Shape shape = new Shape(ring2);
             shape.setColor(Color.GREEN);
-            shape.setLineWidth(5);
+            shape.setLineWidth(0.5);
             
             Node shapeNode2 = new ShapeNode(shape);
             String sliceName = String.format(Locale.US, "smooth%0" + nDigits + "d", sliceIndex);
