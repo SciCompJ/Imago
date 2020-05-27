@@ -3,11 +3,10 @@
  */
 package imago.app.scene;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import imago.app.shape.Shape;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.Point2D;
 
@@ -25,8 +24,7 @@ public class ShapeNodeTest
 	public void testIsLeaf()
 	{
 		Geometry2D geom = new Point2D(20, 10);
-		Shape shape = new Shape(geom);
-		ShapeNode node = new ShapeNode(shape);
+		ShapeNode node = new ShapeNode(geom);
 		
 		assertTrue(node.isLeaf());
 	}

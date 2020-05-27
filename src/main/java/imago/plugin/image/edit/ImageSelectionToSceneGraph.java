@@ -7,7 +7,6 @@ import imago.app.ImageHandle;
 import imago.app.scene.GroupNode;
 import imago.app.scene.Node;
 import imago.app.scene.ShapeNode;
-import imago.app.shape.Shape;
 import imago.gui.ImageFrame;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
@@ -82,7 +81,7 @@ public class ImageSelectionToSceneGraph implements Plugin
         }
         
         ImageHandle handle = iframe.getImageHandle();
-        Node node = new ShapeNode(new Shape(poly));
+        Node node = new ShapeNode(poly);
         node.setName("Selection");
         ((GroupNode) handle.getRootNode()).addNode(node);
         

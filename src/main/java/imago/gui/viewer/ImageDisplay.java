@@ -123,6 +123,11 @@ public class ImageDisplay extends JPanel
 		this.sceneGraphItems.add(shape);
 	}
 
+	public void addSceneGraphItem(Geometry geom)
+	{
+		this.sceneGraphItems.add(new Shape(geom));
+	}
+
 	public void clearSceneGraphItems()
 	{
 		this.sceneGraphItems.clear();

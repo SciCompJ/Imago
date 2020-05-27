@@ -10,7 +10,6 @@ import imago.app.scene.ImageSerialSectionsNode;
 import imago.app.scene.ImageSliceNode;
 import imago.app.scene.Node;
 import imago.app.scene.ShapeNode;
-import imago.app.shape.Shape;
 import imago.gui.ImageFrame;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
@@ -80,7 +79,7 @@ public class Crop3D_AddPolygon implements Plugin
         	poly = poly.complement();
         }
 
-        Node shapeNode = new ShapeNode(new Shape(poly));
+        Node shapeNode = new ShapeNode(poly);
         shapeNode.setName("Polygon");
         
 

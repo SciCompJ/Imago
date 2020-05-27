@@ -3,14 +3,6 @@
  */
 package imago.gui.viewer;
 
-import imago.app.ImageHandle;
-import imago.app.scene.ImageSliceNode;
-import imago.app.scene.Node;
-import imago.app.scene.ShapeNode;
-import imago.app.shape.Shape;
-import imago.gui.ImageViewer;
-import imago.gui.ImagoTool;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -28,6 +20,14 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import imago.app.ImageHandle;
+import imago.app.scene.ImageSliceNode;
+import imago.app.scene.Node;
+import imago.app.scene.ShapeNode;
+import imago.app.shape.Shape;
+import imago.gui.ImageViewer;
+import imago.gui.ImagoTool;
+import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.image.BufferedImageUtils;
 import net.sci.image.Image;
@@ -312,9 +312,10 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 		}
 		else if (node instanceof ShapeNode)
 		{
-			Shape shape = ((ShapeNode) node).getShape();
-			if (shape.getGeometry() instanceof Geometry2D)
+			Geometry geom = ((ShapeNode) node).getGeometry();
+			if (geom instanceof Geometry2D)
 			{
+				Shape shape = new Shape(geom, ((ShapeNode) node).getStyle());
 				this.imageDisplay.addSceneGraphItem(shape);
 			}
 		}

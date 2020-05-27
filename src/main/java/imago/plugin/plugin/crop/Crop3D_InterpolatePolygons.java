@@ -11,9 +11,7 @@ import java.util.Locale;
 import imago.app.ImageHandle;
 import imago.app.scene.ImageSerialSectionsNode;
 import imago.app.scene.ImageSliceNode;
-import imago.app.scene.Node;
 import imago.app.scene.ShapeNode;
-import imago.app.shape.Shape;
 import imago.gui.ImageFrame;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
@@ -90,7 +88,7 @@ public class Crop3D_InterpolatePolygons implements Plugin
         // Extract polygon of bottom slice
         int currentSliceIndex = sliceIndexIter.next();
         ShapeNode shapeNode = (ShapeNode) smoothNode.getSliceNode(currentSliceIndex).children().iterator().next();
-        LinearRing2D currentPoly = (LinearRing2D) shapeNode.getShape().getGeometry();
+        LinearRing2D currentPoly = (LinearRing2D) shapeNode.getGeometry();
         
         // iterate over pairs of indices
         while (sliceIndexIter.hasNext())
@@ -100,7 +98,7 @@ public class Crop3D_InterpolatePolygons implements Plugin
             
             // Extract polygon of upper slice
             shapeNode = (ShapeNode) smoothNode.getSliceNode(nextSliceIndex).children().iterator().next();
-            LinearRing2D nextPolyRef = (LinearRing2D) shapeNode.getShape().getGeometry();
+            LinearRing2D nextPolyRef = (LinearRing2D) shapeNode.getGeometry();
             
             // compute projection points of current poly over next poly
             int nv = currentPoly.vertexNumber();
@@ -153,15 +151,11 @@ public class Crop3D_InterpolatePolygons implements Plugin
 	
 	private ImageSliceNode createInterpNode(LinearRing2D ring, int sliceIndex, int nDigits)
 	{
-        // create shape for interpolated polygon
-        Shape shape = new Shape(ring);
-        shape.setColor(Color.MAGENTA);
-        shape.setLineWidth(2);
-        
         // create a node for the shape
-        Node shapeNode = new ShapeNode(shape);
         String sliceName = String.format(Locale.US, "interp%0" + nDigits + "d", sliceIndex);
-        shapeNode.setName(sliceName);
+        ShapeNode shapeNode = new ShapeNode(sliceName, ring);
+        shapeNode.getStyle().setColor(Color.MAGENTA);
+        shapeNode.getStyle().setLineWidth(2);
 
         // create the slice for interpolated version
         ImageSliceNode sliceNode = new ImageSliceNode(sliceName, sliceIndex);

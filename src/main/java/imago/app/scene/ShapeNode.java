@@ -6,12 +6,12 @@ package imago.app.scene;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
-import imago.app.shape.Shape;
+import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.Point2D;
 
 /**
- * A Node that contains a shape.
+ * A Node that contains a shape, and drawing information.
  * 
  * @author dlegland
  */
@@ -21,30 +21,37 @@ public class ShapeNode extends Node
     // Class members
 
 	/** The shape contained in this node. */
-	Shape shape;
+    Geometry geometry;
 
+	Style style = new Style();
+ 	
 	
     // =============================================================
     // Constructor
 
-	public ShapeNode(String name, Shape shape)
+	public ShapeNode(String name, Geometry geometry)
 	{
 		super(name);
-		this.shape = shape;
+		this.geometry = geometry;
 	}
 	
-	public ShapeNode(Shape shape)
+	public ShapeNode(Geometry geometry)
 	{
-		this.shape = shape;
+		this.geometry = geometry;
 	}
 	
 	
     // =============================================================
     // Specific methods
 
-	public Shape getShape()
+	public Geometry getGeometry()
 	{
-		return this.shape;
+		return this.geometry;
+	}
+	
+	public Style getStyle()
+	{
+		return this.style;
 	}
 	
 	
@@ -83,8 +90,7 @@ public class ShapeNode extends Node
 	public static final void main(String... args)
 	{
 		Geometry2D geom = new Point2D(20, 10);
-		Shape shape = new Shape(geom);
-		ShapeNode node = new ShapeNode(shape);
+		ShapeNode node = new ShapeNode(geom);
 		
 		node.printTree(System.out, 0);
 	}

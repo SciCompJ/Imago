@@ -11,7 +11,6 @@ import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.app.scene.GroupNode;
 import imago.app.scene.ShapeNode;
-import imago.app.shape.Shape;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoGui;
 import net.sci.array.scalar.UInt8Array2D;
@@ -51,19 +50,19 @@ public class Crop3D_AddPolygonTest
         ring1.addVertex(new Point2D(350,  50));
         ring1.addVertex(new Point2D(350, 350));
         ring1.addVertex(new Point2D( 50, 350));
-        Shape shape1 = new Shape(ring1);
-        shape1.setColor(Color.BLUE);
+        ShapeNode shape1 = new ShapeNode("Blue", ring1);
+        shape1.getStyle().setColor(Color.BLUE);
         
         LinearRing2D ring2 = new LinearRing2D(4);
         ring2.addVertex(new Point2D( 80,  20));
         ring2.addVertex(new Point2D(380,  80));
         ring2.addVertex(new Point2D(320, 380));
         ring2.addVertex(new Point2D( 20, 320));
-        Shape shape2 = new Shape(ring2);
-        shape2.setColor(Color.RED);
+        ShapeNode shape2 = new ShapeNode("Red", ring2);
+        shape2.getStyle().setColor(Color.RED);
         
-        polyNode.addNode(new ShapeNode("Blue", shape1));
-        polyNode.addNode(new ShapeNode("Red", shape2));
+        polyNode.addNode(shape1);
+        polyNode.addNode(shape2);
         
         frame.getImageView().refreshDisplay(); 
         frame.getImageView().repaint();
@@ -92,9 +91,9 @@ public class Crop3D_AddPolygonTest
     	}
 
         
-        Shape shapeProj = new Shape(interpPoly);
-        shapeProj.setColor(Color.GREEN);
-        polyNode.addNode(new ShapeNode("Green", shapeProj));
+    	ShapeNode shapeProj = new ShapeNode("Green", interpPoly);
+    	shapeProj.getStyle().setColor(Color.GREEN);
+        polyNode.addNode(shapeProj);
 
         frame.getImageView().refreshDisplay(); 
         frame.getImageView().repaint();

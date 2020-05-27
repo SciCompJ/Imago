@@ -9,9 +9,7 @@ import java.util.Locale;
 import imago.app.ImageHandle;
 import imago.app.scene.ImageSerialSectionsNode;
 import imago.app.scene.ImageSliceNode;
-import imago.app.scene.Node;
 import imago.app.scene.ShapeNode;
-import imago.app.shape.Shape;
 import imago.gui.ImageFrame;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
@@ -79,24 +77,21 @@ public class Crop3D_SmoothPolygons implements Plugin
             int sliceIndex = sliceNode.getSliceIndex(); 
 
             ShapeNode shapeNode = (ShapeNode) sliceNode.children().iterator().next();
-            Polygon2D poly = (Polygon2D) shapeNode.getShape().getGeometry();
+            Polygon2D poly = (Polygon2D) shapeNode.getGeometry();
 
             LinearRing2D ring = poly.rings().iterator().next();
             LinearRing2D ring2 = ring.resampleBySpacing(2.0); // every 2 pixels
 
-            Shape shape = new Shape(ring2);
-            shape.setColor(Color.GREEN);
-            shape.setLineWidth(0.5);
-            
-            Node shapeNode2 = new ShapeNode(shape);
             String sliceName = String.format(Locale.US, "smooth%0" + nDigits + "d", sliceIndex);
-            shapeNode2.setName(sliceName);
-
+            ShapeNode shapeNode2 = new ShapeNode(sliceName, ring2);
+            shapeNode2.getStyle().setColor(Color.GREEN);
+            shapeNode2.getStyle().setLineWidth(0.5);
+            
             // create the slice for smooth version
             ImageSliceNode sliceNode2 = new ImageSliceNode(sliceName, sliceIndex);
-            smoothNode.addSliceNode(sliceNode2);
-            
             sliceNode2.addNode(shapeNode2);
+            
+            smoothNode.addSliceNode(sliceNode2);
         }
 
         // need to call this to update items to display 

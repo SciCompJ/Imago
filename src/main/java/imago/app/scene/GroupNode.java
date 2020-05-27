@@ -7,7 +7,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import imago.app.shape.Shape;
 import net.sci.geom.geom2d.Point2D;
 
 /**
@@ -125,10 +124,10 @@ public class GroupNode extends Node
 	
 	public static final void main(String... args)
 	{
-		ShapeNode node1 = new ShapeNode(new Shape(new Point2D(20, 10)));
-		ShapeNode node2 = new ShapeNode(new Shape(new Point2D(30, 10)));
-		ShapeNode node3 = new ShapeNode(new Shape(new Point2D(30, 20)));
-		ShapeNode node4 = new ShapeNode(new Shape(new Point2D(20, 20)));
+		ShapeNode node1 = new ShapeNode(new Point2D(20, 10));
+		ShapeNode node2 = new ShapeNode(new Point2D(30, 10));
+		ShapeNode node3 = new ShapeNode(new Point2D(30, 20));
+		ShapeNode node4 = new ShapeNode(new Point2D(20, 20));
 		
 		GroupNode group = new GroupNode("Group");
 		group.addNode(node1);

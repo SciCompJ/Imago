@@ -5,6 +5,7 @@ package imago.app.shape;
 
 import java.awt.Color;
 
+import imago.app.scene.Style;
 import net.sci.geom.Geometry;
 
 /**
@@ -20,9 +21,7 @@ public class Shape
     
     Geometry geometry;
     
-    Color color = Color.BLUE;
-
-    double lineWidth = 1.0;
+    Style style;
 
     
     // ===================================================================
@@ -31,8 +30,14 @@ public class Shape
     public Shape(Geometry geometry)
     {
         this.geometry = geometry;
+        this.style = new Style();
     }
 
+    public Shape(Geometry geometry, Style style)
+    {
+        this.geometry = geometry;
+        this.style = style;
+    }
 
     // ===================================================================
     // Accessors and mutators
@@ -60,7 +65,7 @@ public class Shape
      */
     public Color getColor()
     {
-        return color;
+        return style.getColor();
     }
 
 
@@ -69,7 +74,7 @@ public class Shape
      */
     public void setColor(Color color)
     {
-        this.color = color;
+        this.style.setColor(color);
     }
 
 
@@ -78,7 +83,7 @@ public class Shape
      */
     public double getLineWidth()
     {
-        return lineWidth;
+        return style.getLineWidth();
     }
 
 
@@ -87,7 +92,7 @@ public class Shape
      */
     public void setLineWidth(double lineWidth)
     {
-        this.lineWidth = lineWidth;
+        this.style.setLineWidth(lineWidth);
     }
     
 }
