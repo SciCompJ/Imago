@@ -46,6 +46,7 @@ import imago.plugin.image.shape.ImageReshape;
 import imago.plugin.image.shape.ImageRotateAroundCenter;
 import imago.plugin.image.vectorize.*;
 import imago.plugin.plugin.crop.Crop3D_AddPolygon;
+import imago.plugin.plugin.crop.Crop3D_CropImage;
 import imago.plugin.plugin.crop.Crop3D_InterpolatePolygons;
 import imago.plugin.plugin.crop.Crop3D_SmoothPolygons;
 import imago.plugin.table.OpenTable;
@@ -206,6 +207,9 @@ public class GuiBuilder
 		addPlugin(fileImportMenu, new ImportImageMetaImage(), "MetaImage Data...");
 		addPlugin(fileImportMenu, new ImportImageVgi(), "VGI Image...");
 		fileMenu.add(fileImportMenu);
+
+        fileMenu.addSeparator();
+        addPlugin(fileMenu, new SaveImageMetaImage(), "Save As MetaImage");
 
 //		addMenuItem(demoMenu, new CreateWhiteNoiseImageAction(frame,
 //				"createWhiteNoiseImage"), "White Noise Array<?>");
@@ -621,6 +625,7 @@ public class GuiBuilder
         addPlugin(crop3DMenu, new Crop3D_AddPolygon(), "Add polygon");
         addPlugin(crop3DMenu, new Crop3D_SmoothPolygons(), "Smooth polygons");
         addPlugin(crop3DMenu, new Crop3D_InterpolatePolygons(), "Interpolate polygons");
+        addPlugin(crop3DMenu, new Crop3D_CropImage(), "Crop Image");
         menu.add(crop3DMenu);
         
         return menu;
