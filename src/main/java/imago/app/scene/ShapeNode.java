@@ -29,6 +29,13 @@ public class ShapeNode extends Node
     // =============================================================
     // Constructor
 
+	public ShapeNode(String name, Geometry geometry, Style style)
+	{
+		super(name);
+		this.geometry = geometry;
+		this.style = style;
+	}
+	
 	public ShapeNode(String name, Geometry geometry)
 	{
 		super(name);

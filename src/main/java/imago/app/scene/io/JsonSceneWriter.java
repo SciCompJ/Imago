@@ -10,7 +10,7 @@ import java.io.StringWriter;
 
 import com.google.gson.stream.JsonWriter;
 
-import imago.app.scene.GroupNode;
+import imago.app.scene.ImageSliceNode;
 import imago.app.scene.Node;
 import imago.app.scene.ShapeNode;
 import imago.app.scene.Style;
@@ -34,6 +34,7 @@ public class JsonSceneWriter
 		writer.writeNode(node);
 		return stringWriter.toString();
 	}
+	
 	
     // =============================================================
     // Class members
@@ -64,14 +65,28 @@ public class JsonSceneWriter
 		
 		// write common properties
 		writeString("name", node.getName());
+		writeString("type", node.getClass().getSimpleName());
 		writeBoolean("visible", node.isVisible());
 		
-		if (node instanceof GroupNode)
+		if (node instanceof ImageSliceNode)
+		{
+			this.writer.name("sliceIndex").value(((ImageSliceNode)node).getSliceIndex());
+			
+			// iterate over children
+			this.writer.name("children");
+			this.writer.beginArray();
+			for (Node child : node.children())
+			{
+				writeNode(child);
+			}
+			this.writer.endArray();
+		}
+		else if (!node.isLeaf())
 		{
 			// iterate over children
 			this.writer.name("children");
 			this.writer.beginArray();
-			for (Node child : ((GroupNode) node).children())
+			for (Node child : node.children())
 			{
 				writeNode(child);
 			}

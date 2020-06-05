@@ -31,12 +31,21 @@ public class ImageSliceNode extends GroupNode
 	}
 	
 	/**
+	 * @param name the name of this slice node.
 	 * @param sliceIndex the sliceIndex of this slice node.
 	 */
 	public ImageSliceNode(String name, int sliceIndex)
 	{
 		super(name);
 		this.sliceIndex = sliceIndex;
+	}
+	
+	/**
+	 * @param name the name of this slice node.
+	 */
+	public ImageSliceNode(String name)
+	{
+		super(name);
 	}
 	
 	
