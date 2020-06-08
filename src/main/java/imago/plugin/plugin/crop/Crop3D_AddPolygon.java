@@ -79,7 +79,8 @@ public class Crop3D_AddPolygon implements Plugin
         	poly = poly.complement();
         }
 
-        Node shapeNode = new ShapeNode(poly);
+        // Create a new LinearRing shape from the boundary of the polygon 
+        Node shapeNode = new ShapeNode(poly.rings().iterator().next());
         shapeNode.setName("Polygon");
         
 

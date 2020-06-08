@@ -48,6 +48,8 @@ import imago.plugin.image.vectorize.*;
 import imago.plugin.plugin.crop.Crop3D_AddPolygon;
 import imago.plugin.plugin.crop.Crop3D_CropImage;
 import imago.plugin.plugin.crop.Crop3D_InterpolatePolygons;
+import imago.plugin.plugin.crop.Crop3D_LoadPolygonsFromJson;
+import imago.plugin.plugin.crop.Crop3D_SavePolygonsAsJson;
 import imago.plugin.plugin.crop.Crop3D_SmoothPolygons;
 import imago.plugin.table.OpenTable;
 import imago.plugin.table.SaveTable;
@@ -622,10 +624,14 @@ public class GuiBuilder
         menu.addSeparator();
         
         JMenu crop3DMenu = new JMenu("Crop 3D");
+        addPlugin(crop3DMenu, new Crop3D_LoadPolygonsFromJson(), "Load polygons from JSON...");
+        crop3DMenu.addSeparator();
         addPlugin(crop3DMenu, new Crop3D_AddPolygon(), "Add polygon");
         addPlugin(crop3DMenu, new Crop3D_SmoothPolygons(), "Smooth polygons");
         addPlugin(crop3DMenu, new Crop3D_InterpolatePolygons(), "Interpolate polygons");
-        addPlugin(crop3DMenu, new Crop3D_CropImage(), "Crop Image");
+        crop3DMenu.addSeparator();
+        addPlugin(crop3DMenu, new Crop3D_SavePolygonsAsJson(), "Save polygons as JSON...");
+        addPlugin(crop3DMenu, new Crop3D_CropImage(), "Crop Image...");
         menu.add(crop3DMenu);
         
         return menu;

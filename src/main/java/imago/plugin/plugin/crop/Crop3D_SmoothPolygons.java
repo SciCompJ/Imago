@@ -17,7 +17,6 @@ import imago.gui.Plugin;
 import imago.gui.viewer.StackSliceViewer;
 import net.sci.array.Array;
 import net.sci.geom.geom2d.polygon.LinearRing2D;
-import net.sci.geom.geom2d.polygon.Polygon2D;
 import net.sci.image.Image;
 
 /**
@@ -65,7 +64,7 @@ public class Crop3D_SmoothPolygons implements Plugin
 
 		// get input and output node references
         ImageHandle handle = iframe.getImageHandle();
-        ImageSerialSectionsNode polyNode = Crop3D.getPolygonsNode(handle); 
+        ImageSerialSectionsNode polyNode = Crop3D.getPolygonsNode(handle);
         ImageSerialSectionsNode smoothNode = Crop3D.getSmoothPolygonsNode(handle);
 
         // clear output nodes
@@ -77,9 +76,7 @@ public class Crop3D_SmoothPolygons implements Plugin
             int sliceIndex = sliceNode.getSliceIndex(); 
 
             ShapeNode shapeNode = (ShapeNode) sliceNode.children().iterator().next();
-            Polygon2D poly = (Polygon2D) shapeNode.getGeometry();
-
-            LinearRing2D ring = poly.rings().iterator().next();
+            LinearRing2D ring = (LinearRing2D) shapeNode.getGeometry();
             LinearRing2D ring2 = ring.resampleBySpacing(2.0); // every 2 pixels
 
             String sliceName = String.format(Locale.US, "smooth%0" + nDigits + "d", sliceIndex);
