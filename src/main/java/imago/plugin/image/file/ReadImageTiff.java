@@ -100,11 +100,11 @@ public class ReadImageTiff implements Plugin
 //        // If image data contains only two different values, convert to binary
 //        image = eventuallyConvertToBinary(image);
 		 
-        // populates some meta-data
-		image.setName(file.getName());
+//        // populates some meta-data
+//		image.setName(file.getName());
 		
 		// add the image document to GUI
-		ImageFrame newFrame = frame.getGui().createImageFrame(image);
+		ImageFrame newFrame = frame.createImageFrame(image);
 		newFrame.setLastOpenPath(path);
 	}
 

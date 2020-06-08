@@ -87,10 +87,9 @@ public class ImportImageVgi implements Plugin
 			System.err.println(ex);
 			return;
 		}
-		image.setName(file.getName());
 		
 		// add the image document to GUI
-        ImageFrame newFrame = frame.getGui().createImageFrame(image);
+        ImageFrame newFrame = frame.createImageFrame(image);
         newFrame.setLastOpenPath(path);
 	}
 

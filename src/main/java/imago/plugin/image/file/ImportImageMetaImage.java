@@ -82,10 +82,8 @@ public class ImportImageMetaImage implements Plugin
 			return;
 		}
 
-		image.setName(file.getName());
-
 		// add the image document to GUI
-		frame.getGui().createImageFrame(image);
+		frame.createImageFrame(image);
 	}
 
 }

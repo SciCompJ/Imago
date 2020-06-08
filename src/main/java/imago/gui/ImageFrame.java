@@ -197,6 +197,10 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
 	{
 		// use document name for base title
         String name = this.imageHandle.getName();
+        if (!this.image.getExtension().isEmpty())
+        {
+        	name = name + "." + this.image.getExtension(); 
+        }
 
         // string containing image dimensions
 		String dimString = "(unknown size)";

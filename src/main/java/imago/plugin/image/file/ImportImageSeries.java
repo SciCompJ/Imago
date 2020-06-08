@@ -151,7 +151,7 @@ public class ImportImageSeries implements Plugin
         Image image = new Image(array, firstImage);
         
         // add the image document to GUI
-        frame.getGui().createImageFrame(image);
+        frame.createImageFrame(image);
     }
 
     private String findExtension(String fileName)

@@ -5,7 +5,6 @@ package imago.gui;
 
 
 import java.awt.Dimension;
-import java.awt.Toolkit;
 
 
 /**
@@ -27,23 +26,19 @@ public class ImagoEmptyFrame extends ImagoFrame {
         GuiBuilder builder = new GuiBuilder(this);
         builder.createMenuBar();
 		
-		putFrameTopRight();
+		putFrameTopLeft();
 	}
 	
 	/** 
 	 * Set up frame size depending on screen size
 	 */
-	private void putFrameTopRight()
+	private void putFrameTopLeft()
 	{
-		// Get screen size
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		
 		this.jFrame.setMinimumSize(new Dimension(300, 0));
 		this.jFrame.pack();
 		
-		// set up frame position depending on frame size
-		Dimension size = this.jFrame.getSize();
-		int posX = (screenSize.width - size.width - 100);
+		// set up frame position in the upper left corner
+		int posX = 300;
 		int posY = 50;
 		this.jFrame.setLocation(posX, posY);
 	}

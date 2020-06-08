@@ -106,7 +106,7 @@ public class ImportImageRawData implements Plugin
         }
         
         // add the image document to GUI
-        frame.getGui().createImageFrame(image);
+        frame.createImageFrame(image);
     }
     
 }
