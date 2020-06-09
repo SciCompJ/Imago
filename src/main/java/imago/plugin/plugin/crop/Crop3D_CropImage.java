@@ -3,6 +3,12 @@
  */
 package imago.plugin.plugin.crop;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+
 import imago.app.ImageHandle;
 import imago.app.scene.ImageSerialSectionsNode;
 import imago.app.scene.ShapeNode;
@@ -12,8 +18,14 @@ import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import imago.gui.viewer.StackSliceViewer;
 import net.sci.array.Array;
-import net.sci.array.Array2D;
-import net.sci.array.Array3D;
+import net.sci.array.scalar.Scalar;
+import net.sci.array.scalar.ScalarArray;
+import net.sci.array.scalar.ScalarArray2D;
+import net.sci.array.scalar.ScalarArray3D;
+import net.sci.geom.geom2d.Box2D;
+import net.sci.geom.geom2d.Point2D;
+import net.sci.geom.geom2d.StraightLine2D;
+import net.sci.geom.geom2d.Vector2D;
 import net.sci.geom.geom2d.polygon.LinearRing2D;
 import net.sci.image.Image;
 
@@ -60,7 +72,7 @@ public class Crop3D_CropImage implements Plugin
             return;
         }
 
-        Array<?> result = process(array, interpNode);
+        Array<?> result = process((ScalarArray<?>) array, interpNode);
         
         Image resImage = new Image(result, image);
         resImage.setName(image.getName() + "-crop");
@@ -69,17 +81,17 @@ public class Crop3D_CropImage implements Plugin
 		frame.createImageFrame(resImage);
 	}
 	
-	public <T> Array<T> process(Array<T> array, ImageSerialSectionsNode interpNode)
+	public <T extends Scalar> ScalarArray<T> process(ScalarArray<T> array, ImageSerialSectionsNode interpNode)
 	{
 		if (array.dimensionality() != 3)
 		{
 		    throw new RuntimeException("Requires an image containing 3D Array");
 		}
-		Array3D<T> array3d = Array3D.wrap(array);
+		ScalarArray3D<T> array3d = ScalarArray3D.wrap(array);
 
         
         // Create empty result array
-        Array3D<T> resArray = Array3D.wrap(array3d.newInstance(array.size()));
+		ScalarArray3D<T> resArray = ScalarArray3D.wrap(array3d.newInstance(array.size()));
         
         // size of array
         int sizeX = array.size(0);
@@ -88,26 +100,76 @@ public class Crop3D_CropImage implements Plugin
         for (int sliceIndex : interpNode.getSliceIndices())
         {
         	System.out.println("crop slice " + sliceIndex);
+        	
         	// get 2D view on array slices
-        	Array2D<T> slice = array3d.slice(sliceIndex);
-            Array2D<T> resSlice = resArray.slice(sliceIndex);
+        	ScalarArray2D<T> slice = (ScalarArray2D<T>) array3d.slice(sliceIndex);
+        	ScalarArray2D<T> resSlice = (ScalarArray2D<T>) resArray.slice(sliceIndex);
         	
             // get crop polygon
             ShapeNode shapeNode = (ShapeNode) interpNode.getSliceNode(sliceIndex).children().iterator().next();
             LinearRing2D ring = (LinearRing2D) shapeNode.getGeometry();
             
-            for (int y = 0; y < sizeY; y++)
+            // compute bounds in Y direction
+            Box2D box = ring.boundingBox();
+            int ymin = (int) Math.max(0, Math.ceil(box.getYMin()));
+            int ymax = (int) Math.min(sizeY, Math.floor(box.getYMax()));
+
+            // iterate over lines inside bounding box
+            for (int y = ymin; y < ymax; y++)
             {
-                for (int x = 0; x < sizeX; x++)
-                {
-                	if (ring.isInside(x,  y))
-                	{
-                		resSlice.set(slice.get(x, y), x, y);
-                	}
-                }
+            	StraightLine2D line = new StraightLine2D(new Point2D(0, y), new Vector2D(1, 0));
+            	Collection<Point2D> points = ring.intersections(line);
+            	points = sortPointsByX(points);
+
+            	int np = points.size();
+//        		System.out.print("  y=" + y + ", " + np + " points");
+
+            	if (np % 2 != 0)
+            	{
+            		System.err.println("can not manage odd number of intersections bewteen linear ring and straight line");
+            		continue;
+            	}
+            	
+            	Iterator<Point2D> iter = points.iterator();
+            	while (iter.hasNext())
+            	{
+            		int x0 = (int) Math.max(0, Math.ceil(iter.next().getX()));
+            		int x1 = (int) Math.min(sizeX, Math.floor(iter.next().getX() + 1));
+//            		System.out.print(", x0=" + x0 + " x1=" + x1);
+            		for (int x = x0; x < x1; x++)
+            		{
+                		resSlice.setValue(slice.getValue(x, y), x, y);
+            		}
+            	}
+//        		System.out.println("");
             }
+//    		System.out.println("");
         }
 
         return resArray;
+	}
+	
+	private ArrayList<Point2D> sortPointsByX(Collection<Point2D> points)
+	{
+		ArrayList<Point2D> res = new ArrayList<Point2D>(points.size());
+		res.addAll(points);
+		Collections.sort(res, new Comparator<Point2D>()
+		{
+			@Override
+			public int compare(Point2D p0, Point2D p1)
+			{
+				// compare X first
+				double dx = p0.getX() - p1.getX();
+				if (dx < 0) return -1;
+				if (dx > 0) return +1;
+				// add y comparison
+				double dy = p0.getY() - p1.getY();
+				if (dy < 0) return -1;
+				if (dy > 0) return +1;
+				// same point
+				return 0;
+			}
+		});
+		return res;
 	}
 }

@@ -8,7 +8,6 @@ import java.util.Locale;
 import imago.app.ImageHandle;
 import imago.app.scene.ImageSerialSectionsNode;
 import imago.app.scene.ImageSliceNode;
-import imago.app.scene.Node;
 import imago.app.scene.ShapeNode;
 import imago.gui.ImageFrame;
 import imago.gui.ImageViewer;
@@ -71,25 +70,26 @@ public class Crop3D_AddPolygon implements Plugin
             return;
         }
         
-		
         // enforce counter-clockwise polygon
         Polygon2D poly = (Polygon2D) selection;
         if (poly.signedArea() < 0)
         {
         	poly = poly.complement();
         }
-
-        // Create a new LinearRing shape from the boundary of the polygon 
-        Node shapeNode = new ShapeNode(poly.rings().iterator().next());
-        shapeNode.setName("Polygon");
         
-
+        // select node containing manually delineated polygons
         ImageHandle handle = iframe.getImageHandle();
         ImageSerialSectionsNode polyNode = Crop3D.getPolygonsNode(handle);
         
+        // compute slice and polygon name 
         int nDigits = (int) Math.ceil(Math.log10(array.size(2)));
         String sliceName = String.format(Locale.US, "slice%0" + nDigits + "d", sliceIndex);
         
+        // Create a new LinearRing shape from the boundary of the polygon
+        ShapeNode shapeNode = new ShapeNode(sliceName, poly.rings().iterator().next());
+        shapeNode.getStyle().setLineWidth(3.5);
+        
+        // get relevant slice node, or create one if necessary
         ImageSliceNode sliceNode;
         if (polyNode.hasSliceNode(sliceIndex))
         {
@@ -109,7 +109,7 @@ public class Crop3D_AddPolygon implements Plugin
         
         // need to call this to update items to display 
         viewer.refreshDisplay(); 
-        
         viewer.repaint();
 	}
+	
 }

@@ -67,6 +67,12 @@ public class SaveImageMetaImage implements Plugin
 
 		// Check the chosen file is state
 		File file = openWindow.getSelectedFile();
+		
+		if (!file.getName().endsWith(".mhd"))
+		{
+			file = new File(file.getParent(), file.getName() + ".mhd");
+		}
+		
 
 //		// eventually keep path for future opening
 //		String path = file.getPath();
@@ -86,7 +92,7 @@ public class SaveImageMetaImage implements Plugin
 		catch(Exception ex)
 		{
 		    System.err.println(ex);
-            ImagoGui.showErrorDialog(frame, ex.getLocalizedMessage(), "TIFF Image Reading Error");
+            ImagoGui.showErrorDialog(frame, ex.getLocalizedMessage(), "MHD Image Export Error");
 			return;
 		}
 		

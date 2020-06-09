@@ -47,8 +47,9 @@ public class Crop3D_SavePolygonsAsJson implements Plugin
         }
         
         // create file dialog using last open path
-		String lastPath = ".";
-		saveWindow = new JFileChooser(lastPath);
+//		String lastPath = ".";
+		String imageName = ((ImageFrame) frame).getImage().getName();
+		saveWindow = new JFileChooser(new File(imageName + ".json"));
 		saveWindow.setFileFilter(new FileNameExtensionFilter("JSON files (*.json)", "json"));
 
 		// Open dialog to choose the file

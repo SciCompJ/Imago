@@ -7,6 +7,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
 	// generic classes
 	Crop3D_AddPolygonTest.class,
+	Crop3D_CropImageTest.class,
 	Crop3D_LoadPolygonsFromJsonTest.class,
 	})
 public class AllTests {

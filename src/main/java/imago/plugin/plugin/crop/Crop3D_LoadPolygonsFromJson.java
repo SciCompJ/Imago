@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.google.gson.stream.JsonReader;
@@ -50,6 +51,21 @@ public class Crop3D_LoadPolygonsFromJson implements Plugin
         // get handle to the document
         ImageHandle handle = ((ImageFrame) frame).getImageHandle();
 		
+        if (Crop3D.hasCrop3dNodes(handle))
+        {
+			int dialogResult = JOptionPane.showConfirmDialog(frame.getWidget(),
+					"This frame contains Crop3D objects that will be removed.\nContinue anyway?",
+					"Crop3D Warning", JOptionPane.YES_NO_OPTION);
+			if (dialogResult != JOptionPane.YES_OPTION)
+			{
+				return;
+			}
+        }
+
+        // reset current state of the Crop3D plugin
+        Crop3D.initializeCrop3dNodes(handle);
+
+
         // create file dialog using last open path
 		String lastPath = ".";
 		openWindow = new JFileChooser(lastPath);
@@ -69,7 +85,7 @@ public class Crop3D_LoadPolygonsFromJson implements Plugin
 			return;
 		}
 		
-		JsonSceneReader sceneReader;
+        JsonSceneReader sceneReader;
 		
 		try
 		{

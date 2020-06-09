@@ -3,29 +3,19 @@
  */
 package imago.gui;
 
+import java.awt.image.BufferedImage;
+
+import javax.swing.*;
+
 import imago.app.ImageHandle;
 import imago.gui.action.RunPluginAction;
-import imago.gui.tool.DrawBrushValueTool;
-import imago.gui.tool.DrawValueTool;
-import imago.gui.tool.SelectLineSegmentTool;
-import imago.gui.tool.SelectPolygonTool;
-import imago.gui.tool.SelectRectangleTool;
-import imago.gui.tool.SelectionTool;
+import imago.gui.tool.*;
 import imago.plugin.BoxFilter3x3FloatPlugin;
 import imago.plugin.CloseCurrentFrame;
 import imago.plugin.CloseWithChildren;
 import imago.plugin.QuitApplication;
 import imago.plugin.developer.DisplayExceptionDialog;
-import imago.plugin.edit.ChangeCurrentTool;
-import imago.plugin.edit.ChooseBrushRadius;
-import imago.plugin.edit.ChooseBrushValue;
-import imago.plugin.edit.DocClearShapes;
-import imago.plugin.edit.PrintDocumentList;
-import imago.plugin.edit.PrintFrameList;
-import imago.plugin.edit.PrintWorkspaceContent;
-import imago.plugin.edit.ZoomIn;
-import imago.plugin.edit.ZoomOne;
-import imago.plugin.edit.ZoomOut;
+import imago.plugin.edit.*;
 import imago.plugin.image.ImageArrayOperatorPlugin;
 import imago.plugin.image.ImageOperatorPlugin;
 import imago.plugin.image.analyze.*;
@@ -33,24 +23,11 @@ import imago.plugin.image.convert.*;
 import imago.plugin.image.edit.*;
 import imago.plugin.image.file.*;
 import imago.plugin.image.process.*;
-import imago.plugin.image.shape.Image3DGetCurrentSlice;
-import imago.plugin.image.shape.Image3DGetSlice;
-import imago.plugin.image.shape.Image3DRotate90;
-import imago.plugin.image.shape.ImageConcatenate;
-import imago.plugin.image.shape.ImageCropDialog;
-import imago.plugin.image.shape.ImageCropSelection;
-import imago.plugin.image.shape.ImageDownsample;
-import imago.plugin.image.shape.ImageFlip;
-import imago.plugin.image.shape.ImagePermuteDims;
-import imago.plugin.image.shape.ImageReshape;
-import imago.plugin.image.shape.ImageRotateAroundCenter;
-import imago.plugin.image.vectorize.*;
-import imago.plugin.plugin.crop.Crop3D_AddPolygon;
-import imago.plugin.plugin.crop.Crop3D_CropImage;
-import imago.plugin.plugin.crop.Crop3D_InterpolatePolygons;
-import imago.plugin.plugin.crop.Crop3D_LoadPolygonsFromJson;
-import imago.plugin.plugin.crop.Crop3D_SavePolygonsAsJson;
-import imago.plugin.plugin.crop.Crop3D_SmoothPolygons;
+import imago.plugin.image.shape.*;
+import imago.plugin.image.vectorize.BinaryImageBoundaryGraph;
+import imago.plugin.image.vectorize.ImageFindNonZeroPixels;
+import imago.plugin.image.vectorize.ImageIsocontour;
+import imago.plugin.plugin.crop.*;
 import imago.plugin.table.OpenTable;
 import imago.plugin.table.SaveTable;
 import imago.plugin.table.ShowDemoTable;
@@ -61,15 +38,6 @@ import imago.plugin.table.plot.TableLinePlot;
 import imago.plugin.table.plot.TableScatterPlot;
 import imago.plugin.table.process.TableKMeans;
 import imago.plugin.table.process.TablePca;
-
-import java.awt.image.BufferedImage;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-
 import net.sci.array.Array;
 import net.sci.array.ArrayOperator;
 import net.sci.array.color.RGB8Array;
@@ -79,11 +47,7 @@ import net.sci.array.process.shape.Rotate90;
 import net.sci.image.ColorMaps;
 import net.sci.image.Image;
 import net.sci.image.ImageOperator;
-import net.sci.image.process.DynamicAdjustment;
-import net.sci.image.process.ImageInverter;
-import net.sci.image.process.SobelGradient;
-import net.sci.image.process.SobelGradientNorm;
-import net.sci.image.process.VectorArrayNorm;
+import net.sci.image.process.*;
 
 /**
  * Setup the menu for a given frame.
@@ -623,16 +587,19 @@ public class GuiBuilder
         menu.add(devMenu);
         menu.addSeparator();
         
-        JMenu crop3DMenu = new JMenu("Crop 3D");
-        addPlugin(crop3DMenu, new Crop3D_LoadPolygonsFromJson(), "Load polygons from JSON...");
-        crop3DMenu.addSeparator();
-        addPlugin(crop3DMenu, new Crop3D_AddPolygon(), "Add polygon");
-        addPlugin(crop3DMenu, new Crop3D_SmoothPolygons(), "Smooth polygons");
-        addPlugin(crop3DMenu, new Crop3D_InterpolatePolygons(), "Interpolate polygons");
-        crop3DMenu.addSeparator();
-        addPlugin(crop3DMenu, new Crop3D_SavePolygonsAsJson(), "Save polygons as JSON...");
-        addPlugin(crop3DMenu, new Crop3D_CropImage(), "Crop Image...");
-        menu.add(crop3DMenu);
+        if (hasImage3D)
+        {
+        	JMenu crop3DMenu = new JMenu("Crop 3D");
+        	addPlugin(crop3DMenu, new Crop3D_Initialize(), "Initialize Crop3D");
+        	addPlugin(crop3DMenu, new Crop3D_LoadPolygonsFromJson(), "Load polygons from JSON...");
+        	crop3DMenu.addSeparator();
+        	addPlugin(crop3DMenu, new Crop3D_AddPolygon(), "Add polygon");
+        	addPlugin(crop3DMenu, new Crop3D_InterpolatePolygons(), "Interpolate polygons");
+        	crop3DMenu.addSeparator();
+        	addPlugin(crop3DMenu, new Crop3D_SavePolygonsAsJson(), "Save polygons as JSON...");
+        	addPlugin(crop3DMenu, new Crop3D_CropImage(), "Crop Image...");
+        	menu.add(crop3DMenu);
+        }
         
         return menu;
     }
