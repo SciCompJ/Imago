@@ -5,6 +5,8 @@ package imago.gui;
 
 
 import imago.app.ImageHandle;
+import net.sci.array.scalar.ScalarArray;
+import net.sci.array.vector.VectorArray;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.image.Image;
 
@@ -24,6 +26,19 @@ public abstract class ImageViewer
 	// ===================================================================
 	// Public constants
 
+    /** 
+     * Determines the strategy for displaying a vector image. 
+     */
+    public static enum VectorImageDisplayMode
+    {
+        /** Display a single channel/component of the vector image.*/
+        CHANNEL,
+        /** Display the norm of each pixel of the vector image.*/
+        NORM,
+        /** Display the maximal channel value of each pixel of the vector image.*/
+        MAX,
+    }
+    
 	/**
 	 * The behavior of the zoom when the component is resized.
 	 */
@@ -63,7 +78,18 @@ public abstract class ImageViewer
      */
 	protected int[] slicingPosition;
 	
+	/**
+	 * The strategy for displaying a vector image. 
+	 */
+	protected VectorImageDisplayMode vectorImageDisplayMode = VectorImageDisplayMode.CHANNEL;
+	    
+    /**
+     * The index of the current channel, when the image data is a vector array,
+     * and when the viewer displays a single channel.
+     */
+	protected int currentChannelIndex = 0;	
 	
+    
 	// ===================================================================
 	// Constructor
 	
@@ -162,7 +188,7 @@ public abstract class ImageViewer
 	
 	
 	// ===================================================================
-	// Display management methods
+	// Setters and getters for display options
 	
 	public double getZoom()
 	{
@@ -226,7 +252,67 @@ public abstract class ImageViewer
 	}
 
 	
-	public abstract void refreshDisplay();
+	/**
+     * @return the vectorImageDisplayMode
+     */
+    public VectorImageDisplayMode getVectorImageDisplayMode()
+    {
+        return vectorImageDisplayMode;
+    }
+
+    /**
+     * @param vectorImageDisplayMode the vectorImageDisplayMode to set
+     */
+    public void setVectorImageDisplayMode(
+            VectorImageDisplayMode vectorImageDisplayMode)
+    {
+        this.vectorImageDisplayMode = vectorImageDisplayMode;
+    }
+
+    /**
+     * @return the currentChannelIndex
+     */
+    public int getCurrentChannelIndex()
+    {
+        return currentChannelIndex;
+    }
+    
+    /**
+     * @param currentChannelIndex the currentChannelIndex to set
+     */
+    public void setCurrentChannelIndex(int currentChannelIndex)
+    {
+        this.currentChannelIndex = currentChannelIndex;
+    }
+    
+    /**
+     * Computes the scalar array that will be displayed, based on the current
+     * settings of the viewer.
+     * 
+     * @param array
+     *            the vector array to convert
+     * @return an instance of ScalarArray representing the input array.
+     */
+    protected ScalarArray<?> computeVectorArrayDisplay(VectorArray<?> array)
+    {
+        switch (this.vectorImageDisplayMode)
+        {
+        case CHANNEL:
+            return array.channel(this.currentChannelIndex);
+        case NORM:
+            return VectorArray.norm(array);
+        case MAX:
+            return VectorArray.maxNorm(array);
+        default:
+            throw new RuntimeException("Unknown mode for converting vector image...");
+        }
+    }
+
+    
+    // ===================================================================
+    // Display management methods
+
+    public abstract void refreshDisplay();
 //	{
 ////		System.out.println("refresh display");
 //	}

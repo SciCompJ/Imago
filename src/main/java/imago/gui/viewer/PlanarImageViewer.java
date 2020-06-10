@@ -20,9 +20,13 @@ import imago.app.scene.ShapeNode;
 import imago.app.shape.Shape;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoTool;
+import net.sci.array.scalar.ScalarArray2D;
+import net.sci.array.vector.VectorArray;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.image.BufferedImageUtils;
+import net.sci.image.ColorMap;
+import net.sci.image.ColorMaps;
 import net.sci.image.Image;
 
 
@@ -242,7 +246,23 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 	public void updateAwtImage()
 	{
         Image image = this.getImageToDisplay();
-        this.awtImage = BufferedImageUtils.createAwtImage(image);
+        if (image.isScalarImage())
+        {
+            this.awtImage = BufferedImageUtils.createAwtImage(image);
+        }
+        else
+        {
+            ScalarArray2D<?> scalarDisplay = ScalarArray2D.wrap(computeVectorArrayDisplay((VectorArray<?>) image.getData()));
+            // extract LUT from image, or create one otherwise
+            ColorMap lut = image.getDisplaySettings().getColorMap();
+            if (lut == null)
+            {
+                lut = ColorMaps.GRAY.createColorMap(256); 
+            }
+            double[] valueRange = scalarDisplay.finiteValueRange();
+            double[] displayRange = new double[]{0.0, valueRange[1]};
+            this.awtImage = BufferedImageUtils.createAwtImage(scalarDisplay, displayRange, lut);
+        }
 	}
 	
 	public void repaint()

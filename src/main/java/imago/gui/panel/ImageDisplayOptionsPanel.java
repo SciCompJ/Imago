@@ -18,6 +18,7 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeListener;
 
+import net.sci.array.vector.VectorArray;
 import net.sci.image.Calibration;
 import net.sci.image.Image;
 
@@ -102,21 +103,32 @@ public class ImageDisplayOptionsPanel extends JPanel
 
     private JPanel createChannelPanel()
     {
-        // TODO: need to create a specific panel
-        this.channelPanel = new ValueSliderPanel("Channel", 0, 2, 2);
+        VectorArray<?> array = (VectorArray<?>) this.image.getData();
+        int nChannels = array.channelNumber();
+        int channelIndex = imageViewer.getCurrentChannelIndex();
+        if (channelIndex >= nChannels)
+        {
+            channelIndex = nChannels - 1;
+            imageViewer.setCurrentChannelIndex(channelIndex);
+        }
+        this.channelPanel = new ValueSliderPanel("Channel", 0, nChannels - 1, channelIndex);
         
         channelPanel.slider.addChangeListener(evt ->
         {
-            int value = this.channelPanel.slider.getValue();
-            String text = String.format("%d", value);
+            int index = this.channelPanel.slider.getValue();
+            String text = String.format("%d", index);
             channelPanel.textField.setText(text);
+            imageViewer.setCurrentChannelIndex(index);
+            imageViewer.refreshDisplay();
         });
         
         channelPanel.textField.addActionListener(evt -> 
         {
             String text = this.channelPanel.textField.getText();
-            int value = Integer.parseInt(text);
-            this.channelPanel.slider.setValue(value);
+            int index = Integer.parseInt(text);
+            this.channelPanel.slider.setValue(index);
+            imageViewer.setCurrentChannelIndex(index);
+            imageViewer.refreshDisplay();
         });
         
         return this.channelPanel;
