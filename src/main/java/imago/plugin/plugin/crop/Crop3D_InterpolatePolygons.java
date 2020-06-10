@@ -117,7 +117,7 @@ public class Crop3D_InterpolatePolygons implements Plugin
         ImageSerialSectionsNode interpNode = Crop3D.getInterpolatedPolygonsNode(handle);
         interpNode.clear();
 
-        Collection<Integer> indices = smoothNode.getSliceIndices();
+        Collection<Integer> indices = polyNode.getSliceIndices();
         Iterator<Integer> sliceIndexIter = indices.iterator();
         if (!sliceIndexIter.hasNext())
         {
@@ -130,7 +130,7 @@ public class Crop3D_InterpolatePolygons implements Plugin
         
         // get last index and indices number
         int lastIndex = minSliceIndex;
-        for (int ind : smoothNode.getSliceIndices())
+        for (int ind : polyNode.getSliceIndices())
         {
         	lastIndex = ind;
         }
@@ -138,6 +138,8 @@ public class Crop3D_InterpolatePolygons implements Plugin
         
         ShapeNode shapeNode = (ShapeNode) smoothNode.getSliceNode(currentSliceIndex).children().iterator().next();
         LinearRing2D currentPoly = (LinearRing2D) shapeNode.getGeometry();
+//        // resample and smooth the polygon
+//        currentPoly = currentPoly.resampleBySpacing(2.0).smooth(7);
         
         // iterate over pairs of indices
         while (sliceIndexIter.hasNext())
@@ -152,8 +154,8 @@ public class Crop3D_InterpolatePolygons implements Plugin
             
             // compute projection points of current poly over next poly
             LinearRing2D nextPoly = projectRingVerticesNormal(currentPoly, nextPolyRef);
-            // add smoothing and reproject
-            nextPoly = projectRingVertices(nextPoly.smooth(15), nextPolyRef);
+            // smooth and re-project to have vertices distributed more regularly along target polygon
+            nextPoly = projectRingVerticesNormal(nextPoly.smooth(15), nextPolyRef);
 
             // create shape for interpolated polygon
         	interpNode.addSliceNode(createInterpNode(currentPoly, currentSliceIndex, nDigits));
@@ -202,24 +204,24 @@ public class Crop3D_InterpolatePolygons implements Plugin
         return sliceNode;
 	}
 	
-	private LinearRing2D projectRingVertices(LinearRing2D sourceRing, LinearRing2D targetRing)
-	{
-        // compute translation from current polygon to next polygon
-        Point2D currentCentroid = Polygon2D.convert(sourceRing).centroid();
-        Point2D nextCentroid = Polygon2D.convert(targetRing).centroid();
-        Vector2D centroidShift = new Vector2D(currentCentroid, nextCentroid);
-                    
-        // compute projection points of current poly over next poly
-        int nv = sourceRing.vertexNumber();
-        LinearRing2D nextPoly = new LinearRing2D(nv);
-        for (Point2D point : sourceRing.vertexPositions())
-        {
-        	Point2D point2 = point.plus(centroidShift);
-        	nextPoly.addVertex(targetRing.projection(point2));
-        }
-        
-        return nextPoly;
-	}
+//	private LinearRing2D projectRingVertices(LinearRing2D sourceRing, LinearRing2D targetRing)
+//	{
+//        // compute translation from current polygon to next polygon
+//        Point2D currentCentroid = Polygon2D.convert(sourceRing).centroid();
+//        Point2D nextCentroid = Polygon2D.convert(targetRing).centroid();
+//        Vector2D centroidShift = new Vector2D(currentCentroid, nextCentroid);
+//                    
+//        // compute projection points of current poly over next poly
+//        int nv = sourceRing.vertexNumber();
+//        LinearRing2D nextPoly = new LinearRing2D(nv);
+//        for (Point2D point : sourceRing.vertexPositions())
+//        {
+//        	Point2D point2 = point.plus(centroidShift);
+//        	nextPoly.addVertex(targetRing.projection(point2));
+//        }
+//        
+//        return nextPoly;
+//	}
 	
 	private LinearRing2D projectRingVerticesNormal(LinearRing2D sourceRing, LinearRing2D targetRing)
 	{

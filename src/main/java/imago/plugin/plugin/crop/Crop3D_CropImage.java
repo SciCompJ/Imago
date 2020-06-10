@@ -17,6 +17,7 @@ import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import imago.gui.viewer.StackSliceViewer;
+import net.sci.algo.AlgoStub;
 import net.sci.array.Array;
 import net.sci.array.scalar.Scalar;
 import net.sci.array.scalar.ScalarArray;
@@ -35,7 +36,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class Crop3D_CropImage implements Plugin
+public class Crop3D_CropImage extends AlgoStub implements Plugin
 {
 	public Crop3D_CropImage()
 	{
@@ -63,10 +64,9 @@ public class Crop3D_CropImage implements Plugin
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();
 		
-		// get input and output node references
+		// get input node reference
         ImageHandle handle = iframe.getImageHandle();
         ImageSerialSectionsNode interpNode = Crop3D.getInterpolatedPolygonsNode(handle);
-
         if (interpNode.getSliceIndices().isEmpty())
         {
             return;

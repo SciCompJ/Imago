@@ -10,10 +10,7 @@ import java.io.StringWriter;
 
 import com.google.gson.stream.JsonWriter;
 
-import imago.app.scene.ImageSliceNode;
-import imago.app.scene.Node;
-import imago.app.scene.ShapeNode;
-import imago.app.scene.Style;
+import imago.app.scene.*;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.polygon.Polyline2D;
@@ -81,17 +78,28 @@ public class JsonSceneWriter
 			}
 			this.writer.endArray();
 		}
-		else if (!node.isLeaf())
-		{
-			// iterate over children
-			this.writer.name("children");
-			this.writer.beginArray();
-			for (Node child : node.children())
-			{
-				writeNode(child);
-			}
-			this.writer.endArray();
-		}
+        else if (node instanceof ImageSerialSectionsNode)
+        {
+            // iterate over children
+            this.writer.name("children");
+            this.writer.beginArray();
+            for (Node child : node.children())
+            {
+                writeNode(child);
+            }
+            this.writer.endArray();
+        }
+        else if (node instanceof GroupNode)
+        {
+            // iterate over children
+            this.writer.name("children");
+            this.writer.beginArray();
+            for (Node child : node.children())
+            {
+                writeNode(child);
+            }
+            this.writer.endArray();
+        }
 		else if (node instanceof ShapeNode)
 		{
 			ShapeNode shapeNode = (ShapeNode) node;
