@@ -111,10 +111,6 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
             }           
         });
 		
-		// Initialize the current tool
-		ImagoTool tool = new DisplayCurrentValueTool(this, "showValue");
-		this.imageViewer.setCurrentTool(tool);
-		
 		putFrameMiddleScreen();
 	}
     
@@ -126,6 +122,10 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
             PlanarImageViewer viewer = new PlanarImageViewer(imageHandle);
 
             viewer.getImageDisplay().setShapes(imageHandle.getShapes());
+            
+            ImagoTool cursorDisplay = new DisplayCurrentValueTool(this, "showValue");
+            viewer.getImageDisplay().addMouseListener(cursorDisplay);
+            viewer.getImageDisplay().addMouseMotionListener(cursorDisplay);
 
             this.imageViewer = viewer;
         }
@@ -133,12 +133,22 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         {
             StackSliceViewer sliceViewer = new StackSliceViewer(imageHandle);
             sliceViewer.setSliceIndex(this.imageHandle.getCurrentSliceIndex());
+            
+            ImagoTool cursorDisplay = new DisplayCurrentValueTool(this, "showValue");
+            sliceViewer.getImageDisplay().addMouseListener(cursorDisplay);
+            sliceViewer.getImageDisplay().addMouseMotionListener(cursorDisplay);
+
             this.imageViewer = sliceViewer;
         }
         else 
         {
             Image5DXYSliceViewer sliceViewer = new Image5DXYSliceViewer(imageHandle);
             sliceViewer.setSliceIndex(this.imageHandle.getCurrentSliceIndex());
+            
+            ImagoTool cursorDisplay = new DisplayCurrentValueTool(this, "showValue");
+            sliceViewer.getImageDisplay().addMouseListener(cursorDisplay);
+            sliceViewer.getImageDisplay().addMouseMotionListener(cursorDisplay);
+
             this.imageViewer = sliceViewer;
         }
     }

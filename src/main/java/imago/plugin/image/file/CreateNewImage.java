@@ -51,7 +51,8 @@ public class CreateNewImage implements Plugin
 		String[] typeList = new String[]{"Binary", "Gray8", "Gray16", "Int32", "Float32", "Float64"};
 		
 		GenericDialog gd = new GenericDialog(frame, "Create Image");
-		gd.addNumericField("Width: ", 200, 0);
+		gd.addTextField("Name: ", "NoName");
+        gd.addNumericField("Width: ", 200, 0);
 		gd.addNumericField("Height: ", 200, 0);
 		gd.addNumericField("Depth: ", 1, 0);
 		gd.addChoice("Image Type: ", typeList, typeList[1]);
@@ -64,6 +65,7 @@ public class CreateNewImage implements Plugin
 		}
 		
 		// parse dialog results
+        String imageName = gd.getNextString();
 		int sizeX = (int) gd.getNextNumber();
 		int sizeY = (int) gd.getNextNumber();
 		int sizeZ = (int) gd.getNextNumber();
@@ -94,8 +96,9 @@ public class CreateNewImage implements Plugin
 		
 		// Create image
 		Image image = new Image(array);
+		image.setName(imageName);
 		
 		// add the image document to GUI
-		frame.getGui().createImageFrame(image);
+		frame.createImageFrame(image);
 	}
 }
