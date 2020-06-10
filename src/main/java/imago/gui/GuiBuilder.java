@@ -458,6 +458,7 @@ public class GuiBuilder
         addPlugin(morphologyMenu, new ImageRegionalExtrema(), "Regional Min./Max...", hasScalarImage);
 		addPlugin(morphologyMenu, new ImageExtendedExtrema(), "Extended Min./Max...", hasScalarImage);
 		addPlugin(morphologyMenu, new ImageMorphologicalReconstruction(), "Morphological Reconstruction...");
+        addPlugin(morphologyMenu, new ImageIteratedGeodesicDilations(), "Geodesic Dilation...");
 		morphologyMenu.addSeparator();
         addPlugin(morphologyMenu, new ImageFillHoles(), "Fill Holes");
         addPlugin(morphologyMenu, new ImageKillBorders(), "Kill Borders");
