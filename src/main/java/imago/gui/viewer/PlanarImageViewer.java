@@ -246,12 +246,13 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 	public void updateAwtImage()
 	{
         Image image = this.getImageToDisplay();
-        if (image.isScalarImage())
+        if (image.isScalarImage() || image.isColorImage())
         {
             this.awtImage = BufferedImageUtils.createAwtImage(image);
         }
         else
         {
+            // For vector images, create a new view depending on current settings.
             ScalarArray2D<?> scalarDisplay = ScalarArray2D.wrap(computeVectorArrayDisplay((VectorArray<?>) image.getData()));
             // extract LUT from image, or create one otherwise
             ColorMap lut = image.getDisplaySettings().getColorMap();
