@@ -453,8 +453,8 @@ public class GuiBuilder
 //		menu.addSeparator();
         
 		JMenu morphologyMenu = new JMenu("Mathematical Morphology");
-		addPlugin(morphologyMenu, new ImageMorphologicalFilter(), "Morphological Filters (2D)...");
-		addPlugin(morphologyMenu, new ImageMorphologicalFilter3D(), "Morphological Filters (3D)...");
+		addPlugin(morphologyMenu, new ImageMorphologicalFilter(), "Morphological Filters...");
+//		addPlugin(morphologyMenu, new ImageMorphologicalFilter3D(), "Morphological Filters (3D)...");
 
 		morphologyMenu.addSeparator();
         addPlugin(morphologyMenu, new ImageRegionalExtrema(), "Regional Min./Max...", hasScalarImage);

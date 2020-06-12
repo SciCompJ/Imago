@@ -11,7 +11,9 @@ import imago.gui.Plugin;
 import net.sci.array.Array;
 import net.sci.image.Image;
 import net.sci.image.morphology.MorphologicalFilter.Operation;
+import net.sci.image.morphology.Strel;
 import net.sci.image.morphology.strel.Strel2D;
+import net.sci.image.morphology.strel.Strel3D;
 
 /**
  * Applies various types of morphological filtering on a multidimensional image.
@@ -22,7 +24,8 @@ import net.sci.image.morphology.strel.Strel2D;
 public class ImageMorphologicalFilter implements Plugin
 {
 	Operation op = Operation.DILATION;
-	Strel2D.Shape shape = Strel2D.Shape.SQUARE;
+    Strel2D.Shape shape2d = Strel2D.Shape.SQUARE;
+    Strel3D.Shape shape3d = Strel3D.Shape.CUBE;
 	int radius = 2;
 	boolean showStrel;
 
@@ -47,20 +50,27 @@ public class ImageMorphologicalFilter implements Plugin
 		Array<?> array = image.getData();
 
 		int nd = array.dimensionality();
-		if (nd != 2)
+		if (nd != 2 && nd != 3)
 		{
-			System.err.println("Requires image of dimensionality equal to 2");
+			System.err.println("Requires image of dimensionality equal to 2 or 3");
 			return;
 		}
 		
 		GenericDialog gd = new GenericDialog(frame, "Morphological Filter");
 		gd.addChoice("Operation", Operation.getAllLabels(), 
 				this.op.toString());
-		gd.addChoice("Element", Strel2D.Shape.getAllLabels(), 
-				this.shape.toString());
-		gd.addNumericField("Radius (in pixels)", this.radius, 0);
-//		gd.addCheckbox("Show Element", false);
-//		gd.addPreviewCheckbox(pfr);
+		if (nd == 2)
+		{
+	        gd.addChoice("Element", Strel2D.Shape.getAllLabels(), 
+	                this.shape2d.toString());
+	        gd.addNumericField("Radius (in pixels)", this.radius, 0);
+		}
+		else
+		{
+		    gd.addChoice("Element", Strel3D.Shape.getAllLabels(), 
+                    this.shape3d.toString());
+	        gd.addNumericField("Radius (in voxels)", this.radius, 0);
+        }
 		gd.showDialog();
 		
 		if (gd.getOutput() == GenericDialog.Output.CANCEL) 
@@ -71,39 +81,44 @@ public class ImageMorphologicalFilter implements Plugin
 		// parse dialog results
 		// extract chosen parameters
 		this.op 		= Operation.fromLabel(gd.getNextChoice());
-		this.shape 		= Strel2D.Shape.fromLabel(gd.getNextChoice());
-		this.radius 	= (int) gd.getNextNumber();		
-//		this.showStrel 	= gd.getNextBoolean();
-//		this.previewing = gd.getPreviewCheckbox().getState();
+		Strel strel;
+		if (nd == 2)
+		{
+		    this.shape2d = Strel2D.Shape.fromLabel(gd.getNextChoice());
+		    strel = shape2d.fromRadius(radius);
+		}
+		else
+		{
+		    this.shape3d = Strel3D.Shape.fromLabel(gd.getNextChoice());
+		    strel = shape3d.fromRadius(radius);
+		}
+		this.radius 	= (int) gd.getNextNumber();
 
-		// Create structuring element of the given shape and size
-		Strel2D strel = shape.fromRadius(radius);
-		
-		// add some listeners
+		// add listener
 		strel.addAlgoListener((ImageFrame) frame); 
 		
-//		// Eventually display the structuring element used for processing 
-//		if (showStrel) 
-//		{
-//			showStrelImage(strel);
-//		}
-		
-		// Execute core of the plugin on the original image
+		// Execute core of the plugin on the array of original image
 		Array<?> result = op.process(array, strel);
-
-//    	if (previewing) 
-//    	{
-//    		// Fill up the values of original image with values of the result
-//    		for (int i = 0; i < image.getPixelCount(); i++)
-//    		{
-//    			image.setf(i, result.getf(i));
-//    		}
-//    		image.resetMinAndMax();
-//        }
 		
+		// determine operation short name
+		String opName;
+		switch (op)
+		{
+        case DILATION: opName = "Dil"; break;
+        case EROSION: opName = "Ero"; break;
+        case OPENING: opName = "Op"; break;
+        case CLOSING: opName = "Cl"; break;
+        case TOPHAT: opName = "WTH"; break;
+        case BOTTOMHAT: opName = "BTH"; break;
+        case GRADIENT: opName = "Grad"; break;
+        case LAPLACIAN: opName = "Lap"; break;
+        
+        default: opName = "Filt"; break;
+		}
+
 		// create new image with filter result
 		Image resultImage = new Image(result, image);
-		resultImage.setName(image.getName() + "-filt");
+		resultImage.setName(image.getName() + "-" + opName);
 		
 		// add the image document to GUI
 		frame.getGui().createImageFrame(resultImage);
