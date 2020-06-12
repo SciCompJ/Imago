@@ -425,7 +425,9 @@ public class GuiBuilder
         addPlugin(mathsMenu, new ImageApplyMathFunction(), "Math Function...", hasScalarImage);
         addArrayOperatorPlugin(mathsMenu, new Sqrt(), "Sqrt", hasScalarImage);
         addArrayOperatorPlugin(mathsMenu, new PowerOfTwo(), "Power Of Two", hasScalarImage);
-        addPlugin(mathsMenu, new ImageArrayBinaryMathOperator(), "Image operator");
+        mathsMenu.addSeparator();
+        addPlugin(mathsMenu, new ImageValueOperator(), "Image value operator...");
+        addPlugin(mathsMenu, new ImageArrayBinaryMathOperator(), "Image pair operator...");
 		menu.add(mathsMenu);
 		menu.addSeparator();
 

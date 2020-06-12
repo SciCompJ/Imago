@@ -26,7 +26,6 @@ import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.Vector2D;
 import net.sci.geom.geom2d.polygon.LinearRing2D;
-import net.sci.geom.geom2d.polygon.Polygon2D;
 import net.sci.geom.geom2d.polygon.Polyline2D;
 import net.sci.image.Image;
 
@@ -225,10 +224,10 @@ public class Crop3D_InterpolatePolygons implements Plugin
 	
 	private LinearRing2D projectRingVerticesNormal(LinearRing2D sourceRing, LinearRing2D targetRing)
 	{
-        // compute translation from current polygon to next polygon
-        Point2D sourceCentroid = Polygon2D.convert(sourceRing).centroid();
-        Point2D targetCentroid = Polygon2D.convert(targetRing).centroid();
-        Vector2D centroidShift = new Vector2D(sourceCentroid, targetCentroid);
+//        // compute translation from current polygon to next polygon
+//        Point2D sourceCentroid = Polygon2D.convert(sourceRing).centroid();
+//        Point2D targetCentroid = Polygon2D.convert(targetRing).centroid();
+//        Vector2D centroidShift = new Vector2D(sourceCentroid, targetCentroid);
 
         int nv = sourceRing.vertexNumber();
 
@@ -262,8 +261,10 @@ public class Crop3D_InterpolatePolygons implements Plugin
         for (int iv = 0; iv < nv; iv++)
         {
         	Point2D point = sourceRing.vertexPosition(iv);
-    		double x = point.getX() + centroidShift.getX();
-    		double y = point.getY() + centroidShift.getY();
+            double x = point.getX();
+            double y = point.getY();
+//            double x = point.getX() + centroidShift.getX();
+//            double y = point.getY() + centroidShift.getY();
         	
     		double dist, minDist = Double.POSITIVE_INFINITY;
     		Point2D proj = targetRing.vertexPosition(0);

@@ -71,6 +71,8 @@ public class Crop3D_CropImage extends AlgoStub implements Plugin
         {
             return;
         }
+        
+        this.addAlgoListener((ImageFrame) frame);
 
         Array<?> result = process((ScalarArray<?>) array, interpNode);
         
@@ -97,9 +99,11 @@ public class Crop3D_CropImage extends AlgoStub implements Plugin
         int sizeX = array.size(0);
         int sizeY = array.size(1);
         
+        this.fireStatusChanged(this, "crop 3D image");
         for (int sliceIndex : interpNode.getSliceIndices())
         {
-        	System.out.println("crop slice " + sliceIndex);
+//        	System.out.println("crop slice " + sliceIndex);
+            this.fireProgressChanged(this, sliceIndex, array.size(2));
         	
         	// get 2D view on array slices
         	ScalarArray2D<T> slice = (ScalarArray2D<T>) array3d.slice(sliceIndex);
@@ -117,7 +121,7 @@ public class Crop3D_CropImage extends AlgoStub implements Plugin
             // iterate over lines inside bounding box
             for (int y = ymin; y < ymax; y++)
             {
-            	StraightLine2D line = new StraightLine2D(new Point2D(0, y), new Vector2D(1, 0));
+                StraightLine2D line = new StraightLine2D(new Point2D(0, y), new Vector2D(1, 0));
             	Collection<Point2D> points = ring.intersections(line);
             	points = sortPointsByX(points);
 
@@ -146,6 +150,9 @@ public class Crop3D_CropImage extends AlgoStub implements Plugin
 //    		System.out.println("");
         }
 
+        this.fireStatusChanged(this, "");
+        this.fireProgressChanged(this, 0, 0);
+       
         return resArray;
 	}
 	

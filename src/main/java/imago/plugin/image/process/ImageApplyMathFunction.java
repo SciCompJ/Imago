@@ -52,9 +52,10 @@ public class ImageApplyMathFunction implements Plugin
 		}
 		ScalarArray<?> inputArray = (ScalarArray<?>) array;
 
+        // create dialog
 		GenericDialog gd = new GenericDialog(frame, "Apply Math Function");
         gd.addChoice("Function", functionNames, functionNames[0]);
-        gd.addChoice("OutputT Type", outputTypeNames, outputTypeNames[0]);
+        gd.addChoice("Output Type", outputTypeNames, outputTypeNames[0]);
 		gd.showDialog();
 		
 		if (gd.getOutput() == GenericDialog.Output.CANCEL) 
@@ -66,6 +67,7 @@ public class ImageApplyMathFunction implements Plugin
 		String functionName = gd.getNextChoice();
 		String typeName = gd.getNextChoice();
         
+        // create result array
 		ScalarArray<?> resultArray;
 		switch (typeName)
 		{
@@ -75,6 +77,7 @@ public class ImageApplyMathFunction implements Plugin
         default: throw new RuntimeException("Unknown type name: " + typeName); 
 		}
 		
+        // apply function and stores in result array
 		switch (functionName)
 		{
         case "Sqrt": inputArray.apply(x -> Math.sqrt(x), resultArray); break;
@@ -86,7 +89,7 @@ public class ImageApplyMathFunction implements Plugin
         default: throw new RuntimeException("Unknown function name: " + functionName); 
 		}
 
-		// apply operator on current image
+		// create result image
 		Image result = new Image(resultArray, image);
 		result.setName(image.getName() + "-" + functionName);
 		
