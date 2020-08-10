@@ -291,6 +291,8 @@ public class GuiBuilder
         addPlugin(colorMenu, new ImageSplitChannels(), "Split Channels", hasVectorImage || hasColorImage);
         addPlugin(colorMenu, new MergeChannelImages(), "Merge Channels");
         addPlugin(colorMenu, new ColorImageExtractChannel(), "Extract Channel...", hasColorImage);
+        addPlugin(colorMenu, new ConvertUInt8ImageToRGB(), "UInt8 to RGB8", hasScalarImage);
+        
         // addMenuItem(editMenu, new MetaImageOperatorAction(frame,
         // "colorToGray",
         // new Gray8Converter()), "RGB -> Gray8", hasColorImage);
