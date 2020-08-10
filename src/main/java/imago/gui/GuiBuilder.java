@@ -298,6 +298,7 @@ public class GuiBuilder
 
         JMenu vectorMenu = new JMenu("Vector");
         addPlugin(vectorMenu, new VectorImageChannelView(), "Channel View", hasVectorImage);
+        addPlugin(vectorMenu, new CreateVectorImageNorm(), "Vector Image Norm", hasVectorImage);
         addPlugin(vectorMenu, new VectorImageConvertToRGB(), "Convert to RGB", hasVectorImage);
         addPlugin(vectorMenu, new CreateVectorImageRGB8View(), "Create RGB View", hasVectorImage);
         addPlugin(vectorMenu, new ConvertChannelsToDimension(), "Convert Channels to Dimension", hasVectorImage);
