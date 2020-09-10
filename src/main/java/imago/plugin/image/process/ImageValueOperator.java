@@ -4,10 +4,14 @@
 package imago.plugin.image.process;
 
 import imago.gui.*;
+import net.sci.array.Array;
 import net.sci.array.process.Math;
 import net.sci.array.scalar.Float32Array;
 import net.sci.array.scalar.Float64Array;
 import net.sci.array.scalar.ScalarArray;
+import net.sci.array.vector.Float32VectorArray;
+import net.sci.array.vector.Float64VectorArray;
+import net.sci.array.vector.VectorArray;
 import net.sci.image.Image;
 
 /**
@@ -69,61 +73,102 @@ public class ImageValueOperator implements Plugin
         double value = gd.getNextNumber();
 		int outputTypeIndex = gd.getNextChoiceIndex();
         
+		// identify source image
         Image image = frame.getGui().getAppli().getImageHandleFromName(imageName).getImage();
-        if (!image.isScalarImage())
+        
+        Array<?> result = null;
+        if (image.isScalarImage())
         {
-            ImagoGui.showErrorDialog(frame, "Requires an image containing a scalar array");
-            return;
+            ScalarArray<?> array = (ScalarArray<?>) image.getData();
+    
+            // allocate memory for result
+    		switch (outputTypeIndex)
+            {
+            case 0:
+                result = array.newInstance(array.size());
+                break;
+            case 1:
+                result = Float32Array.create(array.size());
+                break;
+            case 2:
+                result = Float64Array.create(array.size());
+                break;
+            default:
+                throw new RuntimeException("Unknown type index: " + outputTypeIndex);
+            }
+    		
+    		processScalar(array, (ScalarArray<?>) result, functionName, value);
         }
-        ScalarArray<?> array = (ScalarArray<?>) image.getData();
-
-        // allocate memory for result
-        ScalarArray<?> result;
-		switch (outputTypeIndex)
+        else if (image.isVectorImage())
         {
-        case 0:
-            result = array.newInstance(array.size());
-            break;
-        case 1:
-            result = Float32Array.create(array.size());
-            break;
-        case 2:
-            result = Float64Array.create(array.size());
-            break;
-        default:
-            throw new RuntimeException("Unknown type index: " + outputTypeIndex);
+            // marginal processing: process each channel independently
+            VectorArray<?> array = (VectorArray<?>) image.getData();
+            int nChannels = array.channelNumber();
+            
+            // allocate memory for result
+            switch (outputTypeIndex)
+            {
+            case 0:
+                result = array.newInstance(array.size());
+                break;
+            case 1:
+                result = Float32VectorArray.create(array.size(), nChannels);
+                break;
+            case 2:
+                result = Float64VectorArray.create(array.size(), nChannels);
+                break;
+            default:
+                throw new RuntimeException("Unknown type index: " + outputTypeIndex);
+            }
+            
+            // iterate over channels of source and target images
+            for (int c = 0;c < nChannels; c++)
+            {
+                ScalarArray<?> source = array.channel(c);
+                ScalarArray<?> target = ((VectorArray<?>) result).channel(c);
+                
+                processScalar(source, target, functionName, value);
+            }
         }
-
-        // apply function and store to result
-		switch (functionName)
-		{
-        case "Plus":
-            Math.add(array, value, result);
-            break;
-        case "Minus":
-            Math.subtract(array, value, result);
-            break;
-        case "Times":
-            Math.multiply(array, value, result);
-            break;
-        case "Divides":
-            Math.divide(array, value, result);
-            break;
-        case "Min":
-            Math.min(array, value, result);
-            break;
-        case "Max":
-            Math.max(array, value, result);
-            break;
-        default: throw new RuntimeException("Unknown function name: " + functionName); 
-		}
-
+        else
+        {
+            throw new RuntimeException("Can not process array with type: " + image.getData().getClass());
+        }
+        
         // create result image
 		Image resultImage = new Image(result, image);
 		resultImage.setName(image.getName() + "-" + functionName);
 		
 		// add the image document to GUI
 		frame.createImageFrame(resultImage);
+	}
+	
+	private static void processScalar(ScalarArray<?> source, ScalarArray<?> target, String functionName, double value)
+	{
+        // apply function and store to result
+        switch (functionName)
+        {
+        case "Plus":
+            Math.add(source, value, target);
+            break;
+        case "Minus":
+            Math.subtract(source, value, target);
+            break;
+        case "Times":
+            Math.multiply(source, value, target);
+            break;
+        case "Divides":
+            Math.divide(source, value, target);
+            break;
+        case "Min":
+            Math.min(source, value, target);
+            break;
+        case "Max":
+            Math.max(source, value, target);
+            break;
+        default: throw new RuntimeException("Unknown function name: " + functionName); 
+        }
+
 	}
 
 	private int findStringIndex(String string, String[] array)

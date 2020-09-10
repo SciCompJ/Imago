@@ -9,7 +9,7 @@ import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
-import net.sci.array.process.shape.Downsampler;
+import net.sci.array.process.shape.DownSampler;
 import net.sci.image.Image;
 
 /**
@@ -63,7 +63,7 @@ public class ImageDownsample implements Plugin
 		}
 
 		// create operator box filtering operator
-		Downsampler resampler = new Downsampler(ratioList); 
+		DownSampler resampler = new DownSampler(ratioList); 
 		
 		// apply operator on current image
 		Image result = new Image(resampler.process(array), image);
