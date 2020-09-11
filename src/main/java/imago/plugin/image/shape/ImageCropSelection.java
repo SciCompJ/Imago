@@ -44,13 +44,15 @@ public class ImageCropSelection implements Plugin
         ImageFrame iframe = (ImageFrame) frame;
         Image image = iframe.getImageHandle().getImage();
         Array<?> array = image.getData();
-
+        
+        // check dimensionality
         int nd = array.dimensionality();
         if (nd != 2)
         {
            throw new RuntimeException("Requires 2D array");
         }
-
+        
+        // restrict to planar viewer
         ImageViewer viewer = iframe.getImageView();
         if (!(viewer instanceof PlanarImageViewer))
         {
@@ -66,10 +68,10 @@ public class ImageCropSelection implements Plugin
         // determine crop size
         int[] minInds = new int[2];
         int[] maxInds = new int[2];
-        for (int d = 0;d < 2; d++)
+        for (int d = 0; d < 2; d++)
         {
-            minInds[d] = Math.max((int) box.getMin(0), 0); 
-            maxInds[d] = Math.min((int) box.getMax(0) + 1, array.size(d)); 
+            minInds[d] = Math.max((int) box.getMin(d), 0); 
+            maxInds[d] = Math.min((int) box.getMax(d) + 1, array.size(d)); 
         }
         
 		// create operator box filtering operator
