@@ -250,6 +250,10 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
         {
             this.awtImage = BufferedImageUtils.createAwtImage(image);
         }
+        else if (image.isColorImage())
+        {
+            this.awtImage = BufferedImageUtils.createAwtImage(image);
+        }
         else
         {
             // For vector images, create a new view depending on current settings.

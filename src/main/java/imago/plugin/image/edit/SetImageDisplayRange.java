@@ -3,6 +3,8 @@
  */
 package imago.plugin.image.edit;
 
+import java.util.Locale;
+
 import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
 import imago.gui.ImageViewer;
@@ -10,7 +12,10 @@ import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
+import net.sci.array.color.RGB16Array;
+import net.sci.array.color.RGB8Array;
 import net.sci.array.scalar.ScalarArray;
+import net.sci.array.vector.Vector;
 import net.sci.array.vector.VectorArray;
 import net.sci.image.Image;
 
@@ -40,26 +45,16 @@ public class SetImageDisplayRange implements Plugin
 		Image image = doc.getImage();
 
 		Array<?> array = image.getData();
-		if (array instanceof VectorArray) 
-		{
-			array = VectorArray.norm((VectorArray<?>) array);
-		}
-		
-		if (!(array instanceof ScalarArray))
-		{
-			throw new IllegalArgumentException("Requires a scalar Image");
-		}
-		ScalarArray<?> scalarArray = (ScalarArray<?>) array;
 		
 		// Compute min and max values within the array 
-		double[] extent = scalarArray.valueRange();
+		double[] extent = computeValueExtent(array);
 		double[] displayRange = image.getDisplaySettings().getDisplayRange();
 		
 		// Create new dialog populated with widgets
 		GenericDialog gd = new GenericDialog(frame, "Set Display Range");
-		String labelMin = String.format("Min value (%6.2f) ", extent[0]);
+		String labelMin = String.format(Locale.ENGLISH, "Min value (%6.2f) ", extent[0]);
 		gd.addNumericField(labelMin, displayRange[0], 3, "Minimal value to display as black");
-		String labelMax = String.format("Max value (%6.2f) ", extent[1]);
+		String labelMax = String.format(Locale.ENGLISH, "Max value (%6.2f) ", extent[1]);
 		gd.addNumericField(labelMax, displayRange[1], 3, "Maximal value to display as white");
 		
 		// wait for user validation or cancellation
@@ -82,5 +77,82 @@ public class SetImageDisplayRange implements Plugin
 		viewer.refreshDisplay();
 		viewer.repaint();
 	}
+    
+    private double[] computeValueExtent(Array<?> array)
+    {
+        if (array instanceof ScalarArray)
+        {
+            return ((ScalarArray<?>) array).finiteValueRange();
+        }
+        else if (array instanceof RGB8Array)
+        {
+            return computeValueExtent_RGB8((RGB8Array) array);
+        }
+        else if (array instanceof RGB16Array)
+        {
+            return computeValueExtent_RGB16((RGB16Array) array);
+        }
+        else if (array instanceof VectorArray)
+        {
+            return computeValueExtent_Vector((VectorArray<?>) array);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Unable to process array with class: " + array.getClass());
+        }
+    }
+    
+    private double[] computeValueExtent_RGB8(RGB8Array array)
+    {
+        double minValue = Double.POSITIVE_INFINITY;
+        double maxValue = Double.NEGATIVE_INFINITY;
+
+        int[] samples = new int[3];
+        for (int[] pos : array.positions())
+        {
+            array.getSamples(pos, samples);
+            for (int v : samples)
+            {
+                minValue = Math.min(minValue, v);
+                maxValue = Math.max(maxValue, v);
+            }
+        }
+        return new double[] { minValue, maxValue };
+    }
+
+    private double[] computeValueExtent_RGB16(RGB16Array array)
+    {
+        double minValue = Double.POSITIVE_INFINITY;
+        double maxValue = Double.NEGATIVE_INFINITY;
+
+        int[] samples = new int[3];
+        for (int[] pos : array.positions())
+        {
+            array.getSamples(pos, samples);
+            for (int v : samples)
+            {
+                minValue = Math.min(minValue, v);
+                maxValue = Math.max(maxValue, v);
+            }
+        }
+        return new double[] { minValue, maxValue };
+    }
+
+    private double[] computeValueExtent_Vector(VectorArray<?> array)
+    {
+        int nc = array.channelNumber();
+        double[] values = new double[nc];
+        double minValue = Double.POSITIVE_INFINITY;
+        double maxValue = Double.NEGATIVE_INFINITY;
+        
+        for (int[] pos : array.positions())
+        {
+            Vector.norm(array.getValues(pos, values));
+            double v = Vector.norm(values);
+            minValue = Math.min(minValue, v);
+            maxValue = Math.max(maxValue, v);
+        }
+        return new double[] { minValue, maxValue };
+    }
 }
 
