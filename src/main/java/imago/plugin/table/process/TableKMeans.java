@@ -26,24 +26,41 @@ public class TableKMeans implements TablePlugin
         Table table = ((TableFrame) frame).getTable();
 
         // TODO: check table is all numeric
-        GenericDialog dlg = new GenericDialog("KMeans");
-        dlg.addNumericField("Class Number: ", 3, 0);
         
+        // create dialog to setup options
+        GenericDialog dlg = new GenericDialog(frame, "KMeans");
+        dlg.addNumericField("Class Number: ", 3, 0);
+        dlg.addCheckBox("Create Centroid Table: ", true);
+        
+        // wait for user validation
         dlg.showDialog();
         if (dlg.wasCanceled())
         {
             return;
         }
         
+        // parse dialog inputs
         int nClasses = (int) dlg.getNextNumber();
+        boolean createCentroids = dlg.getNextBoolean();
         
+        // create KMeans class to compute classes
         KMeans km = new KMeans(nClasses);
         km.fit(table);
-
+        
+        // associate class to each element of input table
         Table classes = km.predict(table);
         
         // add the new frame to the GUI
         frame.getGui().createTableFrame(classes, frame);
+        
+        if (createCentroids)
+        {
+            // associate class to each element of input table
+            Table centroids = km.centroids();
+
+            // add the new frame to the GUI
+            frame.getGui().createTableFrame(centroids, frame);
+        }
     }
 
 }
