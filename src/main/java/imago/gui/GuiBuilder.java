@@ -33,8 +33,10 @@ import imago.plugin.table.SaveTable;
 import imago.plugin.table.ShowDemoTable;
 import imago.plugin.table.edit.FoldTableToImage;
 import imago.plugin.table.edit.MergeTablesByColumns;
+import imago.plugin.table.edit.PrintTableToConsole;
 import imago.plugin.table.edit.TableKeepNumericColumns;
 import imago.plugin.table.edit.TableSelectColumns;
+import imago.plugin.table.edit.TransposeTable;
 import imago.plugin.table.plot.TableLinePlot;
 import imago.plugin.table.plot.TableScatterPlot;
 import imago.plugin.table.process.TableKMeans;
@@ -567,7 +569,12 @@ public class GuiBuilder
         addPlugin(editMenu, new TableSelectColumns(), "Select Columns");
         addPlugin(editMenu, new TableKeepNumericColumns(), "Keep Numeric Columns");
         addPlugin(editMenu, new MergeTablesByColumns(), "Merge Columns");
+        editMenu.addSeparator();
+        addPlugin(editMenu, new TransposeTable(), "Transpose");
+        editMenu.addSeparator();
         addPlugin(editMenu, new FoldTableToImage(), "Fold Table to Image");
+        editMenu.addSeparator();
+        addPlugin(editMenu, new PrintTableToConsole(), "Print to Console");
         
         return editMenu;
     }
