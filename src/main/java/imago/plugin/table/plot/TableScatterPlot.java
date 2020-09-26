@@ -38,6 +38,11 @@ public class TableScatterPlot implements TablePlugin
 	        return;
 	    }
 	    Table table = ((TableFrame) frame).getTable();
+	    
+	    if (table.columnNumber() < 2)
+	    {
+	        throw new RuntimeException("Requires a table with at least two columns");
+	    }
 
 	    int col1 = 0;
 	    int col2 = 1;

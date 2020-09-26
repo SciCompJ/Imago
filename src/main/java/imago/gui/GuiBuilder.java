@@ -31,6 +31,7 @@ import imago.plugin.plugin.crop.*;
 import imago.plugin.table.OpenTable;
 import imago.plugin.table.SaveTable;
 import imago.plugin.table.ShowDemoTable;
+import imago.plugin.table.edit.FoldTableToImage;
 import imago.plugin.table.edit.MergeTablesByColumns;
 import imago.plugin.table.edit.TableKeepNumericColumns;
 import imago.plugin.table.edit.TableSelectColumns;
@@ -566,6 +567,7 @@ public class GuiBuilder
         addPlugin(editMenu, new TableSelectColumns(), "Select Columns");
         addPlugin(editMenu, new TableKeepNumericColumns(), "Keep Numeric Columns");
         addPlugin(editMenu, new MergeTablesByColumns(), "Merge Columns");
+        addPlugin(editMenu, new FoldTableToImage(), "Fold Table to Image");
         
         return editMenu;
     }
