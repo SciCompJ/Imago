@@ -5,11 +5,20 @@ package imago.gui;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -18,8 +27,8 @@ import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 
-import imago.app.ImagoApp;
 import imago.app.ImageHandle;
+import imago.app.ImagoApp;
 import imago.app.TableHandle;
 import net.sci.image.Image;
 import net.sci.table.Table;
@@ -112,7 +121,10 @@ public class ImagoGui
 	 */
 	public Settings settings = new Settings();
 	
+    ArrayList<Class<?>> pluginClasses = new ArrayList<Class<?>>();
+    ArrayList<PluginHandler> pluginHandlers = new ArrayList<PluginHandler>();
 
+	
 	// ===================================================================
     // Private constants
 	
@@ -135,7 +147,10 @@ public class ImagoGui
 	public ImagoGui(ImagoApp app) 
 	{
 		this.app = app;
+		
 		setupLookAndFeel();
+		
+        loadPlugins();
 	}
 	
 	private void setupLookAndFeel()
@@ -158,9 +173,145 @@ public class ImagoGui
 	// ===================================================================
 	// General methods
 
+	/**
+	 * Loads the plugins, or refresh the list of plugins loaded by the GUI.
+	 * 
+	 * @throws IOException in case of I/O error 
+	 * @throws ClassNotFoundException  if a plugin class could not be found
+	 */
+	public void loadPlugins() throws ClassNotFoundException, IOException in case of I/O error
+	{
+	    System.out.println("Load plugins");
+	    
+	    pluginClasses.clear();
+	    
+        String baseDirName = System.getProperty("user.dir");
+        
+	    File baseDir = new File(System.getProperty("user.dir"));
+        System.out.println("base directory: " + baseDir.getAbsolutePath());
+        
+	    String pluginsDirName = baseDirName + File.separator + "plugins";
+	    File pluginsDir = new File(pluginsDirName);
+        System.out.println("plugins directory: " + pluginsDir.getAbsolutePath());
+	    if (!pluginsDir.exists())
+	    {
+	        System.out.println("No plugin directory, abort.");
+	        return;
+	    }
+	    
+	    // Find all jar files
+        File[] subFiles = pluginsDir.listFiles((file, name) -> name.endsWith(".jar"));
+        
+        // For each jar, find the plugins within
+        for (File file : subFiles)
+        {
+            System.out.println("Found file: " + file.getName());
+                loadPluginClassesFromJarFile(file);
+        }
+        
+        createPluginHandlers();
+    }
 	
-	
+	private void loadPluginClassesFromJarFile(File file) throws IOException, ClassNotFoundException
+	{
+	    JarFile jarFile = new JarFile(file);
+	    
+        URL[] urls = { new URL("jar:file:" + file+"!/") };
+        URLClassLoader cl = URLClassLoader.newInstance(urls);
 
+        Enumeration<JarEntry> entries = jarFile.entries();
+        while (entries.hasMoreElements()) 
+        {
+            JarEntry je = entries.nextElement();
+            if(je.isDirectory() || !je.getName().endsWith(".class"))
+            {
+                continue;
+            }
+            // -6 because of .class
+            String className = je.getName().substring(0,je.getName().length()-6);
+            className = className.replace('/', '.');
+            System.out.println("Checking for class " + className);
+            Class<?> c = cl.loadClass(className);
+
+            System.out.println("Class object " + c.getName());
+            
+            Class<?> pluginClass = Plugin.class;
+            if (pluginClass.isAssignableFrom(c))
+            {
+                System.out.println("Found a plugin: " + c.getName());
+                pluginClasses.add(c);
+            }
+        }
+        
+        jarFile.close();
+	}
+	
+	private void createPluginHandlers()
+	{
+        for (Class<?> c : this.pluginClasses)
+        {
+            System.out.println("add plugin entry: " + c.getName());
+            
+            if (!Plugin.class.isAssignableFrom(c))
+            {
+                continue;
+            }
+            
+            // try to fin empty constructor
+            Constructor<?> cons;
+            Plugin plugin;
+            try
+            {
+                cons = c.getConstructor();
+            } 
+            catch (NoSuchMethodException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                continue;
+            } 
+            catch (SecurityException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                continue;
+            }
+            
+            // instantiate the plugin
+            try
+            {
+                plugin = (Plugin) cons.newInstance();
+            }
+            catch (InstantiationException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                continue;
+            }
+            catch (IllegalAccessException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                continue;
+            }
+            catch (IllegalArgumentException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                continue;
+            }
+            catch (InvocationTargetException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                continue;
+            }
+            
+            PluginHandler handler = new PluginHandler(plugin, c.getSimpleName());
+            this.pluginHandlers.add(handler);
+        }
+	}
+	
 	// ===================================================================
     // Creation of new frames for specific objects
 	

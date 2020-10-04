@@ -603,6 +603,12 @@ public class GuiBuilder
         menu.add(devMenu);
         menu.addSeparator();
         
+        for (PluginHandler handler : frame.gui.pluginHandlers)
+        {
+            System.out.println("add plugin entry: " + handler.getName());
+            addPlugin(menu, handler.getPlugin(), handler.getName());
+        }
+        
         if (hasImage3D)
         {
         	JMenu crop3DMenu = new JMenu("Crop 3D");
