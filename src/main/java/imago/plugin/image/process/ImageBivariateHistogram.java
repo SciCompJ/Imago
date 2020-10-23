@@ -124,7 +124,7 @@ public class ImageBivariateHistogram implements Plugin
             {
                 for (int ind1 = 0; ind1 < nBins1; ind1++)
                 {
-                    result.setValue(Math.log(histo.getValue(ind1, ind2) + 1), ind1, ind2);
+                    result.setValue(ind1, ind2, Math.log(histo.getValue(ind1, ind2) + 1));
                 }
             }
         }
@@ -136,7 +136,7 @@ public class ImageBivariateHistogram implements Plugin
             {
                 for (int ind1 = 0; ind1 < nBins1 - 1; ind1++)
                 {
-                    result2.setValue(result.getValue(ind1 + 1, ind2 + 1), ind1, ind2);
+                    result2.setValue(ind1, ind2, result.getValue(ind1 + 1, ind2 + 1));
                 }
             }
             result = result2;

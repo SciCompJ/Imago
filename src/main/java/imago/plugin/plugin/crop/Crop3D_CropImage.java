@@ -142,7 +142,7 @@ public class Crop3D_CropImage extends AlgoStub implements Plugin
 //            		System.out.print(", x0=" + x0 + " x1=" + x1);
             		for (int x = x0; x < x1; x++)
             		{
-                		resSlice.setValue(slice.getValue(x, y), x, y);
+                		resSlice.setValue(x, y, slice.getValue(x, y));
             		}
             	}
 //        		System.out.println("");

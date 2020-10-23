@@ -71,14 +71,8 @@ public class ImageSelectionToDistanceMap implements Plugin
         int sizeY = array.size(1);
         Float32Array2D distMap = Float32Array2D.create(sizeX, sizeY);
         
-        // iterate over output pixels 
-        for (int y = 0; y < sizeY; y++)
-        {
-            for (int x = 0; x < sizeX; x++)
-            {
-                distMap.setValue(selection.distance(new Point2D(x, y)), x, y);
-            }
-        }
+        // iterate over output pixels
+        distMap.populateValues((x, y) -> selection.distance(new Point2D(x, y)));
         
         // create result image
         Image resultImage = new Image(distMap, image);

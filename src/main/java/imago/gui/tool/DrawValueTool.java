@@ -91,14 +91,14 @@ public class DrawValueTool extends ImagoTool
         if (array.dimensionality() == 2)
         {
             ScalarArray2D<?> array2d = ScalarArray2D.wrap((ScalarArray<?>) array);
-            array2d.setValue(value, xi, yi);
+            array2d.setValue(xi, yi, value);
         }
         else if (array.dimensionality() == 3)
         {
             ScalarArray3D<?> array3d = ScalarArray3D.wrap((ScalarArray<?>) array);
             // TODO: check class or use abstraction
             int zi = ((StackSliceViewer) this.viewer.getImageView()).getSliceIndex();
-            array3d.setValue(value, xi, yi, zi);
+            array3d.setValue(xi, yi, zi, value);
         }
         
         this.viewer.getImageView().refreshDisplay();

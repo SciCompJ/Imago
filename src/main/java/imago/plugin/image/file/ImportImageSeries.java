@@ -141,7 +141,7 @@ public class ImportImageSeries implements Plugin
                 for (int x = 0; x < sizeX; x++)
                 {
                     slicePos[0] = pos[0] = x;
-                    array.set(sliceArray.get(slicePos), pos);
+                    array.set(pos, sliceArray.get(slicePos));
                 }
             }
 

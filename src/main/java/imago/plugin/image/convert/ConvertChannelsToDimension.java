@@ -77,7 +77,7 @@ public class ConvertChannelsToDimension implements Plugin
 		    for (int c = 0; c < nChannels; c++)
 		    {
 		        pos2[nd] = c;
-		        res.setValue(values[c], pos2);
+		        res.setValue(pos2, values[c]);
 		    }
 		}
 		

@@ -10,6 +10,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import imago.gui.viewer.PlanarImageViewer;
 import net.sci.array.Array;
+import net.sci.array.scalar.Binary;
 import net.sci.array.scalar.BinaryArray2D;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.Point2D;
@@ -80,19 +81,8 @@ public class ImageSelectionToMask implements Plugin
         int sizeX = array.size(0);
         int sizeY = array.size(1);
         BinaryArray2D mask = BinaryArray2D.create(sizeX, sizeY);
-        
-        // iterate over output pixels 
-        for (int y = 0; y < sizeY; y++)
-        {
-            for (int x = 0; x < sizeX; x++)
-            {
-                if (poly.contains(new Point2D(x, y)) ^ clockWise)
-                {
-                    mask.setBoolean(true, x, y);
-                }
-            }
-        }
-        
+        mask.populate((x, y) -> new Binary(poly.contains(new Point2D(x, y)) ^ clockWise));
+                
         // create result image
         Image resultImage = new Image(mask, image);
         

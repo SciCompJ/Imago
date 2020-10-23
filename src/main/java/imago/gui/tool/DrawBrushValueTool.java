@@ -106,7 +106,7 @@ public class DrawBrushValueTool extends ImagoTool
                     double d2 = (x2 - xi) * (x2 - xi) + dy2;
                     if (d2 < r2)
                     {
-                        array2d.setValue(value, x2, y2);
+                        array2d.setValue(x2, y2, value);
                     }
                 }
             }
@@ -116,7 +116,7 @@ public class DrawBrushValueTool extends ImagoTool
             ScalarArray3D<?> array3d = ScalarArray3D.wrap((ScalarArray<?>) array);
             // TODO: check class or use abstraction
             int zi = ((StackSliceViewer) this.viewer.getImageView()).getSliceIndex();
-            array3d.setValue(value, xi, yi, zi);
+            array3d.setValue(xi, yi, zi, value);
         }
         
         this.viewer.getImageView().refreshDisplay();

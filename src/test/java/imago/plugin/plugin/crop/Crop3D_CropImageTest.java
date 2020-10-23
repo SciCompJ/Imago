@@ -3,11 +3,11 @@
  */
 package imago.plugin.plugin.crop;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -16,9 +16,7 @@ import org.junit.Test;
 import com.google.gson.stream.JsonReader;
 
 import imago.app.scene.ImageSerialSectionsNode;
-import imago.app.scene.Node;
 import imago.app.scene.io.JsonSceneReader;
-import net.sci.array.Array;
 import net.sci.array.Array3D;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.image.Image;
@@ -53,7 +51,9 @@ public class Crop3D_CropImageTest
 		ImageSerialSectionsNode node = (ImageSerialSectionsNode) sceneReader.readNode();
 
 		Crop3D_CropImage plugin = new Crop3D_CropImage();
-		Array3D<?> res = (Array3D) plugin.process((ScalarArray<?>) image.getData(), node);
+		Array3D<?> res = (Array3D<?>) plugin.process((ScalarArray<?>) image.getData(), node);
+		
+		assertNotNull(res);
 	}
 
 }
