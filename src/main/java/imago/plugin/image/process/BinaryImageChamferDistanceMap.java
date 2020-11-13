@@ -18,9 +18,9 @@ import net.sci.image.DisplaySettings;
 import net.sci.image.Image;
 import net.sci.image.binary.ChamferWeights2D;
 import net.sci.image.binary.ChamferWeights3D;
-import net.sci.image.binary.distmap.ChamferDistanceTransform2DFloat;
+import net.sci.image.binary.distmap.ChamferDistanceTransform2DFloat32;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DUInt16;
-import net.sci.image.binary.distmap.ChamferDistanceTransform3DFloat;
+import net.sci.image.binary.distmap.ChamferDistanceTransform3DFloat32;
 import net.sci.image.binary.distmap.ChamferDistanceTransform3DUInt16;
 import net.sci.image.binary.distmap.DistanceTransform2D;
 import net.sci.image.binary.distmap.DistanceTransform3D;
@@ -100,7 +100,7 @@ public class BinaryImageChamferDistanceMap implements Plugin
 		    }
 		    else
 		    {
-                op = new ChamferDistanceTransform2DFloat(weights, normalize); 
+                op = new ChamferDistanceTransform2DFloat32(weights, normalize); 
 		    }
 		    op.addAlgoListener((ImageFrame) frame);
 		    result = op.process2d((BinaryArray2D) image.getData());
@@ -116,7 +116,7 @@ public class BinaryImageChamferDistanceMap implements Plugin
             }
             else
             {
-                op = new ChamferDistanceTransform3DFloat(weights, normalize); 
+                op = new ChamferDistanceTransform3DFloat32(weights, normalize); 
             }
             op.addAlgoListener((ImageFrame) frame);
             result = op.process3d((BinaryArray3D) image.getData());

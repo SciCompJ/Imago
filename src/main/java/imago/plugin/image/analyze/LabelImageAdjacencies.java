@@ -20,7 +20,7 @@ import net.sci.image.Image;
 import net.sci.image.analyze.RegionAnalysis2D;
 import net.sci.image.label.RegionAdjacencies;
 import net.sci.image.label.RegionAdjacencies.LabelPair;
-import net.sci.image.morphology.LabelImages;
+import net.sci.image.label.LabelImages;
 
 /**
  * Computes the region adjacencies in the current label image.

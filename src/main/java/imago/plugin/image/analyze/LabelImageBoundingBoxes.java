@@ -17,7 +17,7 @@ import net.sci.geom.geom3d.Box3D;
 import net.sci.image.Image;
 import net.sci.image.analyze.RegionAnalysis2D;
 import net.sci.image.analyze.RegionAnalysis3D;
-import net.sci.image.morphology.LabelImages;
+import net.sci.image.label.LabelImages;
 import net.sci.table.Table;
 
 /**

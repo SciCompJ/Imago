@@ -20,7 +20,7 @@ import net.sci.geom.geom2d.curve.Circle2D;
 import net.sci.geom.geom2d.curve.Ellipse2D;
 import net.sci.image.Image;
 import net.sci.image.analyze.RegionAnalysis2D;
-import net.sci.image.morphology.LabelImages;
+import net.sci.image.label.LabelImages;
 import net.sci.table.Table;
 
 /**
