@@ -85,7 +85,7 @@ public class LabelImageEquivalentDisks implements Plugin
         // Extract ellipses
         IntArray2D<?> array2d = (IntArray2D<?>) array;
         int[] labels = LabelImages.findAllLabels(array2d);
-        Ellipse2D[] ellipses = RegionAnalysis2D.inertiaEllipses(array2d, labels);
+        Ellipse2D[] ellipses = RegionAnalysis2D.equivalentEllipses(array2d, labels);
          
         if (showTable)
         {

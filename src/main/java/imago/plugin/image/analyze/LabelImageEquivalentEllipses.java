@@ -23,14 +23,14 @@ import net.sci.image.label.LabelImages;
 import net.sci.table.Table;
 
 /**
- * Computes the inertia ellipse of each region in the current label image.
+ * Computes the equivalent ellipse of each region in the current label image.
  * 
  * @author dlegland
  *
  */
-public class LabelImageInertiaEllipses implements Plugin
+public class LabelImageEquivalentEllipses implements Plugin
 {
-    public LabelImageInertiaEllipses()
+    public LabelImageEquivalentEllipses()
     {
     }
 
@@ -68,7 +68,7 @@ public class LabelImageInertiaEllipses implements Plugin
         ImagoGui gui = frame.getGui();
         
         // open dialog to setup options
-        GenericDialog dlg = new GenericDialog(frame, "Inertia Ellipses");
+        GenericDialog dlg = new GenericDialog(frame, "Equivalent Ellipses");
         dlg.addCheckBox("Display Table ", true);
         dlg.addCheckBox("Overlay Results ", true);
         Collection<String> imageNames = gui.getAppli().getImageHandleNames();
@@ -91,7 +91,7 @@ public class LabelImageInertiaEllipses implements Plugin
         // Extract ellipses
         IntArray2D<?> array2d = (IntArray2D<?>) array;
         int[] labels = LabelImages.findAllLabels(array2d); 
-        Ellipse2D[] ellipses = RegionAnalysis2D.inertiaEllipses(array2d, labels);
+        Ellipse2D[] ellipses = RegionAnalysis2D.equivalentEllipses(array2d, labels);
          
         // Display results within a table
         if (showTable)
@@ -126,7 +126,7 @@ public class LabelImageInertiaEllipses implements Plugin
                 ovrDoc.addShape(new Shape(ellipses[i]));
             }
             // TODO: maybe propagating events would be better
-            viewer.repaint(); 
+            viewer.repaint();
         }
     }
     
