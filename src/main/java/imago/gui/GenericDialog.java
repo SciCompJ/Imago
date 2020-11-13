@@ -873,7 +873,7 @@ public class GenericDialog
   	 */
     public String getNextChoice()
     {
-		if (choices==null)
+		if (choices == null)
 			return "";
 		JComboBox<String> thisChoice = choices.get(comboBoxIndex);
 		String item = (String) thisChoice.getSelectedItem();
@@ -895,7 +895,7 @@ public class GenericDialog
   	 */
     public int getNextChoiceIndex() 
     {
-		if (choices==null)
+		if (choices == null)
 			return -1;
 		JComboBox<String> thisChoice = choices.get(comboBoxIndex);
 		int index = thisChoice.getSelectedIndex();
@@ -965,24 +965,33 @@ public class GenericDialog
 	    }
 
 	    @Override
-	    public void keyReleased(KeyEvent arg0) {}
-
-	    @Override
-	    public void keyTyped(KeyEvent arg0) {}
-
-	    @Override
-	    public void focusGained(FocusEvent evt) {
-	        Component c = evt.getComponent();
-	        if (c instanceof JTextField)
-	            ((JTextField) c).selectAll();
-
+	    public void keyReleased(KeyEvent arg0) 
+	    {
 	    }
 
 	    @Override
-	    public void focusLost(FocusEvent evt) {
+	    public void keyTyped(KeyEvent arg0) 
+	    {
+	    }
+
+	    @Override
+	    public void focusGained(FocusEvent evt)
+	    {
 	        Component c = evt.getComponent();
 	        if (c instanceof JTextField)
+	        {
+	            ((JTextField) c).selectAll();
+	        }
+	    }
+
+	    @Override
+	    public void focusLost(FocusEvent evt) 
+	    {
+	        Component c = evt.getComponent();
+	        if (c instanceof JTextField)
+	        {
 	            ((JTextField) c).select(0, 0);
+	        }
 	    }
 
         @Override
@@ -1012,7 +1021,8 @@ public class GenericDialog
 	    }
 
 	    @Override
-	    public synchronized void caretUpdate(CaretEvent evt) {
+	    public synchronized void caretUpdate(CaretEvent evt) 
+	    {
 //	        notifyListeners(e); 
 	        if (updateWidgets)
 	            return;
@@ -1106,7 +1116,8 @@ public class GenericDialog
 		gd.addCheckBox("Show Result", true);
 		gd.showDialog();
 		
-		if (gd.wasCanceled()) {
+		if (gd.wasCanceled()) 
+		{
 			System.out.println("canceled...");
 		}
 		

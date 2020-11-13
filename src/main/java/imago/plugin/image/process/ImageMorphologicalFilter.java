@@ -16,23 +16,40 @@ import net.sci.image.morphology.strel.Strel2D;
 import net.sci.image.morphology.strel.Strel3D;
 
 /**
- * Applies various types of morphological filtering on a multidimensional image.
+ * Applies various types of morphological filtering on a 2D or 3D image.
  * 
  * @author David Legland
  *
  */
 public class ImageMorphologicalFilter implements Plugin
 {
+    // =============================================================
+    // Class variables
+    
+   /**
+     * The operation to apply to the image.
+     */
 	Operation op = Operation.DILATION;
+
+	/**
+     * The shape of the structuring element for 2D images.
+     */
     Strel2D.Shape shape2d = Strel2D.Shape.SQUARE;
+
+    /**
+     * The shape of the structuring element for 3D images.
+     */
     Strel3D.Shape shape3d = Strel3D.Shape.CUBE;
+    
+    /**
+     * The radius of the structuring element, in pixels.
+     */
 	int radius = 2;
-	boolean showStrel;
 
-	public ImageMorphologicalFilter()
-	{
-	}
-
+	
+    // =============================================================
+    // Implements Plugin interface
+    
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -56,6 +73,7 @@ public class ImageMorphologicalFilter implements Plugin
 			return;
 		}
 		
+		// Create dialog for entering parameters
 		GenericDialog gd = new GenericDialog(frame, "Morphological Filter");
 		gd.addChoice("Operation", Operation.getAllLabels(), 
 				this.op.toString());
@@ -85,14 +103,15 @@ public class ImageMorphologicalFilter implements Plugin
 		if (nd == 2)
 		{
 		    this.shape2d = Strel2D.Shape.fromLabel(gd.getNextChoice());
+	        this.radius  = (int) gd.getNextNumber();
 		    strel = shape2d.fromRadius(radius);
 		}
 		else
 		{
 		    this.shape3d = Strel3D.Shape.fromLabel(gd.getNextChoice());
+	        this.radius  = (int) gd.getNextNumber();
 		    strel = shape3d.fromRadius(radius);
 		}
-		this.radius 	= (int) gd.getNextNumber();
 
 		// add listener
 		strel.addAlgoListener((ImageFrame) frame); 
@@ -121,7 +140,7 @@ public class ImageMorphologicalFilter implements Plugin
 		resultImage.setName(image.getName() + "-" + opName);
 		
 		// add the image document to GUI
-		frame.getGui().createImageFrame(resultImage);
+		frame.createImageFrame(resultImage);
 	}
 
 }
