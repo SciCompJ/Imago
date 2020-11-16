@@ -523,12 +523,17 @@ public class GuiBuilder
         addPlugin(menu, new ImagePlotChannels(), "Channel Profile", hasImage);
 
         menu.addSeparator();
+        JMenu regions2dMenu = new JMenu("Regions (2D)");
+        regions2dMenu.setEnabled(hasImage2D && hasLabelImage);
+        addPlugin(regions2dMenu, new LabelImageEquivalentDisks(), "Regions Equivalent Disks", hasImage2D && hasLabelImage);
+        addPlugin(regions2dMenu, new LabelImageEquivalentEllipses(), "Regions Equivalent Ellipses", hasImage2D && hasLabelImage);
+        addPlugin(regions2dMenu, new LabelImageConvexHulls(), "Regions Conxex Hulls", hasImage2D && hasLabelImage);
+        addPlugin(regions2dMenu, new LabelImageMaxFeretDiameters(), "Regions Max. Feret Diameters", hasImage2D && hasLabelImage);
+        addPlugin(regions2dMenu, new LabelImageGeodesicDiameters(), "Regions Geodesic Diameters", hasImage2D && hasLabelImage);
+        addPlugin(regions2dMenu, new LabelImageAdjacencies(), "Regions Adjacencies", hasImage2D && hasLabelImage);
+        menu.add(regions2dMenu);
         addPlugin(menu, new LabelImageBoundingBoxes(), "Bounding Boxes", (hasImage2D || hasImage3D) && hasLabelImage);
         addPlugin(menu, new LabelImageCentroids(), "Regions Centroids", (hasImage2D || hasImage3D) && hasLabelImage);
-        addPlugin(menu, new LabelImageEquivalentDisks(), "Regions Equivalent Disks", hasImage2D && hasLabelImage);
-        addPlugin(menu, new LabelImageEquivalentEllipses(), "Regions Equivalent Ellipses", hasImage2D && hasLabelImage);
-        addPlugin(menu, new LabelImageConvexHulls(), "Regions Conxex Hulls", hasImage2D && hasLabelImage);
-        addPlugin(menu, new LabelImageAdjacencies(), "Regions Adjacencies", hasImage2D && hasLabelImage);
 
         menu.addSeparator();
         addPlugin(menu, new GrayLevelImageCooccurenceMatrix(), "Gray Level Co-Occurence Matrix", hasImage2D && hasScalarImage);
