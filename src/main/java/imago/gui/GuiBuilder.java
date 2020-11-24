@@ -51,6 +51,7 @@ import net.sci.image.ColorMaps;
 import net.sci.image.Image;
 import net.sci.image.ImageOperator;
 import net.sci.image.process.*;
+import net.sci.image.process.filter.GaussianFilter5x5;
 
 /**
  * Setup the menu for a given frame.
@@ -442,6 +443,7 @@ public class GuiBuilder
         JMenu filtersMenu = new JMenu("Filters");
         addPlugin(filtersMenu, new ImageBoxFilter(), "Box Filter...");
 		addPlugin(filtersMenu, new BoxFilter3x3FloatPlugin(), "Box Filter 2D 3x3 (float)", hasScalarImage);
+		addImageOperatorPlugin(filtersMenu, new GaussianFilter5x5(), "Gaussian Filter 5x5", hasScalarImage && hasImage2D);
         addPlugin(filtersMenu, new ImageBoxMedianFilter(), "Median Filter...");
         addPlugin(filtersMenu, new ImageBoxMinMaxFilter(), "Min/Max Filter...");
         filtersMenu.addSeparator();
