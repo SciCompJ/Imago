@@ -957,8 +957,8 @@ public class GenericDialog
 	            this.dialog.dispose();
 //	          IJ.resetEscape();
 	        } else if (keyCode == KeyEvent.VK_W
-	                && (evt.getModifiers() & Toolkit.getDefaultToolkit()
-	                        .getMenuShortcutKeyMask()) != 0) {
+	                && (evt.getModifiersEx() & Toolkit.getDefaultToolkit()
+	                        .getMenuShortcutKeyMaskEx()) != 0) {
 	            output = Output.CANCEL;
 	            this.dialog.dispose();
 	        }

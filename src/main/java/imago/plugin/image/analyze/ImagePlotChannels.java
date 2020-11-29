@@ -158,7 +158,7 @@ public class ImagePlotChannels implements Plugin
         List<Double> valueList = new ArrayList<Double>(nValues);
         for (double v : values)
         {
-            valueList.add(new Double(v));
+            valueList.add(Double.valueOf(v));
         }
         chart.addSeries("values", channelNames, valueList);
        
