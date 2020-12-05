@@ -6,7 +6,7 @@ package imago.plugin.edit;
 import imago.app.ImageHandle;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 
 /**
  * Clear all the shapes stored in this document.
@@ -14,7 +14,7 @@ import imago.gui.Plugin;
  * @author David Legland
  *
  */
-public class DocClearShapes implements Plugin
+public class DocClearShapes implements FramePlugin
 {
 	public DocClearShapes()
     {

@@ -5,7 +5,7 @@ package imago.plugin.table;
 
 import imago.gui.ImagoFrame;
 import imago.gui.TableFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 
 /**
  * Specialization of the Plugin interface for Table plugins.
@@ -16,7 +16,7 @@ import imago.gui.Plugin;
  * @author dlegland
  *
  */
-public interface TablePlugin extends Plugin
+public interface TablePlugin extends FramePlugin
 {
     /**
      * Defines whether this plugin should be enabled for the given frame.

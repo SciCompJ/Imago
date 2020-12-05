@@ -7,7 +7,7 @@ import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.image.Image;
 import net.sci.image.process.shape.ImageSlicer;
 
@@ -17,7 +17,7 @@ import net.sci.image.process.shape.ImageSlicer;
  * @author David Legland
  *
  */
-public class Image3DGetSlice implements Plugin
+public class Image3DGetSlice implements FramePlugin
 {
 	public Image3DGetSlice()
 	{

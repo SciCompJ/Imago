@@ -22,7 +22,7 @@ import net.sci.table.Table;
  * @author dlegland
  *
  */
-public class LabelImageMaxFeretDiameters implements Plugin
+public class LabelImageMaxFeretDiameters implements FramePlugin
 {
     public LabelImageMaxFeretDiameters()
     {

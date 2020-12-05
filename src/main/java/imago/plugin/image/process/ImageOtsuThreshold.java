@@ -6,7 +6,7 @@ package imago.plugin.image.process;
 import imago.app.ImageHandle;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.image.Image;
 import net.sci.image.process.segment.OtsuThreshold;
 
@@ -15,7 +15,7 @@ import net.sci.image.process.segment.OtsuThreshold;
  * @author David Legland
  *
  */
-public class ImageOtsuThreshold implements Plugin 
+public class ImageOtsuThreshold implements FramePlugin 
 {
 	public ImageOtsuThreshold() 
 	{

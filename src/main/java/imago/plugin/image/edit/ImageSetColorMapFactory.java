@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import imago.app.ImageHandle;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.color.Color;
 import net.sci.image.ColorMap;
 import net.sci.image.ColorMapFactory;
@@ -25,7 +25,7 @@ import net.sci.image.Image;
  * @author David Legland
  * @see ImageSetColorMap
  */
-public class ImageSetColorMapFactory implements Plugin
+public class ImageSetColorMapFactory implements FramePlugin
 {
     ColorMapFactory factory;
     

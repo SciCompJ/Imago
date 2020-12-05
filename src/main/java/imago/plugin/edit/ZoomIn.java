@@ -6,13 +6,13 @@ package imago.plugin.edit;
 import imago.gui.ImageViewer;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 
 /**
  * @author David Legland
  *
  */
-public class ZoomIn implements Plugin
+public class ZoomIn implements FramePlugin
 {
     public ZoomIn()
     {

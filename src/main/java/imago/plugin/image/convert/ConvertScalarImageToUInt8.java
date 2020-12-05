@@ -7,7 +7,7 @@ import imago.app.ImageHandle;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.UInt8Array;
@@ -20,7 +20,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class ConvertScalarImageToUInt8 implements Plugin 
+public class ConvertScalarImageToUInt8 implements FramePlugin 
 {
 	public ConvertScalarImageToUInt8() 
 	{

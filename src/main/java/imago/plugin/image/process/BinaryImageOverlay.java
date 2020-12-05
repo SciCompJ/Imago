@@ -8,7 +8,7 @@ import java.util.Collection;
 import imago.app.ImagoApp;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.Arrays;
 import net.sci.array.color.CommonColors;
@@ -23,7 +23,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class BinaryImageOverlay implements Plugin
+public class BinaryImageOverlay implements FramePlugin
 {
 	public BinaryImageOverlay()
 	{

@@ -8,7 +8,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.process.shape.Reshape;
 import net.sci.image.Image;
@@ -19,7 +19,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class ImageReshape implements Plugin
+public class ImageReshape implements FramePlugin
 {
 	public ImageReshape()
 	{

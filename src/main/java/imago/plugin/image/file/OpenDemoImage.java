@@ -8,14 +8,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.image.Image;
 
 /**
  * @author David Legland
  *
  */
-public class OpenDemoImage implements Plugin
+public class OpenDemoImage implements FramePlugin
 {
     String fileName;
     

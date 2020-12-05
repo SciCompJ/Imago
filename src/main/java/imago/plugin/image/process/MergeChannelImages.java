@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import imago.app.ImagoApp;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.color.RGB8Array;
 import net.sci.array.scalar.UInt8Array;
 import net.sci.image.Image;
@@ -17,7 +17,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class MergeChannelImages implements Plugin
+public class MergeChannelImages implements FramePlugin
 {
 	public MergeChannelImages()
 	{

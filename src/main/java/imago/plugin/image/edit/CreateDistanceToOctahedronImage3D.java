@@ -4,7 +4,7 @@
 package imago.plugin.image.edit;
 
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.scalar.BufferedUInt8Array3D;
 import net.sci.array.scalar.UInt8Array3D;
 import net.sci.geom.geom3d.Point3D;
@@ -19,7 +19,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class CreateDistanceToOctahedronImage3D implements Plugin
+public class CreateDistanceToOctahedronImage3D implements FramePlugin
 {
     public CreateDistanceToOctahedronImage3D()
     {

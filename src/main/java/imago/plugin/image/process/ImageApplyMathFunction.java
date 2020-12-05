@@ -8,7 +8,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.scalar.Float32Array;
 import net.sci.array.scalar.Float64Array;
@@ -21,7 +21,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class ImageApplyMathFunction implements Plugin
+public class ImageApplyMathFunction implements FramePlugin
 {
     String[] functionNames = new String[]{"Sqrt", "Log10", "Log2", "Exp", "Cos", "Sin"};
     String[] outputTypeNames = new String[]{"Same", "Float32", "Float64"};

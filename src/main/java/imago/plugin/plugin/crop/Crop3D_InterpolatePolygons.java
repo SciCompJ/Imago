@@ -18,7 +18,7 @@ import imago.app.scene.ShapeNode;
 import imago.gui.ImageFrame;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import imago.gui.viewer.StackSliceViewer;
 import net.sci.algo.AlgoEvent;
 import net.sci.array.Array;
@@ -36,7 +36,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class Crop3D_InterpolatePolygons implements Plugin
+public class Crop3D_InterpolatePolygons implements FramePlugin
 {
 	public Crop3D_InterpolatePolygons()
 	{

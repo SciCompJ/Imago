@@ -5,7 +5,7 @@ package imago.plugin.image;
 
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.image.Image;
 
 /**
@@ -17,7 +17,7 @@ import net.sci.image.Image;
  * @author dlegland
  *
  */
-public interface ImagePlugin extends Plugin
+public interface ImagePlugin extends FramePlugin
 {
     /**
      * Defines whether this plugin should be enabled for the given frame.

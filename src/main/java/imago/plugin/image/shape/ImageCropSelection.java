@@ -7,7 +7,7 @@ import imago.app.ImageHandle;
 import imago.gui.ImageViewer;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import imago.gui.viewer.PlanarImageViewer;
 import net.sci.array.Array;
 import net.sci.array.process.shape.Crop;
@@ -21,7 +21,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class ImageCropSelection implements Plugin
+public class ImageCropSelection implements FramePlugin
 {
 	public ImageCropSelection()
 	{

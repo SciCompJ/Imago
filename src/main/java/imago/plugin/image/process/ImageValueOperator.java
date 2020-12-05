@@ -20,7 +20,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class ImageValueOperator implements Plugin
+public class ImageValueOperator implements FramePlugin
 {
     /**
      * The list of functions that can be applied.

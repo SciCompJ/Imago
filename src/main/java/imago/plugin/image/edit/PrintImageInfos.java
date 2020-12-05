@@ -6,7 +6,7 @@ package imago.plugin.image.edit;
 import imago.app.ImageHandle;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.axis.Axis;
 import net.sci.image.Calibration;
 import net.sci.image.Image;
@@ -15,7 +15,7 @@ import net.sci.image.Image;
  * @author dlegland
  *
  */
-public class PrintImageInfos implements Plugin
+public class PrintImageInfos implements FramePlugin
 {
 	public PrintImageInfos() 
 	{

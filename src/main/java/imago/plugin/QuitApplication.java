@@ -7,7 +7,7 @@ import java.util.Collection;
 
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 
 /**
  * Tries to close all open frames, and quits the application.
@@ -15,7 +15,7 @@ import imago.gui.Plugin;
  * @author dlegland
  *
  */
-public class QuitApplication implements Plugin
+public class QuitApplication implements FramePlugin
 {
 	/**
 	 */

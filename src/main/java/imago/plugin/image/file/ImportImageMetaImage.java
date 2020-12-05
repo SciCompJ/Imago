@@ -10,7 +10,7 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.image.Image;
 import net.sci.image.io.MetaImageReader;
 
@@ -18,7 +18,7 @@ import net.sci.image.io.MetaImageReader;
  * @author David Legland
  *
  */
-public class ImportImageMetaImage implements Plugin
+public class ImportImageMetaImage implements FramePlugin
 {
 	private JFileChooser openWindow = null;
 

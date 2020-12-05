@@ -9,7 +9,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImageFrame;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import imago.gui.viewer.PlanarImageViewer;
 import net.sci.array.Array;
 import net.sci.geom.geom2d.Geometry2D;
@@ -22,7 +22,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class ImageCopySelectionToWorkspace implements Plugin
+public class ImageCopySelectionToWorkspace implements FramePlugin
 {
 	public ImageCopySelectionToWorkspace()
 	{

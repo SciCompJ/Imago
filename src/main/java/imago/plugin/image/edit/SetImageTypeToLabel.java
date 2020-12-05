@@ -7,7 +7,7 @@ import imago.app.ImageHandle;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.image.Image;
@@ -17,7 +17,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class SetImageTypeToLabel implements Plugin
+public class SetImageTypeToLabel implements FramePlugin
 {
 	public SetImageTypeToLabel() 
 	{

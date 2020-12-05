@@ -7,7 +7,7 @@ import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.scalar.IntArray;
 import net.sci.array.scalar.ScalarArray;
@@ -28,7 +28,7 @@ import net.sci.image.morphology.watershed.Watershed3D;
  * @author David Legland
  *
  */
-public class ImageWatershed implements Plugin
+public class ImageWatershed implements FramePlugin
 {
 	public ImageWatershed()
 	{

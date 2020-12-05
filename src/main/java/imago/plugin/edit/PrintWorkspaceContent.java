@@ -6,7 +6,7 @@ package imago.plugin.edit;
 import imago.app.ObjectHandle;
 import imago.app.Workspace;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 
 import java.util.Locale;
 
@@ -14,7 +14,7 @@ import java.util.Locale;
  * @author dlegland
  *
  */
-public class PrintWorkspaceContent implements Plugin
+public class PrintWorkspaceContent implements FramePlugin
 {
 	/**
 	 */

@@ -7,7 +7,7 @@ import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.color.RGB8;
 import net.sci.array.scalar.BinaryArray;
@@ -23,7 +23,7 @@ import net.sci.image.binary.FloodFillComponentsLabeling3D;
  * @author David Legland
  *
  */
-public class BinaryImageConnectedComponentsLabeling implements Plugin
+public class BinaryImageConnectedComponentsLabeling implements FramePlugin
 {
 	public BinaryImageConnectedComponentsLabeling()
 	{

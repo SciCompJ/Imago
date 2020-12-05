@@ -7,7 +7,7 @@ import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.image.Image;
 import net.sci.image.process.filter.BoxFilter;
@@ -18,7 +18,7 @@ import net.sci.image.process.filter.BoxFilter;
  * @author David Legland
  *
  */
-public class ImageBoxFilter implements Plugin
+public class ImageBoxFilter implements FramePlugin
 {
 	public ImageBoxFilter()
 	{

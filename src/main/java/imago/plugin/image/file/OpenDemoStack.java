@@ -4,7 +4,7 @@
 package imago.plugin.image.file;
 
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.scalar.BufferedUInt8Array3D;
 import net.sci.array.scalar.UInt8Array3D;
 import net.sci.image.Image;
@@ -13,7 +13,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class OpenDemoStack implements Plugin
+public class OpenDemoStack implements FramePlugin
 {
     String fileName;
     

@@ -7,7 +7,7 @@ import imago.app.ImageHandle;
 import imago.app.shape.Shape;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 
 import java.util.Map;
 
@@ -28,7 +28,7 @@ import net.sci.table.Table;
  * @author dlegland
  *
  */
-public class LabelImageCentroids implements Plugin
+public class LabelImageCentroids implements FramePlugin
 {
     public LabelImageCentroids()
     {

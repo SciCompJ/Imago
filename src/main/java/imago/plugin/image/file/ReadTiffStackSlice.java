@@ -13,7 +13,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.image.Image;
 import net.sci.image.io.TiffImageReader;
 
@@ -24,7 +24,7 @@ import net.sci.image.io.TiffImageReader;
  * @author David Legland
  *
  */
-public class ReadTiffStackSlice implements Plugin
+public class ReadTiffStackSlice implements FramePlugin
 {
 	private JFileChooser openWindow = null;
 

@@ -8,7 +8,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.color.RGB16Array;
 import net.sci.array.color.RGB8Array;
@@ -19,7 +19,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class ConvertRGB8ImageToRGB16 implements Plugin 
+public class ConvertRGB8ImageToRGB16 implements FramePlugin 
 {
 	public ConvertRGB8ImageToRGB16() 
 	{

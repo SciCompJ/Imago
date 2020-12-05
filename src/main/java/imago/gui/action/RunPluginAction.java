@@ -6,7 +6,7 @@ package imago.gui.action;
 import imago.gui.ImagoAction;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 
 import java.awt.event.ActionEvent;
 
@@ -23,7 +23,7 @@ public class RunPluginAction extends ImagoAction
      */
     private static final long serialVersionUID = 1L;
     
-    Plugin plugin;
+    FramePlugin plugin;
     
     /**
      * @param frame
@@ -31,7 +31,7 @@ public class RunPluginAction extends ImagoAction
      * @param plugin
      *            the plugin to run
      */
-    public RunPluginAction(ImagoFrame frame, Plugin plugin)
+    public RunPluginAction(ImagoFrame frame, FramePlugin plugin)
     {
         super(frame, "");
         this.plugin = plugin;

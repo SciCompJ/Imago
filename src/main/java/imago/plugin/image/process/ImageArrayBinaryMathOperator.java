@@ -19,7 +19,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class ImageArrayBinaryMathOperator implements Plugin
+public class ImageArrayBinaryMathOperator implements FramePlugin
 {
     /**
      * The list of functions that can be applied.

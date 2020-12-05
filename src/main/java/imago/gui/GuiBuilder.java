@@ -654,22 +654,22 @@ public class GuiBuilder
 
     private JMenuItem addImageOperatorPlugin(JMenu menu, ImageOperator operator, String label, boolean enabled)
     {
-        Plugin plugin = new ImageOperatorPlugin(operator);
+        FramePlugin plugin = new ImageOperatorPlugin(operator);
         return addPlugin(menu, plugin, label, enabled);
     }
 
     private JMenuItem addArrayOperatorPlugin(JMenu menu, ArrayOperator operator, String label, boolean enabled)
     {
-        Plugin plugin = new ImageArrayOperatorPlugin(operator);
+        FramePlugin plugin = new ImageArrayOperatorPlugin(operator);
         return addPlugin(menu, plugin, label, enabled);
     }
 
-    private JMenuItem addPlugin(JMenu menu, Plugin plugin, String label)
+    private JMenuItem addPlugin(JMenu menu, FramePlugin plugin, String label)
     {
        return addPlugin(menu, plugin, label, plugin.isEnabled(frame));
     }
 
-    private JMenuItem addPlugin(JMenu menu, Plugin plugin, String label, boolean enabled)
+    private JMenuItem addPlugin(JMenu menu, FramePlugin plugin, String label, boolean enabled)
     {
         JMenuItem item = new JMenuItem(new RunPluginAction(frame, plugin));
         item.setText(label);

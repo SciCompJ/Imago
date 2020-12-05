@@ -7,7 +7,7 @@ import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.scalar.ScalarArray3D;
 import net.sci.image.Image;
@@ -20,7 +20,7 @@ import net.sci.image.morphology.strel.Strel3D;
  * @author David Legland
  *
  */
-public class ImageMorphologicalFilter3D implements Plugin
+public class ImageMorphologicalFilter3D implements FramePlugin
 {
 	Operation op = Operation.DILATION;
 	Strel3D.Shape shape = Strel3D.Shape.CUBE;

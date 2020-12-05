@@ -6,13 +6,13 @@ package imago.plugin.edit;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 
 /**
  * @author dlegland
  *
  */
-public class ChooseBrushValue implements Plugin
+public class ChooseBrushValue implements FramePlugin
 {
 	/**
 	 */

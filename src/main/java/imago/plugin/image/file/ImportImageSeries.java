@@ -14,7 +14,7 @@ import net.sci.image.Image;
 import imago.Imago;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 
 /**
  * Imports a series of images and stores them into a 3D image.
@@ -22,7 +22,7 @@ import imago.gui.Plugin;
  * @author dlegland
  *
  */
-public class ImportImageSeries implements Plugin
+public class ImportImageSeries implements FramePlugin
 {
     private JFileChooser openWindow = null;
 

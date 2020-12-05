@@ -6,7 +6,7 @@ package imago.plugin.image.analyze;
 import imago.gui.ImagoChartFrame;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.color.RGB16Array;
 import net.sci.array.color.RGB8Array;
@@ -27,7 +27,7 @@ import org.knowm.xchart.style.markers.SeriesMarkers;
  * @author David Legland
  *
  */
-public class ImageHistogram implements Plugin
+public class ImageHistogram implements FramePlugin
 {
 	public ImageHistogram()
 	{

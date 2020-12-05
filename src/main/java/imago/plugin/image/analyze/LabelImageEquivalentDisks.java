@@ -9,7 +9,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 
 import java.util.Collection;
 
@@ -32,7 +32,7 @@ import net.sci.table.Table;
  * @author dlegland
  *
  */
-public class LabelImageEquivalentDisks implements Plugin
+public class LabelImageEquivalentDisks implements FramePlugin
 {
     public LabelImageEquivalentDisks()
     {

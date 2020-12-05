@@ -7,13 +7,13 @@ import java.util.Collection;
 
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 
 /**
  * @author dlegland
  *
  */
-public class PrintFrameList implements Plugin
+public class PrintFrameList implements FramePlugin
 {
 	/**
 	 */

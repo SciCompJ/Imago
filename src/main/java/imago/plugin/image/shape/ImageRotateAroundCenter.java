@@ -8,7 +8,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.image.Image;
 import net.sci.image.process.RotationAroundCenter;
@@ -19,7 +19,7 @@ import net.sci.image.process.RotationAroundCenter;
  * @author David Legland
  *
  */
-public class ImageRotateAroundCenter implements Plugin
+public class ImageRotateAroundCenter implements FramePlugin
 {
 	public ImageRotateAroundCenter()
 	{

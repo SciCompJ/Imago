@@ -9,7 +9,7 @@ import imago.app.ImagoApp;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.Arrays;
 import net.sci.array.scalar.BinaryArray;
@@ -25,7 +25,7 @@ import net.sci.image.binary.BinaryImages;
  * @author David Legland
  *
  */
-public class ImageGeodesicDistanceMap implements Plugin
+public class ImageGeodesicDistanceMap implements FramePlugin
 {
 	public ImageGeodesicDistanceMap()
 	{

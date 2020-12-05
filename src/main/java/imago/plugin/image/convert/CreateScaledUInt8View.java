@@ -8,7 +8,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.ScalarArrayUInt8View;
@@ -23,7 +23,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class CreateScaledUInt8View implements Plugin
+public class CreateScaledUInt8View implements FramePlugin
 {
 	public CreateScaledUInt8View() 
 	{

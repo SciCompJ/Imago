@@ -7,13 +7,13 @@ import imago.app.ImageHandle;
 import imago.app.scene.Node;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 
 /**
  * @author dlegland
  *
  */
-public class PrintImageSceneGraph implements Plugin
+public class PrintImageSceneGraph implements FramePlugin
 {
 	public PrintImageSceneGraph() 
 	{

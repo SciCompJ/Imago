@@ -16,7 +16,7 @@ import javax.swing.JTable;
 import imago.app.ImageHandle;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import imago.gui.util.RowNumberTable;
 import net.sci.image.Image;
 import net.sci.image.io.tiff.TiffTag;
@@ -25,7 +25,7 @@ import net.sci.image.io.tiff.TiffTag;
  * @author dlegland
  *
  */
-public class PrintImageTiffTags implements Plugin
+public class PrintImageTiffTags implements FramePlugin
 {
 	public PrintImageTiffTags() 
 	{

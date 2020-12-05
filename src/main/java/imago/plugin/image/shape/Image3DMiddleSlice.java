@@ -6,7 +6,7 @@ package imago.plugin.image.shape;
 import imago.app.ImageHandle;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.process.shape.SimpleSlicer;
 import net.sci.image.Image;
 
@@ -15,7 +15,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class Image3DMiddleSlice implements Plugin
+public class Image3DMiddleSlice implements FramePlugin
 {
 	public Image3DMiddleSlice() 
 	{

@@ -5,7 +5,7 @@ package imago.plugin.image;
 
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.ArrayOperator;
 import net.sci.image.Image;
 
@@ -18,7 +18,7 @@ import net.sci.image.Image;
  * @author dlegland
  *
  */
-public class ImageArrayOperatorPlugin implements Plugin
+public class ImageArrayOperatorPlugin implements FramePlugin
 {    
     ArrayOperator operator;
     

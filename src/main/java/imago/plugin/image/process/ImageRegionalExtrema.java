@@ -7,7 +7,7 @@ import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.ScalarArray2D;
@@ -23,7 +23,7 @@ import net.sci.image.morphology.MinimaAndMaxima;
  * @author David Legland
  *
  */
-public class ImageRegionalExtrema implements Plugin
+public class ImageRegionalExtrema implements FramePlugin
 {
 	public ImageRegionalExtrema()
 	{

@@ -6,7 +6,7 @@ package imago.plugin.image.process;
 import imago.app.ImageHandle;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.image.Image;
 
 
@@ -15,7 +15,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class ImageDuplicate implements Plugin
+public class ImageDuplicate implements FramePlugin
 {
     public ImageDuplicate()
     {

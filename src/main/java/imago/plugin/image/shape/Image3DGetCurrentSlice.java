@@ -7,7 +7,7 @@ import imago.app.ImageHandle;
 import imago.gui.ImageViewer;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import imago.gui.viewer.StackSliceViewer;
 import net.sci.image.Image;
 import net.sci.image.process.shape.ImageSlicer;
@@ -18,7 +18,7 @@ import net.sci.image.process.shape.ImageSlicer;
  * @author David Legland
  *
  */
-public class Image3DGetCurrentSlice implements Plugin
+public class Image3DGetCurrentSlice implements FramePlugin
 {
     public Image3DGetCurrentSlice()
 	{

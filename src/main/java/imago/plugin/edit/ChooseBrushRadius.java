@@ -6,7 +6,7 @@ package imago.plugin.edit;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 
 /**
  * Choose the radiusofthebrush.
@@ -14,7 +14,7 @@ import imago.gui.Plugin;
  * @author dlegland
  *
  */
-public class ChooseBrushRadius implements Plugin
+public class ChooseBrushRadius implements FramePlugin
 {
 	/**
 	 */

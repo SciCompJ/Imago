@@ -9,14 +9,14 @@ import imago.app.ImageHandle;
 import imago.gui.ImageFrame;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import imago.gui.viewer.StackSliceViewer;
 
 /**
  * @author dlegland
  *
  */
-public class Crop3D_Initialize implements Plugin
+public class Crop3D_Initialize implements FramePlugin
 {
 
 	@Override

@@ -12,7 +12,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.image.Image;
 import net.sci.image.io.TiffImageReader;
 
@@ -21,7 +21,7 @@ import net.sci.image.io.TiffImageReader;
  * @author David Legland
  *
  */
-public class ReadImageTiff implements Plugin
+public class ReadImageTiff implements FramePlugin
 {
 	private JFileChooser openWindow = null;
 

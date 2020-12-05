@@ -9,7 +9,7 @@ package imago.gui;
  * @author dlegland
  *
  */
-public interface Plugin
+public interface FramePlugin
 {
     /**
      * Run the plugin from the specified frame.

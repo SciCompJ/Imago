@@ -6,7 +6,7 @@ package imago.plugin.image.process;
 import imago.app.ImageHandle;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.scalar.BinaryArray2D;
 import net.sci.image.Image;
@@ -21,7 +21,7 @@ import net.sci.image.binary.skeleton.ImageJSkeleton;
  * @author David Legland
  *
  */
-public class BinaryImageSkeleton implements Plugin
+public class BinaryImageSkeleton implements FramePlugin
 {
 	public BinaryImageSkeleton() 
 	{

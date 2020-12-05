@@ -6,13 +6,13 @@ package imago.plugin.edit;
 import imago.app.ImagoApp;
 import imago.app.ImageHandle;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 
 /**
  * @author dlegland
  *
  */
-public class PrintDocumentList implements Plugin
+public class PrintDocumentList implements FramePlugin
 {
 	/**
 	 */

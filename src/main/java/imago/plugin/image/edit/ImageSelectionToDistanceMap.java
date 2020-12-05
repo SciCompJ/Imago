@@ -7,7 +7,7 @@ import imago.app.ImageHandle;
 import imago.gui.ImageViewer;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import imago.gui.viewer.PlanarImageViewer;
 import net.sci.array.Array;
 import net.sci.array.scalar.Float32Array2D;
@@ -22,7 +22,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class ImageSelectionToDistanceMap implements Plugin
+public class ImageSelectionToDistanceMap implements FramePlugin
 {
 	public ImageSelectionToDistanceMap()
 	{

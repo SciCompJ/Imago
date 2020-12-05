@@ -4,7 +4,7 @@
 package imago.plugin.table;
 
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +17,7 @@ import net.sci.table.io.DelimitedTableReader;
  * @author David Legland
  *
  */
-public class ShowDemoTable implements Plugin
+public class ShowDemoTable implements FramePlugin
 {
 	public ShowDemoTable() 
 	{

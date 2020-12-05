@@ -7,7 +7,7 @@ import imago.app.ImageHandle;
 import imago.app.shape.Shape;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.scalar.BinaryArray;
 import net.sci.array.scalar.BinaryArray2D;
@@ -21,7 +21,7 @@ import net.sci.image.vectorize.BinaryImage2DBoundaryGraph;
  * @author David Legland
  *
  */
-public class BinaryImageBoundaryGraph implements Plugin
+public class BinaryImageBoundaryGraph implements FramePlugin
 {
 	public BinaryImageBoundaryGraph()
 	{

@@ -12,7 +12,7 @@ import imago.gui.ImageFrame;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.image.Image;
 import net.sci.image.io.MetaImageWriter;
 
@@ -23,7 +23,7 @@ import net.sci.image.io.MetaImageWriter;
  * @author David Legland
  *
  */
-public class SaveImageMetaImage implements Plugin
+public class SaveImageMetaImage implements FramePlugin
 {
 	private JFileChooser openWindow = null;
 

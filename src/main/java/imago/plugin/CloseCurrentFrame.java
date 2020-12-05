@@ -4,7 +4,7 @@
 package imago.plugin;
 
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 
 /**
  * Closes the current frame.
@@ -12,7 +12,7 @@ import imago.gui.Plugin;
  * @author dlegland
  *
  */
-public class CloseCurrentFrame implements Plugin
+public class CloseCurrentFrame implements FramePlugin
 {
 	/**
 	 */

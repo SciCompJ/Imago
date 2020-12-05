@@ -18,13 +18,13 @@ import imago.app.scene.ImageSerialSectionsNode;
 import imago.app.scene.io.JsonSceneWriter;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 
 /**
  * @author dlegland
  *
  */
-public class Crop3D_SavePolygonsAsJson implements Plugin
+public class Crop3D_SavePolygonsAsJson implements FramePlugin
 {
 	private JFileChooser saveWindow = null;
 

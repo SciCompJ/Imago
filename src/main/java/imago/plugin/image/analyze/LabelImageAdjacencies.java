@@ -10,7 +10,7 @@ import imago.app.ImageHandle;
 import imago.app.shape.Shape;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.scalar.IntArray;
 import net.sci.array.scalar.IntArray2D;
@@ -28,7 +28,7 @@ import net.sci.image.label.LabelImages;
  * @author dlegland
  *
  */
-public class LabelImageAdjacencies implements Plugin
+public class LabelImageAdjacencies implements FramePlugin
 {
     public LabelImageAdjacencies()
     {

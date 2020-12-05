@@ -7,7 +7,7 @@ import imago.app.ImageHandle;
 import imago.app.shape.Shape;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.scalar.IntArray2D;
 import net.sci.array.scalar.IntArray3D;
@@ -26,7 +26,7 @@ import net.sci.table.Table;
  * @author dlegland
  *
  */
-public class LabelImageBoundingBoxes implements Plugin
+public class LabelImageBoundingBoxes implements FramePlugin
 {
     public LabelImageBoundingBoxes()
     {

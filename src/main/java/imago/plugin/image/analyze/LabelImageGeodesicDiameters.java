@@ -22,7 +22,7 @@ import net.sci.table.Table;
  * @author dlegland
  *
  */
-public class LabelImageGeodesicDiameters implements Plugin
+public class LabelImageGeodesicDiameters implements FramePlugin
 {
     public LabelImageGeodesicDiameters()
     {

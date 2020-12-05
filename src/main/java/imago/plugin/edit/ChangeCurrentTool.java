@@ -7,7 +7,7 @@ import imago.gui.ImageViewer;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoTool;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 
 /**
  * Changes the current tool of the current ImagoFrame.
@@ -15,7 +15,7 @@ import imago.gui.Plugin;
  * @author David Legland
  *
  */
-public class ChangeCurrentTool implements Plugin
+public class ChangeCurrentTool implements FramePlugin
 {
     ImagoTool tool;
     

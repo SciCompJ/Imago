@@ -12,7 +12,7 @@ import javax.swing.JFileChooser;
 
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.image.Image;
 import net.sci.image.io.RawImageReader;
 import net.sci.image.io.RawImageReader.DataType;
@@ -21,7 +21,7 @@ import net.sci.image.io.RawImageReader.DataType;
  * @author dlegland
  *
  */
-public class ImportImageRawData implements Plugin
+public class ImportImageRawData implements FramePlugin
 {
     private JFileChooser openWindow = null;
 

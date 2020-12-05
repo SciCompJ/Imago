@@ -6,7 +6,7 @@ package imago.plugin.image.edit;
 import imago.gui.ImageFrame;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 
 /**
  * Toggles the display of scene graph items in the current image viewer.
@@ -14,7 +14,7 @@ import imago.gui.Plugin;
  * @author David Legland
  *
  */
-public class ToggleSceneGraphDisplay implements Plugin
+public class ToggleSceneGraphDisplay implements FramePlugin
 {
 	public ToggleSceneGraphDisplay()
 	{

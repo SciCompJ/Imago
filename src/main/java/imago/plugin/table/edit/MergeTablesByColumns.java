@@ -9,13 +9,13 @@ import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.TableFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 
 /**
  * @author dlegland
  *
  */
-public class MergeTablesByColumns implements Plugin
+public class MergeTablesByColumns implements FramePlugin
 {
     
     /* (non-Javadoc)

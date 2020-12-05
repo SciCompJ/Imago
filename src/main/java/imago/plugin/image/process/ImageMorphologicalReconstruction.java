@@ -9,7 +9,7 @@ import imago.app.ImagoApp;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.Arrays;
 import net.sci.image.Image;
@@ -23,7 +23,7 @@ import net.sci.image.morphology.MorphologicalReconstruction;
  * @author David Legland
  *
  */
-public class ImageMorphologicalReconstruction implements Plugin
+public class ImageMorphologicalReconstruction implements FramePlugin
 {
 	public ImageMorphologicalReconstruction()
 	{

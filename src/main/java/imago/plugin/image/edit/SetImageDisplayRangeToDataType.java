@@ -7,7 +7,7 @@ import imago.app.ImageHandle;
 import imago.gui.ImageViewer;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.UInt16;
@@ -20,7 +20,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class SetImageDisplayRangeToDataType implements Plugin
+public class SetImageDisplayRangeToDataType implements FramePlugin
 {
     public SetImageDisplayRangeToDataType()
     {

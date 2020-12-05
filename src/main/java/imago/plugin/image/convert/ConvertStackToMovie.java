@@ -6,7 +6,7 @@ package imago.plugin.image.convert;
 import imago.app.ImageHandle;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.image.Calibration;
 import net.sci.image.Image;
 import net.sci.image.ImageAxis;
@@ -15,7 +15,7 @@ import net.sci.image.ImageAxis;
  * @author dlegland
  *
  */
-public class ConvertStackToMovie implements Plugin
+public class ConvertStackToMovie implements FramePlugin
 {
     
     /**

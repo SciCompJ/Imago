@@ -9,7 +9,7 @@ import imago.app.ImagoApp;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.Arrays;
 import net.sci.array.scalar.ScalarArray;
@@ -28,7 +28,7 @@ import net.sci.image.morphology.strel.Strel3D;
  * @author David Legland
  *
  */
-public class ImageIteratedGeodesicDilations implements Plugin
+public class ImageIteratedGeodesicDilations implements FramePlugin
 {
 	public ImageIteratedGeodesicDilations()
 	{

@@ -11,7 +11,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImageFrame;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import imago.gui.viewer.PlanarImageViewer;
 
 import java.util.Collection;
@@ -27,7 +27,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class ImportSelectionFromWorkspace implements Plugin
+public class ImportSelectionFromWorkspace implements FramePlugin
 {
 	public ImportSelectionFromWorkspace()
 	{

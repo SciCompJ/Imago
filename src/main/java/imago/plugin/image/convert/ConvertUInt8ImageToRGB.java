@@ -7,7 +7,7 @@ import imago.app.ImageHandle;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.color.Color;
 import net.sci.array.color.RGB8Array;
@@ -21,7 +21,7 @@ import net.sci.image.Image;
  * @author dlegland
  *
  */
-public class ConvertUInt8ImageToRGB implements Plugin
+public class ConvertUInt8ImageToRGB implements FramePlugin
 {
 
     /**

@@ -5,7 +5,7 @@ package imago.plugin.image.file;
 
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.scalar.BinaryArray;
 import net.sci.array.scalar.Float32Array;
 import net.sci.array.scalar.Float64Array;
@@ -21,7 +21,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class CreateNewImage implements Plugin
+public class CreateNewImage implements FramePlugin
 {
 
 	enum ImageType

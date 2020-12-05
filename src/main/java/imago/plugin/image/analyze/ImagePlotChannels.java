@@ -20,7 +20,7 @@ import imago.gui.ImageViewer;
 import imago.gui.ImagoChartFrame;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import imago.gui.viewer.PlanarImageViewer;
 import net.sci.array.Array;
 import net.sci.array.color.RGB8Array;
@@ -34,7 +34,7 @@ import net.sci.image.Image;
  * @author dlegland
  *
  */
-public class ImagePlotChannels implements Plugin
+public class ImagePlotChannels implements FramePlugin
 {
     
     /* (non-Javadoc)

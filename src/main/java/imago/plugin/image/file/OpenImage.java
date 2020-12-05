@@ -6,7 +6,7 @@ package imago.plugin.image.file;
 import imago.Imago;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 
 import java.io.File;
 
@@ -18,7 +18,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class OpenImage implements Plugin
+public class OpenImage implements FramePlugin
 {
     private JFileChooser openWindow = null;
     

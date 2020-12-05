@@ -10,7 +10,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImageViewer;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.color.RGB16Array;
 import net.sci.array.color.RGB8Array;
@@ -23,7 +23,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class SetImageDisplayRange implements Plugin
+public class SetImageDisplayRange implements FramePlugin
 {
     public SetImageDisplayRange()
     {

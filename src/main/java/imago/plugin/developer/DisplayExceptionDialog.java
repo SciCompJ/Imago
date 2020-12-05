@@ -5,13 +5,13 @@ package imago.plugin.developer;
 
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 
 /**
  * @author dlegland
  *
  */
-public class DisplayExceptionDialog implements Plugin
+public class DisplayExceptionDialog implements FramePlugin
 {
     
     /* (non-Javadoc)

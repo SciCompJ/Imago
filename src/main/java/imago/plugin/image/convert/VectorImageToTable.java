@@ -8,7 +8,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.Plugin;
+import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.vector.VectorArray;
 import net.sci.axis.CategoricalAxis;
@@ -23,7 +23,7 @@ import net.sci.table.Table;
  * @author David Legland
  *
  */
-public class VectorImageToTable implements Plugin
+public class VectorImageToTable implements FramePlugin
 {
 	public VectorImageToTable()
 	{
