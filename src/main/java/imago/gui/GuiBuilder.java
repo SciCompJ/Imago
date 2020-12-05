@@ -341,13 +341,13 @@ public class GuiBuilder
         addArrayOperatorPlugin(geometryMenu, new Rotate90(-1), "Rotate Left", hasImage2D);
         addArrayOperatorPlugin(geometryMenu, new Rotate90(+1), "Rotate Right", hasImage2D);
 		addPlugin(geometryMenu, new ImageRotateAroundCenter(), "Rotate...", hasImage2D);
-        addPlugin(geometryMenu, new Image3DRotate90(), "Rotate 3D by 90 degrees", hasImage3D);
+        addPlugin(geometryMenu, new Image3DRotate90(), "Rotate 3D by 90 degrees...", hasImage3D);
         geometryMenu.addSeparator();
-        addPlugin(geometryMenu, new ImageReshape(), "Reshape Image", hasImage);
-        addPlugin(geometryMenu, new ImagePermuteDims(), "Permute Image Dimensions", hasImage);
+        addPlugin(geometryMenu, new ImageReshape(), "Reshape Image...", hasImage);
+        addPlugin(geometryMenu, new ImagePermuteDims(), "Permute Image Dimensions...", hasImage);
         geometryMenu.addSeparator();
-        addPlugin(geometryMenu, new ImageConcatenate(), "Concatenate");
-        addPlugin(geometryMenu, new ImageDownsample(), "Downsample Image", hasImage);
+        addPlugin(geometryMenu, new ImageConcatenate(), "Concatenate...");
+        addPlugin(geometryMenu, new ImageSubsample(), "Subsample...", hasImage);
         
 		menu.add(geometryMenu);
 

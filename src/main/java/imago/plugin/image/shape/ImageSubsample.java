@@ -9,7 +9,7 @@ import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.Plugin;
 import net.sci.array.Array;
-import net.sci.array.process.shape.DownSampler;
+import net.sci.array.process.shape.SubSampler;
 import net.sci.image.Image;
 
 /**
@@ -18,9 +18,9 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class ImageDownsample implements Plugin
+public class ImageSubsample implements Plugin
 {
-	public ImageDownsample()
+	public ImageSubsample()
 	{
 	}
 
@@ -33,21 +33,16 @@ public class ImageDownsample implements Plugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("downsample");
+		System.out.println("subsample");
 
 		// get current image data
 		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();
 
-		int nd = array.dimensionality();
+		GenericDialog gd = new GenericDialog(frame, "Subsample");
+		gd.addNumericField("Subsampling ratio", 2, 0);
 		
-		
-		GenericDialog gd = new GenericDialog(frame, "Downsample");
-		for (int d = 0; d < nd; d++)
-		{
-			gd.addNumericField("Ratio dim. " + (d+1), 3, 0);
-		}
 		gd.showDialog();
 		
 		if (gd.getOutput() == GenericDialog.Output.CANCEL) 
@@ -55,19 +50,14 @@ public class ImageDownsample implements Plugin
 			return;
 		}
 		
-		// parse dialog results
-		int[] ratioList = new int[nd];
-		for (int d = 0; d < nd; d++)
-		{
-			ratioList[d] = (int) gd.getNextNumber();
-		}
-
+		int ratio = (int) gd.getNextNumber();
+		
 		// create operator box filtering operator
-		DownSampler resampler = new DownSampler(ratioList); 
+		SubSampler resampler = new SubSampler(ratio); 
 		
 		// apply operator on current image
 		Image result = new Image(resampler.process(array), image);
-		result.setName(image.getName() + "-filt");
+		result.setName(image.getName() + "-sub" + ratio);
 		
 		// add the image document to GUI
 		frame.getGui().createImageFrame(result);
