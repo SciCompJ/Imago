@@ -3,6 +3,7 @@
  */
 package imago.plugin;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import imago.gui.ImagoFrame;
@@ -27,20 +28,21 @@ public class QuitApplication implements FramePlugin
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	@Override
-	public void run(ImagoFrame frame, String args)
+	public void run(ImagoFrame parentFrame, String args)
 	{
 		System.out.println("Quit application");
 
-		ImagoGui gui = frame.getGui();
+		ImagoGui gui = parentFrame.getGui();
 		Collection<ImagoFrame> frames = gui.getFrames();
         System.out.println("Need to close " + frames.size() + " frames");
-		for (ImagoFrame frm :frames)
+        
+		Collection<ImagoFrame> framesToClose = new ArrayList<ImagoFrame>(frames.size());
+		framesToClose.addAll(frames);
+
+		for (ImagoFrame frame : framesToClose)
 		{
-			System.out.println("  need to close: " + frm.getWidget().getName());
-			if (gui.containsFrame(frm))
-			{
-			    frm.close();
-			}
+			System.out.println("  closing frame: " + frame.getWidget().getName());
+			frame.close();
 		}
 		
 		gui.disposeEmptyFrame();
