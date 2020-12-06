@@ -474,9 +474,24 @@ public class GuiBuilder
         addPlugin(morphologyMenu, new ImageFillHoles(), "Fill Holes");
         addPlugin(morphologyMenu, new ImageKillBorders(), "Kill Borders");
 		menu.add(morphologyMenu);
+		
         menu.addSeparator();
+        addPlugin(menu, new ImageFindNonZeroPixels(),
+                "Find Non-Zeros Elements", hasImage2D && hasScalarImage);
+        addPlugin(menu, new ImageIsocontour(), "Isocontour...");
+		addPlugin(menu, new Image3DKymograph(), "Kymograph", hasImage3D && hasScalarImage);
 
-		// operators specific to binary images
+        // operators specific to binary images
+        menu.addSeparator();
+        JMenu segmentationMenu = new JMenu("Segmentation");
+		addPlugin(segmentationMenu, new ImageOtsuThreshold(), "Otsu Threshold", hasScalarImage);
+        addPlugin(segmentationMenu, new ImageManualThreshold(), "Manual Threshold", hasScalarImage);
+        segmentationMenu.addSeparator();
+        addPlugin(segmentationMenu, new ImageWatershed(), "Watershed", hasScalarImage);
+        menu.add(segmentationMenu);
+
+        // operators specific to binary images
+        menu.addSeparator();
 		JMenu binaryMenu = new JMenu("Binary Images");
 		addPlugin(binaryMenu, new BinaryImageConnectedComponentsLabeling(), "Connected Components Labeling");
 		addPlugin(binaryMenu, new BinaryImageChamferDistanceMap(), "Distance Map", hasBinaryImage);
@@ -487,23 +502,8 @@ public class GuiBuilder
         addPlugin(binaryMenu, new BinaryImageBoundaryGraph(),
                 "Boundary Graph", hasImage2D && hasBinaryImage);
 		menu.add(binaryMenu);
-		menu.addSeparator();
-
-		addPlugin(menu, new Image3DKymograph(), "Kymograph", hasImage3D && hasScalarImage);
+		
         
-        // operators specific to binary images
-        JMenu segmentationMenu = new JMenu("Segmentation");
-		addPlugin(segmentationMenu, new ImageOtsuThreshold(), "Otsu Threshold", hasScalarImage);
-        addPlugin(segmentationMenu, new ImageManualThreshold(), "Manual Threshold", hasScalarImage);
-        segmentationMenu.addSeparator();
-        addPlugin(segmentationMenu, new ImageWatershed(), "Watershed", hasScalarImage);
-        menu.add(segmentationMenu);
-        menu.addSeparator();
-
-        addPlugin(menu, new ImageFindNonZeroPixels(),
-                "Find Non-Zeros Elements", hasImage2D && hasScalarImage);
-        addPlugin(menu, new ImageIsocontour(), "Isocontour...");
-
 		return menu;
 	}
 
