@@ -347,6 +347,7 @@ public class GuiBuilder
         addPlugin(geometryMenu, new ImagePermuteDims(), "Permute Image Dimensions...", hasImage);
         geometryMenu.addSeparator();
         addPlugin(geometryMenu, new ImageConcatenate(), "Concatenate...");
+        addPlugin(geometryMenu, new ImageDownSampleBy2(), "Down Sample by 2", hasImage);
         addPlugin(geometryMenu, new ImageSubsample(), "Subsample...", hasImage);
         
 		menu.add(geometryMenu);
