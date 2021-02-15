@@ -3,31 +3,161 @@
  */
 package imago.gui;
 
+import java.awt.Insets;
 import java.awt.image.BufferedImage;
 
-import javax.swing.*;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 
 import imago.app.ImageHandle;
 import imago.gui.action.RunPluginAction;
-import imago.gui.tool.*;
+import imago.gui.tool.DrawBrushValueTool;
+import imago.gui.tool.DrawValueTool;
+import imago.gui.tool.SelectLineSegmentTool;
+import imago.gui.tool.SelectPolygonTool;
+import imago.gui.tool.SelectRectangleTool;
+import imago.gui.tool.SelectionTool;
 import imago.plugin.BoxFilter3x3FloatPlugin;
 import imago.plugin.CloseCurrentFrame;
 import imago.plugin.CloseWithChildren;
 import imago.plugin.QuitApplication;
 import imago.plugin.developer.DisplayExceptionDialog;
-import imago.plugin.edit.*;
+import imago.plugin.edit.ChangeCurrentTool;
+import imago.plugin.edit.ChooseBrushRadius;
+import imago.plugin.edit.ChooseBrushValue;
+import imago.plugin.edit.DocClearShapes;
+import imago.plugin.edit.PrintDocumentList;
+import imago.plugin.edit.PrintFrameList;
+import imago.plugin.edit.PrintWorkspaceContent;
+import imago.plugin.edit.ZoomIn;
+import imago.plugin.edit.ZoomOne;
+import imago.plugin.edit.ZoomOut;
 import imago.plugin.image.ImageArrayOperatorPlugin;
 import imago.plugin.image.ImageOperatorPlugin;
-import imago.plugin.image.analyze.*;
-import imago.plugin.image.convert.*;
-import imago.plugin.image.edit.*;
-import imago.plugin.image.file.*;
-import imago.plugin.image.process.*;
-import imago.plugin.image.shape.*;
+import imago.plugin.image.analyze.ColorImageBivariateHistograms;
+import imago.plugin.image.analyze.GrayLevelImageCooccurenceMatrix;
+import imago.plugin.image.analyze.ImageHistogram;
+import imago.plugin.image.analyze.ImageLineProfile;
+import imago.plugin.image.analyze.ImageMeanValue;
+import imago.plugin.image.analyze.ImagePlotChannels;
+import imago.plugin.image.analyze.ImageRoiHistogram;
+import imago.plugin.image.analyze.LabelImageAdjacencies;
+import imago.plugin.image.analyze.LabelImageBoundingBoxes;
+import imago.plugin.image.analyze.LabelImageCentroids;
+import imago.plugin.image.analyze.LabelImageConvexHulls;
+import imago.plugin.image.analyze.LabelImageEquivalentDisks;
+import imago.plugin.image.analyze.LabelImageEquivalentEllipses;
+import imago.plugin.image.analyze.LabelImageGeodesicDiameters;
+import imago.plugin.image.analyze.LabelImageMaxFeretDiameters;
+import imago.plugin.image.convert.ConvertChannelsToDimension;
+import imago.plugin.image.convert.ConvertDimensionToChannels;
+import imago.plugin.image.convert.ConvertImage3DToVectorImage;
+import imago.plugin.image.convert.ConvertImageToBinary;
+import imago.plugin.image.convert.ConvertImageToFloat32;
+import imago.plugin.image.convert.ConvertImageToFloat64;
+import imago.plugin.image.convert.ConvertImageToInt16;
+import imago.plugin.image.convert.ConvertImageToInt32;
+import imago.plugin.image.convert.ConvertImageToUInt16;
+import imago.plugin.image.convert.ConvertImageToUInt8;
+import imago.plugin.image.convert.ConvertRGB8ImageToRGB16;
+import imago.plugin.image.convert.ConvertRGB8ImageToUInt8;
+import imago.plugin.image.convert.ConvertScalarImageToUInt8;
+import imago.plugin.image.convert.ConvertStackToMovie;
+import imago.plugin.image.convert.ConvertUInt8ImageToRGB;
+import imago.plugin.image.convert.CreateScaledUInt8View;
+import imago.plugin.image.convert.CreateVectorImageNorm;
+import imago.plugin.image.convert.CreateVectorImageRGB8View;
+import imago.plugin.image.convert.ScalarImagesColorDifference;
+import imago.plugin.image.convert.VectorImageConvertToRGB;
+import imago.plugin.image.convert.VectorImageToTable;
+import imago.plugin.image.edit.CreateColorCubeImage3D;
+import imago.plugin.image.edit.CreateDistanceToOctahedronImage3D;
+import imago.plugin.image.edit.ImageCopySelectionToWorkspace;
+import imago.plugin.image.edit.ImageFillDisk;
+import imago.plugin.image.edit.ImageFillEllipse;
+import imago.plugin.image.edit.ImageSelectionToDistanceMap;
+import imago.plugin.image.edit.ImageSelectionToMask;
+import imago.plugin.image.edit.ImageSelectionToSceneGraph;
+import imago.plugin.image.edit.ImageSetBackgroundColor;
+import imago.plugin.image.edit.ImageSetColorMapFactory;
+import imago.plugin.image.edit.ImageSetScale;
+import imago.plugin.image.edit.ImportSelectionFromWorkspace;
+import imago.plugin.image.edit.PrintImageInfos;
+import imago.plugin.image.edit.PrintImageSceneGraph;
+import imago.plugin.image.edit.PrintImageTiffTags;
+import imago.plugin.image.edit.RefreshDisplay;
+import imago.plugin.image.edit.SetImageDisplayRange;
+import imago.plugin.image.edit.SetImageDisplayRangeToData;
+import imago.plugin.image.edit.SetImageDisplayRangeToDataType;
+import imago.plugin.image.edit.SetImageTypeToLabel;
+import imago.plugin.image.edit.ToggleSceneGraphDisplay;
+import imago.plugin.image.file.CreateNewImage;
+import imago.plugin.image.file.ImportImageMetaImage;
+import imago.plugin.image.file.ImportImageRawData;
+import imago.plugin.image.file.ImportImageSeries;
+import imago.plugin.image.file.ImportImageVgi;
+import imago.plugin.image.file.OpenDemoImage;
+import imago.plugin.image.file.OpenDemoStack;
+import imago.plugin.image.file.OpenImage;
+import imago.plugin.image.file.ReadImageTiff;
+import imago.plugin.image.file.ReadTiffStackSlice;
+import imago.plugin.image.file.ReadTiffVirtualImage3D;
+import imago.plugin.image.file.SaveImageMetaImage;
+import imago.plugin.image.process.BinaryImageChamferDistanceMap;
+import imago.plugin.image.process.BinaryImageConnectedComponentsLabeling;
+import imago.plugin.image.process.BinaryImageOverlay;
+import imago.plugin.image.process.BinaryImageSkeleton;
+import imago.plugin.image.process.ColorImageExtractChannel;
+import imago.plugin.image.process.Image3DKymograph;
+import imago.plugin.image.process.Image3DOrthoslicesImage;
+import imago.plugin.image.process.Image3DSetOrthoSlicesDisplay;
+import imago.plugin.image.process.ImageApplyMathFunction;
+import imago.plugin.image.process.ImageArrayBinaryMathOperator;
+import imago.plugin.image.process.ImageBivariateHistogram;
+import imago.plugin.image.process.ImageBoxFilter;
+import imago.plugin.image.process.ImageBoxMedianFilter;
+import imago.plugin.image.process.ImageBoxMinMaxFilter;
+import imago.plugin.image.process.ImageBoxVarianceFilter;
+import imago.plugin.image.process.ImageDownSampleBy2;
+import imago.plugin.image.process.ImageDuplicate;
+import imago.plugin.image.process.ImageExtendedExtrema;
+import imago.plugin.image.process.ImageFillHoles;
+import imago.plugin.image.process.ImageGeodesicDistanceMap;
+import imago.plugin.image.process.ImageIteratedGeodesicDilations;
+import imago.plugin.image.process.ImageKillBorders;
+import imago.plugin.image.process.ImageManualThreshold;
+import imago.plugin.image.process.ImageMorphologicalFilter;
+import imago.plugin.image.process.ImageMorphologicalReconstruction;
+import imago.plugin.image.process.ImageOtsuThreshold;
+import imago.plugin.image.process.ImageRegionalExtrema;
+import imago.plugin.image.process.ImageSplitChannels;
+import imago.plugin.image.process.ImageValueOperator;
+import imago.plugin.image.process.ImageWatershed;
+import imago.plugin.image.process.MergeChannelImages;
+import imago.plugin.image.process.VectorImageChannelView;
+import imago.plugin.image.shape.Image3DGetCurrentSlice;
+import imago.plugin.image.shape.Image3DGetSlice;
+import imago.plugin.image.shape.Image3DRotate90;
+import imago.plugin.image.shape.ImageConcatenate;
+import imago.plugin.image.shape.ImageCropDialog;
+import imago.plugin.image.shape.ImageCropSelection;
+import imago.plugin.image.shape.ImageFlip;
+import imago.plugin.image.shape.ImagePermuteDims;
+import imago.plugin.image.shape.ImageReshape;
+import imago.plugin.image.shape.ImageRotateAroundCenter;
+import imago.plugin.image.shape.ImageSubsample;
 import imago.plugin.image.vectorize.BinaryImageBoundaryGraph;
 import imago.plugin.image.vectorize.ImageFindNonZeroPixels;
 import imago.plugin.image.vectorize.ImageIsocontour;
-import imago.plugin.plugin.crop.*;
+import imago.plugin.plugin.crop.Crop3D_AddPolygon;
+import imago.plugin.plugin.crop.Crop3D_CropImage;
+import imago.plugin.plugin.crop.Crop3D_Initialize;
+import imago.plugin.plugin.crop.Crop3D_InterpolatePolygons;
+import imago.plugin.plugin.crop.Crop3D_LoadPolygonsFromJson;
+import imago.plugin.plugin.crop.Crop3D_SavePolygonsAsJson;
 import imago.plugin.table.OpenTable;
 import imago.plugin.table.SaveTable;
 import imago.plugin.table.ShowDemoTable;
@@ -50,7 +180,11 @@ import net.sci.array.process.shape.Rotate90;
 import net.sci.image.ColorMaps;
 import net.sci.image.Image;
 import net.sci.image.ImageOperator;
-import net.sci.image.process.*;
+import net.sci.image.process.DynamicAdjustment;
+import net.sci.image.process.ImageInverter;
+import net.sci.image.process.SobelGradient;
+import net.sci.image.process.SobelGradientNorm;
+import net.sci.image.process.VectorArrayNorm;
 import net.sci.image.process.filter.GaussianFilter5x5;
 
 /**
@@ -100,9 +234,9 @@ public class GuiBuilder
 	        menuBar.add(createImageFileMenu());
     		menuBar.add(createImageEditMenu());
     		menuBar.add(createImageMenu());
-    		menuBar.add(createImageToolsMenu());
     		menuBar.add(createImageProcessMenu());
     		menuBar.add(createImageAnalyzeMenu());
+            menuBar.add(createImageToolsMenu());
 		}
 		else if (frame instanceof TableFrame)
 		{
@@ -202,22 +336,23 @@ public class GuiBuilder
 	{
 		JMenu editMenu = new JMenu("Edit");
 
-		// zoom handles
-		addPlugin(editMenu, new ZoomIn(), "Zoom In", hasImage);
-		addPlugin(editMenu, new ZoomOut(), "Zoom Out", hasImage);
-		addPlugin(editMenu, new ZoomOne(), "Zoom One", hasImage);
-        addPlugin(editMenu, new RefreshDisplay(), "Refresh Display", hasImage);
-		
-        // crop tools
-        addPlugin(editMenu, new ImageCropSelection(), "Crop Selection", hasImage2D);
-        addPlugin(editMenu, new ImageCropDialog(), "Crop...", hasImage);
-        
         // selection sub-menu
         JMenu selectionMenu = new JMenu("Selection");
         addPlugin(selectionMenu, new ImageCopySelectionToWorkspace(), "Copy To Workspace");
         addPlugin(selectionMenu, new ImportSelectionFromWorkspace(), "Import From Workspace");
         editMenu.add(selectionMenu);
 
+        // crop tools
+        addPlugin(editMenu, new ImageCropSelection(), "Crop Selection", hasImage2D);
+        addPlugin(editMenu, new ImageCropDialog(), "Crop...", hasImage);
+        
+        // zoom management
+        editMenu.addSeparator();
+        addPlugin(editMenu, new ZoomIn(), "Zoom In", hasImage);
+        addPlugin(editMenu, new ZoomOut(), "Zoom Out", hasImage);
+        addPlugin(editMenu, new ZoomOne(), "Zoom One", hasImage);
+        addPlugin(editMenu, new RefreshDisplay(), "Refresh Display", hasImage);
+        
         // add utility
 		editMenu.addSeparator();
 		JMenu sceneGraphMenu = new JMenu("Scene Graph");
@@ -248,14 +383,46 @@ public class GuiBuilder
 	private JMenu createImageMenu()
 	{
 		JMenu menu = new JMenu("Image");
-		
-        addPlugin(menu, new PrintImageInfos(), "Print Image Info", hasImage);
 
+		// First general info and calibration about images
+        addPlugin(menu, new PrintImageInfos(), "Print Image Info", hasImage);
+        addPlugin(menu, new ImageSetScale(), "Image Scale...", hasImage);
+        addPlugin(menu, new PrintImageTiffTags(), "Show TIFF Tags", hasImage);
+        
+
+        // Management of image representation
+        menu.addSeparator();
+        JMenu displayRangeMenu = new JMenu("Display Range");
+        addPlugin(displayRangeMenu, new SetImageDisplayRangeToDataType(), "Set Data Type Display Range", hasScalarImage);
+        addPlugin(displayRangeMenu, new SetImageDisplayRangeToData(), "Set Image Display Range", hasScalarImage | hasVectorImage);
+        addPlugin(displayRangeMenu, new SetImageDisplayRange(), "Set Manual Display Range", hasScalarImage | hasVectorImage);
+        // addMenuItem(editMenu, new SetDisplayRangeUnitIntervalAction(frame,
+        // "setDisplayRangeUnitInterval"),
+        // "Set Display Range [0 ; 1]", hasScalarImage || hasVectorImage);
+        menu.add(displayRangeMenu);
+
+        addArrayOperatorPlugin(menu, new DynamicAdjustment(.01), "Adjust Grayscale Dynamic", hasScalarImage);
+
+        // add Colormap utils
+        JMenu colormapMenu = new JMenu("Color Maps");
+        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.GRAY), "Gray");
+        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.JET), "Jet");
+        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.BLUE_GRAY_RED), "Blue-Gray-Red");
+        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.RED), "Red");
+        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.GREEN), "Green");
+        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.BLUE), "Blue");
+        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.FIRE), "Fire");
+        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.GLASBEY), "Glasbey");
+        menu.add(colormapMenu);
+        
+        addPlugin(menu, new ImageSetBackgroundColor(), "Set Background Color...", hasLabelImage);
+        
+        // Several options for converting images
+        menu.addSeparator();
         JMenu imageTypeMenu = new JMenu("Image Type");
         addPlugin(imageTypeMenu, new SetImageTypeToLabel(), "Set to Label Image", hasScalarImage);
         menu.add(imageTypeMenu);
         
-	      // Type conversion handles
         addPlugin(menu, new ConvertScalarImageToUInt8(), "Convert to Gray8", hasScalarImage);
         JMenu convertDataTypeMenu = new JMenu("Convert Data-Type");
         convertDataTypeMenu.setEnabled(hasImage);
@@ -275,19 +442,7 @@ public class GuiBuilder
         // image type conversion handles
         addPlugin(menu, new ConvertStackToMovie(), "Convert stack to movie", hasImage3D);
 
-        menu.addSeparator();
-		JMenu displayRangeMenu = new JMenu("Display Range");
-		addPlugin(displayRangeMenu, new SetImageDisplayRangeToDataType(), "Set Data Type Display Range", hasScalarImage);
-		addPlugin(displayRangeMenu, new SetImageDisplayRangeToData(), "Set Image Display Range", hasScalarImage | hasVectorImage);
-		addPlugin(displayRangeMenu, new SetImageDisplayRange(), "Set Manual Display Range", hasScalarImage | hasVectorImage);
-		// addMenuItem(editMenu, new SetDisplayRangeUnitIntervalAction(frame,
-		// "setDisplayRangeUnitInterval"),
-		// "Set Display Range [0 ; 1]", hasScalarImage || hasVectorImage);
-		menu.add(displayRangeMenu);
 
-		addArrayOperatorPlugin(menu, new DynamicAdjustment(.01), "Adjust Grayscale Dynamic", hasScalarImage);
-
-        
         // Color conversion handles
         menu.addSeparator();
         JMenu colorMenu = new JMenu("Color");
@@ -315,24 +470,7 @@ public class GuiBuilder
         addPlugin(vectorMenu, new VectorImageToTable(), "Convert To Table", hasVectorImage);
         menu.add(vectorMenu);
 
-        // add Colormap utils
-        JMenu colormapMenu = new JMenu("Color Maps");
-        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.GRAY), "Gray");
-        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.JET), "Jet");
-        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.BLUE_GRAY_RED), "Blue-Gray-Red");
-        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.RED), "Red");
-        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.GREEN), "Green");
-        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.BLUE), "Blue");
-        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.FIRE), "Fire");
-        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.GLASBEY), "Glasbey");
-        menu.add(colormapMenu);
-        
-        addPlugin(menu, new ImageSetBackgroundColor(), "Set Background Color...", hasLabelImage);
-        
-
-        menu.addSeparator();
-        addPlugin(menu, new ImageSetScale(), "Image Scale...", hasImage);
-        
+        // Change the geometry of image, and and extract slices
         menu.addSeparator();
 		JMenu geometryMenu = new JMenu("Geometry");
 		geometryMenu.setEnabled(hasImage);
@@ -380,49 +518,7 @@ public class GuiBuilder
         addPlugin(phantomMenu, new ImageSelectionToDistanceMap(), "Selection To Distance Map");
         menu.add(phantomMenu);
         
-		menu.addSeparator();
-        addPlugin(menu, new PrintImageTiffTags(), "Print TIFF Tags", hasImage);
 		return menu;
-	}
-
-	/**
-	 * Creates the sub-menu for the "Tools" item in the main menu bar.
-	 */
-	private JMenu createImageToolsMenu()
-	{
-		JMenu toolsMenu = new JMenu("Tools");
-
-		// tool selection handles
-		if (frame instanceof ImageFrame)
-		{
-			ImageFrame viewer = (ImageFrame) frame;
-
-			addPlugin(toolsMenu, new ChangeCurrentTool(new SelectionTool(viewer, "select")), "Select", hasImage);
-			addPlugin(toolsMenu, 
-                    new ChangeCurrentTool(new SelectLineSegmentTool(viewer, "selectLineSegment")),
-                    "Select Line", hasImage);
-            addPlugin(toolsMenu, 
-                    new ChangeCurrentTool(new SelectRectangleTool(viewer, "selectRectangle")),
-                    "Select Rectangle", hasImage);
-            addPlugin(toolsMenu, 
-                    new ChangeCurrentTool(new SelectPolygonTool(viewer, "selectPolygon")),
-                    "Select Polygon", hasImage);
-
-            toolsMenu.addSeparator();
-            addPlugin(toolsMenu, 
-                    new ChangeCurrentTool(new DrawValueTool(viewer, "drawValue")),
-                    "Draw (Dot)", hasScalarImage);
-            addPlugin(toolsMenu, 
-                    new ChangeCurrentTool(new DrawBrushValueTool(viewer, "drawBrushValue")),
-                    "Draw (Brush)", hasScalarImage);
-//            addPlugin(editMenu, 
-//                    new ChangeCurrentTool(new DrawValueTool(viewer, "drawBlack", 0.0)),
-//                    "Draw Black", hasScalarImage);
-
-            toolsMenu.addSeparator();
-		}
-
-		return toolsMenu;
 	}
 
 	/**
@@ -545,6 +641,46 @@ public class GuiBuilder
         
 		return menu;
 	}
+
+    /**
+    	 * Creates the sub-menu for the "Tools" item in the main menu bar.
+    	 */
+    	private JMenu createImageToolsMenu()
+    	{
+    		JMenu toolsMenu = new JMenu("Tools");
+    
+    		// tool selection handles
+    		if (frame instanceof ImageFrame)
+    		{
+    			ImageFrame viewer = (ImageFrame) frame;
+    
+    			addPlugin(toolsMenu, new ChangeCurrentTool(new SelectionTool(viewer, "select")), "Select", hasImage);
+    			addPlugin(toolsMenu, 
+                        new ChangeCurrentTool(new SelectLineSegmentTool(viewer, "selectLineSegment")),
+                        "Select Line", hasImage);
+                addPlugin(toolsMenu, 
+                        new ChangeCurrentTool(new SelectRectangleTool(viewer, "selectRectangle")),
+                        "Select Rectangle", hasImage);
+                addPlugin(toolsMenu, 
+                        new ChangeCurrentTool(new SelectPolygonTool(viewer, "selectPolygon")),
+                        "Select Polygon", hasImage);
+    
+                toolsMenu.addSeparator();
+                addPlugin(toolsMenu, 
+                        new ChangeCurrentTool(new DrawValueTool(viewer, "drawValue")),
+                        "Draw (Dot)", hasScalarImage);
+                addPlugin(toolsMenu, 
+                        new ChangeCurrentTool(new DrawBrushValueTool(viewer, "drawBrushValue")),
+                        "Draw (Brush)", hasScalarImage);
+    //            addPlugin(editMenu, 
+    //                    new ChangeCurrentTool(new DrawValueTool(viewer, "drawBlack", 0.0)),
+    //                    "Draw Black", hasScalarImage);
+    
+                toolsMenu.addSeparator();
+    		}
+    
+    		return toolsMenu;
+    	}
 
     /**
      * Creates the sub-menu for the "File" item in the main menu bar.
@@ -678,6 +814,7 @@ public class GuiBuilder
         item.setText(label);
         item.setIcon(this.emptyIcon);
         item.setEnabled(enabled);
+        item.setMargin(new Insets(0, 0, 0, 0));
         menu.add(item);
         return item;
     }
