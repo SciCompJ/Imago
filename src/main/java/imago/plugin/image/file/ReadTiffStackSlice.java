@@ -9,11 +9,11 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.FramePlugin;
 import net.sci.image.Image;
 import net.sci.image.io.TiffImageReader;
 
@@ -86,20 +86,6 @@ public class ReadTiffStackSlice implements FramePlugin
 		dlg.addNumericField(label, nSlices/2, 0, "Index of the slice, 0-based");
 		dlg.showDialog();
 		
-		if (dlg.wasCanceled())
-		{
-		    try
-	        {
-	            reader.close();
-	        } 
-	        catch (IOException ex)
-	        {
-	            ex.printStackTrace();
-	            ImagoGui.showErrorDialog(frame, ex.getLocalizedMessage(), "TIFF Image Reading Error");
-	        } 
-	        return;
-		}
-		
 		// index of selected slice
 		int sliceIndex = (int) dlg.getNextNumber();
 		
@@ -108,7 +94,6 @@ public class ReadTiffStackSlice implements FramePlugin
 		try
 		{
 			image = reader.readImage(sliceIndex);
-			reader.close();
 		} 
 		catch (IOException ex)
 		{

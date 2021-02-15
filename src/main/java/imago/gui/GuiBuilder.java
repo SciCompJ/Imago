@@ -158,6 +158,7 @@ public class GuiBuilder
 		addPlugin(fileMenu, new CreateNewImage(), "New Image...");
 		addPlugin(fileMenu, new OpenImage(), "Open...");
         addPlugin(fileMenu, new ReadImageTiff(), "Read TIFF...");
+        addPlugin(fileMenu, new ReadTiffVirtualImage3D(), "Read TIFF Virtual Image 3D...");
         addPlugin(fileMenu, new ReadTiffStackSlice(), "Read TIFF Slice");
         addPlugin(fileMenu, new ImportImageSeries(), "Import Image Series...");
 

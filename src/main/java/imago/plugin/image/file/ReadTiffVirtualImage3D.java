@@ -9,10 +9,10 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import imago.gui.FramePlugin;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.FramePlugin;
 import net.sci.image.Image;
 import net.sci.image.io.TiffImageReader;
 
@@ -21,11 +21,11 @@ import net.sci.image.io.TiffImageReader;
  * @author David Legland
  *
  */
-public class ReadImageTiff implements FramePlugin
+public class ReadTiffVirtualImage3D implements FramePlugin
 {
 	private JFileChooser openWindow = null;
 
-	public ReadImageTiff() 
+	public ReadTiffVirtualImage3D() 
 	{
 	}
 	
@@ -38,6 +38,7 @@ public class ReadImageTiff implements FramePlugin
 		// create file dialog uqsing last open path
 		String lastPath = getLastOpenPath(frame);
 		openWindow = new JFileChooser(lastPath);
+		openWindow.setDialogTitle("Open TIFF as Virtual Image");
 		openWindow.setFileFilter(new FileNameExtensionFilter("TIFF files (*.tif, *.tiff)", "tif", "tiff"));
 
 
@@ -77,30 +78,20 @@ public class ReadImageTiff implements FramePlugin
 			return;
 		}
 		
-		// Try to read the image from the file
+//		TiffVirtualUInt8Array3D array3d = new TiffVirtualUInt8Array3D(path, reader.getImageFileDirectories());
+		        
+		
 		Image image;
-		try
-		{
-			image = reader.readImage();
-		} 
-		catch (IOException ex)
-		{
-			ex.printStackTrace();
-            ImagoGui.showErrorDialog(frame, ex.getLocalizedMessage(), "TIFF Image Reading Error");
-			return;
-		} 
-		catch (Exception ex)
-		{
+        try
+        {
+            image = reader.readVirtualImage3D();
+        }
+        catch (IOException ex)
+        {
             ex.printStackTrace();
             ImagoGui.showErrorDialog(frame, ex.getLocalizedMessage(), "TIFF Image Reading Error");
             return;
-		}
-		
-//        // If image data contains only two different values, convert to binary
-//        image = eventuallyConvertToBinary(image);
-		 
-//        // populates some meta-data
-//		image.setName(file.getName());
+        }
 		
 		// add the image document to GUI
 		ImageFrame newFrame = frame.createImageFrame(image);
@@ -118,57 +109,4 @@ public class ReadImageTiff implements FramePlugin
 		
 		return path;
 	}
-	
-//	private Image eventuallyConvertToBinary(Image image)
-//	{
-//	    // if image is already binary, nothing to do
-//	    if (image.getType() == Image.Type.BINARY)
-//	    {
-//	        return image;
-//	    }
-//	    
-//        // if data array is not of UInt8 class, can not be binary
-//	    Array<?> data = image.getData();
-//	    if (!(data instanceof UInt8Array))
-//	    {
-//	        return image;
-//	    }
-//	    
-//        // check if data can be binary
-//        if (!canBeBinary((UInt8Array) data))
-//        {
-//            return image;
-//        }
-//        
-//        // convert UInt8 to binary
-//        BinaryArray binData = BinaryArray.convert((UInt8Array) data);
-//        
-//        // convert to binary image
-//        return new Image(binData, image);
-//	}
-//	
-//	private boolean canBeBinary(UInt8Array data)
-//	{
-//        boolean has1 = false;
-//        boolean has255 = false;
-//        UInt8Array.Iterator iter = data.iterator();
-//        while(iter.hasNext())
-//        {
-//            int value = iter.nextInt();
-//            if (value == 1)
-//            {
-//                has1 = true;
-//            }
-//            else if (value == 255)
-//            {
-//                has255 = true;
-//            }
-//            else if (value != 0)
-//            {
-//                return false;
-//            }
-//        }
-//        
-//        return !has1 || !has255;
-//	}
 }
