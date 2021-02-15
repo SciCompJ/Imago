@@ -3,10 +3,13 @@
  */
 package imago.plugin.edit;
 
+import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
+import imago.gui.ImagoTextFrame;
 import imago.gui.FramePlugin;
 
 /**
@@ -26,19 +29,27 @@ public class PrintFrameList implements FramePlugin
 	{
 		Collection<ImagoFrame> frameList = frame.getGui().getFrames(); 
 		int nFrames = frameList.size();
-		System.out.println(String.format("Current GUI contains %d frames: ", nFrames));
+
+		ArrayList<String> textLines = new ArrayList<String>();
+
+		textLines.add(String.format("Current GUI contains %d frames: ", nFrames));
 		for (ImagoFrame frm : frameList)
 		{
 		    if (frm instanceof ImageFrame)
 		    {
 		        String docName = ((ImageFrame) frm).getImageHandle().getName();
-                System.out.println("  frame: " + frm.getWidget().getName() + ", handle: " + docName);
+		        textLines.add("  frame: " + frm.getWidget().getName() + ", image handle: " + docName);
 		    }
 		    else
 		    {
-	            System.out.println("  frame: " + frame.getWidget().getName());
+		        textLines.add("  frame: " + frame.getWidget().getName());
 		    }
 		}
+		
+        ImagoTextFrame newFrame = new ImagoTextFrame(frame, "Frame List", textLines);
+        newFrame.getWidget().pack();
+        newFrame.getWidget().setSize(new Dimension(400, 300));
+        newFrame.setVisible(true);
 	}
 
 }

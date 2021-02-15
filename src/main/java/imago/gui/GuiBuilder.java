@@ -361,13 +361,8 @@ public class GuiBuilder
 		addPlugin(sceneGraphMenu, new PrintImageSceneGraph(), "Print SceneGraph Tree");
 		editMenu.add(sceneGraphMenu);
 		
-		JMenu editMoreMenu = new JMenu("More");
-		addPlugin(editMenu, new PrintFrameList(), "Print Frame List");
-		addPlugin(editMoreMenu, new PrintDocumentList(), "Print Document List");
-        addPlugin(editMoreMenu, new PrintWorkspaceContent(), "Print Workspace Content");
-		addPlugin(editMoreMenu, new DocClearShapes(), "Clear Shapes");
-		editMenu.add(editMoreMenu);
-		
+		addPlugin(editMenu, new DocClearShapes(), "Clear Shapes");
+        
         editMenu.addSeparator();
         JMenu settingsMenu = new JMenu("Settings");
         addPlugin(settingsMenu, new ChooseBrushValue(), "Choose Brush Value...");
@@ -745,8 +740,12 @@ public class GuiBuilder
         JMenu menu = new JMenu("Plugins");
         
         JMenu devMenu = new JMenu("Developer");
-        addPlugin(devMenu, new DisplayExceptionDialog(), "Show Demo Exception");
         menu.add(devMenu);
+        addPlugin(devMenu, new DisplayExceptionDialog(), "Show Demo Exception");
+        addPlugin(devMenu, new PrintFrameList(), "Print Frame List");
+        addPlugin(devMenu, new PrintDocumentList(), "Print Document List");
+        addPlugin(devMenu, new PrintWorkspaceContent(), "Print Workspace Content");
+        
         menu.addSeparator();
         
         if (hasImage3D)

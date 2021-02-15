@@ -3,10 +3,14 @@
  */
 package imago.plugin.image.edit;
 
+import java.awt.Dimension;
+import java.util.ArrayList;
+
 import imago.app.ImageHandle;
+import imago.gui.FramePlugin;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.FramePlugin;
+import imago.gui.ImagoTextFrame;
 import net.sci.axis.Axis;
 import net.sci.image.Calibration;
 import net.sci.image.Image;
@@ -28,36 +32,41 @@ public class PrintImageInfos implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("print image info:");
-		
 		// get current frame
 		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image = doc.getImage();
-
-		int nd = image.getDimension();
 		
-        System.out.println("Image name: " + image.getName());
-        System.out.println("Image file: " + image.getFilePath());
+		ArrayList<String> textLines = new ArrayList<String>();
+
+		textLines.add("Image name: " + image.getName());
+		textLines.add("Image file: " + image.getFilePath());
         
-        System.out.print("Image size: [");
-        for (int d = 0; d < nd-1; d++)
+        int nd = image.getDimension();
+        String sizeText = "Image size: [" + image.getSize(0);
+        for (int d = 1; d < nd; d++)
         {
-            System.out.print(image.getSize(d) + ", ");
+            sizeText += ", " + image.getSize(d);
         }
-        System.out.println(image.getSize(nd-1) + "]");
+        sizeText += "]";
+        textLines.add(sizeText);
 
         // Show infos about axes (usually space+time)
-        System.out.println("Axes calibration:");
+        textLines.add("Axes calibration:");
         Calibration calib = image.getCalibration();
         for (int d = 0; d < image.getDimension(); d++)
         {
-            System.out.println("  Axis[" + d + "]: " + calib.getAxis(d));
+            textLines.add("  Axis[" + d + "]: " + calib.getAxis(d));
         }
 
         // Show infos about channels
-        System.out.println("Channels info:");
+        textLines.add("Channels info:");
         Axis channelAxis = calib.getChannelAxis();
-        System.out.println("  name: " + channelAxis.getName());
-        System.out.println("  string: " + channelAxis.toString());
+        textLines.add("  name: " + channelAxis.getName());
+        textLines.add("  string: " + channelAxis.toString());
+        
+        ImagoTextFrame newFrame = new ImagoTextFrame(frame, "Image Info", textLines);
+        newFrame.getWidget().pack();
+        newFrame.getWidget().setSize(new Dimension(600, 400));
+        newFrame.setVisible(true);
     }
 }

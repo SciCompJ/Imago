@@ -37,6 +37,13 @@ public class ImagoGui
     // ===================================================================
     // Static methods
 
+    public static final void showMessage(ImagoFrame frame, String message, String title)
+    {
+        JOptionPane.showMessageDialog(
+                frame.getWidget(), message, title, 
+                JOptionPane.INFORMATION_MESSAGE);
+    }
+    
     public static final void showErrorDialog(ImagoFrame frame, String message)
     {
         JOptionPane.showMessageDialog(

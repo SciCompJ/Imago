@@ -112,6 +112,11 @@ public abstract class ImagoFrame
 	// ===================================================================
 	// General methods
 
+    public void showMessage(String message, String title) 
+    {
+        ImagoGui.showMessage(this, message, title);
+    }
+    
 	public void showErrorDialog(String message) 
 	{
         ImagoGui.showErrorDialog(this, message, "Error");

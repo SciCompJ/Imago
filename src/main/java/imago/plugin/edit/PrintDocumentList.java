@@ -4,8 +4,13 @@
 package imago.plugin.edit;
 
 import imago.app.ImagoApp;
+
+import java.awt.Dimension;
+import java.util.ArrayList;
+
 import imago.app.ImageHandle;
 import imago.gui.ImagoFrame;
+import imago.gui.ImagoTextFrame;
 import imago.gui.FramePlugin;
 
 /**
@@ -24,12 +29,19 @@ public class PrintDocumentList implements FramePlugin
     public void run(ImagoFrame frame, String args)
 	{
 		ImagoApp app = frame.getGui().getAppli();
+		
+		ArrayList<String> textLines = new ArrayList<String>();
+
 		int nDocs = app.imageHandleNumber();
-		System.out.println(String.format("Current application contains %d documents: ", nDocs));
+		textLines.add(String.format("Current application contains %d documents: ", nDocs));
 		for (ImageHandle doc : app.getImageHandles())
 		{
-			System.out.println("  " + doc.getName());
+		    textLines.add("  " + doc.getName());
 		}
+		
+        ImagoTextFrame newFrame = new ImagoTextFrame(frame, "Frame List", textLines);
+        newFrame.getWidget().pack();
+        newFrame.getWidget().setSize(new Dimension(400, 300));
+        newFrame.setVisible(true);
 	}
-
 }

@@ -46,7 +46,7 @@ public class PrintImageTiffTags implements FramePlugin
 
 		if (image.tiffTags.size() == 0)
 		{
-		    System.out.println("  (no tag)");
+		    frame.showMessage("This image does not contain any tag", "Show Tiff Tags");
 		    return;
 		}
 	        
