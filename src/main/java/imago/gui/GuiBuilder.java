@@ -298,6 +298,7 @@ public class GuiBuilder
         addPlugin(colorMenu, new ColorImageExtractChannel(), "Extract Channel...", hasColorImage);
         addPlugin(colorMenu, new ConvertUInt8ImageToRGB(), "UInt8 to RGB8", hasScalarImage);
         addPlugin(colorMenu, new ConvertRGB8ImageToRGB16(), "RGB8 to RGB16", hasRGB8Image);
+        addPlugin(colorMenu, new ScalarImagesColorDifference(), "Color difference between two scalar images");
         
         // addMenuItem(editMenu, new MetaImageOperatorAction(frame,
         // "colorToGray",
