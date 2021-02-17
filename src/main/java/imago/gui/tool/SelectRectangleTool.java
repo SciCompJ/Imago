@@ -10,7 +10,7 @@ import imago.gui.ImageFrame;
 import imago.gui.ImagoTool;
 import imago.gui.viewer.ImageDisplay;
 import imago.gui.viewer.PlanarImageViewer;
-import net.sci.geom.geom2d.Box2D;
+import net.sci.geom.geom2d.Bounds2D;
 import net.sci.geom.geom2d.Point2D;
 
 /**
@@ -88,7 +88,7 @@ public class SelectRectangleTool extends ImagoTool
             
             if ((this.viewer.getImageView() instanceof PlanarImageViewer))
             {
-                Box2D box = new Box2D(x1, x2, y1, y2);
+                Bounds2D box = new Bounds2D(x1, x2, y1, y2);
                 
                 PlanarImageViewer piv = (PlanarImageViewer) this.viewer.getImageView();
                 piv.setSelection(box);
@@ -121,7 +121,7 @@ public class SelectRectangleTool extends ImagoTool
      
         if ((this.viewer.getImageView() instanceof PlanarImageViewer))
         {
-            Box2D line = new Box2D(x1, x, y1, y);
+            Bounds2D line = new Bounds2D(x1, x, y1, y);
             display.setSelection(line);
             this.viewer.repaint();
         }  

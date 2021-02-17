@@ -20,7 +20,7 @@ import java.util.Iterator;
 import javax.swing.JPanel;
 
 import net.sci.geom.Geometry;
-import net.sci.geom.geom2d.Box2D;
+import net.sci.geom.geom2d.Bounds2D;
 import net.sci.geom.geom2d.Curve2D;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.LineSegment2D;
@@ -373,9 +373,9 @@ public class ImageDisplay extends JPanel
             LineSegment2D line = (LineSegment2D) geom;
             drawLineSegment(g2, line);
         }
-        else if (geom instanceof Box2D)
+        else if (geom instanceof Bounds2D)
         {
-            Box2D box = (Box2D) geom;
+            Bounds2D box = (Bounds2D) geom;
             drawPolygon(g2, box.getRectangle());
         }
         else if (geom instanceof PolygonalDomain2D)

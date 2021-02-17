@@ -11,7 +11,7 @@ import imago.gui.FramePlugin;
 import imago.gui.viewer.PlanarImageViewer;
 import net.sci.array.Array;
 import net.sci.array.process.shape.Crop;
-import net.sci.geom.geom2d.Box2D;
+import net.sci.geom.geom2d.Bounds2D;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.image.Image;
 
@@ -63,7 +63,7 @@ public class ImageCropSelection implements FramePlugin
         // get bounding box of current selection
         PlanarImageViewer piv = (PlanarImageViewer) viewer;
         Geometry2D selection = piv.getSelection();
-        Box2D box = selection.boundingBox();
+        Bounds2D box = selection.bounds();
         
         // determine crop size
         int[] minInds = new int[2];

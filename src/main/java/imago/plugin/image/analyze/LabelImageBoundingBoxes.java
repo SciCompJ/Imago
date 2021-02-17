@@ -11,9 +11,9 @@ import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.scalar.IntArray2D;
 import net.sci.array.scalar.IntArray3D;
-import net.sci.geom.geom2d.Box2D;
+import net.sci.geom.geom2d.Bounds2D;
 import net.sci.geom.geom2d.polygon.Polygon2D;
-import net.sci.geom.geom3d.Box3D;
+import net.sci.geom.geom3d.Bounds3D;
 import net.sci.image.Image;
 import net.sci.image.analyze.RegionAnalysis2D;
 import net.sci.image.analyze.RegionAnalysis3D;
@@ -68,7 +68,7 @@ public class LabelImageBoundingBoxes implements FramePlugin
             // Extract centroids as an array of coordinates
             IntArray2D<?> array2d = (IntArray2D<?>) array;
             int[] labels = LabelImages.findAllLabels(array2d); 
-            Box2D[] boxes = RegionAnalysis2D.boundingBoxes(array2d, labels);
+            Bounds2D[] boxes = RegionAnalysis2D.boundingBoxes(array2d, labels);
              
             // number of boxes
             int nPoints = boxes.length;
@@ -93,14 +93,14 @@ public class LabelImageBoundingBoxes implements FramePlugin
             // Extract centroids as an array of coordinates
             IntArray3D<?> array3d = (IntArray3D<?>) array;
             int[] labels = LabelImages.findAllLabels(array3d); 
-            Box3D[] boxes = RegionAnalysis3D.boundingBoxes(array3d, labels);
+            Bounds3D[] boxes = RegionAnalysis3D.boundingBoxes(array3d, labels);
             
             // Convert centroid array to table, and display
             Table tab = Table.create(boxes.length, 6);
             tab.setColumnNames(new String[]{"XMin", "XMax", "YMin", "YMax", "ZMin", "ZMax"});
             for (int i = 0; i < boxes.length; i++)
             {
-                Box3D box = boxes[i];
+                Bounds3D box = boxes[i];
                 tab.setValue(i, 0, box.getXMin());
                 tab.setValue(i, 1, box.getXMax());
                 tab.setValue(i, 2, box.getYMin());

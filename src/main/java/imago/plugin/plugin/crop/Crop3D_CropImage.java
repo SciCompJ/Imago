@@ -23,7 +23,7 @@ import net.sci.array.scalar.Scalar;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.ScalarArray2D;
 import net.sci.array.scalar.ScalarArray3D;
-import net.sci.geom.geom2d.Box2D;
+import net.sci.geom.geom2d.Bounds2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.StraightLine2D;
 import net.sci.geom.geom2d.Vector2D;
@@ -114,7 +114,7 @@ public class Crop3D_CropImage extends AlgoStub implements FramePlugin
             LinearRing2D ring = (LinearRing2D) shapeNode.getGeometry();
             
             // compute bounds in Y direction
-            Box2D box = ring.boundingBox();
+            Bounds2D box = ring.bounds();
             int ymin = (int) Math.max(0, Math.ceil(box.getYMin()));
             int ymax = (int) Math.min(sizeY, Math.floor(box.getYMax()));
 
