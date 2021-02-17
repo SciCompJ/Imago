@@ -201,10 +201,10 @@ public class GenericDialog
 	{
 		// creates the label widget
 		JLabel labelItem = new JLabel(formatLabel(label));
-//		if (toolTip != null) 
-//		{
-//			labelItem.setToolTipText(toolTip);
-//		}
+		if (toolTip != null) 
+		{
+			labelItem.setToolTipText(toolTip);
+		}
 		
 		c.gridx = 0;
 		c.gridy = currentRow;
@@ -958,7 +958,7 @@ public class GenericDialog
 //	          IJ.resetEscape();
 	        } else if (keyCode == KeyEvent.VK_W
 	                && (evt.getModifiersEx() & Toolkit.getDefaultToolkit()
-	                        .getMenuShortcutKeyMaskEx()) != 0) {
+	                        .getMenuShortcutKeyMask()) != 0) {
 	            output = Output.CANCEL;
 	            this.dialog.dispose();
 	        }
