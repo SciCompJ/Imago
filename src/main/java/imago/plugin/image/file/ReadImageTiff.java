@@ -7,24 +7,32 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
+import javax.swing.ProgressMonitor;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import imago.gui.FramePlugin;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.FramePlugin;
+import net.sci.algo.AlgoEvent;
+import net.sci.algo.AlgoListener;
 import net.sci.image.Image;
 import net.sci.image.io.TiffImageReader;
 
 
 /**
+ * Opens a dialog to read a TIFF Image file.
+ * 
  * @author David Legland
  *
  */
-public class ReadImageTiff implements FramePlugin
+public class ReadImageTiff implements FramePlugin, AlgoListener
 {
-	private JFileChooser openWindow = null;
-
+    /**
+     * A dialog to show reading progress.
+     */
+    private ProgressMonitor progressMonitor;
+    
 	public ReadImageTiff() 
 	{
 	}
@@ -35,9 +43,9 @@ public class ReadImageTiff implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		// create file dialog uqsing last open path
+		// create file dialog using last open path
 		String lastPath = getLastOpenPath(frame);
-		openWindow = new JFileChooser(lastPath);
+		JFileChooser openWindow = new JFileChooser(lastPath);
 		openWindow.setFileFilter(new FileNameExtensionFilter("TIFF files (*.tif, *.tiff)", "tif", "tiff"));
 
 
@@ -48,7 +56,7 @@ public class ReadImageTiff implements FramePlugin
 			return;
 		}
 
-		// Check the chosen file is state
+		// Check the chosen file is valid
 		File file = openWindow.getSelectedFile();
 		if (!file.isFile()) 
 		{
@@ -77,6 +85,14 @@ public class ReadImageTiff implements FramePlugin
 			return;
 		}
 		
+		// Configure a progress monitor to display reading progress
+        progressMonitor = new ProgressMonitor(frame.getWidget(), "Reading a TIFF Image", "", 0, 100);
+        progressMonitor.setMillisToDecideToPopup(10);
+        progressMonitor.setMillisToPopup(100);
+		progressMonitor.setProgress(0);
+
+		reader.addAlgoListener(this);
+		
 		// Try to read the image from the file
 		Image image;
 		try
@@ -96,12 +112,6 @@ public class ReadImageTiff implements FramePlugin
             return;
 		}
 		
-//        // If image data contains only two different values, convert to binary
-//        image = eventuallyConvertToBinary(image);
-		 
-//        // populates some meta-data
-//		image.setName(file.getName());
-		
 		// add the image document to GUI
 		ImageFrame newFrame = frame.createImageFrame(image);
 		newFrame.setLastOpenPath(path);
@@ -118,57 +128,17 @@ public class ReadImageTiff implements FramePlugin
 		
 		return path;
 	}
-	
-//	private Image eventuallyConvertToBinary(Image image)
-//	{
-//	    // if image is already binary, nothing to do
-//	    if (image.getType() == Image.Type.BINARY)
-//	    {
-//	        return image;
-//	    }
-//	    
-//        // if data array is not of UInt8 class, can not be binary
-//	    Array<?> data = image.getData();
-//	    if (!(data instanceof UInt8Array))
-//	    {
-//	        return image;
-//	    }
-//	    
-//        // check if data can be binary
-//        if (!canBeBinary((UInt8Array) data))
-//        {
-//            return image;
-//        }
-//        
-//        // convert UInt8 to binary
-//        BinaryArray binData = BinaryArray.convert((UInt8Array) data);
-//        
-//        // convert to binary image
-//        return new Image(binData, image);
-//	}
-//	
-//	private boolean canBeBinary(UInt8Array data)
-//	{
-//        boolean has1 = false;
-//        boolean has255 = false;
-//        UInt8Array.Iterator iter = data.iterator();
-//        while(iter.hasNext())
-//        {
-//            int value = iter.nextInt();
-//            if (value == 1)
-//            {
-//                has1 = true;
-//            }
-//            else if (value == 255)
-//            {
-//                has255 = true;
-//            }
-//            else if (value != 0)
-//            {
-//                return false;
-//            }
-//        }
-//        
-//        return !has1 || !has255;
-//	}
+
+    @Override
+    public void algoProgressChanged(AlgoEvent evt)
+    {
+        int progress = (int) Math.round(evt.getProgressRatio() * 100);
+        progressMonitor.setProgress(progress);
+    }
+
+    @Override
+    public void algoStatusChanged(AlgoEvent evt)
+    {
+        progressMonitor.setNote(evt.getStatus());
+    }
 }

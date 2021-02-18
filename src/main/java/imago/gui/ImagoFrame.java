@@ -41,7 +41,7 @@ public abstract class ImagoFrame
 	/**
 	 * The path to the directory that was used to save this document.
 	 */
-	String lastOpenPath = "";
+	String lastOpenPath = ".";
 	
 
 	// ===================================================================
