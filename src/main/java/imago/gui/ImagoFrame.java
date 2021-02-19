@@ -70,7 +70,7 @@ public abstract class ImagoFrame
 	/**
 	 * Creates a new frame by specifying the parent frame.
 	 * 
-	 * @param frame the parent frame
+	 * @param imageFrame the parent frame
 	 */
 	protected ImagoFrame(ImagoFrame parent)
 	{

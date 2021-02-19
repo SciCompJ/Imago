@@ -152,6 +152,7 @@ import imago.plugin.image.shape.ImageSubsample;
 import imago.plugin.image.vectorize.BinaryImageBoundaryGraph;
 import imago.plugin.image.vectorize.ImageFindNonZeroPixels;
 import imago.plugin.image.vectorize.ImageIsocontour;
+import imago.plugin.plugin.crop.Crop3DPlugin;
 import imago.plugin.plugin.crop.Crop3D_AddPolygon;
 import imago.plugin.plugin.crop.Crop3D_CropImage;
 import imago.plugin.plugin.crop.Crop3D_Initialize;
@@ -748,19 +749,23 @@ public class GuiBuilder
         
         menu.addSeparator();
         
-        if (hasImage3D)
-        {
-        	JMenu crop3DMenu = new JMenu("Crop 3D");
-        	addPlugin(crop3DMenu, new Crop3D_Initialize(), "Initialize Crop3D");
-        	addPlugin(crop3DMenu, new Crop3D_LoadPolygonsFromJson(), "Load polygons from JSON...");
-        	crop3DMenu.addSeparator();
-        	addPlugin(crop3DMenu, new Crop3D_AddPolygon(), "Add polygon");
-        	addPlugin(crop3DMenu, new Crop3D_InterpolatePolygons(), "Interpolate polygons");
-        	crop3DMenu.addSeparator();
-        	addPlugin(crop3DMenu, new Crop3D_SavePolygonsAsJson(), "Save polygons as JSON...");
-        	addPlugin(crop3DMenu, new Crop3D_CropImage(), "Crop Image...");
-        	menu.add(crop3DMenu);
-        }
+        JMenu perigrainMenu = new JMenu("Perigrain");
+        addPlugin(perigrainMenu, new Crop3DPlugin(), "Crop 3D");
+        menu.add(perigrainMenu);
+        
+//        if (hasImage3D)
+//        {
+//        	JMenu crop3DMenu = new JMenu("Crop 3D");
+//        	addPlugin(crop3DMenu, new Crop3D_Initialize(), "Initialize Crop3D");
+//        	addPlugin(crop3DMenu, new Crop3D_LoadPolygonsFromJson(), "Load polygons from JSON...");
+//        	crop3DMenu.addSeparator();
+//        	addPlugin(crop3DMenu, new Crop3D_AddPolygon(), "Add polygon");
+//        	addPlugin(crop3DMenu, new Crop3D_InterpolatePolygons(), "Interpolate polygons");
+//        	crop3DMenu.addSeparator();
+//        	addPlugin(crop3DMenu, new Crop3D_SavePolygonsAsJson(), "Save polygons as JSON...");
+//        	addPlugin(crop3DMenu, new Crop3D_CropImage(), "Crop Image...");
+//        	menu.add(crop3DMenu);
+//        }
         
         return menu;
     }
