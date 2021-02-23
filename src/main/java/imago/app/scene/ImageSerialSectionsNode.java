@@ -21,6 +21,9 @@ import java.util.TreeMap;
  */
 public class ImageSerialSectionsNode extends Node
 {
+    /**
+     * The list of slice nodes, indexed by the slice index.
+     */
     Map<Integer, ImageSliceNode> children =  new TreeMap<Integer, ImageSliceNode>();
 
     /**
@@ -39,6 +42,23 @@ public class ImageSerialSectionsNode extends Node
             throw new RuntimeException("Already contains a slice with index " + index);
         }
         children.put(index, node);
+    }
+    
+    public void removeSliceNode(ImageSliceNode node)
+    {
+        int index = node.sliceIndex;
+        if (children.containsKey(index))
+        {
+            children.remove(index);
+        }
+    }
+    
+    public void removeSliceNode(int index)
+    {
+        if (children.containsKey(index))
+        {
+            children.remove(index);
+        }
     }
     
     public ImageSliceNode getSliceNode(int index)

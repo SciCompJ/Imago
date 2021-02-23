@@ -207,7 +207,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         addPolygonButton.addActionListener(evt -> addPolygon());
         removePolygonButton = new JButton("Remove Polygon");
         removePolygonButton.addActionListener(evt -> removePolygon());
-        removePolygonButton.setEnabled(false);
+        //removePolygonButton.setEnabled(false);
         interpolateButton = new JButton("Interpolate");
         interpolateButton.addActionListener(evt -> interpolatePolygons());
         cropImageButton = new JButton("Crop Image...");
@@ -385,9 +385,31 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         viewer.repaint();
     }
     
+    /**
+     * Removes the polygon identified by the line selected in the polygon list.
+     */
     public void removePolygon()
     {
+        // retrieve index of selected slice polygon
+        int index = roiList.getSelectedIndex();
+        if (index == -1)
+        {
+            return;
+        }
+        
+        String name = roiList.getSelectedValue();
+        int sliceIndex = Integer.parseInt(name.substring(6).trim());
+
+        
+        ImageSerialSectionsNode group = crop3d.getPolygonsNode();
+        group.removeSliceNode(sliceIndex);
+        
         updatePolygonListView();
+        
+        // need to call this to update items to display
+        ImageViewer viewer = imageFrame.getImageView();
+        viewer.refreshDisplay(); 
+        viewer.repaint();
     }
     
     private void updatePolygonListView()
@@ -470,17 +492,6 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
             }
         };
         this.crop3d.addAlgoListener(progressDisplay);
-        
-//        try 
-//        {
-//            crop3d.computeCroppedImage(file);
-//            progressMonitor.setProgress(100);
-//            progressMonitor.close();
-//        }
-//        catch (IOException ex)
-//        {
-//            throw new RuntimeException(ex);
-//        }
         
         Thread t = new Thread()
         {
