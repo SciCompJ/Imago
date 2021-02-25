@@ -604,6 +604,7 @@ public class Crop3D extends AlgoStub
         // open file for writing
         MetaImageWriter mhdWriter = new MetaImageWriter(file);
         MetaImageInfo info = mhdWriter.computeMetaImageInfo(image);
+        info.dimSize[2] = interpNode.getSliceIndices().size();
         info.elementDataFile = computeElementDataFileName(file.getName());
         
         // print header into header file
@@ -626,7 +627,7 @@ public class Crop3D extends AlgoStub
 
         for (int sliceIndex : interpNode.getSliceIndices())
         {
-            System.out.println("slice " + sliceIndex);
+            System.out.println("crop slice: " + sliceIndex);
             
             this.fireProgressChanged(this, sliceIndex, array.size(2));
 
@@ -634,7 +635,7 @@ public class Crop3D extends AlgoStub
             ScalarArray2D<?> slice = (ScalarArray2D<?>) array3d.slice(sliceIndex);
             
             // create 2D slice for storing crop result
-            ScalarArray2D<?> resSlice = ScalarArray2D.wrapScalar2d(slice.newInstance(sizeX, sizeY));
+            ScalarArray2D<?> resSlice = ScalarArray2D.wrapScalar2d(array.newInstance(sizeX, sizeY));
             
             // get crop polygon
             ShapeNode shapeNode = (ShapeNode) interpNode.getSliceNode(sliceIndex).children().iterator().next();

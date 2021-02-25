@@ -57,6 +57,8 @@ import net.sci.image.io.TiffImageReader;
  */
 public class Crop3DPlugin implements FramePlugin, ListSelectionListener
 {
+    ImagoFrame parentFrame;
+    
     ImageFrame imageFrame;
     JFrame jframe;
     
@@ -67,7 +69,10 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     JMenuItem loadPolygonsItem;
     JMenuItem savePolygonsItem;
     
+    JLabel imageNameLabel;
+    
     // buttons
+    JButton openImageButton;
     JButton addPolygonButton;
     JButton removePolygonButton;
     JButton interpolateButton;
@@ -89,79 +94,28 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     public void run(ImagoFrame parentFrame, String args)
     {
         System.out.println("start Crop3D plugin");
-        
-        this.imageFrame = null;
-        chooseInputImage(parentFrame);
-        if (this.imageFrame == null)
-        {
-            return;
-        }
-        
-        this.crop3d = new Crop3D(imageFrame);
-        this.crop3d.addAlgoListener(imageFrame);
-        
-        this.crop3d.initializeCrop3dNodes();
-
-        // need to call this to update items to display
-        ImageViewer viewer = imageFrame.getImageView();
-        viewer.refreshDisplay(); 
-        viewer.repaint();
-        
-        this.jframe = createFrame(imageFrame.getWidget());
+        this.parentFrame = parentFrame;
+//        
+//        this.imageFrame = null;
+//        chooseInputImage(parentFrame);
+//        if (this.imageFrame == null)
+//        {
+//            return;
+//        }
+//        
+//        this.crop3d = new Crop3D(imageFrame);
+//        this.crop3d.addAlgoListener(imageFrame);
+//        
+//        this.crop3d.initializeCrop3dNodes();
+//
+//        // need to call this to update items to display
+//        ImageViewer viewer = imageFrame.getImageView();
+//        viewer.refreshDisplay(); 
+//        viewer.repaint();
+//        
+        this.jframe = createFrame(parentFrame.getWidget());
     }
     
-    private void chooseInputImage(ImagoFrame parentFrame)
-    {
-        // create file dialog to read the 3D TIFF Image
-//        String lastPath = frame.getLastOpenPath();
-        String lastPath = "D:/images/wheat/perigrain/Psiche_2018/HR/selection";
-        JFileChooser openWindow = new JFileChooser(lastPath);
-        openWindow.setDialogTitle("Choose TIFF 3D Image");
-        openWindow.setFileFilter(new FileNameExtensionFilter("TIFF files (*.tif, *.tiff)", "tif", "tiff"));
-        
-        // Open dialog to choose the file
-        int ret = openWindow.showOpenDialog(parentFrame.getWidget());
-        if (ret != JFileChooser.APPROVE_OPTION) 
-        {
-            return;
-        }
-
-        // Check the chosen file is valid
-        File file = openWindow.getSelectedFile();
-        if (!file.isFile()) 
-        {
-            return;
-        }
-
-        // eventually keep path for future opening
-        String path = file.getPath();
-        lastPath = parentFrame.getLastOpenPath();
-        if (lastPath == null || lastPath.isEmpty())
-        {
-            System.out.println("update frame path");
-            parentFrame.setLastOpenPath(path);
-        }
-        
-        
-        // Read a 3D virtual image from the chosen file
-        Image image;
-        try 
-        {
-            TiffImageReader reader = new TiffImageReader(file);
-            image = reader.readVirtualImage3D();
-        }
-        catch (Exception ex) 
-        {
-            System.err.println(ex);
-            ImagoGui.showErrorDialog(parentFrame, ex.getLocalizedMessage(), "TIFF Image Reading Error");
-            return;
-        }
-
-        // add the image document to GUI
-        this.imageFrame = parentFrame.createImageFrame(image);
-        this.imageFrame.setLastOpenPath(path);
-    }
-
     private JFrame createFrame(JFrame parentFrame)
     {
         JFrame frame = new JFrame("Crop 3D");
@@ -203,21 +157,28 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         JPanel controlsPanel = new JPanel();
         
         // create the buttons
+        openImageButton = new JButton("Open Image...");
+        openImageButton.addActionListener(evt -> openImage());
         addPolygonButton = new JButton("Add Polygon");
         addPolygonButton.addActionListener(evt -> addPolygon());
+        addPolygonButton.setEnabled(false);
         removePolygonButton = new JButton("Remove Polygon");
         removePolygonButton.addActionListener(evt -> removePolygon());
+        removePolygonButton.setEnabled(false);
         //removePolygonButton.setEnabled(false);
         interpolateButton = new JButton("Interpolate");
         interpolateButton.addActionListener(evt -> interpolatePolygons());
+        interpolateButton.setEnabled(false);
         cropImageButton = new JButton("Crop Image...");
         cropImageButton.addActionListener(evt -> cropImage());
+        cropImageButton.setEnabled(false);
         
         controlsPanel.setLayout(new BoxLayout(controlsPanel, BoxLayout.Y_AXIS));
         controlsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
         JPanel btnPanel = new JPanel(new GridLayout(6, 1, 10, 10));
         btnPanel.add(new JLabel(" "));
+        btnPanel.add(openImageButton);
         btnPanel.add(addPolygonButton);
         btnPanel.add(removePolygonButton);
         btnPanel.add(interpolateButton);        
@@ -245,13 +206,13 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         
         mainPanel.add(listPanel);
         
-        JLabel imageNameLabel = new JLabel("Current Image: " + this.imageFrame.getImageHandle().getImage().getName());
+        imageNameLabel = new JLabel("Current Image: (none)");
         imageNameLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         frame.setLayout(new BorderLayout());
         frame.add(imageNameLabel, BorderLayout.NORTH);
         frame.add(mainPanel, BorderLayout.CENTER);
         
-        frame.setSize(320, 300);
+        frame.setSize(320, 360);
     }
     
     public void loadPolygons()
@@ -352,6 +313,86 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     }
     
     
+    public void openImage()
+    {
+        this.imageFrame = null;
+        chooseInputImage(parentFrame);
+        if (this.imageFrame == null)
+        {
+            return;
+        }
+        
+        this.crop3d = new Crop3D(imageFrame);
+        this.crop3d.addAlgoListener(imageFrame);
+        
+        this.crop3d.initializeCrop3dNodes();
+
+        // need to call this to update items to display
+        ImageViewer viewer = imageFrame.getImageView();
+        viewer.refreshDisplay(); 
+        viewer.repaint();
+        
+        imageNameLabel.setText("Current Image: " + this.imageFrame.getImageHandle().getImage().getName());
+        
+        addPolygonButton.setEnabled(true);
+        removePolygonButton.setEnabled(true);
+        interpolateButton.setEnabled(true);
+        cropImageButton.setEnabled(true);
+
+    }
+    
+    private void chooseInputImage(ImagoFrame parentFrame)
+        {
+            // create file dialog to read the 3D TIFF Image
+    //        String lastPath = frame.getLastOpenPath();
+            String lastPath = "D:/images/wheat/perigrain/Psiche_2018/HR/selection";
+            JFileChooser openWindow = new JFileChooser(lastPath);
+            openWindow.setDialogTitle("Choose TIFF 3D Image");
+            openWindow.setFileFilter(new FileNameExtensionFilter("TIFF files (*.tif, *.tiff)", "tif", "tiff"));
+            
+            // Open dialog to choose the file
+            int ret = openWindow.showOpenDialog(parentFrame.getWidget());
+            if (ret != JFileChooser.APPROVE_OPTION) 
+            {
+                return;
+            }
+    
+            // Check the chosen file is valid
+            File file = openWindow.getSelectedFile();
+            if (!file.isFile()) 
+            {
+                return;
+            }
+    
+            // eventually keep path for future opening
+            String path = file.getPath();
+            lastPath = parentFrame.getLastOpenPath();
+            if (lastPath == null || lastPath.isEmpty())
+            {
+                System.out.println("update frame path");
+                parentFrame.setLastOpenPath(path);
+            }
+            
+            
+            // Read a 3D virtual image from the chosen file
+            Image image;
+            try 
+            {
+                TiffImageReader reader = new TiffImageReader(file);
+                image = reader.readVirtualImage3D();
+            }
+            catch (Exception ex) 
+            {
+                System.err.println(ex);
+                ImagoGui.showErrorDialog(parentFrame, ex.getLocalizedMessage(), "TIFF Image Reading Error");
+                return;
+            }
+    
+            // add the image document to GUI
+            this.imageFrame = parentFrame.createImageFrame(image);
+            this.imageFrame.setLastOpenPath(path);
+        }
+
     public void addPolygon()
     {
         ImageViewer viewer = imageFrame.getImageView();
