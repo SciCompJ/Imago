@@ -1,1 +1,1 @@
-java -cp ../../cs4j/dev/target/classes;target/classes;lib/javaGeom.jar;lib/jipl.jar;lib/jcommon-1.0.17.jar;lib/xchart-3.5.4/xchart-3.5.4.jar;lib/jfreechart-1.0.14.jar;. imago.Imago
+java -cp ../../cs4j/dev/target/classes;target/classes;lib/javaGeom.jar;lib/jipl.jar;lib/jcommon-1.0.17.jar;lib/xchart-3.8.0/xchart-3.8.0.jar;lib/jfreechart-1.0.14.jar;. imago.Imago

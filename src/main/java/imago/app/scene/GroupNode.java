@@ -19,16 +19,28 @@ public class GroupNode extends Node
 	// ===================================================================
 	// Class members
 
+    /**
+     * The children node within this group node.
+     */
 	ArrayList<Node> children = new ArrayList<Node>();
 	
 
 	// ===================================================================
 	// Constructors
 
+	/**
+	 * Creates a new empty Group Node.
+	 */
 	public GroupNode()
 	{
 	}
 	
+    /**
+     * Creates a new empty Group Node by specifying its name.
+     * 
+     * @param name
+     *            the name of the group node.
+     */
 	public GroupNode(String name)
 	{
 		super(name);
@@ -38,10 +50,15 @@ public class GroupNode extends Node
 	// ===================================================================
 	// New methods
 	
-	/**
-	 * @param childName the name of a child node
-	 * @return the child node with the specified name, or null if no child has this name.
-	 */
+    /**
+     * Retrieves a child node from this group node based on the name of the
+     * child.
+     * 
+     * @param name
+     *            the name of a child node
+     * @return the child node with the specified name, or null if no child has
+     *         this name.
+     */
 	public Node getChild(String name)
 	{
 		for (Node child : children)
@@ -54,6 +71,14 @@ public class GroupNode extends Node
 		return null;
 	}
 	
+	/**
+     * Checks if this grouping node a contains a child node with the specified
+     * name.
+     * 
+     * @param name
+     *            the name of the child node
+     * @return true if this group contains a child with the specified name.
+     */
 	public boolean hasChildWithName(String name)
 	{
 		for (Node child : children)
@@ -66,21 +91,41 @@ public class GroupNode extends Node
 		return false;
 	}
 
+	/**
+     * Returns the number of children in this group.
+     * 
+     * @return the number of children in this group.
+     */
 	public int childrenCount()
 	{
 		return children.size();
 	}
 	
+	/**
+     * Adds a new child node to this group.
+     * 
+     * @param node
+     *            the child node to add.
+     */
 	public void addNode(Node node)
 	{
 		children.add(node);
 	}
 	
+    /**
+     * Removes a new child node from this group.
+     * 
+     * @param node
+     *            the child node to remove.
+     */
 	public void removeNode(Node node)
 	{
 		children.remove(node);
 	}
 	
+    /**
+     * Removes all the child nodes from this group.
+     */
 	public void clear()
 	{
 		children.clear();
@@ -103,7 +148,6 @@ public class GroupNode extends Node
 	}
 
 	
-	
 	@Override
 	public void printTree(PrintStream stream, int nIndents)
 	{
@@ -121,7 +165,12 @@ public class GroupNode extends Node
 		}
 	}
 
-	
+	/**
+     * A main method used for testing purpose.
+     * 
+     * @param args
+     *            optional arguments (not used)
+     */
 	public static final void main(String... args)
 	{
 		ShapeNode node1 = new ShapeNode(new Point2D(20, 10));

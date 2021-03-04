@@ -9,7 +9,8 @@ import imago.app.scene.Style;
 import net.sci.geom.Geometry;
 
 /**
- * A shape that can be used for drawing annotations, segmentation results, bounding boxes...
+ * A shape that can be used for drawing annotations, segmentation results,
+ * bounding boxes...
  * 
  * @author dlegland
  *
@@ -19,20 +20,40 @@ public class Shape
     // ===================================================================
     // Class variables
     
+    /**
+     * The geometry of this shape.
+     */
     Geometry geometry;
     
+    /**
+     * The style used to draw this shape.
+     */
     Style style;
 
     
     // ===================================================================
     // Constructors
     
+    /**
+     * Create a new Shape from a Geometry.
+     * 
+     * @param geometry
+     *            the geometry associated to this shape.
+     */
     public Shape(Geometry geometry)
     {
         this.geometry = geometry;
         this.style = new Style();
     }
 
+    /**
+     * Create a new Shape from a Geometry and a drawing style.
+     * 
+     * @param geometry
+     *            the geometry associated to this shape.
+     * @param style
+     *            the style associated to this shape.
+     */
     public Shape(Geometry geometry, Style style)
     {
         this.geometry = geometry;
@@ -50,7 +71,6 @@ public class Shape
         return geometry;
     }
 
-
     /**
      * @param geometry the geometry to set
      */
@@ -58,7 +78,6 @@ public class Shape
     {
         this.geometry = geometry;
     }
-
 
     /**
      * @return the color
@@ -68,7 +87,6 @@ public class Shape
         return style.getColor();
     }
 
-
     /**
      * @param color the color to set
      */
@@ -77,7 +95,6 @@ public class Shape
         this.style.setColor(color);
     }
 
-
     /**
      * @return the lineWidth
      */
@@ -85,7 +102,6 @@ public class Shape
     {
         return style.getLineWidth();
     }
-
 
     /**
      * @param lineWidth the lineWidth to set

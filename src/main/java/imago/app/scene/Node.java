@@ -4,7 +4,10 @@
 package imago.app.scene;
 
 /**
- * Superclass for all nodes in a scene graph.
+ * Abstract superclass for all nodes in a scene graph.
+ * 
+ * @see GroupNode
+ * @see ShapeNode
  * 
  * @author dlegland
  */
@@ -13,10 +16,14 @@ public abstract class Node
     // =============================================================
     // Class fields
 
-    /** the optional name of this node */
+    /** 
+     * The optional name of this node, that can be used to identify it in GUI widgets.
+     */
     String name = "";
     
-    /** Visibility flag (default true). */
+    /** 
+     * Visibility flag (default true). 
+     */
     boolean visible = true;
 
     

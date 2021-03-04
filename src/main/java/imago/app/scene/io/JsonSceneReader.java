@@ -21,6 +21,10 @@ import net.sci.geom.geom2d.polygon.LineString2D;
 import net.sci.geom.geom2d.polygon.LinearRing2D;
 
 /**
+ * Reads the content of a scene from a text file in JSON format.
+ * 
+ * @see JsonSceneWriter
+ * 
  * @author dlegland
  *
  */
@@ -29,12 +33,21 @@ public class JsonSceneReader
     // =============================================================
     // Class member
 	
+    /**
+     * The JsonReader instancde used to parse data from.
+     */
 	JsonReader reader;
 	
 	
     // =============================================================
     // Constructor
-
+	
+    /**
+     * Creates a new SceneReader from an instance of JsonReader.
+     * 
+     * @param reader
+     *            an instance of JsonReader.
+     */
 	public JsonSceneReader(JsonReader reader)
 	{
 		this.reader = reader;
@@ -44,6 +57,15 @@ public class JsonSceneReader
     // =============================================================
     // Read Imago items
 	
+	/**
+     * Read the content of a Scene node.
+     * 
+     * @see Node
+     * 
+     * @return a new Node instance.
+     * @throws IOException
+     *             if a reading problem occurred.
+     */
 	public Node readNode() throws IOException
 	{
 		Node node = null;
@@ -76,6 +98,17 @@ public class JsonSceneReader
 		return node;
 	}
 
+    /**
+     * Read the content of a ShapeNode.
+     * 
+     * @see ShapeNode
+     * 
+     * @param name
+     *            the name of the node to be created.
+     * @return a new ShapeNode instance.
+     * @throws IOException
+     *             if a reading problem occurred.
+     */
 	private ShapeNode readShapeNode(String name) throws IOException
 	{
 		// initial values
@@ -109,6 +142,17 @@ public class JsonSceneReader
 		return node;
 	}
 	
+    /**
+     * Read the content of an ImageSliceNode.
+     * 
+     * @see ImageSliceNode
+     * 
+     * @param name
+     *            the name of the node to be created.
+     * @return a new ImageSliceNode instance.
+     * @throws IOException
+     *             if a reading problem occurred.
+     */
 	private ImageSliceNode readImageSliceNode(String name) throws IOException
 	{
 		ImageSliceNode sliceNode = new ImageSliceNode(name);
@@ -138,6 +182,17 @@ public class JsonSceneReader
 		return sliceNode;
 	}
 
+    /**
+     * Read the content of an ImageSerialSectionsNode.
+     * 
+     * @see ImageSerialSectionsNode
+     * 
+     * @param name
+     *            the name of the node to be created.
+     * @return a new ImageSerialSectionsNode instance.
+     * @throws IOException
+     *             if a reading problem occurred.
+     */
 	private ImageSerialSectionsNode readImageSerialSectionsNode(String name) throws IOException
 	{
 		ImageSerialSectionsNode group = new ImageSerialSectionsNode(name);
@@ -178,6 +233,17 @@ public class JsonSceneReader
 		return group;
 	}
 
+    /**
+     * Read the content of an GroupNode.
+     * 
+     * @see GroupNode
+     * 
+     * @param name
+     *            the name of the node to be created.
+     * @return a new GroupNode instance.
+     * @throws IOException
+     *             if a reading problem occurred.
+     */
 	private GroupNode readGroupNode(String name) throws IOException
 	{
 		GroupNode group = new GroupNode(name);
@@ -204,7 +270,13 @@ public class JsonSceneReader
 		return group;
 	}
 
-
+	/**
+     * Read the content of a Style saved in JSON format.
+     * 
+     * @return a new Style.
+     * @throws IOException
+     *             if a reading problem occurred.
+     */
 	public Style readStyle() throws IOException
 	{
 		Style style = new Style();
@@ -233,6 +305,14 @@ public class JsonSceneReader
 	// =============================================================
     // Read CS4J items
 	
+
+    /**
+     * Read the content of a Geometry saved in JSON format.
+     * 
+     * @return a new Geometry.
+     * @throws IOException
+     *             if a reading problem occurred.
+     */
 	public Geometry readGeometry() throws IOException
 	{
 		Geometry geom;
@@ -275,6 +355,14 @@ public class JsonSceneReader
 		return geom;
 	}
 	
+
+    /**
+     * Read the content of an array of Point2D saved in JSON format.
+     * 
+     * @return a new Array of Point2D.
+     * @throws IOException
+     *             if a reading problem occurred.
+     */
 	private ArrayList<Point2D> readPoint2DArray() throws IOException
 	{
 		ArrayList<Point2D> points = new ArrayList<Point2D>();
@@ -297,6 +385,14 @@ public class JsonSceneReader
 	// =============================================================
     // Read java items
 	
+
+    /**
+     * Read a java color saved in JSON format.
+     * 
+     * @return a new Color.
+     * @throws IOException
+     *             if a reading problem occurred.
+     */
 	public Color readColor() throws IOException
 	{
 		reader.beginObject();
@@ -310,6 +406,12 @@ public class JsonSceneReader
 		return new Color(red, green, blue);
 	}
 	
+	/**
+     * Close the underlying reader.
+     * 
+     * @throws IOException
+     *             if a problem occurred when closing the reader.
+     */
 	public void close() throws IOException
 	{
 		this.reader.close();

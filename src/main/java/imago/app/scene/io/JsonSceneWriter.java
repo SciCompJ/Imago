@@ -16,6 +16,11 @@ import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.polygon.Polyline2D;
 
 /**
+ * Writes the contents of nodes into text file using the JSON format.
+ * 
+ * @see JsonSceneReader
+ * @see JsonWriter
+ * 
  * @author dlegland
  *
  */
@@ -24,6 +29,16 @@ public class JsonSceneWriter
     // =============================================================
     // Static classes
 	
+    /**
+     * Utility method that converts a Node into a String representation using
+     * the JSON format.
+     * 
+     * @param node
+     *            the Node to convert into JSON
+     * @return a String representation of the node in JSON format
+     * @throws IOException
+     *             if a string conversion problem occurred
+     */
 	public static final String toJson(Node node) throws IOException
 	{
 		StringWriter stringWriter = new StringWriter();
@@ -42,20 +57,44 @@ public class JsonSceneWriter
     // =============================================================
     // Constructors
 	
+	/**
+     * Creates a new SceneWriter in JSON format, using the specified JsonWriter.
+     * 
+     * @param writer
+     *            the instance of JsonWriter to write into.
+     */
 	public JsonSceneWriter(JsonWriter writer)
 	{
 		this.writer = writer;
 	}
 	
-	public JsonSceneWriter(java.io.Writer out)
+    /**
+     * Creates a new SceneWriter in JSON format, using the specified Writer.
+     * The writer is internally converted into a new JsonWriter.
+     * 
+     * @param writer
+     *            the instance of Writer to write into.
+     */
+	public JsonSceneWriter(java.io.Writer writer)
 	{
-		this.writer = new JsonWriter(new PrintWriter(out));
+		this.writer = new JsonWriter(new PrintWriter(writer));
 	}
 	
     
 	// =============================================================
     // Public methods
 	
+	/**
+     * Writes the content of the specified node into this writer.
+     * 
+     * @see #writeGeometry(net.sci.geom.Geometry)
+     * @see #writeStyle(imago.app.scene.Style)
+     * 
+     * @param node
+     *            an instance of a Node in a Scene.
+     * @throws IOException
+     *             if a writing problem occurred.
+     */
 	public void writeNode(Node node) throws IOException
 	{
 		this.writer.beginObject();
@@ -123,6 +162,17 @@ public class JsonSceneWriter
     // =============================================================
     // Writing Imago classes
 	
+    /**
+     * Writes the content of the specified style into this writer.
+     * 
+     * @see #writeGeometry(Geometry)
+     * @see #writeColor(Color)
+     * 
+     * @param style
+     *            an instance of Style.
+     * @throws IOException
+     *             if a writing problem occurred.
+     */
 	public void writeStyle(Style style) throws IOException
 	{
 		this.writer.beginObject();
@@ -138,7 +188,15 @@ public class JsonSceneWriter
 	
     // =============================================================
     // Writing CS4J classes
-
+	
+    /**
+     * Writes the content of the specified geometry into this writer.
+     * 
+     * @param geom
+     *            the geometry instance to save.
+     * @throws IOException
+     *             if a writing problem occurred.
+     */
 	public void writeGeometry(Geometry geom) throws IOException
 	{
 		this.writer.beginObject();
@@ -172,6 +230,14 @@ public class JsonSceneWriter
 	// =============================================================
     // Writing java classes
 
+    /**
+     * Writes the content of the specified color into this writer.
+     * 
+     * @param color
+     *            the color to save.
+     * @throws IOException
+     *             if a writing problem occurred.
+     */
 	public void writeColor(Color color) throws IOException
 	{
 		writer.beginObject();
@@ -185,16 +251,46 @@ public class JsonSceneWriter
     // =============================================================
     // writing primitive data
 	
+    /**
+     * Saves a numeric tag identified by a name.
+     * 
+     * @param name
+     *            the name of the tag.
+     * @param value
+     *            the numeric value of the tag.
+     * @throws IOException
+     *             if a writing problem occurred.
+     */
 	private void writeValue(String name, double value) throws IOException
 	{
 		this.writer.name(name).value(value);
 	}
 
+    /**
+     * Saves a boolean tag identified by a name.
+     * 
+     * @param name
+     *            the name of the tag.
+     * @param value
+     *            the boolean value of the tag.
+     * @throws IOException
+     *             if a writing problem occurred.
+     */
 	private void writeBoolean(String name, boolean value) throws IOException
 	{
 		this.writer.name(name).value(value);
 	}
 
+    /**
+     * Saves a string identified by a name.
+     * 
+     * @param name
+     *            the name of the tag.
+     * @param value
+     *            the value of the tag as a string.
+     * @throws IOException
+     *             if a writing problem occurred.
+     */
 	private void writeString(String name, String value) throws IOException
 	{
 		this.writer.name(name).value(value);

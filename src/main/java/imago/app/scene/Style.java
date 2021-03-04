@@ -15,19 +15,34 @@ public class Style
     // ===================================================================
     // Class variables
     
+    /**
+     * The color used to draw lines.
+     */
     Color color = Color.BLUE;
 
+    /**
+     * The thickness used to draw lines.
+     */
     double lineWidth = 1.0;
 
 
     // ===================================================================
     // Constructors
-
+    
+    /**
+     * Empty constructor.
+     */
     public Style()
     {
     	
     }
     
+    /**
+     * Copy constructor from another style.
+     * 
+     * @param refStyle
+     *            the style to copy.
+     */
     public Style(Style refStyle)
     {
     	this.color = refStyle.color;
@@ -72,4 +87,4 @@ public class Style
     {
         this.lineWidth = lineWidth;
     }
-    }
+}
