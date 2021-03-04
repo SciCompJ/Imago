@@ -638,8 +638,7 @@ public class Crop3D extends AlgoStub
             ScalarArray2D<?> resSlice = ScalarArray2D.wrapScalar2d(array.newInstance(sizeX, sizeY));
             
             // get crop polygon
-            ShapeNode shapeNode = (ShapeNode) interpNode.getSliceNode(sliceIndex).children().iterator().next();
-            LinearRing2D ring = (LinearRing2D) shapeNode.getGeometry();
+            LinearRing2D ring = getLinearRing(interpNode, sliceIndex);
             
             // compute bounds in Y direction
             Bounds2D box = ring.bounds();
@@ -649,12 +648,8 @@ public class Crop3D extends AlgoStub
             // iterate over lines inside bounding box
             for (int y = ymin; y < ymax; y++)
             {
-                StraightLine2D line = new StraightLine2D(new Point2D(0, y), new Vector2D(1, 0));
-                Collection<Point2D> points = ring.intersections(line);
-                points = sortPointsByX(points);
-
-                int np = points.size();
-                if (np % 2 != 0)
+                Collection<Point2D> points = computeIntersectionsWithHorizontalLine(ring, y);
+                if (points.size() % 2 != 0)
                 {
                     System.err.println("can not manage odd number of intersections bewteen linear ring and straight line");
                     continue;
@@ -739,6 +734,29 @@ public class Crop3D extends AlgoStub
     }
     
     
+    private LinearRing2D getLinearRing(ImageSerialSectionsNode cropNode, int sliceIndex)
+    {
+        // retrieve shape node
+        ShapeNode shapeNode = (ShapeNode) cropNode.getSliceNode(sliceIndex).children().iterator().next();
+        
+        // check class
+        if (!(shapeNode.getGeometry() instanceof LinearRing2D))
+        {
+            throw new RuntimeException("Expect crop geometry to be a LinearRing2D");
+        }
+        
+        // return with correct class cast
+        return (LinearRing2D) shapeNode.getGeometry();
+    }
+    
+    private Collection<Point2D> computeIntersectionsWithHorizontalLine(LinearRing2D ring, int yLine)
+    {
+        StraightLine2D line = new StraightLine2D(new Point2D(0, yLine), new Vector2D(1, 0));
+        Collection<Point2D> points = ring.intersections(line);
+        points = sortPointsByX(points);
+        return points;
+    }
+
     private ArrayList<Point2D> sortPointsByX(Collection<Point2D> points)
     {
         ArrayList<Point2D> res = new ArrayList<Point2D>(points.size());

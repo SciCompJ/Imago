@@ -41,6 +41,7 @@ import imago.gui.ImagoGui;
 import imago.gui.viewer.StackSliceViewer;
 import net.sci.algo.AlgoEvent;
 import net.sci.algo.AlgoListener;
+import net.sci.array.scalar.UInt8Array3D;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.polygon.Polygon2D;
 import net.sci.image.Image;
@@ -160,17 +161,17 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         openImageButton = new JButton("Open Image...");
         openImageButton.addActionListener(evt -> openImage());
         addPolygonButton = new JButton("Add Polygon");
-        addPolygonButton.addActionListener(evt -> addPolygon());
+        addPolygonButton.addActionListener(evt -> onAddPolygonButton());
         addPolygonButton.setEnabled(false);
         removePolygonButton = new JButton("Remove Polygon");
-        removePolygonButton.addActionListener(evt -> removePolygon());
+        removePolygonButton.addActionListener(evt -> onRemovePolygonButton());
         removePolygonButton.setEnabled(false);
         //removePolygonButton.setEnabled(false);
         interpolateButton = new JButton("Interpolate");
-        interpolateButton.addActionListener(evt -> interpolatePolygons());
+        interpolateButton.addActionListener(evt -> onInterpolatePolygonsButton());
         interpolateButton.setEnabled(false);
         cropImageButton = new JButton("Crop Image...");
-        cropImageButton.addActionListener(evt -> cropImage());
+        cropImageButton.addActionListener(evt -> onCropImageButton());
         cropImageButton.setEnabled(false);
         
         controlsPanel.setLayout(new BoxLayout(controlsPanel, BoxLayout.Y_AXIS));
@@ -393,7 +394,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
             this.imageFrame.setLastOpenPath(path);
         }
 
-    public void addPolygon()
+    public void onAddPolygonButton()
     {
         ImageViewer viewer = imageFrame.getImageView();
 
@@ -429,7 +430,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     /**
      * Removes the polygon identified by the line selected in the polygon list.
      */
-    public void removePolygon()
+    public void onRemovePolygonButton()
     {
         // retrieve index of selected slice polygon
         int index = roiList.getSelectedIndex();
@@ -470,7 +471,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         this.roiList.setListData(strings);
     }
     
-    public void interpolatePolygons()
+    public void onInterpolatePolygonsButton()
     {
         crop3d.interpolatePolygons();
 
@@ -480,7 +481,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         viewer.repaint();
     }
     
-    public void cropImage()
+    public void onCropImageButton()
     {
         ImageSerialSectionsNode polyNode = crop3d.getPolygonsNode();
         if (polyNode == null)
@@ -488,6 +489,15 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
             System.err.println("Current image does not contain Crop3D polygon information");
             return;
         }
+        
+//        // Create new cropped image using virtual crop array
+//        UInt8Array3D array = (UInt8Array3D) imageFrame.getImage().getData();
+//        ImageSerialSectionsNode cropNode = Crop3D.getInterpolatedPolygonsNode(imageFrame.getImageHandle());
+//        UInt8Array3D cropArray = new CroppedUInt8Array3D(array, cropNode);
+//        Image refImage = imageFrame.getImage();
+//        Image cropImage = new Image(cropArray, refImage);
+//        cropImage.setName(refImage.getName() + "-crop");
+//        imageFrame.createImageFrame(cropImage);
         
         // create dialog to save file
         String imageName = imageFrame.getImage().getName();
