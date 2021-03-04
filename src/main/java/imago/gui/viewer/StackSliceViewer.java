@@ -222,7 +222,7 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
     private void recomputeAwtImage()
     {
         Image image = this.getImageToDisplay();
-        Image slice = ImageSlicer.slice2d(image, 0, 1, this.slicingPosition);
+        Image slice = ImageSlicer.slice2d(image, this.slicingPosition[2]);
         this.awtImage = BufferedImageUtils.createAwtImage(slice);
     }
 
