@@ -38,6 +38,7 @@ import imago.gui.ImageViewer;
 import imago.gui.ImagoEmptyFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
+import imago.gui.dialogs.AlgoProgressMonitor;
 import imago.gui.viewer.StackSliceViewer;
 import net.sci.algo.AlgoEvent;
 import net.sci.algo.AlgoListener;
@@ -473,7 +474,32 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     
     public void onInterpolatePolygonsButton()
     {
-        crop3d.interpolatePolygons();
+        // Configure a progress monitor to display progress
+        AlgoProgressMonitor progress = new AlgoProgressMonitor(this.parentFrame, "Interpolate Polygons"); 
+        this.crop3d.addAlgoListener(progress);
+        
+        // Run the process in a new Thread to avoid locking widget updates
+        Thread t = new Thread()
+        {
+            public void run()
+            {
+                try 
+                {
+                    crop3d.interpolatePolygons();
+                    progress.setProgressRatio(1.0);
+                }
+                catch (Exception ex)
+                {
+                    ex.printStackTrace(System.err);
+                    ImagoGui.showExceptionDialog(imageFrame, ex, "Interpolation Error");
+                }
+                finally
+                {
+                    crop3d.removeAlgoListener(progress);
+                }
+            }
+        };
+        t.start();
 
         // need to call this to update items to display
         ImageViewer viewer = imageFrame.getImageView();
@@ -522,28 +548,10 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         final File finalFile = file;
         
         // Configure a progress monitor to display progress
-        ProgressMonitor progressMonitor = new ProgressMonitor(this.jframe, "Compute 3D Crop", "", 0, 100);
-        progressMonitor.setMillisToDecideToPopup(10);
-        progressMonitor.setMillisToPopup(100);
-        progressMonitor.setProgress(0);
-
-        AlgoListener progressDisplay = new AlgoListener()
-        {
-            @Override
-            public void algoProgressChanged(AlgoEvent evt)
-            {
-                int progress = (int) Math.round(evt.getProgressRatio() * 100);
-                progressMonitor.setProgress(progress);
-            }
-
-            @Override
-            public void algoStatusChanged(AlgoEvent evt)
-            {
-                progressMonitor.setNote(evt.getStatus());
-            }
-        };
-        this.crop3d.addAlgoListener(progressDisplay);
+        AlgoProgressMonitor progress = new AlgoProgressMonitor(this.parentFrame, "Compute 3D Crop"); 
+        this.crop3d.addAlgoListener(progress);
         
+        // Run the process in a new Thread to avoid locking widget updates
         Thread t = new Thread()
         {
             public void run()
@@ -551,7 +559,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
                 try 
                 {
                     crop3d.computeCroppedImage(finalFile);
-                    progressMonitor.setProgress(100);
+                    progress.setProgressRatio(1.0);
                 }
                 catch (Exception ex)
                 {
@@ -560,23 +568,26 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
                 }
                 finally
                 {
-                    crop3d.removeAlgoListener(progressDisplay);
+                    crop3d.removeAlgoListener(progress);
                 }
-
             }
         };
-        
         t.start();
-        
-        
     }
-    
 
-    
+    /**
+     * Called when the selected polygon in the polygon list is updated.
+     * 
+     * The method identifies the new current slice by parsing the name of the
+     * selected polygon, and updates the viewer accordingly.
+     * 
+     * @param evt
+     *            the event sent by the list widget
+     */
     @Override
-    public void valueChanged(ListSelectionEvent e)
+    public void valueChanged(ListSelectionEvent evt)
     {
-        if (e.getValueIsAdjusting() == false)
+        if (evt.getValueIsAdjusting() == false)
         {
             int index = roiList.getSelectedIndex();
             if (index == -1)
@@ -597,6 +608,12 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         }
     }
 
+    /**
+     * Static method used for debugging purpose.
+     * 
+     * @param args
+     *            optional arguments not used in practice.
+     */
     public static final void main(String... args)
     {
         System.out.println("run...");
