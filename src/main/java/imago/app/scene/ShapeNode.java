@@ -130,8 +130,9 @@ public class ShapeNode extends Node
 		{
 			str = str + "  ";
 		}
-		String nameString = (name != null && !name.isEmpty()) ? name : "(no name)";
-		stream.println(str + "[ShapeNode] " + nameString);
+		String nameString = (name != null && !name.isEmpty()) ? "\"" + name + "\"" : "(empty)";
+		String geomString = getGeometry().getClass().getSimpleName();
+		stream.println(str + "[ShapeNode] name=" + nameString + " geometry=" + geomString);
 	}
 	
 	
@@ -144,7 +145,7 @@ public class ShapeNode extends Node
 	public static final void main(String... args)
 	{
 		Geometry2D geom = new Point2D(20, 10);
-		ShapeNode node = new ShapeNode(geom);
+		ShapeNode node = new ShapeNode("sample Shape", geom);
 		
 		node.printTree(System.out, 0);
 	}

@@ -34,7 +34,7 @@ public class JsonSceneReader
     // Class member
 	
     /**
-     * The JsonReader instancde used to parse data from.
+     * The JsonReader instance used to parse data from.
      */
 	JsonReader reader;
 	

@@ -10,6 +10,8 @@ import imago.gui.ImagoFrame;
 import imago.gui.FramePlugin;
 
 /**
+ * Display the content of the scene graph on console.
+ * 
  * @author dlegland
  *
  */

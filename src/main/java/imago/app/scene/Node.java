@@ -16,8 +16,9 @@ public abstract class Node
     // =============================================================
     // Class fields
 
-    /** 
-     * The optional name of this node, that can be used to identify it in GUI widgets.
+    /**
+     * The optional name of this node, that can be used to identify it in GUI
+     * widgets or when saved in text files.
      */
     String name = "";
     
