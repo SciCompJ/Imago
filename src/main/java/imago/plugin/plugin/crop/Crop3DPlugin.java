@@ -1,8 +1,4 @@
-/**
- * 
- */
 package imago.plugin.plugin.crop;
-
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -25,7 +21,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.ProgressMonitor;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -39,9 +34,8 @@ import imago.gui.ImagoEmptyFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.dialogs.AlgoProgressMonitor;
+import imago.gui.tool.SelectPolygonTool;
 import imago.gui.viewer.StackSliceViewer;
-import net.sci.algo.AlgoEvent;
-import net.sci.algo.AlgoListener;
 import net.sci.array.scalar.UInt8Array3D;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.polygon.Polygon2D;
@@ -49,10 +43,9 @@ import net.sci.image.Image;
 import net.sci.image.io.TiffImageReader;
 
 /**
- * Start the Crop3D plugin. 
+ * Start the Crop3D plugin.
  * 
- * Opens a dialog to load a 3D image, initializes the associated data structure, 
- * and opens the dialog to setup parameters.
+ * Opens a dialogs with various widgets, most of them being available once an image is loaded.
  * 
  * @author dlegland
  *
@@ -78,6 +71,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     JButton addPolygonButton;
     JButton removePolygonButton;
     JButton interpolateButton;
+    JButton previewCropImageButton;
     JButton cropImageButton;
     
     // the widget that displays the list of base polygons
@@ -97,24 +91,6 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     {
         System.out.println("start Crop3D plugin");
         this.parentFrame = parentFrame;
-//        
-//        this.imageFrame = null;
-//        chooseInputImage(parentFrame);
-//        if (this.imageFrame == null)
-//        {
-//            return;
-//        }
-//        
-//        this.crop3d = new Crop3D(imageFrame);
-//        this.crop3d.addAlgoListener(imageFrame);
-//        
-//        this.crop3d.initializeCrop3dNodes();
-//
-//        // need to call this to update items to display
-//        ImageViewer viewer = imageFrame.getImageView();
-//        viewer.refreshDisplay(); 
-//        viewer.repaint();
-//        
         this.jframe = createFrame(parentFrame.getWidget());
     }
     
@@ -160,17 +136,19 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         
         // create the buttons
         openImageButton = new JButton("Open Image...");
-        openImageButton.addActionListener(evt -> openImage());
+        openImageButton.addActionListener(evt -> onOpenImageButton());
         addPolygonButton = new JButton("Add Polygon");
         addPolygonButton.addActionListener(evt -> onAddPolygonButton());
         addPolygonButton.setEnabled(false);
         removePolygonButton = new JButton("Remove Polygon");
         removePolygonButton.addActionListener(evt -> onRemovePolygonButton());
         removePolygonButton.setEnabled(false);
-        //removePolygonButton.setEnabled(false);
         interpolateButton = new JButton("Interpolate");
         interpolateButton.addActionListener(evt -> onInterpolatePolygonsButton());
         interpolateButton.setEnabled(false);
+        previewCropImageButton = new JButton("Preview Crop");
+        previewCropImageButton.addActionListener(evt -> onPreviewCropImageButton());
+        previewCropImageButton.setEnabled(false);
         cropImageButton = new JButton("Crop Image...");
         cropImageButton.addActionListener(evt -> onCropImageButton());
         cropImageButton.setEnabled(false);
@@ -178,12 +156,13 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         controlsPanel.setLayout(new BoxLayout(controlsPanel, BoxLayout.Y_AXIS));
         controlsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
-        JPanel btnPanel = new JPanel(new GridLayout(6, 1, 10, 10));
+        JPanel btnPanel = new JPanel(new GridLayout(7, 1, 10, 10));
         btnPanel.add(new JLabel(" "));
         btnPanel.add(openImageButton);
         btnPanel.add(addPolygonButton);
         btnPanel.add(removePolygonButton);
-        btnPanel.add(interpolateButton);        
+        btnPanel.add(interpolateButton);
+        btnPanel.add(previewCropImageButton);
         btnPanel.add(cropImageButton);
         controlsPanel.add(btnPanel);
         mainPanel.add(controlsPanel);
@@ -217,6 +196,9 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         frame.setSize(320, 360);
     }
     
+    /**
+     * Callback for the "Load Polygons" menu item.
+     */
     public void loadPolygons()
     {
         System.out.println("Load polygons");
@@ -272,6 +254,10 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         viewer.repaint();
     }
     
+    
+    /**
+     * Callback for the "Save Polygons" menu item.
+     */
     public void savePolygons()
     {
         System.out.println("Save polygons");
@@ -314,8 +300,10 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         }
     }
     
-    
-    public void openImage()
+    /**
+     * Callback for the "Open Image..." button.
+     */
+    public void onOpenImageButton()
     {
         this.imageFrame = null;
         chooseInputImage(parentFrame);
@@ -333,68 +321,70 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         ImageViewer viewer = imageFrame.getImageView();
         viewer.refreshDisplay(); 
         viewer.repaint();
+        viewer.setCurrentTool(new SelectPolygonTool(imageFrame, "selectPolygon"));
         
         imageNameLabel.setText("Current Image: " + this.imageFrame.getImageHandle().getImage().getName());
         
         addPolygonButton.setEnabled(true);
         removePolygonButton.setEnabled(true);
         interpolateButton.setEnabled(true);
-        cropImageButton.setEnabled(true);
-
     }
     
     private void chooseInputImage(ImagoFrame parentFrame)
+    {
+        // create file dialog to read the 3D TIFF Image
+        //        String lastPath = frame.getLastOpenPath();
+        String lastPath = "D:/images/wheat/perigrain/Psiche_2018/HR/selection";
+        JFileChooser openWindow = new JFileChooser(lastPath);
+        openWindow.setDialogTitle("Choose TIFF 3D Image");
+        openWindow.setFileFilter(new FileNameExtensionFilter("TIFF files (*.tif, *.tiff)", "tif", "tiff"));
+
+        // Open dialog to choose the file
+        int ret = openWindow.showOpenDialog(parentFrame.getWidget());
+        if (ret != JFileChooser.APPROVE_OPTION) 
         {
-            // create file dialog to read the 3D TIFF Image
-    //        String lastPath = frame.getLastOpenPath();
-            String lastPath = "D:/images/wheat/perigrain/Psiche_2018/HR/selection";
-            JFileChooser openWindow = new JFileChooser(lastPath);
-            openWindow.setDialogTitle("Choose TIFF 3D Image");
-            openWindow.setFileFilter(new FileNameExtensionFilter("TIFF files (*.tif, *.tiff)", "tif", "tiff"));
-            
-            // Open dialog to choose the file
-            int ret = openWindow.showOpenDialog(parentFrame.getWidget());
-            if (ret != JFileChooser.APPROVE_OPTION) 
-            {
-                return;
-            }
-    
-            // Check the chosen file is valid
-            File file = openWindow.getSelectedFile();
-            if (!file.isFile()) 
-            {
-                return;
-            }
-    
-            // eventually keep path for future opening
-            String path = file.getPath();
-            lastPath = parentFrame.getLastOpenPath();
-            if (lastPath == null || lastPath.isEmpty())
-            {
-                System.out.println("update frame path");
-                parentFrame.setLastOpenPath(path);
-            }
-            
-            
-            // Read a 3D virtual image from the chosen file
-            Image image;
-            try 
-            {
-                TiffImageReader reader = new TiffImageReader(file);
-                image = reader.readVirtualImage3D();
-            }
-            catch (Exception ex) 
-            {
-                System.err.println(ex);
-                ImagoGui.showErrorDialog(parentFrame, ex.getLocalizedMessage(), "TIFF Image Reading Error");
-                return;
-            }
-    
-            // add the image document to GUI
-            this.imageFrame = parentFrame.createImageFrame(image);
-            this.imageFrame.setLastOpenPath(path);
+            return;
         }
 
+        // Check the chosen file is valid
+        File file = openWindow.getSelectedFile();
+        if (!file.isFile()) 
+        {
+            return;
+        }
+
+        // eventually keep path for future opening
+        String path = file.getPath();
+        lastPath = parentFrame.getLastOpenPath();
+        if (lastPath == null || lastPath.isEmpty())
+        {
+            System.out.println("update frame path");
+            parentFrame.setLastOpenPath(path);
+        }
+
+
+        // Read a 3D virtual image from the chosen file
+        Image image;
+        try 
+        {
+            TiffImageReader reader = new TiffImageReader(file);
+            image = reader.readVirtualImage3D();
+        }
+        catch (Exception ex) 
+        {
+            System.err.println(ex);
+            ImagoGui.showErrorDialog(parentFrame, ex.getLocalizedMessage(), "TIFF Image Reading Error");
+            return;
+        }
+
+        // add the image document to GUI
+        this.imageFrame = parentFrame.createImageFrame(image);
+        this.imageFrame.setLastOpenPath(path);
+    }
+
+    /**
+     * Callback for the "Add Polygon" button.
+     */
     public void onAddPolygonButton()
     {
         ImageViewer viewer = imageFrame.getImageView();
@@ -429,7 +419,10 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     }
     
     /**
-     * Removes the polygon identified by the line selected in the polygon list.
+     * Callback for the "Remove Polygon" button.
+     * 
+     * Removes the polygon identified by the line selected in the polygon list,
+     * and updates the display.
      */
     public void onRemovePolygonButton()
     {
@@ -472,6 +465,15 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         this.roiList.setListData(strings);
     }
     
+    /**
+     * Callback for the "Interpolate Polygons" button. The method retrieves the
+     * list of manually selected polygons, and generate intermediate polygons
+     * for other slices. Interpolated polygons are stored in the "interp" node
+     * of the ImageHandle.
+     * 
+     * 
+     * @see Crop3D.interpolatePolygons()
+     */
     public void onInterpolatePolygonsButton()
     {
         // Configure a progress monitor to display progress
@@ -500,6 +502,9 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
             }
         };
         t.start();
+        
+        this.previewCropImageButton.setEnabled(true);
+        this.cropImageButton.setEnabled(true);
 
         // need to call this to update items to display
         ImageViewer viewer = imageFrame.getImageView();
@@ -507,7 +512,10 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         viewer.repaint();
     }
     
-    public void onCropImageButton()
+    /**
+     * Callback for the "Preview Crop Image" button.
+     */
+    public void onPreviewCropImageButton()
     {
         ImageSerialSectionsNode polyNode = crop3d.getPolygonsNode();
         if (polyNode == null)
@@ -516,14 +524,30 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
             return;
         }
         
-//        // Create new cropped image using virtual crop array
-//        UInt8Array3D array = (UInt8Array3D) imageFrame.getImage().getData();
-//        ImageSerialSectionsNode cropNode = Crop3D.getInterpolatedPolygonsNode(imageFrame.getImageHandle());
-//        UInt8Array3D cropArray = new CroppedUInt8Array3D(array, cropNode);
-//        Image refImage = imageFrame.getImage();
-//        Image cropImage = new Image(cropArray, refImage);
-//        cropImage.setName(refImage.getName() + "-crop");
-//        imageFrame.createImageFrame(cropImage);
+        // Create new cropped image using virtual crop array
+        UInt8Array3D array = (UInt8Array3D) imageFrame.getImage().getData();
+        ImageSerialSectionsNode cropNode = Crop3D.getInterpolatedPolygonsNode(imageFrame.getImageHandle());
+        UInt8Array3D cropArray = new CroppedUInt8Array3D(array, cropNode);
+        Image refImage = imageFrame.getImage();
+        Image cropImage = new Image(cropArray, refImage);
+        cropImage.setName(refImage.getName() + "-crop");
+        imageFrame.createImageFrame(cropImage);
+    }
+    
+    /**
+     * Callback for the "Crop Image" button. This opens a dialog to choose a
+     * file in MetaImage format ("*.mhd"). The cropped image is stored in a pair
+     * of files: the mhd file contains the header, while the raw file contains
+     * the binary data.
+     */
+    public void onCropImageButton()
+    {
+        ImageSerialSectionsNode polyNode = crop3d.getPolygonsNode();
+        if (polyNode == null)
+        {
+            System.err.println("Current image does not contain Crop3D polygon information");
+            return;
+        }
         
         // create dialog to save file
         String imageName = imageFrame.getImage().getName();
