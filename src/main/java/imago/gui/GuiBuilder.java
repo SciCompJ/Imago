@@ -18,6 +18,7 @@ import imago.gui.tool.DrawBrushValueTool;
 import imago.gui.tool.DrawValueTool;
 import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectPolygonTool;
+import imago.gui.tool.SelectPolylineTool;
 import imago.gui.tool.SelectRectangleTool;
 import imago.gui.tool.SelectionTool;
 import imago.plugin.BoxFilter3x3FloatPlugin;
@@ -152,6 +153,7 @@ import imago.plugin.image.shape.ImageSubsample;
 import imago.plugin.image.vectorize.BinaryImageBoundaryGraph;
 import imago.plugin.image.vectorize.ImageFindNonZeroPixels;
 import imago.plugin.image.vectorize.ImageIsocontour;
+import imago.plugin.plugin.crop.CreateSurface3DPlugin;
 import imago.plugin.plugin.crop.Crop3DPlugin;
 import imago.plugin.table.OpenTable;
 import imago.plugin.table.SaveTable;
@@ -654,6 +656,9 @@ public class GuiBuilder
                 addPlugin(toolsMenu, 
                         new ChangeCurrentTool(new SelectPolygonTool(viewer, "selectPolygon")),
                         "Select Polygon", hasImage);
+                addPlugin(toolsMenu, 
+                        new ChangeCurrentTool(new SelectPolylineTool(viewer, "selectPolyline")),
+                        "Select Polyline", hasImage);
     
                 toolsMenu.addSeparator();
                 addPlugin(toolsMenu, 
@@ -745,6 +750,7 @@ public class GuiBuilder
         
         JMenu perigrainMenu = new JMenu("Perigrain");
         addPlugin(perigrainMenu, new Crop3DPlugin(), "Crop 3D");
+        addPlugin(perigrainMenu, new CreateSurface3DPlugin(), "Surface 3D");
         menu.add(perigrainMenu);
         
 //        if (hasImage3D)

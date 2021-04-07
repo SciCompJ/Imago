@@ -387,10 +387,12 @@ public class Crop3D extends AlgoStub
         {
             int sliceIndex = sliceNode.getSliceIndex(); 
             System.out.println("smooth polygon on slice " + sliceIndex);
-
-            ShapeNode shapeNode = (ShapeNode) sliceNode.children().iterator().next();
-            LinearRing2D ring = (LinearRing2D) shapeNode.getGeometry();
-            LinearRing2D ring2 = ring.resampleBySpacing(2.0); // every 2 pixels
+            
+            // retrieve current polygon
+            LinearRing2D ring = getPolygon(polyNode, sliceIndex);
+            
+            // resample (every two pixels) and smooth
+            LinearRing2D ring2 = ring.resampleBySpacing(2.0);
             ring2 = ring2.smooth(7);
 
             String sliceName = String.format(Locale.US, "smooth%0" + nDigits + "d", sliceIndex);
@@ -428,8 +430,7 @@ public class Crop3D extends AlgoStub
         }
         int indexCount = lastIndex - minSliceIndex + 1;
         
-        ShapeNode shapeNode = (ShapeNode) smoothNode.getSliceNode(currentSliceIndex).children().iterator().next();
-        LinearRing2D currentPoly = (LinearRing2D) shapeNode.getGeometry();
+        LinearRing2D currentPoly = getPolygon(smoothNode, currentSliceIndex);
 //        // resample and smooth the polygon
 //        currentPoly = currentPoly.resampleBySpacing(2.0).smooth(7);
         
@@ -441,8 +442,7 @@ public class Crop3D extends AlgoStub
             this.fireStatusChanged(new AlgoEvent(this, "process slice range " + currentSliceIndex + " - " + nextSliceIndex));
             
             // Extract polygon of upper slice
-            shapeNode = (ShapeNode) smoothNode.getSliceNode(nextSliceIndex).children().iterator().next();
-            LinearRing2D nextPolyRef = (LinearRing2D) shapeNode.getGeometry();
+            LinearRing2D nextPolyRef = getPolygon(smoothNode, nextSliceIndex);
             
             // compute projection points of current poly over next poly
             LinearRing2D nextPoly = projectRingVerticesNormal(currentPoly, nextPolyRef);
@@ -475,6 +475,24 @@ public class Crop3D extends AlgoStub
         
         // create shape for interpolated polygon
         interpNode.addSliceNode(createInterpNode(currentPoly, currentSliceIndex, nDigits));
+    }
+    
+    /**
+     * Retrieve the LinearRing2D geometry at the specified index from the serial
+     * sections node.
+     * 
+     * ImageSerialSectionsNode -> ImageSliceSection -> ShapeNode -> Geometry.
+     * 
+     * @param node
+     *            the node mapping to ImageSliceSections
+     * @param index
+     *            the index of the slice
+     * @return the LinearRing2D geometry contained in the specified slice.
+     */
+    private LinearRing2D getPolygon(ImageSerialSectionsNode node, int index)
+    {
+        ShapeNode shapeNode = (ShapeNode) node.getSliceNode(index).children().iterator().next();
+        return (LinearRing2D) shapeNode.getGeometry();
     }
     
     private static final ImageSliceNode createInterpNode(LinearRing2D ring, int sliceIndex, int nDigits)
@@ -556,6 +574,18 @@ public class Crop3D extends AlgoStub
         return nextPoly;
     }
     
+    /**
+     * Interpolates a new linear ring between two linear rings, assuming the vertices
+     * are in correspondence.
+     * 
+     * @param ring0
+     *            the first linear ring, at position t=0
+     * @param ring1
+     *            the second linear ring, at position t=1
+     * @param t
+     *            the position of the linear ring to interpolate, between 0 and 1
+     * @return the interpolated linear ring
+     */
     private static final LinearRing2D interpolateRings(LinearRing2D ring0, LinearRing2D ring1, double t)
     {
         double t0 = t;
