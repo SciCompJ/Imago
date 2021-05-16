@@ -216,7 +216,7 @@ public class JsonSceneReaderTest
 		JsonSceneReader sceneReader = new JsonSceneReader(jsonReader);
 		
 		LinearRing2D res = (LinearRing2D) sceneReader.readGeometry();
-		assertEquals(4, res.vertexNumber());
+		assertEquals(4, res.vertexCount());
 	}
 
 

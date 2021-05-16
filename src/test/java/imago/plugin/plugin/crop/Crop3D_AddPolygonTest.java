@@ -69,7 +69,7 @@ public class Crop3D_AddPolygonTest
         
         // compute projection points of current poly over next poly
         LinearRing2D ring1rs = ring1.resampleBySpacing(2.0).smooth(3);
-        int nv = ring1rs.vertexNumber();
+        int nv = ring1rs.vertexCount();
         LinearRing2D nextPoly = new LinearRing2D(nv);
         for (Point2D point : ring1rs.vertexPositions())
         {

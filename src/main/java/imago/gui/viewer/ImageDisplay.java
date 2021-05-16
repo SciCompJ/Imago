@@ -494,7 +494,7 @@ public class ImageDisplay extends JPanel
     private void drawPolyline(Graphics2D g2, Polyline2D poly)
     {
         // check size
-        int nv = poly.vertexNumber();
+        int nv = poly.vertexCount();
         if (nv < 2)
         {
             return;
@@ -530,7 +530,7 @@ public class ImageDisplay extends JPanel
     private void drawPolygon(Graphics2D g2, PolygonalDomain2D poly)
     {
     	// check size
-    	int nv = poly.vertexNumber();
+    	int nv = poly.vertexCount();
     	if (nv < 2)
     	{
     		return;

@@ -513,7 +513,7 @@ public class Crop3D extends AlgoStub
     
     private static final LinearRing2D projectRingVerticesNormal(LinearRing2D sourceRing, LinearRing2D targetRing)
     {
-        int nv = sourceRing.vertexNumber();
+        int nv = sourceRing.vertexCount();
 
         // compute normals to edges of source ring
         ArrayList<Vector2D> sourceEdgeNormals = new ArrayList<Vector2D>(nv);
@@ -533,7 +533,7 @@ public class Crop3D extends AlgoStub
         }
         
         // compute normals to edges of target ring
-        ArrayList<Vector2D> edgeNormals = new ArrayList<Vector2D>(targetRing.vertexNumber());
+        ArrayList<Vector2D> edgeNormals = new ArrayList<Vector2D>(targetRing.vertexCount());
         for (Polyline2D.Edge edge : targetRing.edges())
         {
             Vector2D tangent = new Vector2D(edge.source().position(), edge.target().position());
@@ -551,7 +551,7 @@ public class Crop3D extends AlgoStub
             double dist, minDist = Double.POSITIVE_INFINITY;
             Point2D proj = targetRing.vertexPosition(0);
             
-            for (int iEdge = 0; iEdge < targetRing.vertexNumber(); iEdge++)
+            for (int iEdge = 0; iEdge < targetRing.vertexCount(); iEdge++)
             {
                 // do not process edges whose normal is opposite to vertex
                 if (edgeNormals.get(iEdge).dotProduct(vertexNormals.get(iv)) < 0)
@@ -591,7 +591,7 @@ public class Crop3D extends AlgoStub
         double t0 = t;
         double t1 = 1 - t0;
         
-        int nv = ring0.vertexNumber();
+        int nv = ring0.vertexCount();
         LinearRing2D interpPoly = new LinearRing2D(nv);
         for (int iv = 0; iv < nv; iv++)
         {
