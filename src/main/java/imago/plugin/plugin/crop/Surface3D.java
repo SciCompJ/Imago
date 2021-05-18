@@ -369,7 +369,7 @@ public class Surface3D extends AlgoStub
                 this.fireProgressChanged(new AlgoEvent(this, sliceIndex - minSliceIndex, indexCount));
                 
                 double t0 = ((double) (sliceIndex - currentSliceIndex)) / dz;
-                LineString2D interpPoly = interpolatePolylines(currentPoly, nextPoly, t0);
+                LineString2D interpPoly = LineString2D.interpolate(currentPoly, nextPoly, t0);
                 
                 // create shape for interpolated polygon
                 interpNode.addSliceNode(createInterpNode(interpPoly, sliceIndex, nDigits));
@@ -502,38 +502,6 @@ public class Surface3D extends AlgoStub
         }
         
         return nextPoly;
-    }
-        
-    /**
-     * Interpolates a new polyline between two polyline, assuming the vertices
-     * are in correspondence.
-     * 
-     * @param poly0
-     *            the first polyline, at position t=0
-     * @param poly1
-     *            the second polyline, at position t=1
-     * @param t
-     *            the position of the polyline to interpolate, between 0 and 1
-     * @return the interpolated polyline
-     */
-    private static final LineString2D interpolatePolylines(LineString2D poly0, LineString2D poly1, double t)
-    {
-        double t0 = t;
-        double t1 = 1 - t0;
-        
-        int nv = poly0.vertexCount();
-        LineString2D interpPoly = new LineString2D(nv);
-        for (int iv = 0; iv < nv; iv++)
-        {
-            Point2D p1 = poly0.vertexPosition(iv);
-            Point2D p2 = poly1.vertexPosition(iv);
-            
-            double x = p1.getX() * t1 + p2.getX() * t0;
-            double y = p1.getY() * t1 + p2.getY() * t0;
-            interpPoly.addVertex(new Point2D(x, y));
-        }
-
-        return interpPoly;
     }
     
     
