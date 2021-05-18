@@ -42,9 +42,22 @@ import net.sci.geom.geom2d.polygon.Polyline2D;
 import net.sci.image.Image;
 
 /**
- * Performs 3D Crop on a 3D stack. Contains the process methods, the GUI is managed by the Crop3DPlugin class.
+ * Creation of 3D surface from a series of (open) polylines manually defined on
+ * several XY slices.
  * 
- * @see Crop3DPlugin
+ * Several Processing steps:
+ * <ol>
+ * <li>Initialize node tree for the plugin. Create a node "surface3d" and three
+ * subnodes: "polylines", "smooth", and "interpolate".</li>
+ * <li>Populate the 'polylines" node, either manually or by loading data from a
+ * JSON file.</li>
+ * <li>Smooth each polyline (resample and smooth).</li>
+ * <li>Interpolate smoothed polylines to populate also slices within annotated
+ * slices.</li>
+ * </ol>
+ * 
+ * @see Crop3D
+ * @see CreateSurface3DPlugin
  * 
  * @author dlegland
  *
@@ -101,7 +114,15 @@ public class Surface3D extends AlgoStub
         cropNode.addNode(new ImageSerialSectionsNode("smooth"));
         cropNode.addNode(new ImageSerialSectionsNode("interp"));
     }
-
+    
+    /**
+     * Reads the series of polylines from a file in JSON format.
+     * 
+     * @param file
+     *            the file to read polylines from
+     * @throws IOException
+     *             if a I/O problem occurred.
+     */
     public void readPolylinesFromJson(File file) throws IOException
     {
         // reset current state of the Crop3D plugin
@@ -137,6 +158,14 @@ public class Surface3D extends AlgoStub
         System.out.println("reading polylines terminated.");
     }
     
+    /**
+     * Saves the series of polylines into a file in JSON format.
+     * 
+     * @param file
+     *            the file to writes polylines.
+     * @throws IOException
+     *             if a I/O problem occurred.
+     */
     public void savePolylinesAsJson(File file) throws IOException
     {
         ImageSerialSectionsNode polyNode = getPolylinesNode();
@@ -243,6 +272,7 @@ public class Surface3D extends AlgoStub
         
         // number of digits for creating slice names
         int nDigits = (int) Math.ceil(Math.log10(array.size(2)));
+        String sliceNamePattern = "smooth%0" + nDigits + "d";
         
         if (array.dimensionality() != 3)
         {
@@ -276,10 +306,8 @@ public class Surface3D extends AlgoStub
             LineString2D poly2 = poly.resampleBySpacing(2.0);
             poly2 = poly2.smooth(7);
 
-            String sliceName = String.format(Locale.US, "smooth%0" + nDigits + "d", sliceIndex);
-            ShapeNode shapeNode2 = new ShapeNode(sliceName, poly2);
-            shapeNode2.getStyle().setColor(Color.GREEN);
-            shapeNode2.getStyle().setLineWidth(0.5);
+            String sliceName = String.format(Locale.US, sliceNamePattern, sliceIndex);
+            ShapeNode shapeNode2 = createPolylineNode(poly2, sliceName);
             
             // create the slice for smooth version
             ImageSliceNode sliceNode2 = new ImageSliceNode(sliceName, sliceIndex);
@@ -292,7 +320,7 @@ public class Surface3D extends AlgoStub
         ImageSerialSectionsNode interpNode = getInterpolatedPolylinesNode();
         interpNode.clear();
         
-        // retrieve the array of indices for slices containing user polyline 
+        // retrieve the array of indices for slices containing user polyline
         Collection<Integer> indices = polyNode.getSliceIndices();
         Iterator<Integer> sliceIndexIter = indices.iterator();
         if (!sliceIndexIter.hasNext())
@@ -374,6 +402,14 @@ public class Surface3D extends AlgoStub
     {
         ShapeNode shapeNode = (ShapeNode) node.getSliceNode(index).children().iterator().next();
         return (LineString2D) shapeNode.getGeometry();
+    }
+    
+    private static final ShapeNode createPolylineNode(Polyline2D poly, String name)
+    {
+        ShapeNode node = new ShapeNode(name, poly);
+        node.getStyle().setColor(Color.GREEN);
+        node.getStyle().setLineWidth(0.5);
+        return node;
     }
     
     private static final ImageSliceNode createInterpNode(LineString2D poly, int sliceIndex, int nDigits)

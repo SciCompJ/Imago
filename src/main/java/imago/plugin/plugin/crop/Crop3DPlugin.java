@@ -526,7 +526,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         
         // Create new cropped image using virtual crop array
         UInt8Array3D array = (UInt8Array3D) imageFrame.getImage().getData();
-        ImageSerialSectionsNode cropNode = Crop3D.getInterpolatedPolygonsNode(imageFrame.getImageHandle());
+        ImageSerialSectionsNode cropNode = crop3d.getInterpolatedPolygonsNode();
         UInt8Array3D cropArray = new CroppedUInt8Array3D(array, cropNode);
         Image refImage = imageFrame.getImage();
         Image cropImage = new Image(cropArray, refImage);
