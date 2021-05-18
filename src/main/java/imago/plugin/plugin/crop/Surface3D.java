@@ -393,7 +393,7 @@ public class Surface3D extends AlgoStub
     
     private static final LineString2D projectLineStringVertices(LineString2D sourcePoly, LineString2D targetPoly)
     {
-        int nv = sourcePoly.vertexNumber();
+        int nv = sourcePoly.vertexCount();
 
         // compute normals to edges of source ring
         ArrayList<Vector2D> sourceEdgeNormals = new ArrayList<Vector2D>(nv);
@@ -416,7 +416,7 @@ public class Surface3D extends AlgoStub
         }
         
         // pre-compute normals to edges of target ring
-        ArrayList<Vector2D> edgeNormals = new ArrayList<Vector2D>(targetPoly.vertexNumber());
+        ArrayList<Vector2D> edgeNormals = new ArrayList<Vector2D>(targetPoly.vertexCount());
         for (Polyline2D.Edge edge : targetPoly.edges())
         {
             tangent = new Vector2D(edge.source().position(), edge.target().position());
@@ -442,7 +442,7 @@ public class Surface3D extends AlgoStub
             Point2D proj = targetPoly.vertexPosition(0);
             
             // iterate over edges of target polyline
-            for (int iEdge = 0; iEdge < targetPoly.vertexNumber()-1; iEdge++)
+            for (int iEdge = 0; iEdge < targetPoly.vertexCount()-1; iEdge++)
             {
                 // do not process edges whose normal is opposite to normal of current vertex
                 if (edgeNormals.get(iEdge).dotProduct(normal) < 0)
@@ -485,7 +485,7 @@ public class Surface3D extends AlgoStub
         double t0 = t;
         double t1 = 1 - t0;
         
-        int nv = poly0.vertexNumber();
+        int nv = poly0.vertexCount();
         LineString2D interpPoly = new LineString2D(nv);
         for (int iv = 0; iv < nv; iv++)
         {

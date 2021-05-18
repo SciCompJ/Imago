@@ -74,7 +74,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     JButton previewCropImageButton;
     JButton cropImageButton;
     
-    // the widget that displays the list of base polygons
+    // the widget that displays the names of base polygons
     JList<String> roiList;
     
     private JFileChooser openWindow = null;

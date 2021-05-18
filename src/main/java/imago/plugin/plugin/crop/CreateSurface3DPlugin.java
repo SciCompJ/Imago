@@ -71,7 +71,7 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
     JButton removePolylineButton;
     JButton interpolateButton;
     
-    // the widget that displays the list of base polygons
+    // the widget that displays the names of base polylines
     JList<String> roiList;
     
     private JFileChooser openWindow = null;

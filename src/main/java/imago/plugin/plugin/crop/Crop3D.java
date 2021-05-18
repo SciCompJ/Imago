@@ -16,8 +16,6 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Locale;
 
@@ -389,7 +387,7 @@ public class Crop3D extends AlgoStub
             System.out.println("smooth polygon on slice " + sliceIndex);
             
             // retrieve current polygon
-            LinearRing2D ring = getPolygon(polyNode, sliceIndex);
+            LinearRing2D ring = getLinearRing(polyNode, sliceIndex);
             
             // resample (every two pixels) and smooth
             LinearRing2D ring2 = ring.resampleBySpacing(2.0);
@@ -430,7 +428,7 @@ public class Crop3D extends AlgoStub
         }
         int indexCount = lastIndex - minSliceIndex + 1;
         
-        LinearRing2D currentPoly = getPolygon(smoothNode, currentSliceIndex);
+        LinearRing2D currentPoly = getLinearRing(smoothNode, currentSliceIndex);
 //        // resample and smooth the polygon
 //        currentPoly = currentPoly.resampleBySpacing(2.0).smooth(7);
         
@@ -442,7 +440,7 @@ public class Crop3D extends AlgoStub
             this.fireStatusChanged(new AlgoEvent(this, "process slice range " + currentSliceIndex + " - " + nextSliceIndex));
             
             // Extract polygon of upper slice
-            LinearRing2D nextPolyRef = getPolygon(smoothNode, nextSliceIndex);
+            LinearRing2D nextPolyRef = getLinearRing(smoothNode, nextSliceIndex);
             
             // compute projection points of current poly over next poly
             LinearRing2D nextPoly = projectRingVerticesNormal(currentPoly, nextPolyRef);
@@ -475,24 +473,6 @@ public class Crop3D extends AlgoStub
         
         // create shape for interpolated polygon
         interpNode.addSliceNode(createInterpNode(currentPoly, currentSliceIndex, nDigits));
-    }
-    
-    /**
-     * Retrieve the LinearRing2D geometry at the specified index from the serial
-     * sections node.
-     * 
-     * ImageSerialSectionsNode -> ImageSliceSection -> ShapeNode -> Geometry.
-     * 
-     * @param node
-     *            the node mapping to ImageSliceSections
-     * @param index
-     *            the index of the slice
-     * @return the LinearRing2D geometry contained in the specified slice.
-     */
-    private LinearRing2D getPolygon(ImageSerialSectionsNode node, int index)
-    {
-        ShapeNode shapeNode = (ShapeNode) node.getSliceNode(index).children().iterator().next();
-        return (LinearRing2D) shapeNode.getGeometry();
     }
     
     private static final ImageSliceNode createInterpNode(LinearRing2D ring, int sliceIndex, int nDigits)
@@ -764,6 +744,18 @@ public class Crop3D extends AlgoStub
     }
     
     
+    /**
+     * Retrieve the LinearRing2D geometry at the specified index from the serial
+     * sections node.
+     * 
+     * ImageSerialSectionsNode -> ImageSliceSection -> ShapeNode -> Geometry.
+     * 
+     * @param node
+     *            the node mapping to ImageSliceSections
+     * @param index
+     *            the index of the slice
+     * @return the LinearRing2D geometry contained in the specified slice.
+     */
     private LinearRing2D getLinearRing(ImageSerialSectionsNode cropNode, int sliceIndex)
     {
         // retrieve shape node
@@ -782,35 +774,10 @@ public class Crop3D extends AlgoStub
     private Collection<Point2D> computeIntersectionsWithHorizontalLine(LinearRing2D ring, int yLine)
     {
         StraightLine2D line = new StraightLine2D(new Point2D(0, yLine), new Vector2D(1, 0));
-        Collection<Point2D> points = ring.intersections(line);
-        points = sortPointsByX(points);
-        return points;
+        return Point2D.sortPoints(ring.intersections(line));
     }
 
-    private ArrayList<Point2D> sortPointsByX(Collection<Point2D> points)
-    {
-        ArrayList<Point2D> res = new ArrayList<Point2D>(points.size());
-        res.addAll(points);
-        Collections.sort(res, new Comparator<Point2D>()
-        {
-            @Override
-            public int compare(Point2D p0, Point2D p1)
-            {
-                // compare X first
-                double dx = p0.getX() - p1.getX();
-                if (dx < 0) return -1;
-                if (dx > 0) return +1;
-                // add y comparison
-                double dy = p0.getY() - p1.getY();
-                if (dy < 0) return -1;
-                if (dy > 0) return +1;
-                // same point
-                return 0;
-            }
-        });
-        return res;
-    }
-
+    
     // ===================================================================
     // Management of nodes
 
