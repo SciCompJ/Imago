@@ -55,7 +55,7 @@ public class VectorImageChannelView implements FramePlugin
 		}
 
 		VectorArray<?> vectorArray = (VectorArray<?>) array;
-		int nChannels = vectorArray.channelNumber();
+		int nChannels = vectorArray.channelCount();
 		
 		GenericDialog dlg = new GenericDialog(frame, "Extract Channel");
 		dlg.addNumericField("Channel index", 0, 0, String.format("Between 0 and %d", nChannels));

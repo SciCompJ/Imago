@@ -51,7 +51,7 @@ public class ImageSplitChannels implements FramePlugin
 			return; 
 		}
 		
-		int nc = ((VectorArray<?>) array).channelNumber();
+		int nc = ((VectorArray<?>) array).channelCount();
 		
 		// Create an array with the name of each channel
 		String[] channelNames;

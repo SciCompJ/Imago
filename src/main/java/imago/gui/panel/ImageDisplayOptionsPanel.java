@@ -104,7 +104,7 @@ public class ImageDisplayOptionsPanel extends JPanel
     private JPanel createChannelPanel()
     {
         VectorArray<?> array = (VectorArray<?>) this.image.getData();
-        int nChannels = array.channelNumber();
+        int nChannels = array.channelCount();
         int channelIndex = imageViewer.getCurrentChannelIndex();
         if (channelIndex >= nChannels)
         {

@@ -57,7 +57,7 @@ public class VectorImageConvertToRGB implements FramePlugin
         }
 
         VectorArray<?> vectorArray = (VectorArray<?>) array;
-        int nChannels = vectorArray.channelNumber();
+        int nChannels = vectorArray.channelCount();
         
         // Create dialog for choosing channel indices
         GenericDialog dlg = new GenericDialog(frame, "Extract Channel");

@@ -50,7 +50,7 @@ public class ImageHistogram implements FramePlugin
 
 		DefaultNumericTable histo = computeHistogram(image);
 		
-        int nChannels = histo.columnNumber();
+        int nChannels = histo.columnCount();
         if (nChannels == 2)
         {
             showIntensityHistogram(frame, histo);
@@ -219,8 +219,8 @@ public class ImageHistogram implements FramePlugin
 
 	private void showColorHistogram(ImagoFrame parentFrame, DefaultNumericTable table)
 	{
-		int nChannels = table.columnNumber() - 1;
-		int nValues = table.rowNumber();
+		int nChannels = table.columnCount() - 1;
+		int nValues = table.rowCount();
         String[] colNames = table.getColumnNames();
         
         // Default name for table

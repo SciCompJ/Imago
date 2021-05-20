@@ -128,6 +128,7 @@ import imago.plugin.image.process.ImageExtendedExtrema;
 import imago.plugin.image.process.ImageFillHoles;
 import imago.plugin.image.process.ImageGeodesicDistanceMap;
 import imago.plugin.image.process.ImageIteratedGeodesicDilations;
+import imago.plugin.image.process.ImageKMeans;
 import imago.plugin.image.process.ImageKillBorders;
 import imago.plugin.image.process.ImageManualThreshold;
 import imago.plugin.image.process.ImageMorphologicalFilter;
@@ -183,6 +184,7 @@ import net.sci.image.process.SobelGradient;
 import net.sci.image.process.SobelGradientNorm;
 import net.sci.image.process.VectorArrayNorm;
 import net.sci.image.process.filter.GaussianFilter5x5;
+
 
 /**
  * Setup the menu for a given frame.
@@ -576,7 +578,8 @@ public class GuiBuilder
         menu.addSeparator();
         JMenu segmentationMenu = new JMenu("Segmentation");
 		addPlugin(segmentationMenu, new ImageOtsuThreshold(), "Otsu Threshold", hasScalarImage);
-        addPlugin(segmentationMenu, new ImageManualThreshold(), "Manual Threshold", hasScalarImage);
+		addPlugin(segmentationMenu, new ImageManualThreshold(), "Manual Threshold", hasScalarImage);
+		addPlugin(segmentationMenu, new ImageKMeans(), "KMeans", hasImage);
         segmentationMenu.addSeparator();
         addPlugin(segmentationMenu, new ImageWatershed(), "Watershed", hasScalarImage);
         menu.add(segmentationMenu);

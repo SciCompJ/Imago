@@ -140,7 +140,7 @@ public class SetImageDisplayRange implements FramePlugin
 
     private double[] computeValueExtent_Vector(VectorArray<?> array)
     {
-        int nc = array.channelNumber();
+        int nc = array.channelCount();
         double[] values = new double[nc];
         double minValue = Double.POSITIVE_INFINITY;
         double maxValue = Double.NEGATIVE_INFINITY;

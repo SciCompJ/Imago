@@ -57,7 +57,7 @@ public class VectorImageToTable implements FramePlugin
 		}
 
 		VectorArray<?> vectorArray = (VectorArray<?>) array;
-		int nChannels = vectorArray.channelNumber();
+		int nChannels = vectorArray.channelCount();
 		
 		GenericDialog dlg = new GenericDialog(frame, "Convert To Table");
 		dlg.addCheckBox("Include Coords", true);
@@ -72,7 +72,7 @@ public class VectorImageToTable implements FramePlugin
         boolean includeCoords = dlg.getNextBoolean();
         
         // input image dimensions
-        int nRows = array.elementNumber();
+        int nRows = array.elementCount();
         int nDims = array.dimensionality();
         
         Calibration calib = image.getCalibration();

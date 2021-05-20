@@ -31,7 +31,7 @@ public class FoldTableToImage implements TablePlugin
     {
         // get table references by the frame
         Table table = ((TableFrame) frame).getTable();
-        int nr = table.rowNumber();
+        int nr = table.rowCount();
 
         // TODO: check table is all numeric
 

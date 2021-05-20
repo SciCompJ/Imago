@@ -28,8 +28,8 @@ public class TransposeTable implements TablePlugin
         // get table references by the frame
         Table table = ((TableFrame) frame).getTable();
         
-        int nr = table.columnNumber();
-        int nc = table.rowNumber();
+        int nr = table.columnCount();
+        int nc = table.rowCount();
         
         Table res = Table.create(nr, nc);
         res.setName(table.getName() + "-transpose");

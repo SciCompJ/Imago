@@ -59,7 +59,7 @@ public class ConvertChannelsToDimension implements FramePlugin
         VectorArray<?> vectorArray = (VectorArray<?>) array;
         int nd = array.dimensionality();
         int[] dims = vectorArray.size();
-        int nChannels = vectorArray.channelNumber();
+        int nChannels = vectorArray.channelCount();
         
         // create result array
         int[] dims2 = new int[nd + 1];

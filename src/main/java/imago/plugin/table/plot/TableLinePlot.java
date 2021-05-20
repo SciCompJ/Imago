@@ -44,8 +44,8 @@ public class TableLinePlot implements TablePlugin
 	    Table table = ((TableFrame) frame).getTable();
 
 	    // get general info from table
-	    int nRows = table.rowNumber();
-	    int nCols = table.columnNumber();
+	    int nRows = table.rowCount();
+	    int nCols = table.columnCount();
         String[] colNames = table.getColumnNames();
         
         String[] colNames2 = new String[nCols + 1];

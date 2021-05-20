@@ -217,7 +217,7 @@ public class ImageRoiHistogram implements FramePlugin
 
 	private void showHistogram(ImagoFrame parentFrame, DefaultNumericTable histo)
 	{
-		int nChannels = histo.columnNumber();
+		int nChannels = histo.columnCount();
 		if (nChannels == 2)
 		{
 			showGray8Histogram(parentFrame, histo);
@@ -237,7 +237,7 @@ public class ImageRoiHistogram implements FramePlugin
 	 */
 	private void showGray8Histogram(ImagoFrame parentFrame, DefaultNumericTable histo)
 	{
-		int nValues = histo.rowNumber();
+		int nValues = histo.rowCount();
 
 		// count element number
 		int nElements = 0;
@@ -307,8 +307,8 @@ public class ImageRoiHistogram implements FramePlugin
 
 	private void showRGB8Histogram(ImagoFrame parentFrame, DefaultNumericTable histo)
 	{
-		int nChannels = histo.columnNumber() - 1;
-		int nValues = histo.rowNumber();
+		int nChannels = histo.columnCount() - 1;
+		int nValues = histo.rowCount();
 
 		XYSeriesCollection dataset = new XYSeriesCollection();
 		String[] colNames = histo.getColumnNames();

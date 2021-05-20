@@ -103,7 +103,7 @@ public class ImageValueOperator implements FramePlugin
         {
             // marginal processing: process each channel independently
             VectorArray<?> array = (VectorArray<?>) image.getData();
-            int nChannels = array.channelNumber();
+            int nChannels = array.channelCount();
             
             // allocate memory for result
             switch (outputTypeIndex)

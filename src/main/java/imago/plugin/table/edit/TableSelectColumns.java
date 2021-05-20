@@ -32,7 +32,7 @@ public class TableSelectColumns implements TablePlugin
         Table table = ((TableFrame) frame).getTable();
 
         // get general info from table
-        int nCols = table.columnNumber();
+        int nCols = table.columnCount();
         String[] colNames = table.getColumnNames();
 
         // Display dialog for choosing options

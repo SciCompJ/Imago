@@ -39,7 +39,7 @@ public class TableScatterPlot implements TablePlugin
 	    }
 	    Table table = ((TableFrame) frame).getTable();
 	    
-	    if (table.columnNumber() < 2)
+	    if (table.columnCount() < 2)
 	    {
 	        throw new RuntimeException("Requires a table with at least two columns");
 	    }

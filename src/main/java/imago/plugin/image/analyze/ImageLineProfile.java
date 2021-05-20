@@ -151,7 +151,7 @@ public class ImageLineProfile implements ImagePlugin
      */
     private void plotIntensityProfile(ImagoFrame parentFrame, DefaultNumericTable table)
     {
-        int nValues = table.rowNumber();
+        int nValues = table.rowCount();
 
         // Default name for table
         String tableName = table.getName();
@@ -189,8 +189,8 @@ public class ImageLineProfile implements ImagePlugin
     
     private void plotRGB8LineProfile(ImagoFrame parentFrame, DefaultNumericTable table)
     {
-        int nChannels = table.columnNumber();
-        int nValues = table.rowNumber();
+        int nChannels = table.columnCount();
+        int nValues = table.rowCount();
         String[] colNames = table.getColumnNames();
         
         // Default name for table

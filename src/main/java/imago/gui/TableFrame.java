@@ -111,8 +111,8 @@ public class TableFrame extends ImagoFrame
     private JTable createJTable()
     {
         // table size
-        int nRows = table.rowNumber();
-        int nCols = table.columnNumber();
+        int nRows = table.rowCount();
+        int nCols = table.columnCount();
 
         // Ensure the table has valid column names
         String[] colNames = table.getColumnNames();
