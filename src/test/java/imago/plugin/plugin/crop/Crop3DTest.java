@@ -56,7 +56,7 @@ class Crop3DTest
         GroupNode polyNode = new GroupNode("polygons");
         rootNode.addNode(polyNode);
         
-        LinearRing2D ring1 = new LinearRing2D(4);
+        LinearRing2D ring1 = LinearRing2D.create(4);
         ring1.addVertex(new Point2D( 50,  50));
         ring1.addVertex(new Point2D(350,  50));
         ring1.addVertex(new Point2D(350, 350));
@@ -64,7 +64,7 @@ class Crop3DTest
         ShapeNode shape1 = new ShapeNode("Blue", ring1);
         shape1.getStyle().setColor(Color.BLUE);
         
-        LinearRing2D ring2 = new LinearRing2D(4);
+        LinearRing2D ring2 = LinearRing2D.create(4);
         ring2.addVertex(new Point2D( 80,  20));
         ring2.addVertex(new Point2D(380,  80));
         ring2.addVertex(new Point2D(320, 380));
@@ -81,7 +81,7 @@ class Crop3DTest
         // compute projection points of current poly over next poly
         LinearRing2D ring1rs = ring1.resampleBySpacing(2.0).smooth(3);
         int nv = ring1rs.vertexCount();
-        LinearRing2D nextPoly = new LinearRing2D(nv);
+        LinearRing2D nextPoly = LinearRing2D.create(nv);
         for (Point2D point : ring1rs.vertexPositions())
         {
             nextPoly.addVertex(ring2.projection(point));
@@ -90,7 +90,7 @@ class Crop3DTest
         double t0 = 0.3;
         double t1 = 0.7;
         
-        LinearRing2D interpPoly = new LinearRing2D(nv);
+        LinearRing2D interpPoly = LinearRing2D.create(nv);
         for (int iv = 0; iv < nv; iv++)
         {
             Point2D p1 = ring1rs.vertexPosition(iv);

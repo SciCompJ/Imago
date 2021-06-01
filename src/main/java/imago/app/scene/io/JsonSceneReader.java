@@ -337,14 +337,14 @@ public class JsonSceneReader
 			// read coords field
 			reader.nextName();
 			ArrayList<Point2D> coords = readPoint2DArray(); 
-			geom = new LineString2D(coords);
+			geom = LineString2D.create(coords);
 		}
 		else if (type.equalsIgnoreCase("LinearRing2D"))
 		{
 			// read coords field
 			reader.nextName();
 			ArrayList<Point2D> coords = readPoint2DArray(); 
-			geom = new LinearRing2D(coords);
+			geom = LinearRing2D.create(coords);
 		}
 		else
 		{

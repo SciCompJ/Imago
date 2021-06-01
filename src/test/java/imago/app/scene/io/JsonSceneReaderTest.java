@@ -41,7 +41,7 @@ public class JsonSceneReaderTest
 	public void testReadNode_ShapeNode() throws IOException
 	{
 		// a ring for the slice with index 10
-		LinearRing2D ring = new LinearRing2D();
+		LinearRing2D ring = LinearRing2D.create();
 		ring.addVertex(new Point2D(10, 10));
 		ring.addVertex(new Point2D(20, 10));
 		ring.addVertex(new Point2D(20, 20));
@@ -66,14 +66,14 @@ public class JsonSceneReaderTest
 	public void testReadNode_GroupNode() throws IOException
 	{
 		// a ring for the slice with index 10
-		LinearRing2D ring10 = new LinearRing2D();
+		LinearRing2D ring10 = LinearRing2D.create();
 		ring10.addVertex(new Point2D(10, 10));;
 		ring10.addVertex(new Point2D(20, 10));;
 		ring10.addVertex(new Point2D(20, 20));;
 		ring10.addVertex(new Point2D(10, 20));;
 
 		// another ring for the slice with index 20
-		LinearRing2D ring20 = new LinearRing2D();
+		LinearRing2D ring20 = LinearRing2D.create();
 		ring20.addVertex(new Point2D(12, 12));;
 		ring20.addVertex(new Point2D(22, 12));;
 		ring20.addVertex(new Point2D(22, 22));;
@@ -107,14 +107,14 @@ public class JsonSceneReaderTest
 	public void testReadNode_ImageSerialSectionsNode() throws IOException
 	{
 		// a ring for the slice with index 10
-		LinearRing2D ring10 = new LinearRing2D();
+		LinearRing2D ring10 = LinearRing2D.create();
 		ring10.addVertex(new Point2D(10, 10));;
 		ring10.addVertex(new Point2D(20, 10));;
 		ring10.addVertex(new Point2D(20, 20));;
 		ring10.addVertex(new Point2D(10, 20));;
 
 		// another ring for the slice with index 20
-		LinearRing2D ring20 = new LinearRing2D();
+		LinearRing2D ring20 = LinearRing2D.create();
 		ring20.addVertex(new Point2D(12, 12));;
 		ring20.addVertex(new Point2D(22, 12));;
 		ring20.addVertex(new Point2D(22, 22));;
@@ -201,7 +201,7 @@ public class JsonSceneReaderTest
 	@Test
 	public void testReadGeometry_LinearRing2D() throws IOException
 	{
-        LinearRing2D ring = new LinearRing2D();
+        LinearRing2D ring = LinearRing2D.create();
         ring.addVertex(new Point2D(10, 10));;
         ring.addVertex(new Point2D(20, 10));;
         ring.addVertex(new Point2D(20, 20));;

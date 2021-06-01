@@ -432,37 +432,16 @@ public class Surface3D extends AlgoStub
         int nv = sourcePoly.vertexCount();
 
         // compute normals to edges of source ring
-        ArrayList<Vector2D> sourceEdgeNormals = new ArrayList<Vector2D>(nv);
-        Vector2D tangent = new Vector2D();
-        for (Polyline2D.Edge edge : sourcePoly.edges())
-        {
-            tangent = new Vector2D(edge.source().position(), edge.target().position());
-            sourceEdgeNormals.add(tangent.normalize().rotate90(-1));
-        }
-        // for the last vertex (index = nv-1), use the tangent of the last edge (index=nv-2)
-        sourceEdgeNormals.add(tangent.normalize().rotate90(-1));
+        ArrayList<Vector2D> sourceEdgeNormals = lineStringEdgeNormals(sourcePoly);
 
         // compute vertex normals of source ring
-        ArrayList<Vector2D> vertexNormals = new ArrayList<Vector2D>(nv);
-        for (int i = 0; i < nv; i++)
-        {
-            Vector2D normal1 = sourceEdgeNormals.get(Math.max(i - 1, 0));
-            Vector2D normal2 = sourceEdgeNormals.get(i);
-            vertexNormals.add(normal1.plus(normal2).times(0.5));
-        }
+        ArrayList<Vector2D> vertexNormals = computeVertexNormals(sourceEdgeNormals);
         
         // pre-compute normals to edges of target ring
-        ArrayList<Vector2D> edgeNormals = new ArrayList<Vector2D>(targetPoly.vertexCount());
-        for (Polyline2D.Edge edge : targetPoly.edges())
-        {
-            tangent = new Vector2D(edge.source().position(), edge.target().position());
-            edgeNormals.add(tangent.rotate90(-1));
-        }
-        // for the last vertex (index = nv-1), use the tangent of the last edge (index=nv-2)
-        edgeNormals.add(tangent.normalize().rotate90(-1));
+        ArrayList<Vector2D> edgeNormals = lineStringEdgeNormals(targetPoly);
                     
         // compute projection points of current poly over next poly
-        LineString2D nextPoly = new LineString2D(nv);
+        LineString2D nextPoly = LineString2D.create(nv);
         for (int iv = 0; iv < nv; iv++)
         {
             // retrieve coordinates of current vertex 
@@ -502,6 +481,53 @@ public class Surface3D extends AlgoStub
         }
         
         return nextPoly;
+    }
+    
+    private static final ArrayList<Vector2D> lineStringEdgeNormals(LineString2D poly)
+    {
+        // allocate memory for result
+        int nv = poly.edgeCount();
+        ArrayList<Vector2D> edgeNormals = new ArrayList<Vector2D>(nv - 1);
+
+        // iterate over edges
+        for (Polyline2D.Edge edge : poly.edges())
+        {
+            // compute normal of current edge
+            edgeNormals.add(tangentVector(edge).normalize().rotate90(-1));
+        }
+        
+        return edgeNormals;
+    }
+
+    private static final Vector2D tangentVector(Polyline2D.Edge edge)
+    {
+        return new Vector2D(edge.source().position(), edge.target().position());
+    }
+    
+    private static final ArrayList<Vector2D> computeVertexNormals(ArrayList<Vector2D> edgeNormals)
+    {
+        // allocate memory for result
+        int nv = edgeNormals.size() + 1;
+        ArrayList<Vector2D> vertexNormals = new ArrayList<Vector2D>(nv);
+        
+        Iterator<Vector2D> iter = edgeNormals.iterator();
+        
+        // first vertex -> only one adjacent edge
+        Vector2D normal1 = iter.next();
+        vertexNormals.add(normal1);
+        
+        // iterate over inner vertices
+        while(iter.hasNext())
+        {
+            Vector2D normal2 = iter.next();
+            vertexNormals.add(normal1.plus(normal2).times(0.5));
+            normal1 = normal2;
+        }
+
+        // last vertex -> only one adjacent edge
+        vertexNormals.add(normal1);
+        
+        return vertexNormals;
     }
     
     

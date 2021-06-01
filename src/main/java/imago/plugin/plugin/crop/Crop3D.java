@@ -596,7 +596,7 @@ public class Crop3D extends AlgoStub
         }
                     
         // compute projection points of current poly over next poly
-        LinearRing2D nextPoly = new LinearRing2D(nv);
+        LinearRing2D nextPoly = LinearRing2D.create(nv);
         for (int iv = 0; iv < nv; iv++)
         {
             Point2D point = sourceRing.vertexPosition(iv);

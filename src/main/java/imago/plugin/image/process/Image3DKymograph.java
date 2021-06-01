@@ -81,7 +81,7 @@ public class Image3DKymograph implements ImagePlugin
         else if (curve instanceof LineSegment2D)
         {
             LineSegment2D line = (LineSegment2D) curve;   
-            poly = new LineString2D(line.getP1(), line.getP2());
+            poly = LineString2D.create(line.getP1(), line.getP2());
         }
         else
         {
