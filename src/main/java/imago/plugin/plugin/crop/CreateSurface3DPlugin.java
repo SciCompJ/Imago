@@ -27,7 +27,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import imago.app.ImagoApp;
 import imago.app.scene.ImageSerialSectionsNode;
+import imago.app.scene.ShapeNode;
 import imago.gui.FramePlugin;
+import imago.gui.GenericDialog;
 import imago.gui.ImageFrame;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoEmptyFrame;
@@ -37,6 +39,7 @@ import imago.gui.dialogs.AlgoProgressMonitor;
 import imago.gui.tool.SelectPolygonTool;
 import imago.gui.viewer.StackSliceViewer;
 import net.sci.geom.geom2d.Geometry2D;
+import net.sci.geom.geom2d.polygon.LineString2D;
 import net.sci.geom.geom2d.polygon.Polyline2D;
 import net.sci.image.Image;
 import net.sci.image.io.TiffImageReader;
@@ -70,7 +73,8 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
     JButton addPolylineButton;
     JButton removePolylineButton;
     JButton interpolateButton;
-    
+    JButton unfoldImageButton;
+
     // the widget that displays the names of base polylines
     JList<String> roiList;
     
@@ -143,16 +147,20 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         interpolateButton = new JButton("Interpolate");
         interpolateButton.addActionListener(evt -> onInterpolatePolylinesButton());
         interpolateButton.setEnabled(false);
-        
+        unfoldImageButton = new JButton("Unfold Image...");
+        unfoldImageButton.addActionListener(evt -> onUnfoldImageButton());
+        unfoldImageButton.setEnabled(false);
+
         controlsPanel.setLayout(new BoxLayout(controlsPanel, BoxLayout.Y_AXIS));
         controlsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
-        JPanel btnPanel = new JPanel(new GridLayout(5, 1, 10, 10));
+        JPanel btnPanel = new JPanel(new GridLayout(6, 1, 10, 10));
         btnPanel.add(new JLabel(" "));
         btnPanel.add(openImageButton);
         btnPanel.add(addPolylineButton);
         btnPanel.add(removePolylineButton);
         btnPanel.add(interpolateButton);
+        btnPanel.add(unfoldImageButton);
         controlsPanel.add(btnPanel);
         mainPanel.add(controlsPanel);
         
@@ -487,12 +495,100 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         };
         t.start();
         
+        this.unfoldImageButton.setEnabled(true);
+
         // need to call this to update items to display
         ImageViewer viewer = imageFrame.getImageView();
         viewer.refreshDisplay(); 
         viewer.repaint();
     }
     
+    /**
+     * Callback for the "Unfold Image" button. This opens a dialog to choose a
+     * file in MetaImage format ("*.mhd"). The cropped image is stored in a pair
+     * of files: the mhd file contains the header, while the raw file contains
+     * the binary data.
+     */
+    public void onUnfoldImageButton()
+    {
+        ImageSerialSectionsNode polyNode = surf3d.getPolylinesNode();
+        if (polyNode == null)
+        {
+            System.err.println("Current image does not contain Surface3D polyline information");
+            return;
+        }
+        
+        // Compute default values
+        ShapeNode shapeNode = (ShapeNode) polyNode.children().iterator().next().children().iterator().next();
+        LineString2D poly = (LineString2D) shapeNode.getGeometry();
+        int defaultPointNumber = (int) Math.round(poly.length());
+
+        // Choose option for new image
+        GenericDialog dlg = new GenericDialog(parentFrame, "Unfold Image");
+        dlg.addNumericField("Width", defaultPointNumber, 0, "The number of points to re-interpolate polylines");
+        dlg.addNumericField("Min. Depth", -20, 0);
+        dlg.addNumericField("Max. Depth", +20, 0);
+        
+        dlg.showDialog();
+        if (dlg.wasCanceled())
+        {
+            return;
+        }
+        int pointNumber = (int) dlg.getNextNumber();
+        int minDepth = (int) dlg.getNextNumber();
+        int maxDepth = (int) dlg.getNextNumber();
+        
+                
+        // create dialog to save file
+        String imageName = imageFrame.getImage().getName();
+        JFileChooser saveDlg = new JFileChooser(new File(imageName + "_surfFlat.mhd"));
+        saveDlg.setDialogTitle("Select File for saving result");
+        saveDlg.setFileFilter(new FileNameExtensionFilter("MetaImage File (*.mhd)", "mhd"));
+
+        // Open dialog to choose the file
+        int ret = saveDlg.showSaveDialog(imageFrame.getWidget());
+        if (ret != JFileChooser.APPROVE_OPTION) 
+        {
+            return;
+        }
+
+        // Check the chosen file is valid
+        File file = saveDlg.getSelectedFile();
+        if (!file.getName().endsWith(".mhd"))
+        {
+            File parent = file.getParentFile();
+            file = new File(parent, file.getName() + ".mhd");
+        }
+        final File finalFile = file;
+        
+        
+        // Configure a progress monitor to display progress
+        AlgoProgressMonitor progress = new AlgoProgressMonitor(this.parentFrame, "Compute 3D Crop"); 
+        this.surf3d.addAlgoListener(progress);
+        
+        // Run the process in a new Thread to avoid locking widget updates
+        Thread t = new Thread()
+        {
+            public void run()
+            {
+                try 
+                {
+                    surf3d.flattenSurface3d(pointNumber, minDepth, maxDepth, finalFile);
+                    progress.setProgressRatio(1.0);
+                }
+                catch (Exception ex)
+                {
+                    ex.printStackTrace(System.err);
+                    ImagoGui.showExceptionDialog(imageFrame, ex, "Crop 3D Error");
+                }
+                finally
+                {
+                    surf3d.removeAlgoListener(progress);
+                }
+            }
+        };
+        t.start();
+    }
 
     /**
      * Called when the selected polygon in the polygon list is updated.

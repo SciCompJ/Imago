@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.swing.JOptionPane;
 
@@ -34,12 +36,19 @@ import imago.gui.viewer.StackSliceViewer;
 import net.sci.algo.AlgoEvent;
 import net.sci.algo.AlgoStub;
 import net.sci.array.Array;
+import net.sci.array.scalar.Float32Array2D;
+import net.sci.array.scalar.ScalarArray3D;
+import net.sci.array.scalar.UInt8Array2D;
 import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.Vector2D;
 import net.sci.geom.geom2d.polygon.LineString2D;
 import net.sci.geom.geom2d.polygon.Polyline2D;
+import net.sci.geom.geom3d.Point3D;
+import net.sci.geom.geom3d.polyline.LineString3D;
 import net.sci.image.Image;
+import net.sci.image.io.MetaImageWriter;
+import net.sci.image.process.filter.GaussianFilter5x5;
 
 /**
  * Creation of 3D surface from a series of (open) polylines manually defined on
@@ -386,24 +395,6 @@ public class Surface3D extends AlgoStub
         interpNode.addSliceNode(createInterpNode(currentPoly, currentSliceIndex, nDigits));
     }
     
-    /**
-     * Retrieve the polyline geometry at the specified index from the serial
-     * sections node.
-     * 
-     * ImageSerialSectionsNode -> ImageSliceSection -> ShapeNode -> Geometry.
-     * 
-     * @param node
-     *            the node mapping to ImageSliceSections
-     * @param index
-     *            the index of the slice
-     * @return the polyline geometry contained in the specified slice.
-     */
-    private LineString2D getPolyline(ImageSerialSectionsNode node, int index)
-    {
-        ShapeNode shapeNode = (ShapeNode) node.getSliceNode(index).children().iterator().next();
-        return (LineString2D) shapeNode.getGeometry();
-    }
-    
     private static final ShapeNode createPolylineNode(Polyline2D poly, String name)
     {
         ShapeNode node = new ShapeNode(name, poly);
@@ -532,6 +523,131 @@ public class Surface3D extends AlgoStub
     
     
     // ===================================================================
+    // Computation of flattened image
+    
+    public void flattenSurface3d(int width, int minDepth, int maxDepth, File outputFileName)
+    {
+        System.out.println("Compute flattened surface 3D image");
+        
+        // determine dimensions of result image
+        ScalarArray3D<?> array = (ScalarArray3D<?>) this.imageHandle.getImage().getData();
+        int sizeX = array.size(0);
+        int sizeY = array.size(1);
+        int sizeZ = array.size(2);
+        int height = sizeZ;
+        int depth = maxDepth - minDepth + 1;
+        System.out.println(String.format("Output image size: [%d, %d, %d]", width, height, depth));
+        
+        // allocate memory
+        UInt8Array2D res2d = UInt8Array2D.create(width, height);
+//        UInt8Array3D res3d = UInt8Array3D.create(width, height, depth);
+            
+        // convert 2D polylines to 3D polylines
+        ImageSerialSectionsNode polyNode = getInterpolatedPolylinesNode();
+        Map<Integer, LineString3D> polylines3d = convert2DPolylinesTo3DPolylines(polyNode);
+        
+//        Array2D<Point3D> points = GenericArray2D.create(width, height, new Point3D());
+        
+        Float32Array2D xCoords = Float32Array2D.create(width, height); 
+        Float32Array2D yCoords = Float32Array2D.create(width, height); 
+        Float32Array2D zCoords = Float32Array2D.create(width, height);
+        
+        System.out.println("Compute coordinates of 3D mesh");
+        for (int iz = 0; iz < height; iz++)
+        {
+            System.out.println("process: " + iz);
+            LineString3D poly = polylines3d.get(iz);
+            if (poly == null)
+            {
+                System.out.println(String.format("No 3D polyline for slice index %d, continue...", iz));
+                continue;
+            }
+            
+            // resample polyline to get inner points
+            double len = poly.length();
+            double step = len / (width + 2 * 10);
+            LineString3D poly2 = poly.resampleBySpacing(step);
+            
+            for (int iv = 0; iv < width; iv++)
+            {
+                Point3D pt = poly2.vertexPosition(iv + 10);
+                xCoords.setValue(iv, iz, pt.getX());
+                yCoords.setValue(iv, iz, pt.getY());
+                zCoords.setValue(iv, iz, pt.getZ());
+            }
+        }
+        
+        System.out.println("Smooth coordinates of 3D mesh...");
+        // Smooth coordinate arrays
+        GaussianFilter5x5 smooth = new GaussianFilter5x5();
+        for (int iIter = 0; iIter < 3; iIter++)
+        {
+            System.out.println("  iter " + iIter);
+            xCoords = (Float32Array2D) smooth.processScalar(xCoords);
+            yCoords = (Float32Array2D) smooth.processScalar(yCoords);
+            zCoords = (Float32Array2D) smooth.processScalar(zCoords);
+        }
+        
+        System.out.println("Evaluate image slice...");
+        // Evaluate image slice
+        for (int iy = 0; iy < height; iy++)
+        {
+            System.out.println("  y = " + iy);
+            for (int ix = 0; ix < width; ix++)
+            {
+                double x = xCoords.getValue(ix, iy);
+                double y = yCoords.getValue(ix, iy);
+                double z = zCoords.getValue(ix, iy);
+                if (x < 0 || x > sizeX) continue;
+                if (y < 0 || y > sizeY) continue;
+                if (z < 0 || z > sizeZ) continue;
+                
+                double value = array.getValue((int) x, (int) y, (int) z);
+                res2d.setValue(ix, iy, value);
+            }
+        }
+        Image image = new Image(res2d);
+        
+        System.out.println("Save image...");
+        MetaImageWriter writer = new MetaImageWriter(outputFileName);
+        try
+        {
+            writer.writeImage(image);
+        }
+        catch(IOException ex)
+        {
+            System.err.println(ex);
+            return;
+        }
+    }
+    
+    private Map<Integer, LineString3D> convert2DPolylinesTo3DPolylines(ImageSerialSectionsNode polyNode)
+    {
+        Map<Integer, LineString3D> map = new TreeMap<Integer, LineString3D>();
+        for (ImageSliceNode sliceNode : polyNode.children())
+        {
+            int sliceIndex = sliceNode.getSliceIndex(); 
+            System.out.println("convert polyline on slice " + sliceIndex);
+            
+            LineString2D poly2d = getPolyline(polyNode, sliceIndex);
+            int nv = poly2d.vertexCount();
+            ArrayList<Point3D> pts3d = new ArrayList<Point3D>(nv);
+            for (Point2D point : poly2d.vertexPositions())
+            {
+                pts3d.add(new Point3D(point.getX(), point.getY(), sliceIndex));
+            }
+            
+            // Create 3D polyline
+            LineString3D poly3d = LineString3D.create(pts3d);
+            
+            // add to map
+            map.put(sliceIndex, poly3d);
+        }
+        
+        return map;
+    }
+    
+    // ===================================================================
     // Management of nodes
 
     /**
@@ -623,5 +739,24 @@ public class Surface3D extends AlgoStub
         ImageSerialSectionsNode polyNode = new ImageSerialSectionsNode("interp");
         cropNode.addNode(polyNode);
         return polyNode;
+    }
+
+
+    /**
+     * Retrieve the polyline geometry at the specified index from the serial
+     * sections node.
+     * 
+     * ImageSerialSectionsNode -> ImageSliceSection -> ShapeNode -> Geometry.
+     * 
+     * @param node
+     *            the node mapping to ImageSliceSections
+     * @param index
+     *            the index of the slice
+     * @return the polyline geometry contained in the specified slice.
+     */
+    private static final LineString2D getPolyline(ImageSerialSectionsNode node, int index)
+    {
+        ShapeNode shapeNode = (ShapeNode) node.getSliceNode(index).children().iterator().next();
+        return (LineString2D) shapeNode.getGeometry();
     }
 }
