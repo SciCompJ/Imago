@@ -3,9 +3,11 @@ package imago.plugin.plugin.crop;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -47,7 +49,8 @@ import net.sci.image.io.TiffImageReader;
 /**
  * Start the CreateSurface3DPlugin plugin.
  * 
- * Opens a dialogs with various widgets, most of them being available once an image is loaded.
+ * Opens a dialogs with various widgets, most of them being available once an
+ * image is loaded.
  * 
  * @author dlegland
  *
@@ -65,6 +68,7 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
     // menu items
     JMenuItem loadPolylinesItem;
     JMenuItem savePolylinesItem;
+    JMenuItem saveAnalysisItem;
     
     JLabel imageNameLabel;
     
@@ -81,6 +85,8 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
     private JFileChooser openWindow = null;
     private JFileChooser saveWindow = null;
 
+    String imagePath = null;
+    String lastOpenPath = "D:/images/wheat/perigrain/Psiche_2018/HR/selection";
     
     public CreateSurface3DPlugin()
     {
@@ -114,6 +120,8 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         // init menu items
         loadPolylinesItem = new JMenuItem("Load Polylines...");
         loadPolylinesItem.addActionListener(evt -> loadPolylines());
+        saveAnalysisItem = new JMenuItem("Save Analysis...");
+        saveAnalysisItem.addActionListener(evt -> saveAnalysis());
         savePolylinesItem = new JMenuItem("Save Polylines...");
         savePolylinesItem.addActionListener(evt -> savePolylines());
 
@@ -121,6 +129,7 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         JMenu fileMenu = new JMenu("File");
         fileMenu.add(loadPolylinesItem);
         fileMenu.addSeparator();
+        fileMenu.add(saveAnalysisItem);
         fileMenu.add(savePolylinesItem);
         
         
@@ -136,20 +145,11 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         JPanel controlsPanel = new JPanel();
         
         // create the buttons
-        openImageButton = new JButton("Open Image...");
-        openImageButton.addActionListener(evt -> onOpenImageButton());
-        addPolylineButton = new JButton("Add Polyline");
-        addPolylineButton.addActionListener(evt -> onAddPolylineButton());
-        addPolylineButton.setEnabled(false);
-        removePolylineButton = new JButton("Remove Polyline");
-        removePolylineButton.addActionListener(evt -> onRemovePolylineButton());
-        removePolylineButton.setEnabled(false);
-        interpolateButton = new JButton("Interpolate");
-        interpolateButton.addActionListener(evt -> onInterpolatePolylinesButton());
-        interpolateButton.setEnabled(false);
-        unfoldImageButton = new JButton("Unfold Image...");
-        unfoldImageButton.addActionListener(evt -> onUnfoldImageButton());
-        unfoldImageButton.setEnabled(false);
+        openImageButton = createButton("Open Image...", evt -> onOpenImageButton(), true);
+        addPolylineButton = createButton("Add Polyline", evt -> onAddPolylineButton(), false);
+        removePolylineButton = createButton("Remove Polyline", evt -> onRemovePolylineButton(), false);
+        interpolateButton = createButton("Interpolate", evt -> onInterpolatePolylinesButton(), false);
+        unfoldImageButton = createButton("Unfold Image...", evt -> onUnfoldImageButton(), false);
 
         controlsPanel.setLayout(new BoxLayout(controlsPanel, BoxLayout.Y_AXIS));
         controlsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -191,6 +191,14 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         frame.add(mainPanel, BorderLayout.CENTER);
         
         frame.setSize(320, 360);
+    }
+    
+    private JButton createButton(String title, Consumer<ActionEvent> action, boolean enabled)
+    {
+        JButton button = new JButton(title);
+        button.addActionListener(evt -> action.accept(evt));
+        button.setEnabled(enabled);
+        return button;
     }
     
     /**
@@ -252,6 +260,52 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
     }
     
     
+    /**
+     * Callback for the "Save Analysis" menu item. Saves a JSON file containing
+     * name of reference image, and polyline data.
+     */
+    public void saveAnalysis()
+    {
+        System.out.println("Save Analysis");
+        
+//        ImageSerialSectionsNode polyNode = surf3d.getPolylinesNode();
+//        if (polyNode == null)
+//        {
+//            System.err.println("Current image does not contain Surface3D polylines information");
+//            return;
+//        }
+        
+        // create file dialog using last save path
+        String imageName = imageFrame.getImage().getName();
+        saveWindow = new JFileChooser(new File(imageName + ".json"));
+        saveWindow.setDialogTitle("Save list of input polygons");
+        saveWindow.setFileFilter(new FileNameExtensionFilter("JSON files (*.json)", "json"));
+
+        // Open dialog to choose the file
+        int ret = saveWindow.showSaveDialog(imageFrame.getWidget());
+        if (ret != JFileChooser.APPROVE_OPTION) 
+        {
+            return;
+        }
+
+        // Check the chosen file is valid
+        File file = saveWindow.getSelectedFile();
+        if (!file.getName().endsWith(".json"))
+        {
+            File parent = file.getParentFile();
+            file = new File(parent, file.getName() + ".json");
+        }
+        
+        try 
+        {
+            surf3d.saveAnalysisAsJson(file);
+        }
+        catch (IOException ex)
+        {
+            throw new RuntimeException(ex);
+        }
+    }
+
     /**
      * Callback for the "Save Polylines" menu item.
      */
@@ -331,8 +385,7 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
     {
         // create file dialog to read the 3D TIFF Image
         //        String lastPath = frame.getLastOpenPath();
-        String lastPath = "D:/images/wheat/perigrain/Psiche_2018/HR/selection";
-        JFileChooser openWindow = new JFileChooser(lastPath);
+        JFileChooser openWindow = new JFileChooser(this.lastOpenPath);
         openWindow.setDialogTitle("Choose TIFF 3D Image");
         openWindow.setFileFilter(new FileNameExtensionFilter("TIFF files (*.tif, *.tiff)", "tif", "tiff"));
 
@@ -349,14 +402,16 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         {
             return;
         }
+        this.imagePath = file.getAbsolutePath();
+
 
         // eventually keep path for future opening
-        String path = file.getPath();
-        lastPath = parentFrame.getLastOpenPath();
+        this.lastOpenPath = file.getPath();
+        String lastPath = parentFrame.getLastOpenPath();
         if (lastPath == null || lastPath.isEmpty())
         {
             System.out.println("update frame path");
-            parentFrame.setLastOpenPath(path);
+            parentFrame.setLastOpenPath(this.lastOpenPath);
         }
 
 
@@ -376,7 +431,7 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
 
         // add the image document to GUI
         this.imageFrame = parentFrame.createImageFrame(image);
-        this.imageFrame.setLastOpenPath(path);
+        this.imageFrame.setLastOpenPath(this.lastOpenPath);
     }
 
     /**

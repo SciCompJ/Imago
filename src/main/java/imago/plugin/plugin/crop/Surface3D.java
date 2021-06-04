@@ -10,8 +10,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
@@ -36,15 +38,20 @@ import imago.gui.viewer.StackSliceViewer;
 import net.sci.algo.AlgoEvent;
 import net.sci.algo.AlgoStub;
 import net.sci.array.Array;
+import net.sci.array.Array2D;
+import net.sci.array.generic.GenericArray2D;
+import net.sci.array.process.math.FiniteDifferences;
 import net.sci.array.scalar.Float32Array2D;
 import net.sci.array.scalar.ScalarArray3D;
 import net.sci.array.scalar.UInt8Array2D;
+import net.sci.array.scalar.UInt8Array3D;
 import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.Vector2D;
 import net.sci.geom.geom2d.polygon.LineString2D;
 import net.sci.geom.geom2d.polygon.Polyline2D;
 import net.sci.geom.geom3d.Point3D;
+import net.sci.geom.geom3d.Vector3D;
 import net.sci.geom.geom3d.polyline.LineString3D;
 import net.sci.image.Image;
 import net.sci.image.io.MetaImageWriter;
@@ -165,6 +172,57 @@ public class Surface3D extends AlgoStub
         }
 
         System.out.println("reading polylines terminated.");
+    }
+    
+    /**
+     * Saves the analysis into a file in JSON format.
+     * 
+     * @param file
+     *            the file to writes analysis data.
+     * @throws IOException
+     *             if a I/O problem occurred.
+     */
+    public void saveAnalysisAsJson(File file) throws IOException
+    {
+        // initialize JSON writer
+        FileWriter fileWriter = new FileWriter(file.getAbsoluteFile());
+        JsonWriter jsonWriter = new JsonWriter(new PrintWriter(fileWriter));
+        jsonWriter.setIndent("  ");
+        
+        // open Surface3D node
+        jsonWriter.beginObject();
+        jsonWriter.name("type").value("Surface3D");
+        String dateString = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date());
+        jsonWriter.name("saveDate").value(dateString);
+        
+        // one node for the 3D image
+        Image image = this.imageHandle.getImage();
+        jsonWriter.name("image");
+        jsonWriter.beginObject();
+        jsonWriter.name("type").value("Image3D");
+        jsonWriter.name("name").value(image.getName());
+        jsonWriter.name("filePath").value(image.getFilePath());
+        jsonWriter.name("nDims").value(3);
+        int[] dims = image.getData().size();
+        String sizeString = String.format("[%d, %d, %d]", dims[0], dims[1], dims[2]);
+        jsonWriter.name("size").value(sizeString);
+        jsonWriter.endObject();
+        
+        // one node for the polyline
+        ImageSerialSectionsNode polyNode = getPolylinesNode();
+        if (polyNode != null)
+        {
+            JsonSceneWriter sceneWriter = new JsonSceneWriter(jsonWriter);
+            jsonWriter.name("polylines");
+            sceneWriter.writeNode(polyNode);
+        }
+      
+        // close Surface3D
+        jsonWriter.endObject();
+
+        fileWriter.close();
+        
+        System.out.println("Saving analysis terminated.");
     }
     
     /**
@@ -540,7 +598,7 @@ public class Surface3D extends AlgoStub
         
         // allocate memory
         UInt8Array2D res2d = UInt8Array2D.create(width, height);
-//        UInt8Array3D res3d = UInt8Array3D.create(width, height, depth);
+        UInt8Array3D res3d = UInt8Array3D.create(width, height, depth);
             
         // convert 2D polylines to 3D polylines
         ImageSerialSectionsNode polyNode = getInterpolatedPolylinesNode();
@@ -606,9 +664,86 @@ public class Surface3D extends AlgoStub
                 res2d.setValue(ix, iy, value);
             }
         }
-        Image image = new Image(res2d);
+        Image sliceImage = new Image(res2d);
         
         System.out.println("Save image...");
+        File sliceFile = new File(outputFileName.getParent(), "slice.mhd"); 
+        MetaImageWriter sliceWriter = new MetaImageWriter(sliceFile);
+        try
+        {
+            sliceWriter.writeImage(sliceImage);
+        }
+        catch(IOException ex)
+        {
+            System.err.println(ex);
+            return;
+        }
+        
+        // create derivation operations
+        FiniteDifferences derivU = new FiniteDifferences(0);
+        FiniteDifferences derivV = new FiniteDifferences(1);
+        
+        // allocate memory
+        Float32Array2D dxu = Float32Array2D.create(width, height);
+        Float32Array2D dxv = Float32Array2D.create(width, height);
+        Float32Array2D dyu = Float32Array2D.create(width, height);
+        Float32Array2D dyv = Float32Array2D.create(width, height);
+        Float32Array2D dzu = Float32Array2D.create(width, height);
+        Float32Array2D dzv = Float32Array2D.create(width, height);
+        
+        // performs derivations
+        derivU.processScalar(xCoords, dxu); 
+        derivV.processScalar(xCoords, dxv); 
+        derivU.processScalar(yCoords, dyu); 
+        derivV.processScalar(yCoords, dyv); 
+        derivU.processScalar(zCoords, dzu); 
+        derivV.processScalar(zCoords, dzv); 
+        
+        // evaluate normal vector for each vertex of the mesh
+        Array2D<Vector3D> normals = GenericArray2D.create(width, height, new Vector3D());
+        for (int iv = 0; iv < height; iv++)
+        {
+            for (int iu = 0; iu < width; iu++)
+            {
+                Vector3D du = new Vector3D(dxu.getValue(iu,iv), dyu.getValue(iu,iv), dzu.getValue(iu,iv));
+                Vector3D dv = new Vector3D(dxv.getValue(iu,iv), dyv.getValue(iu,iv), dzv.getValue(iu,iv));
+                normals.set(iu, iv, du.crossProduct(dv).normalize());
+            }
+        }
+        
+        // create result image
+        for (int id = 0; id < depth; id++)
+        {
+            double d = id + minDepth;
+            for (int iv = 0; iv < height; iv++)
+            {
+                for (int iu = 0; iu < width; iu++)
+                {
+                    Point3D pos = new Point3D(xCoords.getValue(iu,iv), yCoords.getValue(iu,iv), zCoords.getValue(iu,iv));
+                    Vector3D normal = normals.get(iu, iv);
+                    Point3D pos2 = pos.plus(normal.times(d));
+                    
+                    // retrieve coordinates as double values
+                    double x2 = pos2.getX();
+                    double y2 = pos2.getY();
+                    double z2 = pos2.getZ();
+                    
+                    // check point is within image
+                    if (x2 < 0 || x2 > sizeX - 1) continue;
+                    if (y2 < 0 || y2 > sizeY - 1) continue;
+                    if (z2 < 0 || z2 > sizeZ - 1) continue;
+                    
+                    double value = array.getValue((int) x2, (int) y2, (int) z2);
+                    res3d.setValue(iu, iv, id, value);
+                }
+            }
+        }
+        
+        // convert 3D array to image
+        Image image = new Image(res3d);
+        
+        // and save image
+        System.out.println("Save 3Dimage...");
         MetaImageWriter writer = new MetaImageWriter(outputFileName);
         try
         {
