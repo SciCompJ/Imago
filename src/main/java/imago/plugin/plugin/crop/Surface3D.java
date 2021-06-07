@@ -35,7 +35,6 @@ import imago.app.scene.io.JsonSceneWriter;
 import imago.gui.ImageFrame;
 import imago.gui.ImageViewer;
 import imago.gui.viewer.StackSliceViewer;
-import net.sci.algo.AlgoEvent;
 import net.sci.algo.AlgoStub;
 import net.sci.array.Array;
 import net.sci.array.Array2D;
@@ -162,6 +161,20 @@ public class Surface3D extends AlgoStub
             ImageSerialSectionsNode polyNode = getPolylinesNode();
             for(ImageSliceNode child : ((ImageSerialSectionsNode) node).children())
             {
+                // check that all children of slice nodes are shape nodes with polyline2D geometry
+                for (Node child2 : child.children())
+                {
+                    if (!(child2 instanceof ShapeNode))
+                    {
+                        throw new RuntimeException("Expect all ImageSliceNode to contain shape nodes.");
+                    }
+                    
+                    if(!(((ShapeNode) child2).getGeometry() instanceof LineString2D))
+                    {
+                        throw new RuntimeException("Expect all Shape nodes to contain LineString2D geometries.");
+                    }
+                }
+                
                 polyNode.addSliceNode(child);
             }
 
@@ -414,7 +427,7 @@ public class Surface3D extends AlgoStub
         {
             int nextSliceIndex = sliceIndexIter.next();
             System.out.println("process slice range " + currentSliceIndex + " - " + nextSliceIndex);
-            this.fireStatusChanged(new AlgoEvent(this, "process slice range " + currentSliceIndex + " - " + nextSliceIndex));
+            this.fireStatusChanged(this, "process slice range " + currentSliceIndex + " - " + nextSliceIndex);
             
             // Extract polyline of upper slice
             LineString2D nextPolyRef = getPolyline(smoothNode, nextSliceIndex);
@@ -433,7 +446,7 @@ public class Surface3D extends AlgoStub
             for (int sliceIndex = currentSliceIndex + 1; sliceIndex < nextSliceIndex; sliceIndex++)
             {
                 System.out.println("  interpolate slice " + sliceIndex);
-                this.fireProgressChanged(new AlgoEvent(this, sliceIndex - minSliceIndex, indexCount));
+                this.fireProgressChanged(this, sliceIndex - minSliceIndex, indexCount);
                 
                 double t0 = ((double) (sliceIndex - currentSliceIndex)) / dz;
                 LineString2D interpPoly = LineString2D.interpolate(currentPoly, nextPoly, t0);
@@ -447,7 +460,7 @@ public class Surface3D extends AlgoStub
             currentPoly = nextPoly;
         }
 
-        this.fireProgressChanged(new AlgoEvent(this, 1, 1));
+        this.fireProgressChanged(this, 1, 1);
         
         // create shape for interpolated polyline
         interpNode.addSliceNode(createInterpNode(currentPoly, currentSliceIndex, nDigits));
@@ -585,7 +598,7 @@ public class Surface3D extends AlgoStub
     
     public void flattenSurface3d(int width, int minDepth, int maxDepth, File outputFileName)
     {
-        System.out.println("Compute flattened surface 3D image");
+        this.fireStatusChanged(this, "Compute flattened surface 3D image");
         
         // determine dimensions of result image
         ScalarArray3D<?> array = (ScalarArray3D<?>) this.imageHandle.getImage().getData();
@@ -611,9 +624,9 @@ public class Surface3D extends AlgoStub
         Float32Array2D zCoords = Float32Array2D.create(width, height);
         
         System.out.println("Compute coordinates of 3D mesh");
+        this.fireStatusChanged(this, "Compute coordinates of 3D mesh");
         for (int iz = 0; iz < height; iz++)
         {
-            System.out.println("process: " + iz);
             LineString3D poly = polylines3d.get(iz);
             if (poly == null)
             {
@@ -636,6 +649,7 @@ public class Surface3D extends AlgoStub
         }
         
         System.out.println("Smooth coordinates of 3D mesh...");
+        this.fireStatusChanged(this, "Smooth coordinates of 3D mesh...");
         // Smooth coordinate arrays
         GaussianFilter5x5 smooth = new GaussianFilter5x5();
         for (int iIter = 0; iIter < 3; iIter++)
@@ -647,10 +661,10 @@ public class Surface3D extends AlgoStub
         }
         
         System.out.println("Evaluate image slice...");
+        this.fireStatusChanged(this, "Evaluate image slice...");
         // Evaluate image slice
         for (int iy = 0; iy < height; iy++)
         {
-            System.out.println("  y = " + iy);
             for (int ix = 0; ix < width; ix++)
             {
                 double x = xCoords.getValue(ix, iy);
@@ -666,7 +680,8 @@ public class Surface3D extends AlgoStub
         }
         Image sliceImage = new Image(res2d);
         
-        System.out.println("Save image...");
+        System.out.println("Save slice image.");
+        this.fireStatusChanged(this, "Save slice image.");
         File sliceFile = new File(outputFileName.getParent(), "slice.mhd"); 
         MetaImageWriter sliceWriter = new MetaImageWriter(sliceFile);
         try
@@ -712,8 +727,12 @@ public class Surface3D extends AlgoStub
         }
         
         // create result image
+        System.out.println("Create result image...");
+        this.fireStatusChanged(this, "Create result image.");
         for (int id = 0; id < depth; id++)
         {
+            System.out.println(String.format("  z = %d / %d", id, depth));
+            this.fireProgressChanged(this, id, depth);
             double d = id + minDepth;
             for (int iv = 0; iv < height; iv++)
             {
@@ -743,7 +762,7 @@ public class Surface3D extends AlgoStub
         Image image = new Image(res3d);
         
         // and save image
-        System.out.println("Save 3Dimage...");
+        System.out.println("Save 3D image...");
         MetaImageWriter writer = new MetaImageWriter(outputFileName);
         try
         {
@@ -754,15 +773,18 @@ public class Surface3D extends AlgoStub
             System.err.println(ex);
             return;
         }
+        
+        this.fireStatusChanged(this, "Unfolding 3D image complete!");
     }
     
     private Map<Integer, LineString3D> convert2DPolylinesTo3DPolylines(ImageSerialSectionsNode polyNode)
     {
         Map<Integer, LineString3D> map = new TreeMap<Integer, LineString3D>();
+        int sliceNumber = this.imageHandle.getImage().getSize(2);
         for (ImageSliceNode sliceNode : polyNode.children())
         {
-            int sliceIndex = sliceNode.getSliceIndex(); 
-            System.out.println("convert polyline on slice " + sliceIndex);
+            int sliceIndex = sliceNode.getSliceIndex();
+            this.fireProgressChanged(this, sliceIndex, sliceNumber);
             
             LineString2D poly2d = getPolyline(polyNode, sliceIndex);
             int nv = poly2d.vertexCount();
