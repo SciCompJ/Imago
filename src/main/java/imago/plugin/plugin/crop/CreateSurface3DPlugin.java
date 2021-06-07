@@ -237,11 +237,6 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
 
         // Check the chosen file is state
         File file = openWindow.getSelectedFile();
-        if (!file.exists())
-        {
-            return;
-        }
-        
         try
         {
             surf3d.readPolylinesFromJson(file);

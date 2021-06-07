@@ -39,9 +39,12 @@ import net.sci.algo.AlgoStub;
 import net.sci.array.Array;
 import net.sci.array.Array2D;
 import net.sci.array.generic.GenericArray2D;
+import net.sci.array.interp.LinearInterpolator3D;
+import net.sci.array.interp.ScalarFunction3D;
 import net.sci.array.process.math.FiniteDifferences;
 import net.sci.array.scalar.Float32Array2D;
 import net.sci.array.scalar.ScalarArray3D;
+import net.sci.array.scalar.SliceBufferedUInt8Array3D;
 import net.sci.array.scalar.UInt8Array2D;
 import net.sci.array.scalar.UInt8Array3D;
 import net.sci.geom.geom2d.LineSegment2D;
@@ -418,7 +421,6 @@ public class Surface3D extends AlgoStub
         {
             lastIndex = ind;
         }
-        int indexCount = lastIndex - minSliceIndex + 1;
         
         LineString2D currentPoly = getPolyline(smoothNode, currentSliceIndex);
         
@@ -446,7 +448,7 @@ public class Surface3D extends AlgoStub
             for (int sliceIndex = currentSliceIndex + 1; sliceIndex < nextSliceIndex; sliceIndex++)
             {
                 System.out.println("  interpolate slice " + sliceIndex);
-                this.fireProgressChanged(this, sliceIndex - minSliceIndex, indexCount);
+                this.fireProgressChanged(this, sliceIndex, lastIndex);
                 
                 double t0 = ((double) (sliceIndex - currentSliceIndex)) / dz;
                 LineString2D interpPoly = LineString2D.interpolate(currentPoly, nextPoly, t0);
@@ -602,10 +604,7 @@ public class Surface3D extends AlgoStub
         
         // determine dimensions of result image
         ScalarArray3D<?> array = (ScalarArray3D<?>) this.imageHandle.getImage().getData();
-        int sizeX = array.size(0);
-        int sizeY = array.size(1);
-        int sizeZ = array.size(2);
-        int height = sizeZ;
+        int height = array.size(2);
         int depth = maxDepth - minDepth + 1;
         System.out.println(String.format("Output image size: [%d, %d, %d]", width, height, depth));
         
@@ -619,34 +618,38 @@ public class Surface3D extends AlgoStub
         
 //        Array2D<Point3D> points = GenericArray2D.create(width, height, new Point3D());
         
-        Float32Array2D xCoords = Float32Array2D.create(width, height); 
-        Float32Array2D yCoords = Float32Array2D.create(width, height); 
-        Float32Array2D zCoords = Float32Array2D.create(width, height);
-        
+
         System.out.println("Compute coordinates of 3D mesh");
         this.fireStatusChanged(this, "Compute coordinates of 3D mesh");
-        for (int iz = 0; iz < height; iz++)
-        {
-            LineString3D poly = polylines3d.get(iz);
-            if (poly == null)
-            {
-                System.out.println(String.format("No 3D polyline for slice index %d, continue...", iz));
-                continue;
-            }
-            
-            // resample polyline to get inner points
-            double len = poly.length();
-            double step = len / (width + 2 * 10);
-            LineString3D poly2 = poly.resampleBySpacing(step);
-            
-            for (int iv = 0; iv < width; iv++)
-            {
-                Point3D pt = poly2.vertexPosition(iv + 10);
-                xCoords.setValue(iv, iz, pt.getX());
-                yCoords.setValue(iv, iz, pt.getY());
-                zCoords.setValue(iv, iz, pt.getZ());
-            }
-        }
+        Float32Array2D[] coordArrays = computeCoordArrays(width, height, polylines3d);
+        //      Float32Array2D xCoords = Float32Array2D.create(width, height); 
+        //      Float32Array2D yCoords = Float32Array2D.create(width, height); 
+        //      Float32Array2D zCoords = Float32Array2D.create(width, height);
+        Float32Array2D xCoords = coordArrays[0]; 
+        Float32Array2D yCoords = coordArrays[1]; 
+        Float32Array2D zCoords = coordArrays[2]; 
+//        for (int iz = 0; iz < height; iz++)
+//        {
+//            LineString3D poly = polylines3d.get(iz);
+//            if (poly == null)
+//            {
+//                System.out.println(String.format("No 3D polyline for slice index %d, continue...", iz));
+//                continue;
+//            }
+//            
+//            // resample polyline to get inner points
+//            double len = poly.length();
+//            double step = len / (width + 2 * 10);
+//            LineString3D poly2 = poly.resampleBySpacing(step);
+//            
+//            for (int iv = 0; iv < width; iv++)
+//            {
+//                Point3D pt = poly2.vertexPosition(iv + 10);
+//                xCoords.setValue(iv, iz, pt.getX());
+//                yCoords.setValue(iv, iz, pt.getY());
+//                zCoords.setValue(iv, iz, pt.getZ());
+//            }
+//        }
         
         System.out.println("Smooth coordinates of 3D mesh...");
         this.fireStatusChanged(this, "Smooth coordinates of 3D mesh...");
@@ -662,6 +665,9 @@ public class Surface3D extends AlgoStub
         
         System.out.println("Evaluate image slice...");
         this.fireStatusChanged(this, "Evaluate image slice...");
+        UInt8Array3D array2 = new SliceBufferedUInt8Array3D((UInt8Array3D) array, 10);
+        ScalarFunction3D interp = new LinearInterpolator3D(array2);
+        
         // Evaluate image slice
         for (int iy = 0; iy < height; iy++)
         {
@@ -670,12 +676,7 @@ public class Surface3D extends AlgoStub
                 double x = xCoords.getValue(ix, iy);
                 double y = yCoords.getValue(ix, iy);
                 double z = zCoords.getValue(ix, iy);
-                if (x < 0 || x > sizeX) continue;
-                if (y < 0 || y > sizeY) continue;
-                if (z < 0 || z > sizeZ) continue;
-                
-                double value = array.getValue((int) x, (int) y, (int) z);
-                res2d.setValue(ix, iy, value);
+                res2d.setValue(ix, iy, interp.evaluate(x, y, z));
             }
         }
         Image sliceImage = new Image(res2d);
@@ -694,37 +695,7 @@ public class Surface3D extends AlgoStub
             return;
         }
         
-        // create derivation operations
-        FiniteDifferences derivU = new FiniteDifferences(0);
-        FiniteDifferences derivV = new FiniteDifferences(1);
-        
-        // allocate memory
-        Float32Array2D dxu = Float32Array2D.create(width, height);
-        Float32Array2D dxv = Float32Array2D.create(width, height);
-        Float32Array2D dyu = Float32Array2D.create(width, height);
-        Float32Array2D dyv = Float32Array2D.create(width, height);
-        Float32Array2D dzu = Float32Array2D.create(width, height);
-        Float32Array2D dzv = Float32Array2D.create(width, height);
-        
-        // performs derivations
-        derivU.processScalar(xCoords, dxu); 
-        derivV.processScalar(xCoords, dxv); 
-        derivU.processScalar(yCoords, dyu); 
-        derivV.processScalar(yCoords, dyv); 
-        derivU.processScalar(zCoords, dzu); 
-        derivV.processScalar(zCoords, dzv); 
-        
-        // evaluate normal vector for each vertex of the mesh
-        Array2D<Vector3D> normals = GenericArray2D.create(width, height, new Vector3D());
-        for (int iv = 0; iv < height; iv++)
-        {
-            for (int iu = 0; iu < width; iu++)
-            {
-                Vector3D du = new Vector3D(dxu.getValue(iu,iv), dyu.getValue(iu,iv), dzu.getValue(iu,iv));
-                Vector3D dv = new Vector3D(dxv.getValue(iu,iv), dyv.getValue(iu,iv), dzv.getValue(iu,iv));
-                normals.set(iu, iv, du.crossProduct(dv).normalize());
-            }
-        }
+        Array2D<Vector3D> normals = computeNormals(xCoords, yCoords, zCoords);
         
         // create result image
         System.out.println("Create result image...");
@@ -747,16 +718,13 @@ public class Surface3D extends AlgoStub
                     double y2 = pos2.getY();
                     double z2 = pos2.getZ();
                     
-                    // check point is within image
-                    if (x2 < 0 || x2 > sizeX - 1) continue;
-                    if (y2 < 0 || y2 > sizeY - 1) continue;
-                    if (z2 < 0 || z2 > sizeZ - 1) continue;
-                    
-                    double value = array.getValue((int) x2, (int) y2, (int) z2);
+                    // evaluate within 3D array
+                    double value = interp.evaluate(x2, y2, z2);
                     res3d.setValue(iu, iv, id, value);
                 }
             }
         }
+        this.fireProgressChanged(this, 1, 1);
         
         // convert 3D array to image
         Image image = new Image(res3d);
@@ -802,6 +770,80 @@ public class Surface3D extends AlgoStub
         }
         
         return map;
+    }
+    
+    private Float32Array2D[] computeCoordArrays(int width, int height, Map<Integer, LineString3D> polylines3d)
+    {
+        Float32Array2D xCoords = Float32Array2D.create(width, height); 
+        Float32Array2D yCoords = Float32Array2D.create(width, height); 
+        Float32Array2D zCoords = Float32Array2D.create(width, height);
+        
+        System.out.println("Compute coordinates of 3D mesh");
+        this.fireStatusChanged(this, "Compute coordinates of 3D mesh");
+        for (int iz = 0; iz < height; iz++)
+        {
+            LineString3D poly = polylines3d.get(iz);
+            if (poly == null)
+            {
+                System.out.println(String.format("No 3D polyline for slice index %d, continue...", iz));
+                continue;
+            }
+            
+            // resample polyline to get inner points
+            double len = poly.length();
+            double step = len / (width + 2 * 10);
+            LineString3D poly2 = poly.resampleBySpacing(step);
+            
+            for (int iv = 0; iv < width; iv++)
+            {
+                Point3D pt = poly2.vertexPosition(iv + 10);
+                xCoords.setValue(iv, iz, pt.getX());
+                yCoords.setValue(iv, iz, pt.getY());
+                zCoords.setValue(iv, iz, pt.getZ());
+            }
+        }
+        
+        return new Float32Array2D[] {xCoords, yCoords, zCoords};
+    }
+    
+    private Array2D<Vector3D> computeNormals(Float32Array2D xCoords, Float32Array2D yCoords, Float32Array2D zCoords)
+    {
+        int width = xCoords.size(0);
+        int height = xCoords.size(1);
+        
+        // create derivation operations
+        FiniteDifferences derivU = new FiniteDifferences(0);
+        FiniteDifferences derivV = new FiniteDifferences(1);
+        
+        // allocate memory
+        Float32Array2D dxu = Float32Array2D.create(width, height);
+        Float32Array2D dxv = Float32Array2D.create(width, height);
+        Float32Array2D dyu = Float32Array2D.create(width, height);
+        Float32Array2D dyv = Float32Array2D.create(width, height);
+        Float32Array2D dzu = Float32Array2D.create(width, height);
+        Float32Array2D dzv = Float32Array2D.create(width, height);
+        
+        // performs derivations
+        derivU.processScalar(xCoords, dxu); 
+        derivV.processScalar(xCoords, dxv); 
+        derivU.processScalar(yCoords, dyu); 
+        derivV.processScalar(yCoords, dyv); 
+        derivU.processScalar(zCoords, dzu); 
+        derivV.processScalar(zCoords, dzv); 
+        
+        // evaluate normal vector for each vertex of the mesh
+        Array2D<Vector3D> normals = GenericArray2D.create(width, height, new Vector3D());
+        for (int iv = 0; iv < height; iv++)
+        {
+            for (int iu = 0; iu < width; iu++)
+            {
+                Vector3D du = new Vector3D(dxu.getValue(iu,iv), dyu.getValue(iu,iv), dzu.getValue(iu,iv));
+                Vector3D dv = new Vector3D(dxv.getValue(iu,iv), dyv.getValue(iu,iv), dzv.getValue(iu,iv));
+                normals.set(iu, iv, du.crossProduct(dv).normalize());
+            }
+        }
+        
+        return normals;
     }
     
     // ===================================================================
