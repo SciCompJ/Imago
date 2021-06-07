@@ -348,7 +348,7 @@ public class JsonSceneReader
 		}
 		else
 		{
-			throw new RuntimeException("Unable to parse geometry wityh type: " + type);
+			throw new RuntimeException("Unable to parse geometry with type: " + type);
 		}
 		reader.endObject();
 		

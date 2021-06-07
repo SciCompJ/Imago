@@ -201,18 +201,19 @@ public class JsonSceneWriter
 	{
 		this.writer.beginObject();
 		
-		// write common properties
-		writeString("type", geom.getClass().getSimpleName());
+		// switch processing depending on geometry type
 		if (geom instanceof Point2D)
 		{
 			Point2D point = (Point2D) geom;
+	        writeString("type", "Point2D");
 			writer.name("x").value(point.getX());
 			writer.name("y").value(point.getY());
 		}
 		else if (geom instanceof Polyline2D)
 		{
 			Polyline2D poly = (Polyline2D) geom;
-
+			
+			writeString("type", poly.isClosed() ? "LinearRing2D" : "LineString2D");
 			writer.name("coords");
 			writer.beginArray();
 
@@ -221,6 +222,13 @@ public class JsonSceneWriter
 				writer.jsonValue("[ " + vertex.getX() + ", " + vertex.getY() + "]");
 			}
 			writer.endArray();
+		}
+		else
+		{
+		    // Default behavior for unknown geometries
+		    String geomType = geom.getClass().getSimpleName();
+		    writeString("type", geomType);
+            System.err.println("Warning: can not write data for geometry type " + geomType);
 		}
 
 		this.writer.endObject();
