@@ -19,8 +19,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.swing.JOptionPane;
-
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
@@ -32,9 +30,8 @@ import imago.app.scene.Node;
 import imago.app.scene.ShapeNode;
 import imago.app.scene.io.JsonSceneReader;
 import imago.app.scene.io.JsonSceneWriter;
-import imago.gui.ImageFrame;
 import imago.gui.ImageViewer;
-import imago.gui.viewer.StackSliceViewer;
+import imago.gui.ImagoFrame;
 import net.sci.algo.AlgoStub;
 import net.sci.array.Array;
 import net.sci.array.Array2D;
@@ -43,7 +40,6 @@ import net.sci.array.interp.LinearInterpolator3D;
 import net.sci.array.interp.ScalarFunction3D;
 import net.sci.array.process.math.FiniteDifferences;
 import net.sci.array.scalar.Float32Array2D;
-import net.sci.array.scalar.ScalarArray3D;
 import net.sci.array.scalar.SliceBufferedUInt8Array3D;
 import net.sci.array.scalar.UInt8Array2D;
 import net.sci.array.scalar.UInt8Array3D;
@@ -82,56 +78,200 @@ import net.sci.image.process.filter.GaussianFilter5x5;
  */
 public class Surface3D extends AlgoStub
 {
+    // ===================================================================
+    // Static factories
+    
+    public static final Surface3D loadAnalysis(File file, ImagoFrame parentFrame) throws IOException
+    {
+        // Default values to load
+        ImageInfo imageInfo = null;
+        ImageSerialSectionsNode polylinesNode = null;
+
+        // parse file using JSON
+        // create json file reader
+        FileReader fileReader = new FileReader(file);
+        JsonReader reader = new JsonReader(new BufferedReader(fileReader));
+
+        // start parsing Surface3D object
+        reader.beginObject();
+        while (reader.hasNext())
+        {
+            String name = reader.nextName();
+
+            if (name.equalsIgnoreCase("type"))
+            {
+                // check the file start with the Surface3D data header
+                String string = reader.nextString();
+                if (!string.equalsIgnoreCase("Surface3D"))
+                {
+                    throw new RuntimeException("Expect a file containing a Surface3D type data");
+                }
+            }
+            else if(name.equalsIgnoreCase("saveDate"))
+            {
+                reader.skipValue();
+            } 
+            else if(name.equalsIgnoreCase("image"))
+            {
+                imageInfo = readImageInfo(reader);
+            } 
+            else if(name.equalsIgnoreCase("polylines"))
+            {
+                // create a scene reader to parse polyline
+                JsonSceneReader sceneReader = new JsonSceneReader(reader);
+                Node node = sceneReader.readNode();
+
+                // expect a group node...
+                if (!(node instanceof ImageSerialSectionsNode))
+                {
+                    throw new RuntimeException("JSON file should contains a single ImageSerialSectionsNode instance.");
+                }
+
+                polylinesNode = (ImageSerialSectionsNode) node;
+            } 
+            else
+            {
+                System.out.println("Unknown field name when reading Surface3D: " + name);
+                reader.skipValue();
+            }
+        }
+        reader.endObject();
+
+        // Check necessary information have been loaded
+        if (imageInfo.filePath == null)
+        {
+            throw new RuntimeException("Could not load image file information.");
+        }
+        
+        // create a new plugin
+        CreateSurface3DPlugin newFrame = new CreateSurface3DPlugin();
+        newFrame.run(parentFrame, null);
+        
+        // create an image viewer for the file given in ImageInfo
+        newFrame.openImage(new File(imageInfo.filePath));
+        
+        Surface3D surf3d = newFrame.surf3d;
+        if (surf3d == null)
+        {
+            throw new RuntimeException("Expect inner surf3d field to be initialized");
+        }
+        
+        // update polylines of the new analysis
+        surf3d.populatePolylines((ImageSerialSectionsNode) polylinesNode);
+        newFrame.updatePolylineListView();
+        
+        // need to call this to update items to display 
+        ImageViewer viewer = newFrame.imageFrame.getImageView();
+        viewer.refreshDisplay(); 
+        viewer.repaint();
+        
+        return surf3d;
+    }
+
+
+    private static final ImageInfo readImageInfo(JsonReader reader) throws IOException
+    {
+        // initialize image info object with default values
+        ImageInfo imageInfo = new ImageInfo();
+    
+        // parse object fields
+        reader.beginObject();
+        while (reader.hasNext())
+        {
+            String name = reader.nextName();
+            if (name.equalsIgnoreCase("type"))
+            {
+                // check the file start with the Surface3D data header
+                if (!reader.nextString().equalsIgnoreCase("Image3D"))
+                {
+                    throw new RuntimeException("Expect a file containing a Image3D type data");
+                }
+            }
+            else if(name.equalsIgnoreCase("name"))
+            {
+                imageInfo.name = reader.nextString();
+            }
+            else if(name.equalsIgnoreCase("filePath"))
+            {
+                imageInfo.filePath = reader.nextString();
+            }
+            else if(name.equalsIgnoreCase("nDims"))
+            {
+                imageInfo.nDims = reader.nextInt();
+            }
+            else if(name.equalsIgnoreCase("size"))
+            {
+                imageInfo.size = readIntArray(reader, imageInfo.nDims);
+            }
+            else
+            {
+                System.out.println("Unknown field name when reading Image3D: " + name);
+                reader.skipValue();
+            }
+    
+        }
+        reader.endObject();
+    
+        return imageInfo;
+    }
+
+    private static final int[] readIntArray(JsonReader reader, int nItems) throws IOException
+    {
+        int[] res = new int[nItems];
+        reader.beginArray();
+        for (int d = 0; d < nItems; d++)
+        {
+            res[d] = reader.nextInt();
+        }
+        reader.endArray();
+        return res;
+    }
+
+    /**
+     * Utility class used to load information from an analysis.
+     */
+    private static class ImageInfo
+    {
+        @SuppressWarnings("unused")
+        String name = "";
+        String filePath = "";
+        int nDims = 0;
+        @SuppressWarnings("unused")
+        int[] size;
+    }
+
     
     // ===================================================================
     // Class members
-    
-    ImageFrame image3dFrame;
+
+    /**
+     * The handle to the data structure containing the image and the node tree.
+     */
     ImageHandle imageHandle;
+    
+    int nSlices;
     
     
     // ===================================================================
     // Constructor
 
-    public Surface3D(ImageFrame image3dFrame)
+    public Surface3D(ImageHandle imageHandle)
     {
-        this.image3dFrame = image3dFrame;
-        this.imageHandle = image3dFrame.getImageHandle();
+        this.imageHandle = imageHandle;
+
+        // get current image data
+        Image image = this.imageHandle.getImage();
+        Array<?> array = image.getData();
+        if (array.dimensionality() != 3)
+        {
+            throw new RuntimeException("Requires an image containing 3D Array");
+        }
+        nSlices = array.size(2);
     }
     
 
     // ===================================================================
     // Processing methods
-
-    
-    // ===================================================================
-    // Management of nodes
-    
-    /**
-     * Reset the nodes associated to a Crop3D plugin. 
-     * 
-     * @param handle the ImageHandle containing the nodes to reset.
-     */
-    public void initializeNodes()
-    {
-        // get root node
-        GroupNode rootNode = ((GroupNode) this.imageHandle.getRootNode());
-        
-        // remove old crop node if it exists
-        if (rootNode.hasChildWithName("surface3d"))
-        {
-            rootNode.removeNode(rootNode.getChild("surface3d"));
-        }
-        
-        // create new crop node
-        GroupNode cropNode = new GroupNode("surface3d");
-        rootNode.addNode(cropNode);
-    
-        // add child nodes
-        cropNode.addNode(new ImageSerialSectionsNode("polylines"));
-        cropNode.addNode(new ImageSerialSectionsNode("smooth"));
-        cropNode.addNode(new ImageSerialSectionsNode("interp"));
-    }
     
     /**
      * Reads the series of polylines from a file in JSON format.
@@ -152,40 +292,15 @@ public class Surface3D extends AlgoStub
         JsonReader jsonReader = new JsonReader(new BufferedReader(fileReader));
         sceneReader = new JsonSceneReader(jsonReader);
 
-        try 
+        // expect a group node...
+        Node node = sceneReader.readNode();
+        if (!(node instanceof ImageSerialSectionsNode))
         {
-            // expect a group node...
-            Node node = sceneReader.readNode();
-            if (!(node instanceof ImageSerialSectionsNode))
-            {
-                throw new RuntimeException("JSON file should contains a single ImageSerialSectionsNode instance.");
-            }
-            
-            ImageSerialSectionsNode polyNode = getPolylinesNode();
-            for(ImageSliceNode child : ((ImageSerialSectionsNode) node).children())
-            {
-                // check that all children of slice nodes are shape nodes with polyline2D geometry
-                for (Node child2 : child.children())
-                {
-                    if (!(child2 instanceof ShapeNode))
-                    {
-                        throw new RuntimeException("Expect all ImageSliceNode to contain shape nodes.");
-                    }
-                    
-                    if(!(((ShapeNode) child2).getGeometry() instanceof LineString2D))
-                    {
-                        throw new RuntimeException("Expect all Shape nodes to contain LineString2D geometries.");
-                    }
-                }
-                
-                polyNode.addSliceNode(child);
-            }
+            throw new RuntimeException("JSON file should contains a single ImageSerialSectionsNode instance.");
+        }
 
-        }
-        catch (IOException ex)
-        {
-            throw new RuntimeException(ex);
-        }
+//        ImageSerialSectionsNode polyNode = getPolylinesNode();
+        populatePolylines((ImageSerialSectionsNode) node);
 
         System.out.println("reading polylines terminated.");
     }
@@ -218,10 +333,14 @@ public class Surface3D extends AlgoStub
         jsonWriter.name("type").value("Image3D");
         jsonWriter.name("name").value(image.getName());
         jsonWriter.name("filePath").value(image.getFilePath());
-        jsonWriter.name("nDims").value(3);
         int[] dims = image.getData().size();
-        String sizeString = String.format("[%d, %d, %d]", dims[0], dims[1], dims[2]);
-        jsonWriter.name("size").value(sizeString);
+        jsonWriter.name("nDims").value(dims.length);
+        jsonWriter.name("size").beginArray();
+        for (int d : dims)
+        {
+            jsonWriter.value(d);
+        }
+        jsonWriter.endArray();
         jsonWriter.endObject();
         
         // one node for the polyline
@@ -254,55 +373,60 @@ public class Surface3D extends AlgoStub
         ImageSerialSectionsNode polyNode = getPolylinesNode();
         if (polyNode == null)
         {
-            System.err.println("Current image does not contain Surface polylines information");
-            return;
+            throw new RuntimeException("Current image does not contain Surface polylines information");
         }
         
-        try 
-        {
-            FileWriter fileWriter = new FileWriter(file.getAbsoluteFile());
-            JsonWriter jsonWriter = new JsonWriter(new PrintWriter(fileWriter));
-            jsonWriter.setIndent("  ");
-            JsonSceneWriter writer = new JsonSceneWriter(jsonWriter);
+        FileWriter fileWriter = new FileWriter(file.getAbsoluteFile());
+        JsonWriter jsonWriter = new JsonWriter(new PrintWriter(fileWriter));
+        jsonWriter.setIndent("  ");
+        JsonSceneWriter writer = new JsonSceneWriter(jsonWriter);
 
-            writer.writeNode(polyNode);
+        writer.writeNode(polyNode);
 
-            fileWriter.close();
-        }
-        catch (IOException ex)
-        {
-            throw new RuntimeException(ex);
-        }
+        fileWriter.close();
         
         System.out.println("Saving polylines terminated.");
+    }
+    
+    /**
+     * Populates the "polylines" node of current image handle from the specified
+     * ImageSerialSectionsNode.
+     * 
+     * @param polylinesNode
+     *            the node containing the map between slice indices and shape
+     */
+    public void populatePolylines(ImageSerialSectionsNode polylinesNode)
+    {
+        ImageSerialSectionsNode polyNode = getPolylinesNode();
+        for(ImageSliceNode child : polylinesNode.children())
+        {
+            // check that all children of slice nodes are shape nodes with polyline2D geometry
+            for (Node child2 : child.children())
+            {
+                if (!(child2 instanceof ShapeNode))
+                {
+                    throw new RuntimeException("Expect all ImageSliceNode to contain shape nodes.");
+                }
+
+                if(!(((ShapeNode) child2).getGeometry() instanceof LineString2D))
+                {
+                    throw new RuntimeException("Expect all Shape nodes to contain LineString2D geometries.");
+                }
+            }
+
+            polyNode.addSliceNode(child);
+        }
     }
     
     public void addPolyline(int sliceIndex, Polyline2D poly)
     {
         System.out.println("surface3d - add polyline");
-        
-        ImageViewer viewer = image3dFrame.getImageView();
-        if (!(viewer instanceof StackSliceViewer))
-        {
-            System.out.println("requires an instance of stack slice viewer");
-            return;
-        }
 
-        // get current image data
-        Image image = this.imageHandle.getImage();
-        Array<?> array = image.getData();
-        if (array.dimensionality() != 3)
-        {
-            throw new RuntimeException("Requires an image containing 3D Array");
-        }
-        int nSlices = array.size(2);
-
-        
         // select node containing manually delineated polygons
         ImageSerialSectionsNode polyNode = getPolylinesNode();
         
         // compute slice and polygon name 
-        int nDigits = (int) Math.ceil(Math.log10(nSlices));
+        int nDigits = (int) Math.ceil(Math.log10(this.nSlices));
         String sliceName = String.format(Locale.US, "slice%0" + nDigits + "d", sliceIndex);
         
         // Create a new LinearRing shape from the boundary of the polygon
@@ -341,36 +465,15 @@ public class Surface3D extends AlgoStub
     {
         System.out.println("surface3d - interpolate polylines");
 
-        // Check type is image frame
-        ImageViewer viewer = image3dFrame.getImageView();
-        if (!(viewer instanceof StackSliceViewer))
-        {
-            System.out.println("requires an instance of stack slice viewer");
-            return;
-        }
-
-        // get current image data
-        Image image = this.imageHandle.getImage();
-        Array<?> array = image.getData();
-        
         // number of digits for creating slice names
-        int nDigits = (int) Math.ceil(Math.log10(array.size(2)));
+        int nDigits = (int) Math.ceil(Math.log10(this.nSlices));
         String sliceNamePattern = "smooth%0" + nDigits + "d";
         
-        if (array.dimensionality() != 3)
-        {
-            throw new RuntimeException("Requires an image containing 3D Array");
-        }
-
         ImageSerialSectionsNode polyNode = getPolylinesNode();
         if (polyNode.isLeaf())
         {
-            JOptionPane.showMessageDialog(image3dFrame.getWidget(),
-                    "Requires the frame to contains valid Surface3D Polylines",
-                    "Surface3D Error", JOptionPane.INFORMATION_MESSAGE);
-            return;
+            throw new RuntimeException("Requires the frame to contains valid Surface3D Polylines");
         }
-        
         
         // clear output nodes
         ImageSerialSectionsNode smoothNode = getSmoothPolylinesNode();
@@ -435,10 +538,10 @@ public class Surface3D extends AlgoStub
             LineString2D nextPolyRef = getPolyline(smoothNode, nextSliceIndex);
             
             // compute projection points of current poly over next poly
-            LineString2D nextPoly = projectLineStringVertices(currentPoly, nextPolyRef);
+            LineString2D nextPoly = projectLineString(currentPoly, nextPolyRef);
             
             // smooth and re-project to have vertices distributed more regularly along target polyline
-            nextPoly = projectLineStringVertices(nextPoly.smooth(15), nextPolyRef);
+            nextPoly = projectLineString(nextPoly.smooth(15), nextPolyRef);
 
             // create shape for interpolated polygon
             interpNode.addSliceNode(createInterpNode(currentPoly, currentSliceIndex, nDigits));
@@ -491,10 +594,19 @@ public class Surface3D extends AlgoStub
         return sliceNode;
     }
     
-    private static final LineString2D projectLineStringVertices(LineString2D sourcePoly, LineString2D targetPoly)
+    /**
+     * Computes the projection of an open polyline onto another open polyline,
+     * by restricting projection to edges whose normal is in the same direction
+     * of source vertices.
+     * 
+     * @param sourcePoly
+     *            the polyline to project.
+     * @param targetPoly
+     *            the polyline to project on.
+     * @return a new polyline whose vertices are located on target polyline.
+     */
+    private static final LineString2D projectLineString(LineString2D sourcePoly, LineString2D targetPoly)
     {
-        int nv = sourcePoly.vertexCount();
-
         // compute normals to edges of source ring
         ArrayList<Vector2D> sourceEdgeNormals = lineStringEdgeNormals(sourcePoly);
 
@@ -503,9 +615,12 @@ public class Surface3D extends AlgoStub
         
         // pre-compute normals to edges of target ring
         ArrayList<Vector2D> edgeNormals = lineStringEdgeNormals(targetPoly);
-                    
-        // compute projection points of current poly over next poly
+        
+        // allocate memory for result
+        int nv = sourcePoly.vertexCount();
         LineString2D nextPoly = LineString2D.create(nv);
+
+        // compute projection points of current poly over next poly
         for (int iv = 0; iv < nv; iv++)
         {
             // retrieve coordinates of current vertex 
@@ -603,7 +718,7 @@ public class Surface3D extends AlgoStub
         this.fireStatusChanged(this, "Compute flattened surface 3D image");
         
         // determine dimensions of result image
-        ScalarArray3D<?> array = (ScalarArray3D<?>) this.imageHandle.getImage().getData();
+        UInt8Array3D array = (UInt8Array3D) this.imageHandle.getImage().getData();
         int height = array.size(2);
         int depth = maxDepth - minDepth + 1;
         System.out.println(String.format("Output image size: [%d, %d, %d]", width, height, depth));
@@ -616,40 +731,12 @@ public class Surface3D extends AlgoStub
         ImageSerialSectionsNode polyNode = getInterpolatedPolylinesNode();
         Map<Integer, LineString3D> polylines3d = convert2DPolylinesTo3DPolylines(polyNode);
         
-//        Array2D<Point3D> points = GenericArray2D.create(width, height, new Point3D());
-        
-
         System.out.println("Compute coordinates of 3D mesh");
         this.fireStatusChanged(this, "Compute coordinates of 3D mesh");
         Float32Array2D[] coordArrays = computeCoordArrays(width, height, polylines3d);
-        //      Float32Array2D xCoords = Float32Array2D.create(width, height); 
-        //      Float32Array2D yCoords = Float32Array2D.create(width, height); 
-        //      Float32Array2D zCoords = Float32Array2D.create(width, height);
         Float32Array2D xCoords = coordArrays[0]; 
         Float32Array2D yCoords = coordArrays[1]; 
         Float32Array2D zCoords = coordArrays[2]; 
-//        for (int iz = 0; iz < height; iz++)
-//        {
-//            LineString3D poly = polylines3d.get(iz);
-//            if (poly == null)
-//            {
-//                System.out.println(String.format("No 3D polyline for slice index %d, continue...", iz));
-//                continue;
-//            }
-//            
-//            // resample polyline to get inner points
-//            double len = poly.length();
-//            double step = len / (width + 2 * 10);
-//            LineString3D poly2 = poly.resampleBySpacing(step);
-//            
-//            for (int iv = 0; iv < width; iv++)
-//            {
-//                Point3D pt = poly2.vertexPosition(iv + 10);
-//                xCoords.setValue(iv, iz, pt.getX());
-//                yCoords.setValue(iv, iz, pt.getY());
-//                zCoords.setValue(iv, iz, pt.getZ());
-//            }
-//        }
         
         System.out.println("Smooth coordinates of 3D mesh...");
         this.fireStatusChanged(this, "Smooth coordinates of 3D mesh...");
@@ -665,7 +752,9 @@ public class Surface3D extends AlgoStub
         
         System.out.println("Evaluate image slice...");
         this.fireStatusChanged(this, "Evaluate image slice...");
-        UInt8Array3D array2 = new SliceBufferedUInt8Array3D((UInt8Array3D) array, 10);
+        
+        // create interpolation operators, using buffering of 3D image slices
+        UInt8Array3D array2 = new SliceBufferedUInt8Array3D(array, 10);
         ScalarFunction3D interp = new LinearInterpolator3D(array2);
         
         // Evaluate image slice
@@ -845,9 +934,37 @@ public class Surface3D extends AlgoStub
         
         return normals;
     }
+
     
     // ===================================================================
     // Management of nodes
+    
+    /**
+     * Resets the nodes associated to a Surface3D plugin. 
+     * 
+     * @param handle the ImageHandle containing the nodes to reset.
+     */
+    public void initializeNodes()
+    {
+        // get root node
+        GroupNode rootNode = ((GroupNode) this.imageHandle.getRootNode());
+        
+        // remove old crop node if it exists
+        if (rootNode.hasChildWithName("surface3d"))
+        {
+            rootNode.removeNode(rootNode.getChild("surface3d"));
+        }
+        
+        // create new crop node
+        GroupNode cropNode = new GroupNode("surface3d");
+        rootNode.addNode(cropNode);
+    
+        // add child nodes
+        cropNode.addNode(new ImageSerialSectionsNode("polylines"));
+        cropNode.addNode(new ImageSerialSectionsNode("smooth"));
+        cropNode.addNode(new ImageSerialSectionsNode("interp"));
+    }
+
 
     /**
      * @param handle
@@ -939,7 +1056,6 @@ public class Surface3D extends AlgoStub
         cropNode.addNode(polyNode);
         return polyNode;
     }
-
 
     /**
      * Retrieve the polyline geometry at the specified index from the serial

@@ -57,15 +57,31 @@ import net.sci.image.io.TiffImageReader;
  */
 public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
 {
+    /**
+     * The Surface3D instance that contains all the data.
+     * Initialized when a 3D image is loaded.
+     */
+    Surface3D surf3d;
+
+    /**
+     * The parent frame that was used to call the plugin, used for progress bar
+     * display.
+     */
     ImagoFrame parentFrame;
     
-    ImageFrame imageFrame;
+    /**
+     * The frame used to display plugin widgets (menu, buttons, and list of
+     * polyline items).
+     */
     JFrame jframe;
     
-    Surface3D surf3d;
-    
+    /**
+     * The frame used to display the 3D image, when loaded.
+     */
+    ImageFrame imageFrame;
     
     // menu items
+    JMenuItem loadAnalysisItem;
     JMenuItem loadPolylinesItem;
     JMenuItem savePolylinesItem;
     JMenuItem saveAnalysisItem;
@@ -88,10 +104,12 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
     String imagePath = null;
     String lastOpenPath = "D:/images/wheat/perigrain/Psiche_2018/HR/selection";
     
+    
     public CreateSurface3DPlugin()
     {
         System.out.println("create the CreateSurface3D plugin");
     }
+    
     
     @Override
     public void run(ImagoFrame parentFrame, String args)
@@ -117,24 +135,24 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
     
     private void createMenu(JFrame frame)
     {
-        // init menu items
-        loadPolylinesItem = new JMenuItem("Load Polylines...");
-        loadPolylinesItem.addActionListener(evt -> loadPolylines());
-        saveAnalysisItem = new JMenuItem("Save Analysis...");
-        saveAnalysisItem.addActionListener(evt -> saveAnalysis());
-        savePolylinesItem = new JMenuItem("Save Polylines...");
-        savePolylinesItem.addActionListener(evt -> savePolylines());
-
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
-        fileMenu.add(loadPolylinesItem);
+        addMenuItem(fileMenu, "Load Analysis...", evt -> loadAnalysis());
+        addMenuItem(fileMenu, "Load Polylines...", evt -> loadPolylines());
         fileMenu.addSeparator();
-        fileMenu.add(saveAnalysisItem);
-        fileMenu.add(savePolylinesItem);
-        
+        addMenuItem(fileMenu, "Save Analysis...", evt -> saveAnalysis());
+        addMenuItem(fileMenu, "Save Polylines...", evt -> savePolylines());
         
         menuBar.add(fileMenu);
         frame.setJMenuBar(menuBar);
+    }
+    
+    private JMenuItem addMenuItem(JMenu parentMenu, String label, Consumer<ActionEvent> action)
+    {
+        JMenuItem item = new JMenuItem(label);
+        item.addActionListener(evt -> action.accept(evt));
+        parentMenu.add(item);
+        return item;
     }
     
     private void setupLayout(JFrame frame)
@@ -201,6 +219,40 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         return button;
     }
     
+    public void loadAnalysis()
+    {
+        System.out.println("Load analysis");
+        
+        // create file dialog using last open path
+        openWindow = new JFileChooser(this.lastOpenPath);
+        openWindow.setDialogTitle("Read Surface3D analysis");
+        openWindow.setFileFilter(new FileNameExtensionFilter("JSON files (*.json)", "json"));
+
+        // Open dialog to choose the file
+        int ret = openWindow.showOpenDialog(parentFrame.getWidget());
+        if (ret != JFileChooser.APPROVE_OPTION) 
+        {
+            return;
+        }
+
+        // Check the chosen file is valid
+        File file = openWindow.getSelectedFile();
+        if (!file.isFile())
+        {
+            return;
+        }
+        
+        try 
+        {
+            Surface3D.loadAnalysis(file, this.parentFrame);
+        }
+        catch (IOException ex)
+        {
+            ex.printStackTrace(System.err);
+            throw new RuntimeException("Error during import of Surface3D analysis.", ex);
+        }
+    }
+
     /**
      * Callback for the "Load Polylines" menu item.
      */
@@ -262,13 +314,6 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
     public void saveAnalysis()
     {
         System.out.println("Save Analysis");
-        
-//        ImageSerialSectionsNode polyNode = surf3d.getPolylinesNode();
-//        if (polyNode == null)
-//        {
-//            System.err.println("Current image does not contain Surface3D polylines information");
-//            return;
-//        }
         
         // create file dialog using last save path
         String imageName = imageFrame.getImage().getName();
@@ -352,31 +397,16 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
     public void onOpenImageButton()
     {
         this.imageFrame = null;
-        chooseInputImage(parentFrame);
-        if (this.imageFrame == null)
+        File file = chooseInputImageFile(parentFrame);
+        if (file == null)
         {
             return;
         }
         
-        this.surf3d = new Surface3D(imageFrame);
-        this.surf3d.addAlgoListener(imageFrame);
-        
-        this.surf3d.initializeNodes();
-
-        // need to call this to update items to display
-        ImageViewer viewer = imageFrame.getImageView();
-        viewer.refreshDisplay(); 
-        viewer.repaint();
-        viewer.setCurrentTool(new SelectPolygonTool(imageFrame, "selectPolyline"));
-        
-        imageNameLabel.setText("Current Image: " + this.imageFrame.getImageHandle().getImage().getName());
-        
-        addPolylineButton.setEnabled(true);
-        removePolylineButton.setEnabled(true);
-        interpolateButton.setEnabled(true);
+        openImage(file);
     }
     
-    private void chooseInputImage(ImagoFrame parentFrame)
+    private File chooseInputImageFile(ImagoFrame parentFrame)
     {
         // create file dialog to read the 3D TIFF Image
         //        String lastPath = frame.getLastOpenPath();
@@ -388,29 +418,25 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         int ret = openWindow.showOpenDialog(parentFrame.getWidget());
         if (ret != JFileChooser.APPROVE_OPTION) 
         {
-            return;
+            return null;
         }
 
         // Check the chosen file is valid
         File file = openWindow.getSelectedFile();
         if (!file.isFile()) 
         {
-            return;
+            return null;
         }
-        this.imagePath = file.getAbsolutePath();
-
-
-        // eventually keep path for future opening
-        this.lastOpenPath = file.getPath();
-        String lastPath = parentFrame.getLastOpenPath();
-        if (lastPath == null || lastPath.isEmpty())
-        {
-            System.out.println("update frame path");
-            parentFrame.setLastOpenPath(this.lastOpenPath);
-        }
-
-
-        // Read a 3D virtual image from the chosen file
+        return file;
+    }
+    
+    /**
+     * Reads a 3D virtual image from the specified file, and creates a viewer.
+     *  
+     * @param file the image file to open.
+     */
+    public void openImage(File file)
+    {
         Image image;
         try 
         {
@@ -424,9 +450,35 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
             return;
         }
 
+        initializeImage(image);
+
+        // update last open path
+        this.imagePath = file.getAbsolutePath();
+        this.lastOpenPath = file.getPath();
+        this.imageFrame.setLastOpenPath(this.lastOpenPath);
+    }
+    
+    private void initializeImage(Image image)
+    {
         // add the image document to GUI
         this.imageFrame = parentFrame.createImageFrame(image);
-        this.imageFrame.setLastOpenPath(this.lastOpenPath);
+        
+        // initialize other fields
+        this.surf3d = new Surface3D(imageFrame.getImageHandle());
+        this.surf3d.addAlgoListener(imageFrame);
+        this.surf3d.initializeNodes();
+
+        // need to call this to update items to display
+        ImageViewer viewer = imageFrame.getImageView();
+        viewer.refreshDisplay(); 
+        viewer.repaint();
+        viewer.setCurrentTool(new SelectPolygonTool(imageFrame, "selectPolyline"));
+        
+        imageNameLabel.setText("Current Image: " + this.imageFrame.getImageHandle().getImage().getName());
+        
+        addPolylineButton.setEnabled(true);
+        removePolylineButton.setEnabled(true);
+        interpolateButton.setEnabled(true);
     }
 
     /**
@@ -490,10 +542,9 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         viewer.repaint();
     }
     
-    private void updatePolylineListView()
+    public void updatePolylineListView()
     {
         ImageSerialSectionsNode group = surf3d.getPolylinesNode();
-        
         
         Collection<Integer> sliceIndices = group.getSliceIndices(); 
         int nPolys = sliceIndices.size();
@@ -672,7 +723,7 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
             viewer.repaint();
         }
     }
-
+    
     /**
      * Static method used for debugging purpose.
      * 
