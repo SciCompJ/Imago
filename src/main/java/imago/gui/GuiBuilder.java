@@ -103,6 +103,7 @@ import imago.plugin.image.file.ImportImageVgi;
 import imago.plugin.image.file.OpenDemoImage;
 import imago.plugin.image.file.OpenDemoStack;
 import imago.plugin.image.file.OpenImage;
+import imago.plugin.image.file.PrintImageFileTiffTags;
 import imago.plugin.image.file.ReadImageTiff;
 import imago.plugin.image.file.ReadTiffStackSlice;
 import imago.plugin.image.file.ReadTiffVirtualImage3D;
@@ -289,13 +290,9 @@ public class GuiBuilder
 		JMenu fileMenu = new JMenu("File");
 		addPlugin(fileMenu, new CreateNewImage(), "New Image...");
 		addPlugin(fileMenu, new OpenImage(), "Open...");
-        addPlugin(fileMenu, new ReadImageTiff(), "Read TIFF...");
-        addPlugin(fileMenu, new ReadTiffVirtualImage3D(), "Read TIFF Virtual Image 3D...");
-        addPlugin(fileMenu, new ReadTiffStackSlice(), "Read TIFF Slice");
-        addPlugin(fileMenu, new ImportImageSeries(), "Import Image Series...");
 
 		// Import demo images
-		JMenu demoMenu = new JMenu("Open Demo Image");
+		JMenu demoMenu = new JMenu("Demo Images");
         addPlugin(demoMenu, new OpenDemoImage("files/grains.png"), "Rice grains");
         addPlugin(demoMenu, new OpenDemoImage("files/lena_gray_512.tif"), "Lena");
 		addPlugin(demoMenu, new OpenDemoImage("files/sunflower.png"), "Sunflower");
@@ -304,9 +301,20 @@ public class GuiBuilder
 		addPlugin(demoMenu, new CreateColorCubeImage3D(), "3D Color Cube");
         fileMenu.add(demoMenu);
 
+        // Import less common file formats
+        JMenu tiffFileMenu = new JMenu("Tiff Files");
+        addPlugin(tiffFileMenu, new ReadImageTiff(), "Read TIFF...");
+        addPlugin(tiffFileMenu, new ReadTiffVirtualImage3D(), "Read TIFF Virtual Image 3D...");
+        addPlugin(tiffFileMenu, new ReadTiffStackSlice(), "Read TIFF Slice...");
+        tiffFileMenu.addSeparator();
+        addPlugin(tiffFileMenu, new PrintImageFileTiffTags(), "Print Tiff File Tags...");
+        fileMenu.add(tiffFileMenu);
+        
 		// Import less common file formats
 		JMenu fileImportMenu = new JMenu("Import");
 		addPlugin(fileImportMenu, new ImportImageRawData(), "Raw Data...");
+        addPlugin(fileImportMenu, new ImportImageSeries(), "Import Image Series...");
+        fileImportMenu.addSeparator();
 		addPlugin(fileImportMenu, new ImportImageMetaImage(), "MetaImage Data...");
 		addPlugin(fileImportMenu, new ImportImageVgi(), "VGI Image...");
 		fileMenu.add(fileImportMenu);
