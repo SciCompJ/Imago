@@ -9,15 +9,14 @@ import java.awt.event.MouseEvent;
 import imago.gui.ImageFrame;
 import imago.gui.ImagoTool;
 import imago.gui.viewer.ImageDisplay;
-import imago.gui.viewer.PlanarImageViewer;
 import net.sci.geom.geom2d.Bounds2D;
 import net.sci.geom.geom2d.Point2D;
 
 /**
- * Select a rectangular box on a planar viewer
+ * Select a rectangular box on current viewer. Can be used for slice viewer of
+ * 3D images as well.
  * 
  * @author David Legland
- *
  */
 public class SelectRectangleTool extends ImagoTool
 {
@@ -86,14 +85,10 @@ public class SelectRectangleTool extends ImagoTool
             this.y2 = y;
             this.state = 2;
             
-            if ((this.viewer.getImageView() instanceof PlanarImageViewer))
-            {
-                Bounds2D box = new Bounds2D(x1, x2, y1, y2);
-                
-                PlanarImageViewer piv = (PlanarImageViewer) this.viewer.getImageView();
-                piv.setSelection(box);
-                display.setSelection(box);
-            }  
+            Bounds2D box = new Bounds2D(x1, x2, y1, y2);
+
+            display.setSelection(box);
+            this.viewer.getImageView().setSelection(box);
         }
         else
         {
@@ -118,13 +113,10 @@ public class SelectRectangleTool extends ImagoTool
         Point2D pos = display.displayToImage(point);
         double x = pos.getX();
         double y = pos.getY();
-     
-        if ((this.viewer.getImageView() instanceof PlanarImageViewer))
-        {
-            Bounds2D line = new Bounds2D(x1, x, y1, y);
-            display.setSelection(line);
-            this.viewer.repaint();
-        }  
+        
+        Bounds2D box = new Bounds2D(x1, x, y1, y);
+        display.setSelection(box);
+        this.viewer.repaint();
     }
 
 }
