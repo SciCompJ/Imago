@@ -22,7 +22,7 @@ import javax.swing.event.ChangeListener;
 import imago.app.ImageHandle;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoTool;
-import net.sci.geom.geom2d.Geometry2D;
+import net.sci.geom.Geometry;
 import net.sci.image.BufferedImageUtils;
 import net.sci.image.process.shape.ImageSlicer;
 
@@ -61,7 +61,7 @@ public class OrthoSlicesViewer extends ImageViewer implements ChangeListener, Ac
 	/**
      * The shape of the current selection, usually a polyline or a rectangle, in pixels coordinates.
      */
-    protected Geometry2D selection = null;
+    protected Geometry selection = null;
 
     
 	// ===================================================================
@@ -174,12 +174,12 @@ public class OrthoSlicesViewer extends ImageViewer implements ChangeListener, Ac
     // ===================================================================
     // selection management
 
-	public Geometry2D getSelection()
+	public Geometry getSelection()
     {
         return this.selection;
     }
     
-    public void setSelection(Geometry2D shape)
+    public void setSelection(Geometry shape)
     {
         this.selection = shape;
     }

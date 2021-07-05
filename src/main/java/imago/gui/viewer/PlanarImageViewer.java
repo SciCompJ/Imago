@@ -102,15 +102,29 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 		return imageDisplay;
 	}
 
+	/**
+	 * @return the current selection, as a Geometry2D instance.
+	 */
 	public Geometry2D getSelection()
 	{
 		return this.selection;
 	}
 	
-	public void setSelection(Geometry2D shape)
+	/**
+     * @param selection
+     *            the selection of the current viewer, as an instance of
+     *            Geometry2D.
+     */
+	public void setSelection(Geometry selection)
 	{
-		this.selection = shape;
-		this.imageDisplay.setSelection(shape);
+	    if (!(selection instanceof Geometry2D))
+	    {
+	        throw new RuntimeException("Selection must be an instance of Geometry2D");
+	    }
+	    
+	    
+		this.selection = (Geometry2D) selection;
+		this.imageDisplay.setSelection((Geometry2D) selection);
 	}
 	
 	// ===================================================================
@@ -142,6 +156,7 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 		setZoom(zoom);
 	}
 
+	
 	// ===================================================================
 	// tool management
 

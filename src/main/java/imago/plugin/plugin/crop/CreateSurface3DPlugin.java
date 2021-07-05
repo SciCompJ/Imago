@@ -40,7 +40,7 @@ import imago.gui.ImagoGui;
 import imago.gui.dialogs.AlgoProgressMonitor;
 import imago.gui.tool.SelectPolygonTool;
 import imago.gui.viewer.StackSliceViewer;
-import net.sci.geom.geom2d.Geometry2D;
+import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.polygon.LineString2D;
 import net.sci.geom.geom2d.polygon.Polyline2D;
 import net.sci.image.Image;
@@ -491,7 +491,7 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         StackSliceViewer piv = (StackSliceViewer) viewer;
         int sliceIndex = piv.getSliceIndex();
         
-        Geometry2D selection = piv.getSelection();
+        Geometry selection = piv.getSelection();
         if (!(selection instanceof Polyline2D))
         {
             System.out.println("requires selection to be a simple polyline");

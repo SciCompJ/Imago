@@ -65,7 +65,7 @@ public class ImageSelectionToSceneGraph implements FramePlugin
 
 		
         PlanarImageViewer piv = (PlanarImageViewer) viewer;
-        Geometry2D selection = piv.getSelection();
+        Geometry2D selection = (Geometry2D) piv.getSelection();
         if (!(selection instanceof Polygon2D))
         {
             System.out.println("requires selection to be a simple polygon");

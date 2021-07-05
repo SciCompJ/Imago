@@ -7,7 +7,7 @@ package imago.gui;
 import imago.app.ImageHandle;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.vector.VectorArray;
-import net.sci.geom.geom2d.Geometry2D;
+import net.sci.geom.Geometry;
 import net.sci.image.Image;
 
 
@@ -110,20 +110,31 @@ public abstract class ImageViewer
 
 	// ===================================================================
     // General methods
+	
+	/**
+	 * @return the current selection, as a Geometry instance, or null if no selection exists.
+	 */
+	public abstract Geometry getSelection();
 
-	public abstract Geometry2D getSelection();
-
-	public abstract void setSelection(Geometry2D shape);
+	/**
+     * Changes the current selection of the viewer.
+     * 
+     * @param selection
+     *            an instance of Geometry representing the selection region
+     *            within the viewer.
+     */
+	public abstract void setSelection(Geometry selection);
 
 	
 	// ===================================================================
 	// General methods
 
 	/**
-	 * Returns the preview image if is it not null, or the image otherwise.
-	 * 
-	 * @return the preview image if is it not null, or the image otherwise.
-	 */
+     * Returns the image to display, which can be a preview image, or the
+     * reference image.
+     * 
+     * @return the preview image if is it not null, or the image otherwise.
+     */
 	public Image getImageToDisplay() 
 	{
 		if (this.previewImage != null)

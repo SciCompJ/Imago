@@ -64,7 +64,7 @@ public class ImageSelectionToDistanceMap implements FramePlugin
 
 		
         PlanarImageViewer piv = (PlanarImageViewer) viewer;
-        Geometry2D selection = piv.getSelection();
+        Geometry2D selection = (Geometry2D) piv.getSelection();
 
         // create array for result
         int sizeX = array.size(0);

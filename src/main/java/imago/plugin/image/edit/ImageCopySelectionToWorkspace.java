@@ -12,7 +12,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.FramePlugin;
 import imago.gui.viewer.PlanarImageViewer;
 import net.sci.array.Array;
-import net.sci.geom.geom2d.Geometry2D;
+import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.polygon.Polygon2D;
 import net.sci.image.Image;
 
@@ -64,7 +64,7 @@ public class ImageCopySelectionToWorkspace implements FramePlugin
 
 		
         PlanarImageViewer piv = (PlanarImageViewer) viewer;
-        Geometry2D selection = piv.getSelection();
+        Geometry selection = piv.getSelection();
         if (!(selection instanceof Polygon2D))
         {
             System.out.println("requires selection to be a simple polygon");

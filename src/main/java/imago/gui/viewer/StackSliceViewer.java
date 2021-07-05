@@ -63,7 +63,7 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 	/**
      * The shape of the current selection, usually a polyline or a rectangle, in pixels coordinates.
      */
-    protected Geometry2D selection = null;
+    protected Geometry selection = null;
 
 	protected ImagoTool currentTool = null;
 
@@ -166,17 +166,17 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
     // ===================================================================
     // Selection management
 
-	public Geometry2D getSelection()
+	public Geometry getSelection()
     {
         return this.selection;
     }
 
-    public void setSelection(Geometry2D shape)
+    public void setSelection(Geometry selection)
     {
-        this.selection = shape;
-        if (this.selection == null)
+        this.selection = selection;
+        if (selection == null || selection instanceof Geometry2D)
         {
-        	this.imageDisplay.selection = null;
+        	this.imageDisplay.selection = (Geometry2D) selection;
         }
     }
 	    
