@@ -85,6 +85,7 @@ import imago.plugin.image.edit.ImageSelectionToSceneGraph;
 import imago.plugin.image.edit.ImageSetBackgroundColor;
 import imago.plugin.image.edit.ImageSetColorMapFactory;
 import imago.plugin.image.edit.ImageSetScale;
+import imago.plugin.image.edit.ImageSetScaleFromLineSelection;
 import imago.plugin.image.edit.ImportSelectionFromWorkspace;
 import imago.plugin.image.edit.PrintImageInfos;
 import imago.plugin.image.edit.PrintImageSceneGraph;
@@ -681,6 +682,7 @@ public class GuiBuilder
     //                    "Draw Black", hasScalarImage);
     
                 toolsMenu.addSeparator();
+                addPlugin(toolsMenu, new ImageSetScaleFromLineSelection(), "Set Scale from Selection...", hasImage);
     		}
     
     		return toolsMenu;
