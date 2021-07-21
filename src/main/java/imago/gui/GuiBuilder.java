@@ -95,6 +95,7 @@ import imago.plugin.image.edit.SetImageDisplayRange;
 import imago.plugin.image.edit.SetImageDisplayRangeToData;
 import imago.plugin.image.edit.SetImageDisplayRangeToDataType;
 import imago.plugin.image.edit.SetImageTypeToLabel;
+import imago.plugin.image.edit.ShowSceneGraphTree;
 import imago.plugin.image.edit.ToggleSceneGraphDisplay;
 import imago.plugin.image.file.CreateNewImage;
 import imago.plugin.image.file.ImportImageMetaImage;
@@ -365,9 +366,10 @@ public class GuiBuilder
         // add utility
 		editMenu.addSeparator();
 		JMenu sceneGraphMenu = new JMenu("Scene Graph");
-		addPlugin(sceneGraphMenu, new ToggleSceneGraphDisplay(), "Toggle Scene Graph Display");
-		addPlugin(sceneGraphMenu, new ImageSelectionToSceneGraph(), "Add Selection to scene graph");
+        addPlugin(sceneGraphMenu, new ImageSelectionToSceneGraph(), "Add Selection to scene graph");
+		addPlugin(sceneGraphMenu, new ShowSceneGraphTree(), "Display Scene Graph Tree");
 		addPlugin(sceneGraphMenu, new PrintImageSceneGraph(), "Print SceneGraph Tree");
+        addPlugin(sceneGraphMenu, new ToggleSceneGraphDisplay(), "Toggle Scene Graph Display");
 		editMenu.add(sceneGraphMenu);
 		
 		addPlugin(editMenu, new DocClearShapes(), "Clear Shapes");
