@@ -8,9 +8,9 @@ import imago.app.ImageHandle;
 import imago.app.ObjectHandle;
 import imago.app.Workspace;
 import imago.gui.GenericDialog;
-import imago.gui.ImageFrame;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
+import imago.gui.frames.ImageFrame;
 import imago.gui.FramePlugin;
 import imago.gui.viewer.PlanarImageViewer;
 

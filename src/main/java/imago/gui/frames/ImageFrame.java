@@ -1,9 +1,14 @@
 /**
  * 
  */
-package imago.gui;
+package imago.gui.frames;
 
 import imago.app.ImageHandle;
+import imago.gui.GuiBuilder;
+import imago.gui.ImageViewer;
+import imago.gui.ImagoFrame;
+import imago.gui.ImagoGui;
+import imago.gui.ImagoTool;
 import imago.gui.panel.ImageDisplayOptionsPanel;
 import imago.gui.panel.StatusBar;
 import imago.gui.tool.DisplayCurrentValueTool;

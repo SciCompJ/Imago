@@ -12,9 +12,9 @@ import org.knowm.xchart.style.colors.XChartSeriesColors;
 import org.knowm.xchart.style.markers.SeriesMarkers;
 
 import imago.gui.ImageViewer;
-import imago.gui.ImagoChartFrame;
-import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
+import imago.gui.frames.ImageFrame;
+import imago.gui.frames.ImagoChartFrame;
 import imago.gui.viewer.PlanarImageViewer;
 import imago.plugin.image.ImagePlugin;
 import net.sci.array.Array;

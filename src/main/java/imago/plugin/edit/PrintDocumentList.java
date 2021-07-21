@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 import imago.app.ImageHandle;
 import imago.gui.ImagoFrame;
-import imago.gui.ImagoTextFrame;
+import imago.gui.frames.ImagoTextFrame;
 import imago.gui.FramePlugin;
 
 /**

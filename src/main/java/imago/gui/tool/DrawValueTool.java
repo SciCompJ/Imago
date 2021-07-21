@@ -3,8 +3,8 @@
  */
 package imago.gui.tool;
 
-import imago.gui.ImageFrame;
 import imago.gui.ImagoTool;
+import imago.gui.frames.ImageFrame;
 import imago.gui.viewer.ImageDisplay;
 import imago.gui.viewer.StackSliceViewer;
 

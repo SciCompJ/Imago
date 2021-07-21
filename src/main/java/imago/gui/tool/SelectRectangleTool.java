@@ -6,8 +6,8 @@ package imago.gui.tool;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 
-import imago.gui.ImageFrame;
 import imago.gui.ImagoTool;
+import imago.gui.frames.ImageFrame;
 import imago.gui.viewer.ImageDisplay;
 import net.sci.geom.geom2d.Bounds2D;
 import net.sci.geom.geom2d.Point2D;

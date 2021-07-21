@@ -6,7 +6,7 @@ package imago.plugin.table.edit;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.TableFrame;
+import imago.gui.frames.TableFrame;
 import imago.plugin.table.TablePlugin;
 import net.sci.array.scalar.Float32Array;
 import net.sci.image.Image;

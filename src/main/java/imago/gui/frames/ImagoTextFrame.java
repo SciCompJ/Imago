@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.gui;
+package imago.gui.frames;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,6 +9,8 @@ import java.util.Collection;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
+
+import imago.gui.ImagoFrame;
 
 /**
  * A frame that displays a block of text.

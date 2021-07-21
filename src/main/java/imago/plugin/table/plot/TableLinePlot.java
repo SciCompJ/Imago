@@ -11,9 +11,9 @@ import org.knowm.xchart.style.Styler.LegendPosition;
 import org.knowm.xchart.style.markers.SeriesMarkers;
 
 import imago.gui.GenericDialog;
-import imago.gui.ImagoChartFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.TableFrame;
+import imago.gui.frames.ImagoChartFrame;
+import imago.gui.frames.TableFrame;
 import imago.plugin.table.TablePlugin;
 import net.sci.table.Table;
 

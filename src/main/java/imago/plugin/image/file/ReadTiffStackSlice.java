@@ -11,9 +11,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
-import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
+import imago.gui.frames.ImageFrame;
 import net.sci.image.Image;
 import net.sci.image.io.TiffImageReader;
 

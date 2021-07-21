@@ -5,8 +5,8 @@ package imago.gui.action;
 
 import imago.gui.ImageViewer;
 import imago.gui.ImagoAction;
-import imago.gui.ImageFrame;
 import imago.gui.ImagoTool;
+import imago.gui.frames.ImageFrame;
 
 import java.awt.event.ActionEvent;
 

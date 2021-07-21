@@ -8,6 +8,8 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
+import imago.gui.frames.ImageFrame;
+import imago.gui.frames.TableFrame;
 import net.sci.image.Image;
 import net.sci.table.Table;
 
@@ -15,8 +17,11 @@ import net.sci.table.Table;
  * The superclass of all Imago frames. 
  * Keeps a reference to the current ImagoGui instance.
  * 
- * @see ImageFrame.gui.ImagoDocViewer
- * @see TableFrame.gui.ImagoTableFrame
+ * Most frames implementations are located in the {@link imago.gui.frames} package.
+
+ * @see imago.gui.frames.ImageFrame
+ * @see imago.gui.frames.TableFrame
+ * @see imago.gui.frames.ImagoTextFrame
  * 
  * @author David Legland
  *
@@ -27,21 +32,21 @@ public abstract class ImagoFrame
 	 * Reference to the global GUI, for retrieving other frames open within the
 	 * current application
 	 */
-	ImagoGui gui;
+    protected ImagoGui gui;
 
-	ImagoFrame parent = null;
+	protected ImagoFrame parent = null;
 	
-	ArrayList<ImagoFrame> children = new ArrayList<>(0);
+	protected ArrayList<ImagoFrame> children = new ArrayList<>(0);
 	
 	/**
 	 * The Swing widget used to display this frame.
 	 */
-	JFrame jFrame;
+	protected JFrame jFrame;
 	
 	/**
 	 * The path to the directory that was used to save this document.
 	 */
-	String lastOpenPath = ".";
+	protected String lastOpenPath = ".";
 	
 
 	// ===================================================================

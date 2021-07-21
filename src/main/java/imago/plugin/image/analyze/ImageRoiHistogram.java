@@ -20,9 +20,9 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import imago.gui.ImageViewer;
-import imago.gui.ImagoChartFrame;
-import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
+import imago.gui.frames.ImageFrame;
+import imago.gui.frames.ImagoChartFrame;
 import imago.gui.FramePlugin;
 import imago.gui.viewer.PlanarImageViewer;
 import net.sci.array.Array;

@@ -6,9 +6,9 @@ package imago.plugin.image.analyze;
 import imago.app.ImageHandle;
 import imago.app.shape.Shape;
 import imago.gui.GenericDialog;
-import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
+import imago.gui.frames.ImageFrame;
 import imago.gui.FramePlugin;
 
 import java.util.Collection;

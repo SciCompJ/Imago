@@ -1,4 +1,4 @@
-package imago.gui;
+package imago.gui.util;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Font;

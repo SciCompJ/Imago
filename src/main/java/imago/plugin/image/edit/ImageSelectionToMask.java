@@ -8,6 +8,8 @@ import imago.gui.FramePlugin;
 import imago.gui.ImageFrame;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
+import imago.gui.frames.ImageFrame;
+import imago.gui.FramePlugin;
 import imago.gui.viewer.PlanarImageViewer;
 import net.sci.array.Array;
 import net.sci.array.scalar.BinaryArray2D;

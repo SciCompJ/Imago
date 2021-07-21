@@ -4,7 +4,7 @@
 package imago.plugin.table;
 
 import imago.gui.ImagoFrame;
-import imago.gui.TableFrame;
+import imago.gui.frames.TableFrame;
 import imago.gui.FramePlugin;
 
 /**

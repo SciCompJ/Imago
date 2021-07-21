@@ -1,10 +1,14 @@
 /**
  * 
  */
-package imago.gui;
+package imago.gui.frames;
 
 
 import java.awt.Dimension;
+
+import imago.gui.GuiBuilder;
+import imago.gui.ImagoFrame;
+import imago.gui.ImagoGui;
 
 
 /**

@@ -4,8 +4,8 @@
 package imago.plugin.edit;
 
 import imago.gui.ImageViewer;
-import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
+import imago.gui.frames.ImageFrame;
 import imago.gui.FramePlugin;
 
 /**

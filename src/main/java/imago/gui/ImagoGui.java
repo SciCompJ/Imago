@@ -21,6 +21,9 @@ import javax.swing.UIManager;
 import imago.app.ImagoApp;
 import imago.app.ImageHandle;
 import imago.app.TableHandle;
+import imago.gui.frames.ImageFrame;
+import imago.gui.frames.ImagoEmptyFrame;
+import imago.gui.frames.TableFrame;
 import net.sci.image.Image;
 import net.sci.table.Table;
 

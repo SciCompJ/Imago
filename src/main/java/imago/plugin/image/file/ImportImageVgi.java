@@ -9,8 +9,8 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
+import imago.gui.frames.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.image.Image;
 import net.sci.image.io.VgiImageReader;

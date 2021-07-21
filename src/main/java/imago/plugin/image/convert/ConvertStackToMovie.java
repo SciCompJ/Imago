@@ -4,8 +4,8 @@
 package imago.plugin.image.convert;
 
 import imago.app.ImageHandle;
-import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
+import imago.gui.frames.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.image.Calibration;
 import net.sci.image.Image;

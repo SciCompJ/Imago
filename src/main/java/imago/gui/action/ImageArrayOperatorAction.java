@@ -5,9 +5,9 @@ package imago.gui.action;
 
 import java.awt.event.ActionEvent;
 
-import imago.gui.ImageFrame;
 import imago.gui.ImagoAction;
 import imago.gui.ImagoFrame;
+import imago.gui.frames.ImageFrame;
 import net.sci.array.Array;
 import net.sci.image.Image;
 import net.sci.image.ImageArrayOperator;

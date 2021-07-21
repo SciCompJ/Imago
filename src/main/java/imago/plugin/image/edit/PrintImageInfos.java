@@ -8,9 +8,9 @@ import java.util.ArrayList;
 
 import imago.app.ImageHandle;
 import imago.gui.FramePlugin;
-import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.ImagoTextFrame;
+import imago.gui.frames.ImageFrame;
+import imago.gui.frames.ImagoTextFrame;
 import net.sci.axis.Axis;
 import net.sci.image.Calibration;
 import net.sci.image.Image;

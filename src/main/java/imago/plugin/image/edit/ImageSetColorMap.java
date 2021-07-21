@@ -4,8 +4,8 @@
 package imago.plugin.image.edit;
 
 import imago.app.ImageHandle;
-import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
+import imago.gui.frames.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.image.ColorMap;
 import net.sci.image.Image;

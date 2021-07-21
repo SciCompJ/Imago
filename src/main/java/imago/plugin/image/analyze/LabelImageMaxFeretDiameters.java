@@ -9,6 +9,7 @@ import java.util.Map;
 import imago.app.ImageHandle;
 import imago.app.shape.Shape;
 import imago.gui.*;
+import imago.gui.frames.ImageFrame;
 import net.sci.array.Array;
 import net.sci.array.scalar.IntArray2D;
 import net.sci.geom.geom2d.LineSegment2D;

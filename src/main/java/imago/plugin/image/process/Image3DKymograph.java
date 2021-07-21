@@ -4,8 +4,8 @@
 package imago.plugin.image.process;
 
 import imago.gui.ImageViewer;
-import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
+import imago.gui.frames.ImageFrame;
 import imago.plugin.image.ImagePlugin;
 import net.sci.array.Array;
 import net.sci.array.scalar.ScalarArray3D;

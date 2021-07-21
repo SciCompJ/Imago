@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import net.sci.table.Table;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
-import imago.gui.TableFrame;
+import imago.gui.frames.TableFrame;
 import imago.plugin.table.TablePlugin;
 
 /**

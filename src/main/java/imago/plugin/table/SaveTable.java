@@ -10,7 +10,7 @@ import javax.swing.JFileChooser;
 
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.TableFrame;
+import imago.gui.frames.TableFrame;
 import net.sci.table.Table;
 import net.sci.table.io.DelimitedTableWriter;
 

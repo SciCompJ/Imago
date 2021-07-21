@@ -1,9 +1,11 @@
 /**
  * 
  */
-package imago.gui;
+package imago.gui.frames;
 
 import imago.app.TableHandle;
+import imago.gui.GuiBuilder;
+import imago.gui.ImagoFrame;
 import imago.gui.util.RowNumberTable;
 
 import java.awt.BorderLayout;

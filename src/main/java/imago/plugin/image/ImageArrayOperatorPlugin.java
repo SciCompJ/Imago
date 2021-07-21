@@ -3,8 +3,8 @@
  */
 package imago.plugin.image;
 
-import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
+import imago.gui.frames.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.ArrayOperator;
 import net.sci.image.Image;

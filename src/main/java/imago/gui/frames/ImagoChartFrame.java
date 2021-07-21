@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.gui;
+package imago.gui.frames;
 
 import java.awt.Point;
 import java.lang.reflect.InvocationTargetException;
@@ -11,6 +11,9 @@ import javax.swing.WindowConstants;
 
 import org.knowm.xchart.XChartPanel;
 import org.knowm.xchart.internal.chartpart.Chart;
+
+import imago.gui.ImagoFrame;
+import imago.gui.ImagoGui;
 
 /**
  *  

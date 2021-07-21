@@ -7,9 +7,9 @@ import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
 
-import imago.gui.ImagoChartFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.TableFrame;
+import imago.gui.frames.ImagoChartFrame;
+import imago.gui.frames.TableFrame;
 import imago.plugin.table.TablePlugin;
 import net.sci.table.Table;
 

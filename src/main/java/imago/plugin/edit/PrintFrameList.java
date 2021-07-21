@@ -7,9 +7,9 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
-import imago.gui.ImagoTextFrame;
+import imago.gui.frames.ImageFrame;
+import imago.gui.frames.ImagoTextFrame;
 import imago.gui.FramePlugin;
 
 /**

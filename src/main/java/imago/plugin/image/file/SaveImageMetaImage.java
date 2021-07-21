@@ -8,10 +8,10 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import imago.gui.ImageFrame;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
+import imago.gui.frames.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.image.Image;
 import net.sci.image.io.MetaImageWriter;

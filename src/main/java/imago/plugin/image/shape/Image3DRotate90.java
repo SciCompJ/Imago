@@ -5,8 +5,8 @@ package imago.plugin.image.shape;
 
 import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
-import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
+import imago.gui.frames.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.process.shape.Rotate3D90;

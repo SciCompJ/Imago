@@ -14,6 +14,9 @@ import javax.swing.JMenuItem;
 
 import imago.app.ImageHandle;
 import imago.gui.action.RunPluginAction;
+import imago.gui.frames.ImageFrame;
+import imago.gui.frames.ImagoEmptyFrame;
+import imago.gui.frames.TableFrame;
 import imago.gui.tool.DrawBrushValueTool;
 import imago.gui.tool.DrawValueTool;
 import imago.gui.tool.SelectLineSegmentTool;

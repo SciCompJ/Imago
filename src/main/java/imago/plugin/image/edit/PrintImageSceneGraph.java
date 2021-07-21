@@ -5,8 +5,8 @@ package imago.plugin.image.edit;
 
 import imago.app.ImageHandle;
 import imago.app.scene.Node;
-import imago.gui.ImageFrame;
 import imago.gui.ImagoFrame;
+import imago.gui.frames.ImageFrame;
 import imago.gui.FramePlugin;
 
 /**
