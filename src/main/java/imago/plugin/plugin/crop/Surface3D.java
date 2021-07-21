@@ -32,6 +32,8 @@ import imago.app.scene.io.JsonSceneReader;
 import imago.app.scene.io.JsonSceneWriter;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
+import net.sci.algo.AlgoEvent;
+import net.sci.algo.AlgoListener;
 import net.sci.algo.AlgoStub;
 import net.sci.array.Array;
 import net.sci.array.Array2D;
@@ -76,7 +78,7 @@ import net.sci.image.process.filter.GaussianFilter5x5;
  * @author dlegland
  *
  */
-public class Surface3D extends AlgoStub
+public class Surface3D extends AlgoStub implements AlgoListener
 {
     // ===================================================================
     // Static factories
@@ -821,6 +823,9 @@ public class Surface3D extends AlgoStub
         // and save image
         System.out.println("Save 3D image...");
         MetaImageWriter writer = new MetaImageWriter(outputFileName);
+        // use this Surface3D object to propagate algo events
+        writer.addAlgoListener(this);
+        
         try
         {
             writer.writeImage(image);
@@ -857,6 +862,7 @@ public class Surface3D extends AlgoStub
             // add to map
             map.put(sliceIndex, poly3d);
         }
+        this.fireProgressChanged(this, 1, 1);
         
         return map;
     }
@@ -871,6 +877,9 @@ public class Surface3D extends AlgoStub
         this.fireStatusChanged(this, "Compute coordinates of 3D mesh");
         for (int iz = 0; iz < height; iz++)
         {
+//            System.out.println(String.format("  z = %d / %d", iz, height));
+            this.fireProgressChanged(this, iz, height);
+            
             LineString3D poly = polylines3d.get(iz);
             if (poly == null)
             {
@@ -891,6 +900,7 @@ public class Surface3D extends AlgoStub
                 zCoords.setValue(iv, iz, pt.getZ());
             }
         }
+        this.fireProgressChanged(this, 1, 1);
         
         return new Float32Array2D[] {xCoords, yCoords, zCoords};
     }
@@ -1074,4 +1084,18 @@ public class Surface3D extends AlgoStub
         ShapeNode shapeNode = (ShapeNode) node.getSliceNode(index).children().iterator().next();
         return (LineString2D) shapeNode.getGeometry();
     }
+
+
+    @Override
+    public void algoProgressChanged(AlgoEvent evt)
+    {
+        fireProgressChanged(evt);
+    }
+    
+    @Override
+    public void algoStatusChanged(AlgoEvent evt)
+    {
+        fireStatusChanged(evt);
+    }
+
 }
