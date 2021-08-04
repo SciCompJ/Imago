@@ -129,6 +129,7 @@ import imago.plugin.image.process.ImageDuplicate;
 import imago.plugin.image.process.ImageExtendedExtrema;
 import imago.plugin.image.process.ImageFillHoles;
 import imago.plugin.image.process.ImageGeodesicDistanceMap;
+import imago.plugin.image.process.ImageHysteresisThreshold;
 import imago.plugin.image.process.ImageIteratedGeodesicDilations;
 import imago.plugin.image.process.ImageKillBorders;
 import imago.plugin.image.process.ImageManualThreshold;
@@ -587,7 +588,8 @@ public class GuiBuilder
         menu.addSeparator();
         JMenu segmentationMenu = new JMenu("Segmentation");
 		addPlugin(segmentationMenu, new ImageOtsuThreshold(), "Otsu Threshold", hasScalarImage);
-		addPlugin(segmentationMenu, new ImageManualThreshold(), "Manual Threshold", hasScalarImage);
+        addPlugin(segmentationMenu, new ImageManualThreshold(), "Manual Threshold", hasScalarImage);
+        addPlugin(segmentationMenu, new ImageHysteresisThreshold(), "Hysteresis Threshold", hasScalarImage);
         segmentationMenu.addSeparator();
         addPlugin(segmentationMenu, new ImageWatershed(), "Watershed", hasScalarImage);
         menu.add(segmentationMenu);
