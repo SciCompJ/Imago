@@ -12,7 +12,6 @@ import imago.gui.viewer.PlanarImageViewer;
 import net.sci.array.Array;
 import net.sci.array.scalar.Float32Array2D;
 import net.sci.geom.geom2d.Geometry2D;
-import net.sci.geom.geom2d.Point2D;
 import net.sci.image.Image;
 
 /**
@@ -72,7 +71,7 @@ public class ImageSelectionToDistanceMap implements FramePlugin
         Float32Array2D distMap = Float32Array2D.create(sizeX, sizeY);
         
         // iterate over output pixels
-        distMap.populateValues((x, y) -> selection.distance(new Point2D(x, y)));
+        distMap.fillValues((x, y) -> selection.distance(x, y));
         
         // create result image
         Image resultImage = new Image(distMap, image);

@@ -4,16 +4,14 @@
 package imago.plugin.image.edit;
 
 import imago.app.ImageHandle;
-import imago.gui.ImageViewer;
-import imago.gui.ImageFrame;
-import imago.gui.ImagoFrame;
 import imago.gui.FramePlugin;
+import imago.gui.ImageFrame;
+import imago.gui.ImageViewer;
+import imago.gui.ImagoFrame;
 import imago.gui.viewer.PlanarImageViewer;
 import net.sci.array.Array;
-import net.sci.array.scalar.Binary;
 import net.sci.array.scalar.BinaryArray2D;
 import net.sci.geom.geom2d.Geometry2D;
-import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.polygon.Polygon2D;
 import net.sci.image.Image;
 
@@ -81,7 +79,7 @@ public class ImageSelectionToMask implements FramePlugin
         int sizeX = array.size(0);
         int sizeY = array.size(1);
         BinaryArray2D mask = BinaryArray2D.create(sizeX, sizeY);
-        mask.populate((x, y) -> new Binary(poly.contains(new Point2D(x, y)) ^ clockWise));
+        mask.fillBooleans(pos -> poly.contains(pos[0], pos[1]) ^ clockWise);
                 
         // create result image
         Image resultImage = new Image(mask, image);

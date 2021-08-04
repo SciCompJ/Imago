@@ -66,7 +66,7 @@ class CroppedUInt8Array3DTest
     private UInt8Array3D createArray()
     {
         UInt8Array3D array = UInt8Array3D.create(50, 40, 30);
-        array.populateValues((x, y, z) -> x + y + z);
+        array.fillValues((x, y, z) -> (double) x + y + z);
         return array;
     }
 
