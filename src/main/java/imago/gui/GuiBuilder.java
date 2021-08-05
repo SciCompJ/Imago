@@ -135,6 +135,7 @@ import imago.plugin.image.process.ImageFillHoles;
 import imago.plugin.image.process.ImageGeodesicDistanceMap;
 import imago.plugin.image.process.ImageHysteresisThreshold;
 import imago.plugin.image.process.ImageIteratedGeodesicDilations;
+import imago.plugin.image.process.ImageKMeansSegmentation;
 import imago.plugin.image.process.ImageKillBorders;
 import imago.plugin.image.process.ImageManualThreshold;
 import imago.plugin.image.process.ImageMorphologicalFilter;
@@ -595,6 +596,8 @@ public class GuiBuilder
 		addPlugin(segmentationMenu, new ImageOtsuThreshold(), "Otsu Threshold", hasScalarImage);
         addPlugin(segmentationMenu, new ImageManualThreshold(), "Manual Threshold", hasScalarImage);
         addPlugin(segmentationMenu, new ImageHysteresisThreshold(), "Hysteresis Threshold", hasScalarImage);
+        segmentationMenu.addSeparator();
+        addPlugin(segmentationMenu, new ImageKMeansSegmentation(), "K-Means Segmentation", hasImage);
         segmentationMenu.addSeparator();
         addPlugin(segmentationMenu, new ImageWatershed(), "Watershed", hasScalarImage);
         menu.add(segmentationMenu);
