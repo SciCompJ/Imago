@@ -9,20 +9,15 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
 
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 
 import imago.app.ImageHandle;
 import imago.app.scene.GroupNode;
@@ -31,7 +26,6 @@ import imago.app.scene.ImageSliceNode;
 import imago.app.scene.Node;
 import imago.app.scene.ShapeNode;
 import imago.app.scene.io.JsonSceneReader;
-import imago.app.scene.io.JsonSceneWriter;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
 import net.sci.algo.AlgoEvent;
@@ -447,72 +441,6 @@ public class Crop3D extends AlgoStub
         sliceNode.addNode(shapeNode);
     }
 
-    /**
-     * Saves the analysis into a file in JSON format.
-     * 
-     * @param file
-     *            the file to writes analysis data.
-     * @throws IOException
-     *             if a I/O problem occurred.
-     */
-    public void saveAnalysisAsJson(File file) throws IOException
-    {
-        // initialize JSON writer
-        FileWriter fileWriter = new FileWriter(file.getAbsoluteFile());
-        JsonWriter jsonWriter = new JsonWriter(new PrintWriter(fileWriter));
-        jsonWriter.setIndent("  ");
-        
-        // open Crop3D node
-        jsonWriter.beginObject();
-        jsonWriter.name("type").value("Crop3D");
-        String dateString = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date());
-        jsonWriter.name("saveDate").value(dateString);
-        
-        // one node for the 3D image
-        Image image = this.imageHandle.getImage();
-        jsonWriter.name("image");
-        jsonWriter.beginObject();
-        jsonWriter.name("type").value("Image3D");
-        jsonWriter.name("name").value(image.getName());
-        jsonWriter.name("filePath").value(image.getFilePath());
-        int[] dims = image.getData().size();
-        jsonWriter.name("nDims").value(dims.length);
-        jsonWriter.name("size").beginArray();
-        for (int d : dims)
-        {
-            jsonWriter.value(d);
-        }
-        jsonWriter.endArray();
-        jsonWriter.endObject();
-        
-        // one node for the collection of models
-        jsonWriter.name("models").beginArray();
-        
-        // one node for the default crop polygons
-        jsonWriter.beginObject();
-        jsonWriter.name("crop").beginObject();
-        // write crop polygon data
-        ImageSerialSectionsNode polyNode = getPolygonsNode();
-        if (polyNode != null)
-        {
-            JsonSceneWriter sceneWriter = new JsonSceneWriter(jsonWriter);
-            jsonWriter.name("polygons");
-            sceneWriter.writeNode(polyNode);
-        }
-      
-        jsonWriter.endObject(); // crop object
-        jsonWriter.endObject(); // array item
-        jsonWriter.endArray(); // array of models
-
-        
-        // close Crop3D
-        jsonWriter.endObject();
-
-        fileWriter.close();
-        
-        System.out.println("Saving Crop3D terminated.");
-    }
-
     public void readPolygonsFromJson(File file) throws IOException
     {
         // reset current state of the Crop3D plugin
@@ -547,35 +475,7 @@ public class Crop3D extends AlgoStub
 
         System.out.println("reading polygons terminated.");
     }
-    
-    public void savePolygonsAsJson(File file) throws IOException
-    {
-        ImageSerialSectionsNode polyNode = getPolygonsNode();
-        if (polyNode == null)
-        {
-            System.err.println("Current image does not contain Crop3D polygon information");
-            return;
-        }
-        
-        try 
-        {
-            FileWriter fileWriter = new FileWriter(file.getAbsoluteFile());
-            JsonWriter jsonWriter = new JsonWriter(new PrintWriter(fileWriter));
-            jsonWriter.setIndent("  ");
-            JsonSceneWriter writer = new JsonSceneWriter(jsonWriter);
-
-            writer.writeNode(polyNode);
-
-            fileWriter.close();
-        }
-        catch (IOException ex)
-        {
-            throw new RuntimeException(ex);
-        }
-        
-        System.out.println("Saving polygon terminated.");
-    }
-    
+       
     /**
      * Populates the "polygons" node of current image handle from the specified
      * ImageSerialSectionsNode.

@@ -342,12 +342,16 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         
         try 
         {
-            crop3d.saveAnalysisAsJson(file);
+            Crop3DDataWriter writer = new Crop3DDataWriter(file);
+            writer.writeCrop3D(this.crop3d);
+            writer.close();
         }
         catch (IOException ex)
         {
             throw new RuntimeException(ex);
         }
+        
+        System.out.println("Saving Crop3D terminated.");
     }
 
     
@@ -369,7 +373,8 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         String imageName = imageFrame.getImage().getName();
         saveWindow = new JFileChooser(new File(imageName + ".json"));
         saveWindow.setDialogTitle("Save list of input polygons");
-        saveWindow.setFileFilter(new FileNameExtensionFilter("JSON files (*.json)", "json"));
+        saveWindow.setCurrentDirectory(new File(lastOpenPath));
+        saveWindow.setFileFilter(jsonFileFilter);
 
         // Open dialog to choose the file
         int ret = saveWindow.showSaveDialog(imageFrame.getWidget());
@@ -388,12 +393,16 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         
         try 
         {
-            crop3d.savePolygonsAsJson(file);
+            Crop3DDataWriter writer = new Crop3DDataWriter(file);
+            writer.writePolygons(polyNode);
+            writer.close();
         }
         catch (IOException ex)
         {
             throw new RuntimeException(ex);
         }
+
+        System.out.println("Saving polygon terminated.");
     }
     
     /**

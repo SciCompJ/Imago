@@ -7,20 +7,15 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 
 import imago.app.ImageHandle;
 import imago.app.scene.GroupNode;
@@ -29,7 +24,6 @@ import imago.app.scene.ImageSliceNode;
 import imago.app.scene.Node;
 import imago.app.scene.ShapeNode;
 import imago.app.scene.io.JsonSceneReader;
-import imago.app.scene.io.JsonSceneWriter;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
 import net.sci.algo.AlgoEvent;
@@ -292,89 +286,6 @@ public class Surface3D extends AlgoStub implements AlgoListener
         populatePolylines((ImageSerialSectionsNode) node);
 
         System.out.println("reading polylines terminated.");
-    }
-    
-    /**
-     * Saves the analysis into a file in JSON format.
-     * 
-     * @param file
-     *            the file to writes analysis data.
-     * @throws IOException
-     *             if a I/O problem occurred.
-     */
-    public void saveAnalysisAsJson(File file) throws IOException
-    {
-        // initialize JSON writer
-        FileWriter fileWriter = new FileWriter(file.getAbsoluteFile());
-        JsonWriter jsonWriter = new JsonWriter(new PrintWriter(fileWriter));
-        jsonWriter.setIndent("  ");
-        
-        // open Surface3D node
-        jsonWriter.beginObject();
-        jsonWriter.name("type").value("Surface3D");
-        String dateString = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date());
-        jsonWriter.name("saveDate").value(dateString);
-        
-        // one node for the 3D image
-        Image image = this.imageHandle.getImage();
-        jsonWriter.name("image");
-        jsonWriter.beginObject();
-        jsonWriter.name("type").value("Image3D");
-        jsonWriter.name("name").value(image.getName());
-        jsonWriter.name("filePath").value(image.getFilePath());
-        int[] dims = image.getData().size();
-        jsonWriter.name("nDims").value(dims.length);
-        jsonWriter.name("size").beginArray();
-        for (int d : dims)
-        {
-            jsonWriter.value(d);
-        }
-        jsonWriter.endArray();
-        jsonWriter.endObject();
-        
-        // one node for the polyline
-        ImageSerialSectionsNode polyNode = getPolylinesNode();
-        if (polyNode != null)
-        {
-            JsonSceneWriter sceneWriter = new JsonSceneWriter(jsonWriter);
-            jsonWriter.name("polylines");
-            sceneWriter.writeNode(polyNode);
-        }
-      
-        // close Surface3D
-        jsonWriter.endObject();
-
-        fileWriter.close();
-        
-        System.out.println("Saving analysis terminated.");
-    }
-    
-    /**
-     * Saves the series of polylines into a file in JSON format.
-     * 
-     * @param file
-     *            the file to writes polylines.
-     * @throws IOException
-     *             if a I/O problem occurred.
-     */
-    public void savePolylinesAsJson(File file) throws IOException
-    {
-        ImageSerialSectionsNode polyNode = getPolylinesNode();
-        if (polyNode == null)
-        {
-            throw new RuntimeException("Current image does not contain Surface polylines information");
-        }
-        
-        FileWriter fileWriter = new FileWriter(file.getAbsoluteFile());
-        JsonWriter jsonWriter = new JsonWriter(new PrintWriter(fileWriter));
-        jsonWriter.setIndent("  ");
-        JsonSceneWriter writer = new JsonSceneWriter(jsonWriter);
-
-        writer.writeNode(polyNode);
-
-        fileWriter.close();
-        
-        System.out.println("Saving polylines terminated.");
     }
     
     /**

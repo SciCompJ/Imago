@@ -335,7 +335,9 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         
         try 
         {
-            surf3d.saveAnalysisAsJson(file);
+            Crop3DDataWriter writer = new Crop3DDataWriter(file);
+            writer.writeSurface3D(this.surf3d);
+            writer.close();
         }
         catch (IOException ex)
         {
@@ -380,7 +382,9 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         
         try 
         {
-            surf3d.savePolylinesAsJson(file);
+            Crop3DDataWriter writer = new Crop3DDataWriter(file);
+            writer.writeSceneNode(polyNode);
+            writer.close();
         }
         catch (IOException ex)
         {
