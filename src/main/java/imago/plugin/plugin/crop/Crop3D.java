@@ -14,8 +14,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
 
@@ -33,6 +35,7 @@ import imago.app.scene.ShapeNode;
 import imago.app.scene.io.JsonSceneReader;
 import imago.app.scene.io.JsonSceneWriter;
 import imago.gui.ImageViewer;
+import imago.gui.ImagoFrame;
 import imago.gui.frames.ImageFrame;
 import imago.gui.viewer.StackSliceViewer;
 import net.sci.algo.AlgoEvent;
@@ -55,8 +58,8 @@ import net.sci.image.io.MetaImageInfo;
 import net.sci.image.io.MetaImageWriter;
 
 /**
- * Performs 3D Crop on a 3D stack. Contains the process methods, the GUI is
- * managed by the Crop3DPlugin class.
+ * Performs 3D Crop on a 3D stack. This class contains the processing methods,
+ * the main GUI is managed by the Crop3DPlugin class.
  * 
  * Several Processing steps:
  * <ol>
@@ -79,6 +82,194 @@ import net.sci.image.io.MetaImageWriter;
  */
 public class Crop3D extends AlgoStub
 {
+    // ===================================================================
+    // Static factories
+    
+    /**
+     * Reads the contents of a Crop3D analysis file.
+     * 
+     * @param file
+     *            the input file, in JSON format, usually ending with ".crop3d".
+     * @param parentFrame
+     *            the parent frame, used to locate the new frame.
+     * @return a new Crop3D object
+     * @throws IOException
+     *             if a problem occurred.
+     */
+    public static final Crop3D loadAnalysis(File file, ImagoFrame parentFrame) throws IOException
+    {
+        // Default values to load
+        ImageInfo imageInfo = null;
+        ImageSerialSectionsNode polygonsNode = null;
+
+        // parse file using JSON
+        // create json file reader
+        FileReader fileReader = new FileReader(file);
+        JsonReader reader = new JsonReader(new BufferedReader(fileReader));
+
+        // start parsing Crop3D object
+        reader.beginObject();
+        while (reader.hasNext())
+        {
+            String name = reader.nextName();
+
+            if (name.equalsIgnoreCase("type"))
+            {
+                // check the file start with the Crop3D data header
+                String string = reader.nextString();
+                if (!string.equalsIgnoreCase("Crop3D"))
+                {
+                    throw new RuntimeException("Expect a file containing a Crop3D type data");
+                }
+            }
+            else if(name.equalsIgnoreCase("saveDate"))
+            {
+                reader.skipValue();
+            } 
+            else if(name.equalsIgnoreCase("image"))
+            {
+                imageInfo = readImageInfo(reader);
+            } 
+            else if(name.equalsIgnoreCase("models"))
+            {
+                // In the future we may envision several models, but in current version we manage only one.
+                reader.beginArray();
+                reader.beginObject();
+                String name2 = reader.nextName();
+                if (!name2.equalsIgnoreCase("crop"))
+                {
+                    throw new RuntimeException("Expect the file to contain a \"models\"/\"crop\" node");
+                }
+                reader.beginObject();
+                
+                String name3 = reader.nextName();
+                if(name3.equalsIgnoreCase("polygons"))
+                {
+                    // create a scene reader to parse polyline
+                    JsonSceneReader sceneReader = new JsonSceneReader(reader);
+                    Node node = sceneReader.readNode();
+
+                    // expect a group node...
+                    if (!(node instanceof ImageSerialSectionsNode))
+                    {
+                        throw new RuntimeException("JSON file should contains a single ImageSerialSectionsNode instance.");
+                    }
+
+                    polygonsNode = (ImageSerialSectionsNode) node;
+                } 
+                else
+                {
+                    System.out.println("Unknown field name when reading Crop3D: " + name3);
+                    reader.skipValue();
+                }
+                reader.endObject(); // crop object
+                reader.endObject(); // array item
+                
+                // drop all remaining models
+                if (reader.hasNext())
+                {
+                    System.err.println("Warning: additional models are specified in Crop3D, but will be discarded." + name);
+                    while (reader.hasNext())
+                    {
+                        reader.skipValue();
+                    }
+                }
+                reader.endArray();
+            }
+        }
+        reader.endObject();
+
+        // Check necessary information have been loaded
+        if (imageInfo.filePath == null)
+        {
+            throw new RuntimeException("Could not load image file information.");
+        }
+        
+        // create a new plugin
+        Crop3DPlugin newFrame = new Crop3DPlugin();
+        newFrame.run(parentFrame, null);
+        
+        // create an image viewer for the file given in ImageInfo
+        newFrame.openImage(new File(imageInfo.filePath));
+        
+        Crop3D crop3d = newFrame.crop3d;
+        if (crop3d == null)
+        {
+            throw new RuntimeException("Expect inner crop3d field to be initialized");
+        }
+        
+        // update polylines of the new analysis
+        crop3d.populatePolygons(polygonsNode);
+        newFrame.updatePolygonListView();
+        
+        // need to call this to update items to display 
+        ImageViewer viewer = newFrame.imageFrame.getImageView();
+        viewer.refreshDisplay(); 
+        viewer.repaint();
+        
+        return crop3d;
+    }
+
+
+    private static final ImageInfo readImageInfo(JsonReader reader) throws IOException
+    {
+        // initialize image info object with default values
+        ImageInfo imageInfo = new ImageInfo();
+    
+        // parse object fields
+        reader.beginObject();
+        while (reader.hasNext())
+        {
+            String name = reader.nextName();
+            if (name.equalsIgnoreCase("type"))
+            {
+                // check the file start with the Crop3D data header
+                if (!reader.nextString().equalsIgnoreCase("Image3D"))
+                {
+                    throw new RuntimeException("Expect a file containing a Image3D type data");
+                }
+            }
+            else if(name.equalsIgnoreCase("name"))
+            {
+                imageInfo.name = reader.nextString();
+            }
+            else if(name.equalsIgnoreCase("filePath"))
+            {
+                imageInfo.filePath = reader.nextString();
+            }
+            else if(name.equalsIgnoreCase("nDims"))
+            {
+                imageInfo.nDims = reader.nextInt();
+            }
+            else if(name.equalsIgnoreCase("size"))
+            {
+                imageInfo.size = readIntArray(reader, imageInfo.nDims);
+            }
+            else
+            {
+                System.out.println("Unknown field name when reading Image3D: " + name);
+                reader.skipValue();
+            }
+    
+        }
+        reader.endObject();
+    
+        return imageInfo;
+    }
+
+    private static final int[] readIntArray(JsonReader reader, int nItems) throws IOException
+    {
+        int[] res = new int[nItems];
+        reader.beginArray();
+        for (int d = 0; d < nItems; d++)
+        {
+            res[d] = reader.nextInt();
+        }
+        reader.endArray();
+        return res;
+    }
+
+
     // ===================================================================
     // Class members
     
@@ -106,12 +297,11 @@ public class Crop3D extends AlgoStub
         this.image3dFrame = image3dFrame;
         this.imageHandle = image3dFrame.getImageHandle();
         
-        
         // get current image data
         ImageViewer viewer = image3dFrame.getImageView();
         if (!(viewer instanceof StackSliceViewer))
         {
-            System.out.println("requires an instance of stack slice viewer");
+            System.err.println("requires an instance of stack slice viewer");
             return;
         }
         Array<?> array = this.imageHandle.getImage().getData();
@@ -275,6 +465,71 @@ public class Crop3D extends AlgoStub
         sliceNode.addNode(shapeNode);
     }
 
+    /**
+     * Saves the analysis into a file in JSON format.
+     * 
+     * @param file
+     *            the file to writes analysis data.
+     * @throws IOException
+     *             if a I/O problem occurred.
+     */
+    public void saveAnalysisAsJson(File file) throws IOException
+    {
+        // initialize JSON writer
+        FileWriter fileWriter = new FileWriter(file.getAbsoluteFile());
+        JsonWriter jsonWriter = new JsonWriter(new PrintWriter(fileWriter));
+        jsonWriter.setIndent("  ");
+        
+        // open Crop3D node
+        jsonWriter.beginObject();
+        jsonWriter.name("type").value("Crop3D");
+        String dateString = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date());
+        jsonWriter.name("saveDate").value(dateString);
+        
+        // one node for the 3D image
+        Image image = this.imageHandle.getImage();
+        jsonWriter.name("image");
+        jsonWriter.beginObject();
+        jsonWriter.name("type").value("Image3D");
+        jsonWriter.name("name").value(image.getName());
+        jsonWriter.name("filePath").value(image.getFilePath());
+        int[] dims = image.getData().size();
+        jsonWriter.name("nDims").value(dims.length);
+        jsonWriter.name("size").beginArray();
+        for (int d : dims)
+        {
+            jsonWriter.value(d);
+        }
+        jsonWriter.endArray();
+        jsonWriter.endObject();
+        
+        // one node for the collection of models
+        jsonWriter.name("models").beginArray();
+        
+        // one node for the default crop polygons
+        jsonWriter.beginObject();
+        jsonWriter.name("crop").beginObject();
+        // write crop polygon data
+        ImageSerialSectionsNode polyNode = getPolygonsNode();
+        if (polyNode != null)
+        {
+            JsonSceneWriter sceneWriter = new JsonSceneWriter(jsonWriter);
+            jsonWriter.name("polygons");
+            sceneWriter.writeNode(polyNode);
+        }
+      
+        jsonWriter.endObject(); // crop object
+        jsonWriter.endObject(); // array item
+        jsonWriter.endArray(); // array of models
+
+        
+        // close Crop3D
+        jsonWriter.endObject();
+
+        fileWriter.close();
+        
+        System.out.println("Saving Crop3D terminated.");
+    }
 
     public void readPolygonsFromJson(File file) throws IOException
     {
@@ -337,6 +592,36 @@ public class Crop3D extends AlgoStub
         }
         
         System.out.println("Saving polygon terminated.");
+    }
+    
+    /**
+     * Populates the "polygons" node of current image handle from the specified
+     * ImageSerialSectionsNode.
+     * 
+     * @param polygonsNode
+     *            the node containing the map between slice indices and shape
+     */
+    public void populatePolygons(ImageSerialSectionsNode polygonsNode)
+    {
+        ImageSerialSectionsNode polyNode = getPolygonsNode();
+        for(ImageSliceNode child : polygonsNode.children())
+        {
+            // check that all children of slice nodes are shape nodes with polyline2D geometry
+            for (Node child2 : child.children())
+            {
+                if (!(child2 instanceof ShapeNode))
+                {
+                    throw new RuntimeException("Expect all ImageSliceNode to contain shape nodes.");
+                }
+
+                if(!(((ShapeNode) child2).getGeometry() instanceof LinearRing2D))
+                {
+                    throw new RuntimeException("Expect all Shape nodes to contain LinearRing2D geometries.");
+                }
+            }
+
+            polyNode.addSliceNode(child);
+        }
     }
     
 

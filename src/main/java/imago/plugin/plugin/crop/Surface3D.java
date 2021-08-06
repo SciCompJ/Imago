@@ -229,19 +229,6 @@ public class Surface3D extends AlgoStub implements AlgoListener
         return res;
     }
 
-    /**
-     * Utility class used to load information from an analysis.
-     */
-    private static class ImageInfo
-    {
-        @SuppressWarnings("unused")
-        String name = "";
-        String filePath = "";
-        int nDims = 0;
-        @SuppressWarnings("unused")
-        int[] size;
-    }
-
     
     // ===================================================================
     // Class members

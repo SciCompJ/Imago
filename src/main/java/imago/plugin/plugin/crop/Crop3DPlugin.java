@@ -3,9 +3,11 @@ package imago.plugin.plugin.crop;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -23,6 +25,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import imago.app.ImagoApp;
@@ -61,7 +64,9 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     
     
     // menu items
+    JMenuItem loadAnalysisItem;
     JMenuItem loadPolygonsItem;
+    JMenuItem saveAnalysisItem;
     JMenuItem savePolygonsItem;
     
     JLabel imageNameLabel;
@@ -80,7 +85,12 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     private JFileChooser openWindow = null;
     private JFileChooser saveWindow = null;
 
-    
+    private static FileFilter crop3dFileFilter = new FileNameExtensionFilter("Crop3D files (*.crop3d)", "crop3d");
+    private static FileFilter jsonFileFilter = new FileNameExtensionFilter("All JSON files (*.json)", "json");
+
+    String imagePath = null;
+    String lastOpenPath = "D:/images/wheat/perigrain/Psiche_2018/HR/selection";
+
     public Crop3DPlugin()
     {
         System.out.println("create the crop3D plugin");
@@ -89,7 +99,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     @Override
     public void run(ImagoFrame parentFrame, String args)
     {
-        System.out.println("start Crop3D plugin");
+        System.out.println("run Crop3D plugin");
         this.parentFrame = parentFrame;
         this.jframe = createFrame(parentFrame.getWidget());
     }
@@ -101,7 +111,6 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         createMenu(frame);
         setupLayout(frame);
         
-        
         java.awt.Point pos = parentFrame.getLocation();
         frame.setLocation(pos.x + 20, pos.y + 20);
         frame.setVisible(true);
@@ -110,21 +119,24 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     
     private void createMenu(JFrame frame)
     {
-        // init menu items
-        loadPolygonsItem = new JMenuItem("Load Polygons...");
-        loadPolygonsItem.addActionListener(evt -> loadPolygons());
-        savePolygonsItem = new JMenuItem("Save Polygons...");
-        savePolygonsItem.addActionListener(evt -> savePolygons());
-
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
-        fileMenu.add(loadPolygonsItem);
+        addMenuItem(fileMenu, "Load Crop3D File...", evt -> loadAnalysis());
+        addMenuItem(fileMenu, "Load Polygons...", evt -> loadPolygons());
         fileMenu.addSeparator();
-        fileMenu.add(savePolygonsItem);
-        
+        addMenuItem(fileMenu, "Save Crop3D File...", evt -> saveAnalysis());
+        addMenuItem(fileMenu, "Save Polygons...", evt -> savePolygons());
         
         menuBar.add(fileMenu);
         frame.setJMenuBar(menuBar);
+    }
+    
+    private JMenuItem addMenuItem(JMenu parentMenu, String label, Consumer<ActionEvent> action)
+    {
+        JMenuItem item = new JMenuItem(label);
+        item.addActionListener(evt -> action.accept(evt));
+        parentMenu.add(item);
+        return item;
     }
     
     private void setupLayout(JFrame frame)
@@ -197,6 +209,45 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     }
     
     /**
+     * Callback for the "Load Analysis" menu item.
+     */
+    public void loadAnalysis()
+    {
+        System.out.println("Load analysis");
+        
+        // create file dialog using last open path
+        openWindow = new JFileChooser(this.lastOpenPath);
+        openWindow.setDialogTitle("Read Crop3D analysis");
+        openWindow.addChoosableFileFilter(crop3dFileFilter);
+        openWindow.addChoosableFileFilter(jsonFileFilter);
+        openWindow.setFileFilter(crop3dFileFilter);
+        
+        // Open dialog to choose the file
+        int ret = openWindow.showOpenDialog(parentFrame.getWidget());
+        if (ret != JFileChooser.APPROVE_OPTION) 
+        {
+            return;
+        }
+
+        // Check the chosen file is valid
+        File file = openWindow.getSelectedFile();
+        if (!file.isFile())
+        {
+            return;
+        }
+        
+        try 
+        {
+            Crop3D.loadAnalysis(file, this.parentFrame);
+        }
+        catch (IOException ex)
+        {
+            ex.printStackTrace(System.err);
+            throw new RuntimeException("Error during import of Crop3D analysis.", ex);
+        }
+    }
+    
+    /**
      * Callback for the "Load Polygons" menu item.
      */
     public void loadPolygons()
@@ -254,6 +305,51 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         viewer.repaint();
     }
     
+    /**
+     * Callback for the "Save Analysis" menu item. Saves a ".crop3d" file in
+     * JSON format containing name of reference image, and polygon data.
+     */
+    public void saveAnalysis()
+    {
+        System.out.println("Save Analysis");
+        
+        // create file dialog using last save path
+        String imageName = imageFrame.getImage().getName();
+        System.out.println("Current Image name: " + imageName);
+        
+        saveWindow = new JFileChooser();
+        saveWindow.setDialogTitle("Save Crop3D Analysis");
+        saveWindow.addChoosableFileFilter(crop3dFileFilter);
+        saveWindow.addChoosableFileFilter(jsonFileFilter);
+        saveWindow.setFileFilter(crop3dFileFilter);
+        saveWindow.setCurrentDirectory(new File(lastOpenPath));
+        saveWindow.setSelectedFile(new File(imageName + ".crop3d"));
+        
+        // Open dialog to choose the file
+        int ret = saveWindow.showSaveDialog(imageFrame.getWidget());
+        if (ret != JFileChooser.APPROVE_OPTION) 
+        {
+            return;
+        }
+
+        // Check the chosen file is valid
+        File file = saveWindow.getSelectedFile();
+        if (!file.getName().endsWith(".crop3d"))
+        {
+            File parent = file.getParentFile();
+            file = new File(parent, file.getName() + ".crop3d");
+        }
+        
+        try 
+        {
+            crop3d.saveAnalysisAsJson(file);
+        }
+        catch (IOException ex)
+        {
+            throw new RuntimeException(ex);
+        }
+    }
+
     
     /**
      * Callback for the "Save Polygons" menu item.
@@ -381,6 +477,57 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         this.imageFrame = parentFrame.createImageFrame(image);
         this.imageFrame.setLastOpenPath(path);
     }
+    
+    /**
+     * Reads a 3D virtual image from the specified file, and creates a viewer.
+     *  
+     * @param file the image file to open.
+     */
+    public void openImage(File file)
+    {
+        Image image;
+        try 
+        {
+            TiffImageReader reader = new TiffImageReader(file);
+            image = reader.readVirtualImage3D();
+        }
+        catch (Exception ex) 
+        {
+            System.err.println(ex);
+            ImagoGui.showErrorDialog(parentFrame, ex.getLocalizedMessage(), "TIFF Image Reading Error");
+            return;
+        }
+
+        initializeImage(image);
+
+        // update last open path
+        this.imagePath = file.getAbsolutePath();
+        this.lastOpenPath = file.getPath();
+        this.imageFrame.setLastOpenPath(this.lastOpenPath);
+    }
+    
+    private void initializeImage(Image image)
+    {
+        // add the image document to GUI
+        this.imageFrame = parentFrame.createImageFrame(image);
+        
+        // initialize other fields
+        this.crop3d = new Crop3D(imageFrame);
+        this.crop3d.addAlgoListener(imageFrame);
+
+        // need to call this to update items to display
+        ImageViewer viewer = imageFrame.getImageView();
+        viewer.refreshDisplay(); 
+        viewer.repaint();
+        viewer.setCurrentTool(new SelectPolygonTool(imageFrame, "selectPolygon"));
+        
+        imageNameLabel.setText("Current Image: " + this.imageFrame.getImageHandle().getImage().getName());
+        
+        addPolygonButton.setEnabled(true);
+        removePolygonButton.setEnabled(true);
+        interpolateButton.setEnabled(true);
+    }
+
 
     /**
      * Callback for the "Add Polygon" button.
@@ -448,7 +595,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         viewer.repaint();
     }
     
-    private void updatePolygonListView()
+    public void updatePolygonListView()
     {
         ImageSerialSectionsNode group = crop3d.getPolygonsNode();
         

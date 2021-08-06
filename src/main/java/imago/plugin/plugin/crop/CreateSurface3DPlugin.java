@@ -80,12 +80,6 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
      */
     ImageFrame imageFrame;
     
-    // menu items
-    JMenuItem loadAnalysisItem;
-    JMenuItem loadPolylinesItem;
-    JMenuItem savePolylinesItem;
-    JMenuItem saveAnalysisItem;
-    
     JLabel imageNameLabel;
     
     // buttons
@@ -137,10 +131,10 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
     {
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
-        addMenuItem(fileMenu, "Load Analysis...", evt -> loadAnalysis());
+        addMenuItem(fileMenu, "Load Surface3D file...", evt -> loadAnalysis());
         addMenuItem(fileMenu, "Load Polylines...", evt -> loadPolylines());
         fileMenu.addSeparator();
-        addMenuItem(fileMenu, "Save Analysis...", evt -> saveAnalysis());
+        addMenuItem(fileMenu, "Save Surface3D file...", evt -> saveAnalysis());
         addMenuItem(fileMenu, "Save Polylines...", evt -> savePolylines());
         
         menuBar.add(fileMenu);
@@ -219,6 +213,9 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         return button;
     }
     
+    /**
+     * Callback for the "Load Analysis" menu item.
+     */
     public void loadAnalysis()
     {
         System.out.println("Load analysis");
@@ -318,7 +315,7 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         // create file dialog using last save path
         String imageName = imageFrame.getImage().getName();
         saveWindow = new JFileChooser(new File(imageName + ".json"));
-        saveWindow.setDialogTitle("Save list of input polygons");
+        saveWindow.setDialogTitle("Save Surface3D Analysis");
         saveWindow.setFileFilter(new FileNameExtensionFilter("JSON files (*.json)", "json"));
 
         // Open dialog to choose the file
