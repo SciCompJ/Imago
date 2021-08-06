@@ -21,8 +21,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
 
-import javax.swing.JOptionPane;
-
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
@@ -36,8 +34,6 @@ import imago.app.scene.io.JsonSceneReader;
 import imago.app.scene.io.JsonSceneWriter;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImageFrame;
-import imago.gui.viewer.StackSliceViewer;
 import net.sci.algo.AlgoEvent;
 import net.sci.algo.AlgoStub;
 import net.sci.array.Array;
@@ -198,7 +194,7 @@ public class Crop3D extends AlgoStub
             throw new RuntimeException("Expect inner crop3d field to be initialized");
         }
         
-        // update polylines of the new analysis
+        // update polygons of the new analysis
         crop3d.populatePolygons(polygonsNode);
         newFrame.updatePolygonListView();
         
@@ -274,11 +270,6 @@ public class Crop3D extends AlgoStub
     // Class members
     
     /**
-     * The frame containing the image to crop.
-     */
-    ImageFrame image3dFrame;
-
-    /**
      * The image handle, that can be retrieved from the image frame.
      */
     ImageHandle imageHandle;
@@ -292,28 +283,26 @@ public class Crop3D extends AlgoStub
     // ===================================================================
     // Constructor
 
-    public Crop3D(ImageFrame image3dFrame)
+    public Crop3D(ImageHandle imageHandle)
     {
-        this.image3dFrame = image3dFrame;
-        this.imageHandle = image3dFrame.getImageHandle();
+        this.imageHandle = imageHandle;
         
-        // get current image data
-        ImageViewer viewer = image3dFrame.getImageView();
-        if (!(viewer instanceof StackSliceViewer))
-        {
-            System.err.println("requires an instance of stack slice viewer");
-            return;
-        }
+        initializeSliceNamePatterns();
+        
+        initializeCrop3dNodes();
+    }
+    
+    private void initializeSliceNamePatterns()
+    {
+        // get current image data to know the number of slices
         Array<?> array = this.imageHandle.getImage().getData();
-
-        // create slice name patterns based on image size
         int nSlices = array.size(2);
+        
+        // create slice name patterns based on image size
         int nDigits = (int) Math.ceil(Math.log10(nSlices));
         this.polygonSliceNamePattern = "slice%0" + nDigits + "d";
         this.smoothSliceNamePattern = "smooth%0" + nDigits + "d";
         this.interpolatedSliceNamePattern = "interp%0" + nDigits + "d";
-     
-        initializeCrop3dNodes();
     }
     
 
@@ -420,13 +409,6 @@ public class Crop3D extends AlgoStub
     public void addPolygon(int sliceIndex, Polygon2D poly)
     {
         System.out.println("crop3d - add polygon");
-        
-        ImageViewer viewer = image3dFrame.getImageView();
-        if (!(viewer instanceof StackSliceViewer))
-        {
-            System.out.println("requires an instance of stack slice viewer");
-            return;
-        }
     
         // get current image data
         Image image = this.imageHandle.getImage();
@@ -649,10 +631,7 @@ public class Crop3D extends AlgoStub
         ImageSerialSectionsNode polyNode = getPolygonsNode();
         if (polyNode.isLeaf())
         {
-            JOptionPane.showMessageDialog(image3dFrame.getWidget(),
-                    "Requires the frame to contains valid Crop3D Polygons",
-                    "Crop3D Error", JOptionPane.INFORMATION_MESSAGE);
-            return;
+            throw new RuntimeException("Requires the frame to contains valid Crop3D Polygons");
         }
         
         // clear output nodes
@@ -1001,12 +980,6 @@ public class Crop3D extends AlgoStub
      */
     public void computeCroppedImage(File file) throws IOException
     {
-        ImageViewer viewer = image3dFrame.getImageView();
-        if (!(viewer instanceof StackSliceViewer))
-        {
-            throw new RuntimeException("requires an instance of stack slice viewer");
-        }
-    
         // get current image data
         Image image = imageHandle.getImage();
         ScalarArray<?> array = (ScalarArray<?>) image.getData();

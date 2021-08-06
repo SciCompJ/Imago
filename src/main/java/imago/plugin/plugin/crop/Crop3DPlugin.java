@@ -121,11 +121,11 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     {
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
-        addMenuItem(fileMenu, "Load Crop3D File...", evt -> loadAnalysis());
-        addMenuItem(fileMenu, "Load Polygons...", evt -> loadPolygons());
+        addMenuItem(fileMenu, "Load Crop3D File...", evt -> onLoadAnalysis());
+        addMenuItem(fileMenu, "Load Polygons...", evt -> onLoadPolygons());
         fileMenu.addSeparator();
-        addMenuItem(fileMenu, "Save Crop3D File...", evt -> saveAnalysis());
-        addMenuItem(fileMenu, "Save Polygons...", evt -> savePolygons());
+        addMenuItem(fileMenu, "Save Crop3D File...", evt -> onSaveAnalysis());
+        addMenuItem(fileMenu, "Save Polygons...", evt -> onSavePolygons());
         
         menuBar.add(fileMenu);
         frame.setJMenuBar(menuBar);
@@ -211,7 +211,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     /**
      * Callback for the "Load Analysis" menu item.
      */
-    public void loadAnalysis()
+    public void onLoadAnalysis()
     {
         System.out.println("Load analysis");
         
@@ -250,7 +250,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     /**
      * Callback for the "Load Polygons" menu item.
      */
-    public void loadPolygons()
+    public void onLoadPolygons()
     {
         System.out.println("Load polygons");
         
@@ -309,7 +309,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
      * Callback for the "Save Analysis" menu item. Saves a ".crop3d" file in
      * JSON format containing name of reference image, and polygon data.
      */
-    public void saveAnalysis()
+    public void onSaveAnalysis()
     {
         System.out.println("Save Analysis");
         
@@ -354,7 +354,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     /**
      * Callback for the "Save Polygons" menu item.
      */
-    public void savePolygons()
+    public void onSavePolygons()
     {
         System.out.println("Save polygons");
         
@@ -401,32 +401,21 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
      */
     public void onOpenImageButton()
     {
-        this.imageFrame = null;
-        chooseInputImage(parentFrame);
-        if (this.imageFrame == null)
+        // Ask for the filename of the image to open
+        File file = chooseInputImageFile(parentFrame);
+        if (file == null)
         {
             return;
         }
         
-        this.crop3d = new Crop3D(imageFrame);
-        this.crop3d.addAlgoListener(imageFrame);
+        // clear current image data
+        this.imageFrame = null;
         
-        this.crop3d.initializeCrop3dNodes();
-
-        // need to call this to update items to display
-        ImageViewer viewer = imageFrame.getImageView();
-        viewer.refreshDisplay(); 
-        viewer.repaint();
-        viewer.setCurrentTool(new SelectPolygonTool(imageFrame, "selectPolygon"));
-        
-        imageNameLabel.setText("Current Image: " + this.imageFrame.getImageHandle().getImage().getName());
-        
-        addPolygonButton.setEnabled(true);
-        removePolygonButton.setEnabled(true);
-        interpolateButton.setEnabled(true);
+        // create a viewer and a Crop3D object for the new image
+        openImage(file);
     }
     
-    private void chooseInputImage(ImagoFrame parentFrame)
+    private File chooseInputImageFile(ImagoFrame parentFrame)
     {
         // create file dialog to read the 3D TIFF Image
         //        String lastPath = frame.getLastOpenPath();
@@ -439,16 +428,12 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         int ret = openWindow.showOpenDialog(parentFrame.getWidget());
         if (ret != JFileChooser.APPROVE_OPTION) 
         {
-            return;
+            return null;
         }
 
         // Check the chosen file is valid
         File file = openWindow.getSelectedFile();
-        if (!file.isFile()) 
-        {
-            return;
-        }
-
+        
         // eventually keep path for future opening
         String path = file.getPath();
         lastPath = parentFrame.getLastOpenPath();
@@ -457,34 +442,20 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
             System.out.println("update frame path");
             parentFrame.setLastOpenPath(path);
         }
-
-
-        // Read a 3D virtual image from the chosen file
-        Image image;
-        try 
-        {
-            TiffImageReader reader = new TiffImageReader(file);
-            image = reader.readVirtualImage3D();
-        }
-        catch (Exception ex) 
-        {
-            System.err.println(ex);
-            ImagoGui.showErrorDialog(parentFrame, ex.getLocalizedMessage(), "TIFF Image Reading Error");
-            return;
-        }
-
-        // add the image document to GUI
-        this.imageFrame = parentFrame.createImageFrame(image);
-        this.imageFrame.setLastOpenPath(path);
+        
+        return file;
     }
     
     /**
-     * Reads a 3D virtual image from the specified file, and creates a viewer.
-     *  
-     * @param file the image file to open.
+     * Reads a 3D virtual image from the specified file, and creates a new
+     * ImageViewer and a new Crop3D object associated to the current frame.
+     * 
+     * @param file
+     *            the image file to open.
      */
     public void openImage(File file)
     {
+        // open a virtual image from the file
         Image image;
         try 
         {
@@ -497,38 +468,36 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
             ImagoGui.showErrorDialog(parentFrame, ex.getLocalizedMessage(), "TIFF Image Reading Error");
             return;
         }
-
-        initializeImage(image);
-
-        // update last open path
-        this.imagePath = file.getAbsolutePath();
-        this.lastOpenPath = file.getPath();
-        this.imageFrame.setLastOpenPath(this.lastOpenPath);
-    }
-    
-    private void initializeImage(Image image)
-    {
+        
+        // create viewer for the image,
         // add the image document to GUI
         this.imageFrame = parentFrame.createImageFrame(image);
-        
-        // initialize other fields
-        this.crop3d = new Crop3D(imageFrame);
+
+        // create the associated Crop3D 
+        this.crop3d = new Crop3D(imageFrame.getImageHandle());
         this.crop3d.addAlgoListener(imageFrame);
 
+        // and updates the current frame
         // need to call this to update items to display
         ImageViewer viewer = imageFrame.getImageView();
         viewer.refreshDisplay(); 
         viewer.repaint();
         viewer.setCurrentTool(new SelectPolygonTool(imageFrame, "selectPolygon"));
         
-        imageNameLabel.setText("Current Image: " + this.imageFrame.getImageHandle().getImage().getName());
+        imageNameLabel.setText("Current Image: " + image.getName());
+
+        // update last open path
+        this.imagePath = file.getAbsolutePath();
+        this.lastOpenPath = file.getPath();
+        this.imageFrame.setLastOpenPath(this.lastOpenPath);
         
+        // enable widget for next processing steps 
         addPolygonButton.setEnabled(true);
         removePolygonButton.setEnabled(true);
         interpolateButton.setEnabled(true);
     }
 
-
+    
     /**
      * Callback for the "Add Polygon" button.
      */
@@ -623,6 +592,16 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
      */
     public void onInterpolatePolygonsButton()
     {
+        // check current image state
+        ImageSerialSectionsNode polyNode = crop3d.getPolygonsNode();
+        if (polyNode.isLeaf())
+        {
+            JOptionPane.showMessageDialog(imageFrame.getWidget(),
+                    "Requires the frame to contains valid Crop3D Polygons",
+                    "Crop3D Error", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        
         // Configure a progress monitor to display progress
         AlgoProgressMonitor progress = new AlgoProgressMonitor(this.parentFrame, "Interpolate Polygons"); 
         this.crop3d.addAlgoListener(progress);
@@ -650,6 +629,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         };
         t.start();
         
+        // validates the next operations
         this.previewCropImageButton.setEnabled(true);
         this.cropImageButton.setEnabled(true);
 
