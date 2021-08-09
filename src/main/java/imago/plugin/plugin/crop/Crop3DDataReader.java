@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import com.google.gson.stream.JsonReader;
 
@@ -33,10 +34,9 @@ public class Crop3DDataReader
     
     public Crop3DData readCrop3DData() throws IOException
     {
-        // Default values to load
-        ImageInfo imageInfo = null;
-        ImageSerialSectionsNode polygonsNode = null;
-
+        // initialize the data object
+        Crop3DData data = new Crop3DData();
+        
         // start parsing Crop3D object
         reader.beginObject();
         while (reader.hasNext())
@@ -58,61 +58,21 @@ public class Crop3DDataReader
             } 
             else if(name.equalsIgnoreCase("image"))
             {
-                imageInfo = readImageInfo();
+                data.imageInfo = readImageInfo();
             } 
-            else if(name.equalsIgnoreCase("models"))
+            else if(name.equalsIgnoreCase("regions"))
             {
-                // In the future we may envision several models, but in current version we manage only one.
-                reader.beginArray();
-                reader.beginObject();
-                String name2 = reader.nextName();
-                if (!name2.equalsIgnoreCase("crop"))
-                {
-                    throw new RuntimeException("Expect the file to contain a \"models\"/\"crop\" node");
-                }
-                reader.beginObject();
-                
-                String name3 = reader.nextName();
-                if(name3.equalsIgnoreCase("polygons"))
-                {
-                    // create a scene reader to parse polyline
-                    JsonSceneReader sceneReader = new JsonSceneReader(reader);
-                    Node node = sceneReader.readNode();
-
-                    // expect a group node...
-                    if (!(node instanceof ImageSerialSectionsNode))
-                    {
-                        throw new RuntimeException("JSON file should contains a single ImageSerialSectionsNode instance.");
-                    }
-
-                    polygonsNode = (ImageSerialSectionsNode) node;
-                } 
-                else
-                {
-                    System.out.println("Unknown field name when reading Crop3D: " + name3);
-                    reader.skipValue();
-                }
-                reader.endObject(); // crop object
-                reader.endObject(); // array item
-                
-                // drop all remaining models
-                if (reader.hasNext())
-                {
-                    System.err.println("Warning: additional models are specified in Crop3D, but will be discarded." + name);
-                    while (reader.hasNext())
-                    {
-                        reader.skipValue();
-                    }
-                }
-                reader.endArray();
+                data.regions = readCropRegions();
+            }
+            else
+            {
+                throw new RuntimeException("Can not interpret field name: " + name);
             }
         }
         reader.endObject();
-
-        // create and populate the data object
-        Crop3DData data = new Crop3DData();
-        data.imageInfo = imageInfo;
-        data.polygons = polygonsNode;
+        
+        // temporary workaround
+        data.polygons = data.regions.get(0).sections;
         
         // return data
         return data;
@@ -174,5 +134,60 @@ public class Crop3DDataReader
         }
         reader.endArray();
         return res;
+    }
+    
+    private ArrayList<Crop3DRegion> readCropRegions() throws IOException
+    {
+        ArrayList<Crop3DRegion> regions = new ArrayList<Crop3DRegion>();
+        
+        reader.beginArray();
+        while(reader.hasNext())
+        {
+            regions.add(readCropRegion());
+        }
+        reader.endArray();
+
+        return regions;
+    }
+    
+    private Crop3DRegion readCropRegion() throws IOException
+    {
+        Crop3DRegion model = new Crop3DRegion(); 
+        
+        reader.beginObject();
+        while(reader.hasNext())
+        {
+            String name = reader.nextName();
+            if (name.equalsIgnoreCase("name"))
+            {
+                model.name = reader.nextString();
+            }
+            else if (name.equalsIgnoreCase("polygons"))
+            {
+                model.sections = readPolygons();
+            }
+            else
+            {
+                System.out.println("Unknown field name when reading Crop3D Region: " + name);
+                reader.skipValue();
+            }
+        }
+        
+        reader.endObject(); // array item
+        return model;
+    }
+    
+    private ImageSerialSectionsNode readPolygons() throws IOException
+    {
+        // create a scene reader to geometry data
+        JsonSceneReader sceneReader = new JsonSceneReader(reader);
+        Node node = sceneReader.readNode();
+
+        // expect a group node...
+        if (!(node instanceof ImageSerialSectionsNode))
+        {
+            throw new RuntimeException("JSON file should contains a single ImageSerialSectionsNode instance.");
+        }
+        return (ImageSerialSectionsNode) node;
     }
 }

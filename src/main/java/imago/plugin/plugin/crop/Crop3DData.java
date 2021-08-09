@@ -5,6 +5,7 @@ package imago.plugin.plugin.crop;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import imago.app.scene.ImageSerialSectionsNode;
 import net.sci.image.Image;
@@ -34,6 +35,12 @@ public class Crop3DData
      * interpolated ones.
      */
     public ImageSerialSectionsNode polygons;
+    
+    /**
+     * A list of crop regions, each of them defined by a name and a series of
+     * polygons on a selection of slices.
+     */
+    public ArrayList<Crop3DRegion> regions;
     
     /**
      * Empty constructor.

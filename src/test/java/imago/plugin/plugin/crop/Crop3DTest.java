@@ -11,7 +11,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.google.gson.stream.JsonReader;
 
@@ -33,14 +33,14 @@ import net.sci.image.Image;
  * @author dlegland
  *
  */
-class Crop3DTest
+public class Crop3DTest
 {
 
     /**
      * Test method for {@link imago.plugin.plugin.crop.Crop3D#addPolygon(int, net.sci.geom.geom2d.polygon.Polygon2D)}.
      */
     @Test
-    final void testAddPolygon()
+    public final void testAddPolygon()
     {
         ImagoApp app = new ImagoApp();
         ImagoGui gui = new ImagoGui(app);
@@ -114,7 +114,7 @@ class Crop3DTest
      * Test method for {@link imago.plugin.plugin.crop.Crop3D#readPolygonsFromJson(java.io.File)}.
      */
     @Test
-    final void testReadPolygonsFromJson() throws IOException
+    public final void testReadPolygonsFromJson() throws IOException
     {
         String fileName = getClass().getResource("/json/tomStackLinearRings.json").getFile();
         File file = new File(fileName);

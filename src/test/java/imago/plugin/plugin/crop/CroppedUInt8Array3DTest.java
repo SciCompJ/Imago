@@ -3,11 +3,11 @@
  */
 package imago.plugin.plugin.crop;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.Locale;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 import imago.app.scene.ImageSerialSectionsNode;
 import imago.app.scene.ImageSliceNode;
@@ -21,14 +21,14 @@ import net.sci.geom.geom2d.polygon.Polygon2D;
  * @author dlegland
  *
  */
-class CroppedUInt8Array3DTest
+public class CroppedUInt8Array3DTest
 {
 
     /**
      * Test method for {@link imago.plugin.plugin.crop.CroppedUInt8Array3D#slice(int)}.
      */
     @Test
-    void testSliceInt()
+    public void testSliceInt()
     {
         UInt8Array3D refArray = createArray();
 //        UInt8Array2D slice = refArray.slice(15);
@@ -48,7 +48,7 @@ class CroppedUInt8Array3DTest
      * Test method for {@link imago.plugin.plugin.crop.CroppedUInt8Array3D#getByte(int[])}.
      */
     @Test
-    void testGetByte()
+    public void testGetByte()
     {
         UInt8Array3D refArray = createArray();
 

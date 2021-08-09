@@ -11,7 +11,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.google.gson.stream.JsonReader;
 
@@ -27,7 +27,7 @@ import net.sci.geom.geom2d.polygon.Polyline2D;
  * @author dlegland
  *
  */
-class Surface3DTest
+public class Surface3DTest
 {
 
     /**
@@ -35,7 +35,7 @@ class Surface3DTest
      * @throws IOException 
      */
     @Test
-    final void testReadPolylinesFromJson() throws IOException
+    public final void testReadPolylinesFromJson() throws IOException
     {
         String fileName = getClass().getResource("/json/H_250_2_MD_crop3_surface3d.json").getFile();
         File file = new File(fileName);
@@ -99,7 +99,7 @@ class Surface3DTest
      * @throws IOException 
      */
     @Test
-    final void testReadAnalysisFromJson() throws IOException
+    public final void testReadAnalysisFromJson() throws IOException
     {
         String fileName = getClass().getResource("/json/H_250_2_MD_crop3_surfEpi_polylines.json").getFile();
         File file = new File(fileName);

@@ -46,22 +46,20 @@ public class Crop3DDataWriter
         jsonWriter.name("image");
         writeImageInfo(crop3d.imageHandle.getImage());
         
-        // one node for the collection of models
-        jsonWriter.name("models").beginArray();
+        // one node for the collection of crop regions
+        jsonWriter.name("regions").beginArray();
         
         // one node for the default crop polygons
         jsonWriter.beginObject();
-        jsonWriter.name("crop").beginObject();
+        jsonWriter.name("name").value("crop");
         // write crop polygon data
         ImageSerialSectionsNode polyNode = crop3d.getPolygonsNode();
         if (polyNode != null)
         {
-            JsonSceneWriter sceneWriter = new JsonSceneWriter(jsonWriter);
             jsonWriter.name("polygons");
-            sceneWriter.writeNode(polyNode);
+            writePolygons(polyNode);
         }
       
-        jsonWriter.endObject(); // crop object
         jsonWriter.endObject(); // array item
         jsonWriter.endArray(); // array of models
 
@@ -85,9 +83,8 @@ public class Crop3DDataWriter
         ImageSerialSectionsNode polyNode = surf3d.getPolylinesNode();
         if (polyNode != null)
         {
-            JsonSceneWriter sceneWriter = new JsonSceneWriter(jsonWriter);
             jsonWriter.name("polylines");
-            sceneWriter.writeNode(polyNode);
+            writeSceneNode(polyNode);
         }
       
         // close Surface3D
