@@ -421,7 +421,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         this.imageFrame = null;
         
         // create a viewer and a Crop3D object for the new image
-        openImage(file);
+        initializeFromImageFile(file);
     }
     
     private File chooseInputImageFile(ImagoFrame parentFrame)
@@ -459,16 +459,16 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
      * Reads a 3D virtual image from the specified file, and creates a new
      * ImageViewer and a new Crop3D object associated to the current frame.
      * 
-     * @param file
+     * @param imageFileName
      *            the image file to open.
      */
-    public void openImage(File file)
+    public void initializeFromImageFile(File imageFileName)
     {
         // open a virtual image from the file
         Image image;
         try 
         {
-            TiffImageReader reader = new TiffImageReader(file);
+            TiffImageReader reader = new TiffImageReader(imageFileName);
             image = reader.readVirtualImage3D();
         }
         catch (Exception ex) 
@@ -496,8 +496,8 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         imageNameLabel.setText("Current Image: " + image.getName());
 
         // update last open path
-        this.imagePath = file.getAbsolutePath();
-        this.lastOpenPath = file.getPath();
+        this.imagePath = imageFileName.getAbsolutePath();
+        this.lastOpenPath = imageFileName.getPath();
         this.imageFrame.setLastOpenPath(this.lastOpenPath);
         
         // enable widget for next processing steps 

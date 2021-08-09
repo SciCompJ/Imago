@@ -88,86 +88,13 @@ public class Crop3D extends AlgoStub
      */
     public static final Crop3D loadAnalysis(File file, ImagoFrame parentFrame) throws IOException
     {
-        // Default values to load
-        ImageInfo imageInfo = null;
-        ImageSerialSectionsNode polygonsNode = null;
-
-        // parse file using JSON
-        // create json file reader
-        FileReader fileReader = new FileReader(file);
-        JsonReader reader = new JsonReader(new BufferedReader(fileReader));
-
-        // start parsing Crop3D object
-        reader.beginObject();
-        while (reader.hasNext())
-        {
-            String name = reader.nextName();
-
-            if (name.equalsIgnoreCase("type"))
-            {
-                // check the file start with the Crop3D data header
-                String string = reader.nextString();
-                if (!string.equalsIgnoreCase("Crop3D"))
-                {
-                    throw new RuntimeException("Expect a file containing a Crop3D type data");
-                }
-            }
-            else if(name.equalsIgnoreCase("saveDate"))
-            {
-                reader.skipValue();
-            } 
-            else if(name.equalsIgnoreCase("image"))
-            {
-                imageInfo = readImageInfo(reader);
-            } 
-            else if(name.equalsIgnoreCase("models"))
-            {
-                // In the future we may envision several models, but in current version we manage only one.
-                reader.beginArray();
-                reader.beginObject();
-                String name2 = reader.nextName();
-                if (!name2.equalsIgnoreCase("crop"))
-                {
-                    throw new RuntimeException("Expect the file to contain a \"models\"/\"crop\" node");
-                }
-                reader.beginObject();
-                
-                String name3 = reader.nextName();
-                if(name3.equalsIgnoreCase("polygons"))
-                {
-                    // create a scene reader to parse polyline
-                    JsonSceneReader sceneReader = new JsonSceneReader(reader);
-                    Node node = sceneReader.readNode();
-
-                    // expect a group node...
-                    if (!(node instanceof ImageSerialSectionsNode))
-                    {
-                        throw new RuntimeException("JSON file should contains a single ImageSerialSectionsNode instance.");
-                    }
-
-                    polygonsNode = (ImageSerialSectionsNode) node;
-                } 
-                else
-                {
-                    System.out.println("Unknown field name when reading Crop3D: " + name3);
-                    reader.skipValue();
-                }
-                reader.endObject(); // crop object
-                reader.endObject(); // array item
-                
-                // drop all remaining models
-                if (reader.hasNext())
-                {
-                    System.err.println("Warning: additional models are specified in Crop3D, but will be discarded." + name);
-                    while (reader.hasNext())
-                    {
-                        reader.skipValue();
-                    }
-                }
-                reader.endArray();
-            }
-        }
-        reader.endObject();
+        // creates the reader from the file in JSON format
+        Crop3DDataReader reader = new Crop3DDataReader(file);
+        
+        // load data and keep relevant ones
+        Crop3DData data = reader.readCrop3DData();
+        ImageInfo imageInfo = data.imageInfo;
+        ImageSerialSectionsNode polygonsNode = data.polygons;
 
         // Check necessary information have been loaded
         if (imageInfo.filePath == null)
@@ -180,7 +107,7 @@ public class Crop3D extends AlgoStub
         newFrame.run(parentFrame, null);
         
         // create an image viewer for the file given in ImageInfo
-        newFrame.openImage(new File(imageInfo.filePath));
+        newFrame.initializeFromImageFile(new File(imageInfo.filePath));
         
         Crop3D crop3d = newFrame.crop3d;
         if (crop3d == null)
@@ -198,65 +125,6 @@ public class Crop3D extends AlgoStub
         viewer.repaint();
         
         return crop3d;
-    }
-
-
-    private static final ImageInfo readImageInfo(JsonReader reader) throws IOException
-    {
-        // initialize image info object with default values
-        ImageInfo imageInfo = new ImageInfo();
-    
-        // parse object fields
-        reader.beginObject();
-        while (reader.hasNext())
-        {
-            String name = reader.nextName();
-            if (name.equalsIgnoreCase("type"))
-            {
-                // check the file start with the Crop3D data header
-                if (!reader.nextString().equalsIgnoreCase("Image3D"))
-                {
-                    throw new RuntimeException("Expect a file containing a Image3D type data");
-                }
-            }
-            else if(name.equalsIgnoreCase("name"))
-            {
-                imageInfo.name = reader.nextString();
-            }
-            else if(name.equalsIgnoreCase("filePath"))
-            {
-                imageInfo.filePath = reader.nextString();
-            }
-            else if(name.equalsIgnoreCase("nDims"))
-            {
-                imageInfo.nDims = reader.nextInt();
-            }
-            else if(name.equalsIgnoreCase("size"))
-            {
-                imageInfo.size = readIntArray(reader, imageInfo.nDims);
-            }
-            else
-            {
-                System.out.println("Unknown field name when reading Image3D: " + name);
-                reader.skipValue();
-            }
-    
-        }
-        reader.endObject();
-    
-        return imageInfo;
-    }
-
-    private static final int[] readIntArray(JsonReader reader, int nItems) throws IOException
-    {
-        int[] res = new int[nItems];
-        reader.beginArray();
-        for (int d = 0; d < nItems; d++)
-        {
-            res[d] = reader.nextInt();
-        }
-        reader.endArray();
-        return res;
     }
 
 
@@ -446,11 +314,9 @@ public class Crop3D extends AlgoStub
         // reset current state of the Crop3D plugin
         initializeCrop3dNodes();
 
-        JsonSceneReader sceneReader;
-
         FileReader fileReader = new FileReader(file);
         JsonReader jsonReader = new JsonReader(new BufferedReader(fileReader));
-        sceneReader = new JsonSceneReader(jsonReader);
+        JsonSceneReader sceneReader = new JsonSceneReader(jsonReader);
 
         try 
         {
