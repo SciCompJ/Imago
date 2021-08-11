@@ -21,15 +21,16 @@ public class Crop3DRegion
     /**
      * The manually selected polygons for a selection of slices.
      */
-    ImageSerialSectionsNode sections;
+    ImageSerialSectionsNode polygons;
     
     public Crop3DRegion()
     {
+        this.polygons = new ImageSerialSectionsNode("");
     }
     
-    public Crop3DRegion(String name, ImageSerialSectionsNode sections)
+    public Crop3DRegion(String name, ImageSerialSectionsNode polygons)
     {
         this.name = name;
-        this.sections = sections;
+        this.polygons = polygons;
     }
 }

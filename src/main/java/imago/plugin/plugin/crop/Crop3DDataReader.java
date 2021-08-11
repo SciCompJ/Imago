@@ -56,6 +56,11 @@ public class Crop3DDataReader
             {
                 reader.skipValue();
             } 
+            else if(name.equalsIgnoreCase("authors"))
+            {
+                // read author data but do not use them
+                reader.skipValue();
+            }
             else if(name.equalsIgnoreCase("image"))
             {
                 data.imageInfo = readImageInfo();
@@ -70,9 +75,6 @@ public class Crop3DDataReader
             }
         }
         reader.endObject();
-        
-        // temporary workaround
-        data.polygons = data.regions.get(0).sections;
         
         // return data
         return data;
@@ -139,7 +141,6 @@ public class Crop3DDataReader
     private ArrayList<Crop3DRegion> readCropRegions() throws IOException
     {
         ArrayList<Crop3DRegion> regions = new ArrayList<Crop3DRegion>();
-        
         reader.beginArray();
         while(reader.hasNext())
         {
@@ -152,7 +153,7 @@ public class Crop3DDataReader
     
     private Crop3DRegion readCropRegion() throws IOException
     {
-        Crop3DRegion model = new Crop3DRegion(); 
+        Crop3DRegion region = new Crop3DRegion(); 
         
         reader.beginObject();
         while(reader.hasNext())
@@ -160,11 +161,11 @@ public class Crop3DDataReader
             String name = reader.nextName();
             if (name.equalsIgnoreCase("name"))
             {
-                model.name = reader.nextString();
+                region.name = reader.nextString();
             }
             else if (name.equalsIgnoreCase("polygons"))
             {
-                model.sections = readPolygons();
+                region.polygons = readPolygons();
             }
             else
             {
@@ -173,11 +174,11 @@ public class Crop3DDataReader
             }
         }
         
-        reader.endObject(); // array item
-        return model;
+        reader.endObject();
+        return region;
     }
     
-    private ImageSerialSectionsNode readPolygons() throws IOException
+    public ImageSerialSectionsNode readPolygons() throws IOException
     {
         // create a scene reader to geometry data
         JsonSceneReader sceneReader = new JsonSceneReader(reader);

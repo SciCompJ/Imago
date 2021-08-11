@@ -115,44 +115,53 @@ public class GenericDialog
     // =============================================================
     // Constructors
     
-	/**
-	 * Creates a new GenericDialog, located with respect to parent frame, and
-	 * with given title.
-	 */
-	public GenericDialog (ImagoFrame parent, String title) 
-	{
-	    JFrame frame = parent == null ? null : parent.getWidget();
-		this.dialog = new JDialog(frame, title, true);
-	
-		// creates the listeners
-		this.controller = new Controller(dialog);
-	    		
-		// setup global layout
-		gridLayout = new GridBagLayout();
-		c = new GridBagConstraints();
-		this.dialog.setLayout(gridLayout);
+    /**
+     * Creates a new GenericDialog, located with respect to parent frame, and
+     * with given title.
+     */
+    public GenericDialog (ImagoFrame parent, String title) 
+    {
+        this(parent == null ? null : parent.getWidget(), title);
+    }
+    
+    /**
+     * Creates a new GenericDialog, located with respect to parent frame, and
+     * with given title.
+     */
+    public GenericDialog (JFrame frame, String title) 
+    {
+        this.dialog = new JDialog(frame, title, true);
+    
+        // creates the listeners
+        this.controller = new Controller(dialog);
+                
+        // setup global layout
+        gridLayout = new GridBagLayout();
+        c = new GridBagConstraints();
+        this.dialog.setLayout(gridLayout);
 
-		// add some listeners
-		this.dialog.addKeyListener(this.controller);
-		this.dialog.addWindowListener(this.controller);
-		
-		// setup location
-		if (parent != null)
-		{
-			Point pos = frame.getLocation();
-			Dimension dim = frame.getSize();
-			int x = pos.x + dim.width / 4;
-			int y = pos.y + dim.height / 4;
-			this.dialog.setLocation(x, y);
-		}
-	}
-	
+        // add some listeners
+        this.dialog.addKeyListener(this.controller);
+        this.dialog.addWindowListener(this.controller);
+        
+        // setup location
+        if (frame != null)
+        {
+            Point pos = frame.getLocation();
+            Dimension dim = frame.getSize();
+            int x = pos.x + dim.width / 4;
+            int y = pos.y + dim.height / 4;
+            this.dialog.setLocation(x, y);
+        }
+    }
+    
 	/**
 	 * Kept for compatibility, but it is better to specify parent frame.
 	 */
+    @Deprecated
 	public GenericDialog (String title) 
 	{
-		this(null, title);
+		this((JFrame) null, title);
 	}
 
 

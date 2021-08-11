@@ -5,10 +5,8 @@ package imago.plugin.plugin.crop;
 
 import java.awt.Color;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -17,15 +15,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
 
-import com.google.gson.stream.JsonReader;
-
 import imago.app.ImageHandle;
 import imago.app.scene.GroupNode;
 import imago.app.scene.ImageSerialSectionsNode;
 import imago.app.scene.ImageSliceNode;
 import imago.app.scene.Node;
 import imago.app.scene.ShapeNode;
-import imago.app.scene.io.JsonSceneReader;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
 import net.sci.algo.AlgoEvent;
@@ -49,7 +44,7 @@ import net.sci.image.io.MetaImageWriter;
 
 /**
  * Performs 3D Crop on a 3D stack. This class contains the processing methods,
- * the main GUI is managed by the Crop3DPlugin class.
+ * and interacts with the contents of the ImageHandle.
  * 
  * Several Processing steps:
  * <ol>
@@ -94,8 +89,7 @@ public class Crop3D extends AlgoStub
         // load data and keep relevant ones
         Crop3DData data = reader.readCrop3DData();
         ImageInfo imageInfo = data.imageInfo;
-        ImageSerialSectionsNode polygonsNode = data.polygons;
-
+        
         // Check necessary information have been loaded
         if (imageInfo.filePath == null)
         {
@@ -106,8 +100,9 @@ public class Crop3D extends AlgoStub
         Crop3DPlugin newFrame = new Crop3DPlugin();
         newFrame.run(parentFrame, null);
         
-        // create an image viewer for the file given in ImageInfo
-        newFrame.initializeFromImageFile(new File(imageInfo.filePath));
+//        // create an image viewer for the file given in ImageInfo
+//        newFrame.initializeFromImageFile(new File(imageInfo.filePath));
+        newFrame.initialize(data);
         
         Crop3D crop3d = newFrame.crop3d;
         if (crop3d == null)
@@ -116,6 +111,7 @@ public class Crop3D extends AlgoStub
         }
         
         // update polygons of the new analysis
+        ImageSerialSectionsNode polygonsNode = data.regions.get(0).polygons;
         crop3d.populatePolygons(polygonsNode);
         newFrame.updatePolygonListView();
         
@@ -131,15 +127,16 @@ public class Crop3D extends AlgoStub
     // ===================================================================
     // Class members
     
+    Crop3DData data;
+    
     /**
      * The image handle, that can be retrieved from the image frame.
      */
     ImageHandle imageHandle;
     
+    Crop3DRegion currentRegion = null;
     
-    String polygonSliceNamePattern = "slice%02d";
-    String smoothSliceNamePattern = "smooth%02d";
-    String interpolatedSliceNamePattern = "interp%02d";
+    String sliceIndexPattern = "%02d";
     
     
     // ===================================================================
@@ -147,24 +144,89 @@ public class Crop3D extends AlgoStub
 
     public Crop3D(ImageHandle imageHandle)
     {
-        this.imageHandle = imageHandle;
-        
-        initializeSliceNamePatterns();
-        
-        initializeCrop3dNodes();
+        this(new Crop3DData(imageHandle.getImage()), imageHandle);
+//        this.data = new Crop3DData(imageHandle.getImage());
+//        this.imageHandle = imageHandle;
+//        
+////        this.data.imageInfo = new ImageInfo(imageHandle.getImage());
+//        
+//        initializeSliceIndexPattern();
+//        initializeCrop3dNodes();
     }
     
-    private void initializeSliceNamePatterns()
+    public Crop3D(Crop3DData data, ImageHandle imageHandle)
     {
-        // get current image data to know the number of slices
-        Array<?> array = this.imageHandle.getImage().getData();
-        int nSlices = array.size(2);
+        this.data = data;
+        this.imageHandle = imageHandle;
+        
+        initializeSliceIndexPattern();
+        initializeCrop3dNodes();
+    }
+
+    private void initializeSliceIndexPattern()
+    {
+        // retrieve number of slices from crop data
+        int nSlices = this.data.imageInfo.size[2];
         
         // create slice name patterns based on image size
         int nDigits = (int) Math.ceil(Math.log10(nSlices));
-        this.polygonSliceNamePattern = "slice%0" + nDigits + "d";
-        this.smoothSliceNamePattern = "smooth%0" + nDigits + "d";
-        this.interpolatedSliceNamePattern = "interp%0" + nDigits + "d";
+        this.sliceIndexPattern = "%0" + nDigits + "d";
+    }
+    
+    
+    // ===================================================================
+    // Management of regions
+    
+    public void addRegion(String regionName)
+    {
+        Crop3DRegion region = new Crop3DRegion();
+        region.name = regionName;
+        this.data.addRegion(region);
+        
+        if (this.currentRegion == null)
+        {
+            this.currentRegion = region;
+        }
+    }
+
+    public void removeRegion(String regionName)
+    {
+        this.data.removeRegion(regionName);
+        
+        // check if the current region was removed
+        if (this.currentRegion != null)
+        {
+            if (this.currentRegion.name.equals(regionName))
+            {
+                initializeCrop3dNodes();
+                this.currentRegion = null;
+            }
+        }
+    }
+
+    /**
+     * Changes the current region, and resets the scene tree associated to Crop3D.
+     * 
+     * @param regionName the name of the region to select.
+     */
+    public void selectCurrentRegion(String regionName)
+    {
+        // retrieve region from name
+        Crop3DRegion region = data.getRegion(regionName);
+        this.currentRegion = region;
+        
+        // reset crop3D data
+        initializeCrop3dNodes();
+        
+        // setup new data
+        populatePolygons(region.polygons);
+    }
+    
+    public void initializeDefaultRegions()
+    {
+        addRegion("Tube Cells");
+        addRegion("Cross Cells");
+        selectCurrentRegion("Tube Cells");
     }
     
 
@@ -172,9 +234,7 @@ public class Crop3D extends AlgoStub
     // Initialization of nodes
     
     /**
-     * Reset the nodes associated to a Crop3D plugin. 
-     * 
-     * @param handle the ImageHandle containing the nodes to reset.
+     * Reset the nodes of ImageHandle associated to a Crop3D plugin. 
      */
     public void initializeCrop3dNodes()
     {
@@ -202,8 +262,6 @@ public class Crop3D extends AlgoStub
     // Management of nodes
     
     /**
-     * @param handle
-     *            the ImageHandle containing the nodes.
      * @return true if the image handle contains the necessary scene nodes for
      *         performing Crop3D.
      */
@@ -267,78 +325,85 @@ public class Crop3D extends AlgoStub
         return polyNode;
     }
 
-
+    /**
+     * Adds a new polygon to the current Crop region.
+     * 
+     * @param sliceIndex
+     *            the index of the current XY slice
+     * @param poly
+     *            the polygon used to crop
+     */
     public void addPolygon(int sliceIndex, Polygon2D poly)
     {
         System.out.println("crop3d - add polygon");
-    
-        // get current image data
-        Image image = this.imageHandle.getImage();
-        Array<?> array = image.getData();
-        if (array.dimensionality() != 3)
-        {
-            throw new RuntimeException("Requires an image containing 3D Array");
-        }
-        int nSlices = array.size(2);
-    
-        
-        // select node containing manually delineated polygons
-        ImageSerialSectionsNode polyNode = getPolygonsNode();
         
         // compute slice and polygon name 
-        int nDigits = (int) Math.ceil(Math.log10(nSlices));
-        String sliceName = String.format(Locale.US, "slice%0" + nDigits + "d", sliceIndex);
+        String name = createSliceName("slice", sliceIndex);
         
-        // Create a new LinearRing shape from the boundary of the polygon
-        ShapeNode shapeNode = new ShapeNode(sliceName, poly.rings().iterator().next());
-        shapeNode.getStyle().setLineWidth(3.5);
+        // update current region
+        setPolygonSliceNode(currentRegion.polygons, sliceIndex, poly, name);
         
+        // update scene node in current image handle
+        setPolygonSliceNode(getPolygonsNode(), sliceIndex, poly, name);
+    }
+    
+    private void setPolygonSliceNode(ImageSerialSectionsNode polyNode, int index, Polygon2D poly, String name)
+    {
+        // create the shape node
+        ShapeNode shapeNode = createPolygonShapeNode(poly, name);
+
         // get relevant slice node, or create one if necessary
         ImageSliceNode sliceNode;
-        if (polyNode.hasSliceNode(sliceIndex))
+        if (polyNode.hasSliceNode(index))
         {
-             sliceNode = (ImageSliceNode) polyNode.getSliceNode(sliceIndex);
+             sliceNode = (ImageSliceNode) polyNode.getSliceNode(index);
         }
         else
         {
-            sliceNode = new ImageSliceNode(sliceName, sliceIndex);
+            sliceNode = new ImageSliceNode(name, index);
             polyNode.addSliceNode(sliceNode);
         }
         
         sliceNode.clear();
         sliceNode.addNode(shapeNode);
     }
+    
+    private ShapeNode createPolygonShapeNode(Polygon2D poly, String name)
+    {
+        // Create a new LinearRing shape from the boundary of the polygon
+        LinearRing2D ring = poly.rings().iterator().next();
+        ShapeNode shapeNode = new ShapeNode(name, ring);
+        shapeNode.getStyle().setLineWidth(3.5);
+        return shapeNode;
+    }
+    
+    public void removePolygon(int sliceIndex)
+    {
+        System.out.println("crop3d - remove polygon");
+        
+        // update current region
+        currentRegion.polygons.removeSliceNode(sliceIndex);
+        
+        // update scene node in current image handle
+        getPolygonsNode().removeSliceNode(sliceIndex);
+    }
 
     public void readPolygonsFromJson(File file) throws IOException
     {
+        // check current region exists
+        if (this.currentRegion == null)
+        {
+            throw new RuntimeException("Current region is not defined");
+        }
+        
+        // read polygons of current region
+        Crop3DDataReader reader = new Crop3DDataReader(file);
+        currentRegion.polygons = reader.readPolygons();
+
         // reset current state of the Crop3D plugin
         initializeCrop3dNodes();
-
-        FileReader fileReader = new FileReader(file);
-        JsonReader jsonReader = new JsonReader(new BufferedReader(fileReader));
-        JsonSceneReader sceneReader = new JsonSceneReader(jsonReader);
-
-        try 
-        {
-            // expect a group node...
-            Node node = sceneReader.readNode();
-            if (!(node instanceof ImageSerialSectionsNode))
-            {
-                throw new RuntimeException("JSON file should contains a single ImageSerialSectionsNode instance.");
-            }
-            
-            ImageSerialSectionsNode polyNode = getPolygonsNode();
-            for(ImageSliceNode child : ((ImageSerialSectionsNode) node).children())
-            {
-                polyNode.addSliceNode(child);
-            }
-
-        }
-        catch (IOException ex)
-        {
-            throw new RuntimeException(ex);
-        }
-
+        populatePolygons(currentRegion.polygons);
+        
         System.out.println("reading polygons terminated.");
     }
        
@@ -417,7 +482,7 @@ public class Crop3D extends AlgoStub
             LinearRing2D ring2 = ring.resampleBySpacing(2.0);
             ring2 = ring2.smooth(7);
             
-            ImageSliceNode sliceNode2 = createSmoothPolylineNode(ring2, sliceIndex, smoothSliceNamePattern);
+            ImageSliceNode sliceNode2 = createSmoothPolylineNode(ring2, sliceIndex);
 
             smoothNode.addSliceNode(sliceNode2);
         }
@@ -490,11 +555,11 @@ public class Crop3D extends AlgoStub
         interpNode.addSliceNode(createInterpolatedPolygonNode(currentPoly, currentSliceIndex));
     }
     
-    private ImageSliceNode createSmoothPolylineNode(LinearRing2D ring, int sliceIndex, String namePattern)
+    private ImageSliceNode createSmoothPolylineNode(LinearRing2D ring, int sliceIndex)
     {
         // compute name (of both shape and slice nodes)
-        String sliceName = String.format(Locale.US, smoothSliceNamePattern, sliceIndex);
-        
+        String sliceName = createSliceName("smooth", sliceIndex);
+
         // create the shape node
         ShapeNode shapeNode = new ShapeNode(sliceName, ring);
         shapeNode.getStyle().setColor(Color.GREEN);
@@ -662,8 +727,8 @@ public class Crop3D extends AlgoStub
     private ImageSliceNode createInterpolatedPolygonNode(LinearRing2D ring, int sliceIndex)
     {
         // compute name (of both shape and slice nodes)
-        String sliceName = String.format(Locale.US, interpolatedSliceNamePattern, sliceIndex);
-    
+        String sliceName = createSliceName("interp", sliceIndex);
+
         // create a node for the shape
         ShapeNode shapeNode = new ShapeNode(sliceName, ring);
         shapeNode.getStyle().setColor(Color.MAGENTA);
@@ -674,6 +739,22 @@ public class Crop3D extends AlgoStub
         sliceNode.addNode(shapeNode);
         
         return sliceNode;
+    }
+    
+    /**
+     * Computes the name associated to a slice, based on a user-defined prefix
+     * and a slice index.
+     * 
+     * @param prefix
+     *            the prefix used to describe the slice.
+     * @param sliceIndex
+     *            the index of the slice
+     * @return the concatenation of the prefix with a 0-padded string
+     *         representation of the slice index
+     */
+    private String createSliceName(String prefix, int sliceIndex)
+    {
+        return String.format(Locale.US, prefix + sliceIndexPattern, sliceIndex);
     }
     
     /**

@@ -4,14 +4,18 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -31,6 +35,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import imago.app.ImagoApp;
 import imago.app.scene.ImageSerialSectionsNode;
 import imago.gui.FramePlugin;
+import imago.gui.GenericDialog;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
@@ -69,18 +74,26 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     JMenuItem saveAnalysisItem;
     JMenuItem savePolygonsItem;
     
-    JLabel imageNameLabel;
+    JLabel imageNameLabel = new JLabel("");
     
     // buttons
     JButton openImageButton;
+    JButton addRegionButton;
+    JButton removeRegionButton;
     JButton addPolygonButton;
     JButton removePolygonButton;
+    JButton importPolygonsButton;
+    JButton exportPolygonsButton;
     JButton interpolateButton;
     JButton previewCropImageButton;
     JButton cropImageButton;
     
+    // the widget that displays the names of the crop regions
+//    JList<String> regionList;
+    JComboBox<String> regionComboBox;
+    
     // the widget that displays the names of base polygons
-    JList<String> roiList;
+    JList<String> cropItemList;
     
     private JFileChooser openWindow = null;
     private JFileChooser saveWindow = null;
@@ -91,6 +104,9 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     String imagePath = null;
     String lastOpenPath = "D:/images/wheat/perigrain/Psiche_2018/HR/selection";
 
+    /**
+     * Simply creates an empty plugin.
+     */
     public Crop3DPlugin()
     {
         System.out.println("create the crop3D plugin");
@@ -108,9 +124,27 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     {
         JFrame frame = new JFrame("Crop 3D");
         
+        // initialize widgets and setup layout
         createMenu(frame);
+        initializeWidgets();
         setupLayout(frame);
         
+        // setup listeners
+        frame.addWindowListener(new WindowAdapter() 
+        {
+            public void windowClosing(WindowEvent evt)
+            {
+                // close the corresponding image viewer if it exists
+                if (imageFrame != null)
+                {
+                    imageFrame.close();
+                }
+                frame.setVisible(false);
+                frame.dispose();
+            }
+        });
+        
+        // setup frame location according to parent frame location
         java.awt.Point pos = parentFrame.getLocation();
         frame.setLocation(pos.x + 20, pos.y + 20);
         frame.setVisible(true);
@@ -139,73 +173,137 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         return item;
     }
     
-    private void setupLayout(JFrame frame)
+    private void initializeWidgets()
     {
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
-        
-        JPanel controlsPanel = new JPanel();
-        
-        // create the buttons
-        openImageButton = new JButton("Open Image...");
+        openImageButton = new JButton("Choose...");
         openImageButton.addActionListener(evt -> onOpenImageButton());
-        addPolygonButton = new JButton("Add Polygon");
+        addRegionButton = new JButton("New...");
+        addRegionButton.addActionListener(evt -> onAddRegionButton());
+        addRegionButton.setEnabled(false);
+        removeRegionButton = new JButton("Remove");
+        removeRegionButton.addActionListener(evt -> onRemoveRegionButton());
+        removeRegionButton.setEnabled(false);
+        addPolygonButton = new JButton("Add");
         addPolygonButton.addActionListener(evt -> onAddPolygonButton());
         addPolygonButton.setEnabled(false);
-        removePolygonButton = new JButton("Remove Polygon");
+        removePolygonButton = new JButton("Remove");
         removePolygonButton.addActionListener(evt -> onRemovePolygonButton());
         removePolygonButton.setEnabled(false);
+        importPolygonsButton = new JButton("Load...");
+        importPolygonsButton.addActionListener(evt -> onLoadPolygons());
+        importPolygonsButton.setEnabled(false);
+        exportPolygonsButton = new JButton("Save...");
+        exportPolygonsButton.addActionListener(evt -> onSavePolygons());
+        exportPolygonsButton.setEnabled(false);
         interpolateButton = new JButton("Interpolate");
         interpolateButton.addActionListener(evt -> onInterpolatePolygonsButton());
         interpolateButton.setEnabled(false);
-        previewCropImageButton = new JButton("Preview Crop");
+        previewCropImageButton = new JButton("Crop Preview");
         previewCropImageButton.addActionListener(evt -> onPreviewCropImageButton());
         previewCropImageButton.setEnabled(false);
-        cropImageButton = new JButton("Crop Image...");
+        cropImageButton = new JButton("Crop...");
         cropImageButton.addActionListener(evt -> onCropImageButton());
         cropImageButton.setEnabled(false);
         
-        controlsPanel.setLayout(new BoxLayout(controlsPanel, BoxLayout.Y_AXIS));
-        controlsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        regionComboBox = new JComboBox<String>(new String[] {});
+        regionComboBox.setMaximumSize(regionComboBox.getPreferredSize());
+        regionComboBox.addActionListener(evt -> onCurrentRegionUpdated());
+
+        cropItemList = new JList<String>(new String[] {});
+        cropItemList.setVisibleRowCount(10);
+        cropItemList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        cropItemList.addListSelectionListener(this);
+    }
+
+    private void setupLayout(JFrame frame)
+    {
+        // The main panel is composed of several framed panel
+        // 1. Choice of reference image
+        // 2. Choosing the name of crop regions
+        // 3. Manual selection of crop items (polygons)
+        // 4. Processing steps (interpolation, crop)
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+
+        JPanel upperPanel = new JPanel(new BorderLayout());
+
+        // 1. The panel for reference image file name
+        JPanel referenceImagePanel = new JPanel();
+        referenceImagePanel.setLayout(new BoxLayout(referenceImagePanel, BoxLayout.X_AXIS));
+        referenceImagePanel.setBorder(BorderFactory.createTitledBorder("Reference Image"));
+        referenceImagePanel.add(new JLabel("Image Name: "));
+        referenceImagePanel.add(imageNameLabel);
+        referenceImagePanel.add(Box.createHorizontalGlue());
+        referenceImagePanel.add(openImageButton);
         
-        JPanel btnPanel = new JPanel(new GridLayout(7, 1, 10, 10));
-        btnPanel.add(new JLabel(" "));
-        btnPanel.add(openImageButton);
-        btnPanel.add(addPolygonButton);
-        btnPanel.add(removePolygonButton);
-        btnPanel.add(interpolateButton);
-        btnPanel.add(previewCropImageButton);
-        btnPanel.add(cropImageButton);
-        controlsPanel.add(btnPanel);
-        mainPanel.add(controlsPanel);
+        upperPanel.add(referenceImagePanel, BorderLayout.NORTH);
+        
+        // 2. The panel for the crop regions
+        JPanel cropRegionsPanel = new JPanel();
+        cropRegionsPanel.setLayout(new GridLayout(1, 2, 5, 5));
+        cropRegionsPanel.setBorder(BorderFactory.createTitledBorder("Regions"));
+        
+        // 2.1 The control panel for the regions
+        JPanel regionButtonsPanel = new JPanel();
+        regionButtonsPanel.add(addRegionButton);
+        regionButtonsPanel.add(removeRegionButton);
+        cropRegionsPanel.add(regionButtonsPanel);
+
+        // 2.2 the list of regions
+        JPanel regionListPanel = new JPanel();
+        regionListPanel.setLayout(new BorderLayout());
+        regionListPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        regionListPanel.add(regionComboBox);
+        cropRegionsPanel.add(regionListPanel);
+
+        upperPanel.add(cropRegionsPanel, BorderLayout.SOUTH);
+        mainPanel.add(upperPanel, BorderLayout.NORTH);
         
         
+        // 3. The panel for the crop items
+        JPanel cropItemsPanel = new JPanel();
+        cropItemsPanel.setLayout(new GridLayout(1, 2, 5, 5));
+        cropItemsPanel.setBorder(BorderFactory.createTitledBorder("Crop Items"));
+        
+        // 3.1 The control panel for the crop items
+        JPanel polyButtonsPanel = new JPanel(new GridLayout(8, 1));
+        polyButtonsPanel.add(new JLabel(""));
+        polyButtonsPanel.add(addPolygonButton);
+        polyButtonsPanel.add(removePolygonButton);
+        polyButtonsPanel.add(new JLabel(""));
+        polyButtonsPanel.add(importPolygonsButton);
+        polyButtonsPanel.add(exportPolygonsButton);
+        polyButtonsPanel.add(new JLabel(""));
+        cropItemsPanel.add(polyButtonsPanel);
+
+        // 3.2 the list of crop items
         JPanel listPanel = new JPanel();
         listPanel.setLayout(new BorderLayout());
-        listPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        JLabel label =new JLabel("Polygon list:");
-        label.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 5));
-        listPanel.add(label, BorderLayout.NORTH);
-        
-        roiList = new JList<String>(new String[] {});
-        roiList.setVisibleRowCount(12);
-        roiList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        roiList.addListSelectionListener(this);
-        
-        JScrollPane listScroller = new JScrollPane(roiList);
-        listScroller.setPreferredSize(new Dimension(140, 100));
+        listPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        JScrollPane listScroller = new JScrollPane(cropItemList);
+        listScroller.setPreferredSize(new Dimension(80, 120));
         listPanel.add(listScroller, BorderLayout.CENTER);
         
-        mainPanel.add(listPanel);
+        cropItemsPanel.add(listPanel);
+        mainPanel.add(cropItemsPanel, BorderLayout.CENTER);
         
-        imageNameLabel = new JLabel("Current Image: (none)");
-        imageNameLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        // 4. The panel for the processing steps
+        JPanel processPanel = new JPanel();
+        processPanel.setBorder(BorderFactory.createTitledBorder("Process"));
+        
+        JPanel processButtonsPanel = new JPanel();
+        processButtonsPanel.setLayout(new BoxLayout(processButtonsPanel, BoxLayout.X_AXIS));
+        processButtonsPanel.add(interpolateButton);
+        processButtonsPanel.add(previewCropImageButton);
+        processButtonsPanel.add(cropImageButton);
+        processPanel.add(processButtonsPanel);
+        mainPanel.add(processPanel, BorderLayout.SOUTH);
+        
+        
         frame.setLayout(new BorderLayout());
-        frame.add(imageNameLabel, BorderLayout.NORTH);
         frame.add(mainPanel, BorderLayout.CENTER);
-        
-        frame.setSize(320, 360);
+        frame.setSize(340, 420);
     }
     
     /**
@@ -412,10 +510,16 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     {
         // Ask for the filename of the image to open
         File file = chooseInputImageFile(parentFrame);
+
+        // Check the chosen file is valid
         if (file == null)
         {
             return;
         }
+        
+        // eventually keep path for future opening
+        String path = file.getPath();
+        this.lastOpenPath = path;
         
         // clear current image data
         this.imageFrame = null;
@@ -428,9 +532,8 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     {
         // create file dialog to read the 3D TIFF Image
         //        String lastPath = frame.getLastOpenPath();
-        String lastPath = "D:/images/wheat/perigrain/Psiche_2018/HR/selection";
-        JFileChooser openWindow = new JFileChooser(lastPath);
-        openWindow.setDialogTitle("Choose TIFF 3D Image");
+        JFileChooser openWindow = new JFileChooser(this.lastOpenPath);
+        openWindow.setDialogTitle("Choose Input 3D TIFF Image");
         openWindow.setFileFilter(new FileNameExtensionFilter("TIFF files (*.tif, *.tiff)", "tif", "tiff"));
 
         // Open dialog to choose the file
@@ -440,18 +543,10 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
             return null;
         }
 
-        // Check the chosen file is valid
         File file = openWindow.getSelectedFile();
         
-        // eventually keep path for future opening
-        String path = file.getPath();
-        lastPath = parentFrame.getLastOpenPath();
-        if (lastPath == null || lastPath.isEmpty())
-        {
-            System.out.println("update frame path");
-            parentFrame.setLastOpenPath(path);
-        }
-        
+        // keep path for future opening
+        this.lastOpenPath = file.getPath();
         return file;
     }
     
@@ -463,6 +558,39 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
      *            the image file to open.
      */
     public void initializeFromImageFile(File imageFileName)
+    {
+        createImageFrame(imageFileName);
+        createDefaultCrop3D();
+    }
+    
+    public void initialize(Crop3DData data)
+    {
+        File imageFile = new File(data.imageInfo.filePath);
+        createImageFrame(imageFile);
+        
+        // create the associated Crop3D 
+        this.crop3d = new Crop3D(data, imageFrame.getImageHandle());
+        this.crop3d.addAlgoListener(imageFrame);
+        
+        // and updates the current frame
+        // need to call this to update items to display
+        ImageViewer viewer = imageFrame.getImageView();
+        viewer.refreshDisplay(); 
+        viewer.repaint();
+        viewer.setCurrentTool(new SelectPolygonTool(imageFrame, "selectPolygon"));
+        
+        // enable widgets for regions management
+        updateRegionWidgets();
+    }
+    
+    /**
+     * Reads a 3D virtual image from the specified file, and creates a new
+     * ImageViewer and a new Crop3D object associated to the current frame.
+     * 
+     * @param imageFileName
+     *            the image file to open.
+     */
+    private void createImageFrame(File imageFileName)
     {
         // open a virtual image from the file
         Image image;
@@ -478,14 +606,25 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
             return;
         }
         
-        // create viewer for the image,
-        // add the image document to GUI
+        // create viewer for the image
         this.imageFrame = parentFrame.createImageFrame(image);
 
+        // update last open path
+        this.imagePath = imageFileName.getAbsolutePath();
+        this.lastOpenPath = imageFileName.getPath();
+        this.imageFrame.setLastOpenPath(this.lastOpenPath);
+        
+        // update widgets
+        imageNameLabel.setText(image.getName());
+    }
+    
+    private void createDefaultCrop3D()
+    {
         // create the associated Crop3D 
         this.crop3d = new Crop3D(imageFrame.getImageHandle());
         this.crop3d.addAlgoListener(imageFrame);
-
+        this.crop3d.initializeDefaultRegions();
+        
         // and updates the current frame
         // need to call this to update items to display
         ImageViewer viewer = imageFrame.getImageView();
@@ -493,19 +632,109 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         viewer.repaint();
         viewer.setCurrentTool(new SelectPolygonTool(imageFrame, "selectPolygon"));
         
-        imageNameLabel.setText("Current Image: " + image.getName());
-
-        // update last open path
-        this.imagePath = imageFileName.getAbsolutePath();
-        this.lastOpenPath = imageFileName.getPath();
-        this.imageFrame.setLastOpenPath(this.lastOpenPath);
+        // enable widgets for regions management
+        updateRegionWidgets();
+    }
+    
+    /**
+     * Callback for the "Add Region" button.
+     */
+    public void onAddRegionButton()
+    {
+        System.out.println("add a new region");
         
-        // enable widget for next processing steps 
-        addPolygonButton.setEnabled(true);
-        removePolygonButton.setEnabled(true);
-        interpolateButton.setEnabled(true);
+        GenericDialog gd = new GenericDialog(jframe, "Choose Region Name");
+        gd.addTextField("Name", "Region");
+        gd.showDialog();
+        if (gd.wasCanceled())
+        {
+            return;
+        }
+        
+        String regionName = gd.getNextString();
+        
+        // update the crop3D object
+        this.crop3d.addRegion(regionName);
+        this.crop3d.selectCurrentRegion(regionName);
+        
+        updateRegionWidgets();
+        
+        // use new region as current region
+        this.regionComboBox.setSelectedIndex(this.regionComboBox.getItemCount() - 1);
+    }
+    
+    /**
+     * Callback for the "Remove Region" button.
+     */
+    public void onRemoveRegionButton()
+    {
+        System.out.println("remove current region");
+
+        // retrieve name of the region to remove
+        String regionName = (String) this.regionComboBox.getSelectedItem();
+        if (regionName == null)
+        {
+            return;
+        }
+        
+        // remove region from crop3D
+        this.crop3d.removeRegion(regionName);
+        
+        // update widgets
+        updateRegionWidgets();
+        updatePolygonListView();
+    }
+    
+    /**
+     * Updates the different widgets related to region management, depending on
+     * a region exists in current Crop3D.
+     */
+    private void updateRegionWidgets()
+    {
+        boolean hasRegions = this.crop3d.data.regions.size() > 0;
+        
+        addRegionButton.setEnabled(true);
+        removeRegionButton.setEnabled(hasRegions);
+        regionComboBox.setEnabled(hasRegions);
+    
+        // enable widgets for crop and process
+        addPolygonButton.setEnabled(hasRegions);
+        removePolygonButton.setEnabled(hasRegions);
+        importPolygonsButton.setEnabled(hasRegions);
+        exportPolygonsButton.setEnabled(hasRegions);
+        interpolateButton.setEnabled(hasRegions);
+    
+        // update selection of current region
+        regionComboBox.removeAllItems();
+        for (Crop3DRegion region : this.crop3d.data.regions())
+        {
+            regionComboBox.addItem(region.name);
+        }
     }
 
+    /**
+     * Callback for the Current Region ComboBox
+     */
+    public void onCurrentRegionUpdated()
+    {
+        System.out.println("update current region to \"" + this.regionComboBox.getSelectedItem() + "\"");
+        
+        // retrieve name of the region to remove
+        String regionName = (String) this.regionComboBox.getSelectedItem();
+        if (regionName == null)
+        {
+            return;
+        }
+
+        this.crop3d.selectCurrentRegion(regionName);
+        
+        updatePolygonListView();
+        
+        // need to call this to update items to display 
+        ImageViewer viewer = imageFrame.getImageView();
+        viewer.refreshDisplay(); 
+        viewer.repaint();
+    }
     
     /**
      * Callback for the "Add Polygon" button.
@@ -552,13 +781,13 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     public void onRemovePolygonButton()
     {
         // retrieve index of selected slice polygon
-        int index = roiList.getSelectedIndex();
+        int index = cropItemList.getSelectedIndex();
         if (index == -1)
         {
             return;
         }
         
-        String name = roiList.getSelectedValue();
+        String name = cropItemList.getSelectedValue();
         int sliceIndex = Integer.parseInt(name.substring(6).trim());
 
         
@@ -573,10 +802,13 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         viewer.repaint();
     }
     
+    /**
+     * Updates the items shown in the polygon list according to the polygon node
+     * of the ImageHandle.
+     */
     public void updatePolygonListView()
     {
         ImageSerialSectionsNode group = crop3d.getPolygonsNode();
-        
         
         Collection<Integer> sliceIndices = group.getSliceIndices(); 
         int nPolys = sliceIndices.size();
@@ -587,7 +819,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
             strings[i++] = "Slice "  + sliceIndex;
         }
         
-        this.roiList.setListData(strings);
+        this.cropItemList.setListData(strings);
     }
     
     /**
@@ -749,13 +981,13 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     {
         if (evt.getValueIsAdjusting() == false)
         {
-            int index = roiList.getSelectedIndex();
+            int index = cropItemList.getSelectedIndex();
             if (index == -1)
             {
                 return;
             }
             
-            String name = roiList.getSelectedValue();
+            String name = cropItemList.getSelectedValue();
             int sliceIndex = Integer.parseInt(name.substring(6).trim());
             
              

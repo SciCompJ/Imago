@@ -42,29 +42,53 @@ public class Crop3DDataWriter
         String dateString = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date());
         jsonWriter.name("saveDate").value(dateString);
         
+        // list of authors for current file
+        jsonWriter.name("authors").beginArray();
+        jsonWriter.beginObject();
+        jsonWriter.name("name").value(System.getProperty("user.name"));
+        jsonWriter.endObject();
+        jsonWriter.endArray();
+        
         // one node for the 3D image
         jsonWriter.name("image");
         writeImageInfo(crop3d.imageHandle.getImage());
         
         // one node for the collection of crop regions
         jsonWriter.name("regions").beginArray();
-        
-        // one node for the default crop polygons
-        jsonWriter.beginObject();
-        jsonWriter.name("name").value("crop");
-        // write crop polygon data
-        ImageSerialSectionsNode polyNode = crop3d.getPolygonsNode();
-        if (polyNode != null)
+        for (Crop3DRegion region : crop3d.data.regions)
         {
-            jsonWriter.name("polygons");
-            writePolygons(polyNode);
+            writeCrop3DRegion(region);
         }
-      
-        jsonWriter.endObject(); // array item
-        jsonWriter.endArray(); // array of models
+        jsonWriter.endArray();
+        
+//        // one node for the default crop polygons
+//        jsonWriter.beginObject();
+//        jsonWriter.name("name").value("crop");
+//        // write crop polygon data
+//        ImageSerialSectionsNode polyNode = crop3d.getPolygonsNode();
+//        if (polyNode != null)
+//        {
+//            jsonWriter.name("polygons");
+//            writePolygons(polyNode);
+//        }
+//      
+//        jsonWriter.endObject(); // array item
+//        jsonWriter.endArray(); // array of models
 
         // close Crop3D
         jsonWriter.endObject();
+    }
+    
+    private void writeCrop3DRegion(Crop3DRegion region) throws IOException
+    {
+        // one node for the default crop polygons
+        jsonWriter.beginObject();
+        jsonWriter.name("name").value(region.name);
+        jsonWriter.name("polygons");
+        writePolygons(region.polygons);
+      
+        jsonWriter.endObject(); // array item
+
     }
 
     public void writeSurface3D(Surface3D surf3d) throws IOException
