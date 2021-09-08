@@ -5,11 +5,23 @@ package imago.gui;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -122,7 +134,9 @@ public class ImagoGui
 	 */
 	public Settings settings = new Settings();
 	
+    ArrayList<PluginHandler> pluginHandlers = new ArrayList<PluginHandler>();
 
+    
 	// ===================================================================
     // Private constants
 	
@@ -142,10 +156,23 @@ public class ImagoGui
 	// ===================================================================
 	// Constructor
 
-	public ImagoGui(ImagoApp app) 
+	public ImagoGui(ImagoApp app)
 	{
 		this.app = app;
 		setupLookAndFeel();
+		
+		try 
+		{
+			loadPlugins();
+		}
+		catch(ClassNotFoundException ex)
+		{
+			ex.printStackTrace();
+		}
+		catch(IOException ex)
+		{
+			ex.printStackTrace();
+		}
 	}
 	
 	private void setupLookAndFeel()
@@ -169,8 +196,234 @@ public class ImagoGui
 	// General methods
 
 	
+	/**
+	 * Loads the plugins, or refresh the list of plugins loaded by the GUI.
+	 * 
+	 * @throws IOException in case of I/O error 
+	 * @throws ClassNotFoundException  if a plugin class could not be found
+	 */
+	public void loadPlugins() throws ClassNotFoundException, IOException
+	{
+	    System.out.println("Load plugins");
+	    
+        String baseDirName = System.getProperty("user.dir");
+        
+	    File baseDir = new File(System.getProperty("user.dir"));
+        System.out.println("base directory: " + baseDir.getAbsolutePath());
+        
+	    String pluginsDirName = baseDirName + File.separator + "plugins";
+	    File pluginsDir = new File(pluginsDirName);
+        System.out.println("plugins directory: " + pluginsDir.getAbsolutePath());
+	    if (!pluginsDir.exists())
+	    {
+	        System.out.println("No plugin directory, abort.");
+	        return;
+	    }
+	    
+	    // Find all jar files
+        File[] subFiles = pluginsDir.listFiles((file, name) -> name.endsWith(".jar"));
+        
+        // For each jar, find the plugins within
+        for (File file : subFiles)
+        {
+            System.out.println("Found plugin file: " + file.getName());
+            loadPluginsFromJarFile(file);
+        }
+	}
 	
+	/**
+     * Loads plugins from the jar files located in the "plugins" directory, and
+     * populates the "pluginHandlers" variable.
+     * 
+     * @param file
+     *            the jar file containing the plugin(s) and the configuration
+     *            file.
+     */
+	private void loadPluginsFromJarFile(File file) throws IOException, ClassNotFoundException
+	{
+        ArrayList<String> entries = readPluginEntries(file);
+        
+        // create plugin handle for each entry of configuration file
+        try
+        {
+            for (String entry : entries)
+            {
+                System.out.println("installing plugin: " + entry);
 
+                PluginHandler handler = createPluginHandler(file, entry);
+                if (handler != null && handler.plugin != null)
+                {
+                    this.pluginHandlers.add(handler);
+                }
+            }
+        }
+        catch(Exception ex)
+        {
+            System.err.println("Failed to load plugin: " + file);
+            ex.printStackTrace();
+            return;
+        }
+	}
+	
+    /**
+     * Opens the configuration file ("plugins.config") from a JAR file and
+     * returns the list of plugin entries it contains.
+     * 
+     * @param fileName the name of the file containing plugins and configuration file.
+     * @throws IOException 
+     */
+	private ArrayList<String> readPluginEntries(File file) throws IOException
+	{
+        ArrayList<String> entries = new ArrayList<String>();
+
+        try(JarFile jarFile = new JarFile(file))
+	    {
+	        JarEntry entry = jarFile.getJarEntry("plugins.config");
+	        if (entry == null)
+	        {
+	            throw new RuntimeException("Could not find configuration file into jar file: " + file);
+	        }
+
+	        InputStream is = jarFile.getInputStream(entry);
+	        LineNumberReader reader = new LineNumberReader(new InputStreamReader(is));
+
+	        // read lines from configuration file
+	        String s;
+	        while ((s = reader.readLine()) != null)
+	        {
+	            // Do not process empty lines or comment lines
+	            if (s.length() >= 3 && !s.startsWith("#"))
+	            {
+	                entries.add(s);
+	            }
+	        }
+	    }
+
+        return entries;
+	}
+
+    /**
+     * Creates a new PluginHandler from a jarFile and a configuration entry.
+     * 
+     * @param jarFile
+     *            the jar file
+     * @param entry
+     *            a string with menu location, menu item name, and class name.
+     * @return a new PluginHandler
+     * @throws IOException 
+     */
+    private PluginHandler createPluginHandler(File file, String entry) throws IOException 
+    {
+        entry = entry.trim();
+        String[] tokens = entry.split(",", 3);
+        if (tokens.length != 3)
+        {
+            throw new RuntimeException("Unable to parse plugin entry: " + entry);
+        }
+        
+        String menuPath = tokens[0].trim();
+        String menuName = tokens[1].trim();
+        String className = tokens[2].trim();
+        
+        FramePlugin plugin = loadPluginFromJar(file, className);
+        
+        PluginHandler handler = new PluginHandler(plugin, menuName, menuPath);
+        return handler;
+    }
+    
+    private FramePlugin loadPluginFromJar(File file, String className) throws IOException
+    {
+        // try-with-resources statement to ensure file is correctly closed
+        try (JarFile jarFile = new JarFile(file))
+        {
+            // prepare for reading data from jar file
+            URL[] urls = { new URL("jar:file:" + file + "!/") };
+            URLClassLoader cl = URLClassLoader.newInstance(urls);
+
+            // iterate over items in the jar file
+            Enumeration<JarEntry> entries = jarFile.entries();
+            while (entries.hasMoreElements())
+            {
+                JarEntry je = entries.nextElement();
+                if(je.isDirectory() || !je.getName().endsWith(".class"))
+                {
+                    continue;
+                }
+
+                // -6 because of .class
+                String className2 = je.getName().substring(0,je.getName().length()-6);
+                className2 = className2.replace('/', '.');
+
+                if (!className2.equals(className))
+                {
+                    continue;
+                }
+
+                System.out.println("Checking for class " + className2);
+                Class<?> pluginClass;
+                try
+                {
+                    pluginClass = cl.loadClass(className2);
+                }
+                catch (ClassNotFoundException ex)
+                {
+                    throw new RuntimeException("Could not load plugin class.", ex);
+                }
+
+                System.out.println("Class object " + pluginClass.getName());
+
+                if (! FramePlugin.class.isAssignableFrom(pluginClass))
+                {
+                    throw new RuntimeException("Plugin class must inherit the FramePlugin class.");
+                }
+
+                System.out.println("Found a plugin: " + pluginClass.getName());
+
+                // retrieve empty constructor of the plugin
+                Constructor<?> cons;
+                try
+                {
+                    cons = pluginClass.getConstructor();
+                }
+                catch (NoSuchMethodException ex)
+                {
+                    throw new RuntimeException("Could not find empty constructor of plugin.", ex);
+                }
+                catch (SecurityException ex)
+                {
+                    throw new RuntimeException("Security exception when accessing plugin constructor.", ex);
+                }
+                
+                // Instantiate a new plugin from the constructor
+                FramePlugin plugin;
+                try
+                {
+                    plugin = (FramePlugin) cons.newInstance();
+                }
+                catch (InstantiationException ex)
+                {
+                    throw new RuntimeException("Could not instantiate plugin from empty constructor.", ex);
+                }
+                catch (IllegalAccessException ex)
+                {
+                    throw new RuntimeException("Could not access plugin constructor.", ex);
+                }
+                catch (IllegalArgumentException ex)
+                {
+                    throw new RuntimeException("Wrong arguments when creating plugin.", ex);
+                }
+                catch (InvocationTargetException ex)
+                {
+                    throw new RuntimeException("Invocation exception when creating plugin.", ex);
+                }
+                
+                return plugin;
+            }
+        }
+
+        throw new RuntimeException("Plugin class could not be found in jar file: " + className);
+    }
+ 	
 	// ===================================================================
     // Creation of new frames for specific objects
 	

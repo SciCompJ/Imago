@@ -3,6 +3,7 @@
  */
 package imago.gui;
 
+import java.awt.Component;
 import java.awt.Insets;
 import java.awt.image.BufferedImage;
 
@@ -128,7 +129,6 @@ import imago.plugin.image.process.ImageBoxFilter;
 import imago.plugin.image.process.ImageBoxMedianFilter;
 import imago.plugin.image.process.ImageBoxMinMaxFilter;
 import imago.plugin.image.process.ImageBoxVarianceFilter;
-import imago.plugin.image.process.ImageDownSampleBy2;
 import imago.plugin.image.process.ImageDuplicate;
 import imago.plugin.image.process.ImageExtendedExtrema;
 import imago.plugin.image.process.ImageFillHoles;
@@ -497,7 +497,6 @@ public class GuiBuilder
         addPlugin(geometryMenu, new ImagePermuteDims(), "Permute Image Dimensions...", hasImage);
         geometryMenu.addSeparator();
         addPlugin(geometryMenu, new ImageConcatenate(), "Concatenate...");
-        addPlugin(geometryMenu, new ImageDownSampleBy2(), "Down Sample by 2", hasImage);
         addPlugin(geometryMenu, new ImageSubsample(), "Subsample...", hasImage);
         
 		menu.add(geometryMenu);
@@ -768,16 +767,25 @@ public class GuiBuilder
         addPlugin(devMenu, new PrintDocumentList(), "Print Document List");
         addPlugin(devMenu, new PrintWorkspaceContent(), "Print Workspace Content");
         
+        // Add some domain-specific plugins, to be transformed into user plugins in the future
         menu.addSeparator();
-        
         JMenu perigrainMenu = new JMenu("Perigrain");
         addPlugin(perigrainMenu, new Crop3DPlugin(), "Crop 3D");
         addPlugin(perigrainMenu, new CreateSurface3DPlugin(), "Surface 3D");
         addPlugin(perigrainMenu, new ImportImage3DPolylineSeries(), "Import Polyline Series");
         menu.add(perigrainMenu);
         
+        // Add the user plugins
+        menu.addSeparator();
+        for (PluginHandler handler : frame.gui.pluginHandlers)
+        {
+            addPlugin(menu, handler);
+        }
+        
         return menu;
     }
+    
+    
 
 //    private JMenu createDeveloperMenu()
 //    {
@@ -814,6 +822,52 @@ public class GuiBuilder
     {
         FramePlugin plugin = new ImageArrayOperatorPlugin(operator);
         return addPlugin(menu, plugin, label, enabled);
+    }
+
+    private void addPlugin(JMenu menu, PluginHandler handler)
+    {
+        System.out.println("add plugin entry: " + handler.getName());
+        
+        // If menu path is specified, retrieve or create the hierarchy of menus
+        String menuPath = handler.getMenuPath();
+        if (!menuPath.isEmpty())
+        {
+            // determine menu text hierarchy
+            String[] tokens = menuPath.split(">");
+            
+            // remove the first item ("Plugins")
+            int ntokens = tokens.length;
+            String[] tokens2 = new String[tokens.length - 1];
+            System.arraycopy(tokens, 1, tokens2, 0, ntokens - 1);
+            
+            // retrieve correct menu
+            for (String name : tokens2)
+            {
+                menu = getSubMenu(menu, name);
+            }
+        }
+        
+        
+        addPlugin(menu, handler.getPlugin(), handler.getName());
+    }
+    
+    private JMenu getSubMenu(JMenu baseMenu, String subMenuName)
+    {
+        for (Component sub : baseMenu.getMenuComponents())
+        {
+            if (sub instanceof JMenu)
+            {
+                if (((JMenu) sub).getText().equals(subMenuName))
+                {
+                    return (JMenu) sub;
+                }
+            }
+        }
+        
+        // create a new sub-menu
+        JMenu subMenu = new JMenu(subMenuName);
+        baseMenu.add(subMenu);
+        return subMenu;
     }
 
     private JMenuItem addPlugin(JMenu menu, FramePlugin plugin, String label)
