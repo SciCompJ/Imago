@@ -227,7 +227,16 @@ public class ImagoGui
         for (File file : subFiles)
         {
             System.out.println("Found plugin file: " + file.getName());
-            loadPluginsFromJarFile(file);
+            try 
+            {
+                loadPluginsFromJarFile(file);
+            }
+            catch(Exception ex)
+            {
+                System.err.println("Failed to load plugin: " + file);
+                ex.printStackTrace();
+                continue; 
+            }
         }
 	}
 	
