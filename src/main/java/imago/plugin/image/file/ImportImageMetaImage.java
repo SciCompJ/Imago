@@ -4,6 +4,7 @@
 package imago.plugin.image.file;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
@@ -61,10 +62,14 @@ public class ImportImageMetaImage implements FramePlugin
 		try
 		{
 			reader = new MetaImageReader(file);
-		} catch (IOException ex)
-		{
-			System.err.println(ex);
-			return;
+        }
+        catch (FileNotFoundException ex)
+        {
+            throw new RuntimeException("Unable to find input file: " + file.getName(), ex);
+        }
+        catch (IOException ex)
+        {
+            throw new RuntimeException("Unable to open file: " + file.getName(), ex);
 		}
 
 		// Try to read the image from the file
@@ -72,15 +77,15 @@ public class ImportImageMetaImage implements FramePlugin
 		try
 		{
 			image = reader.readImage();
-		} catch (IOException ex)
-		{
-			System.err.println(ex);
-			return;
-		} catch (Exception ex)
-		{
-			System.err.println(ex);
-			return;
-		}
+        }
+        catch (FileNotFoundException ex)
+        {
+            throw new RuntimeException("Unable to find image file from MHD file: " + file.getName(), ex);
+        }
+        catch (IOException ex)
+        {
+            throw new RuntimeException("Unable to read image from file: " + file.getName(), ex);
+        }
 
 		// add the image document to GUI
 		frame.createImageFrame(image);
