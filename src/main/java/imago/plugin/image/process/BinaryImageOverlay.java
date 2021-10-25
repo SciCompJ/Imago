@@ -11,10 +11,10 @@ import imago.gui.ImagoFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.Arrays;
+import net.sci.array.binary.BinaryArray;
 import net.sci.array.color.CommonColors;
 import net.sci.array.color.RGB8;
 import net.sci.array.color.RGB8Array;
-import net.sci.array.scalar.BinaryArray;
 import net.sci.image.Image;
 
 /**

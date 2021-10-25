@@ -8,7 +8,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.frames.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
-import net.sci.array.scalar.BinaryArray2D;
+import net.sci.array.binary.BinaryArray2D;
 import net.sci.image.Image;
 import net.sci.image.binary.skeleton.ImageJSkeleton;
 

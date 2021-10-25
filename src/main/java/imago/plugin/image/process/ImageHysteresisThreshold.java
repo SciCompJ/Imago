@@ -8,7 +8,7 @@ import imago.gui.GenericDialog;
 import imago.gui.frames.ImageFrame;
 import imago.gui.ImagoFrame;
 import imago.gui.FramePlugin;
-import net.sci.array.scalar.BinaryArray;
+import net.sci.array.binary.BinaryArray;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.image.Image;
 import net.sci.image.process.segment.HysteresisThreshold;

@@ -9,7 +9,7 @@ import imago.gui.ImagoGui;
 import imago.gui.frames.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
-import net.sci.array.scalar.BinaryArray;
+import net.sci.array.binary.BinaryArray;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.image.Image;
 
