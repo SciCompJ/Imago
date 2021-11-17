@@ -147,6 +147,7 @@ import imago.plugin.image.process.ImageValueOperator;
 import imago.plugin.image.process.ImageWatershed;
 import imago.plugin.image.process.MergeChannelImages;
 import imago.plugin.image.process.VectorImageChannelView;
+import imago.plugin.image.process.binary.BinaryImageMorphologicalFilter;
 import imago.plugin.image.shape.Image3DGetCurrentSlice;
 import imago.plugin.image.shape.Image3DGetSlice;
 import imago.plugin.image.shape.Image3DRotate90;
@@ -572,6 +573,7 @@ public class GuiBuilder
 		JMenu morphologyMenu = new JMenu("Mathematical Morphology");
 		addPlugin(morphologyMenu, new ImageMorphologicalFilter(), "Morphological Filters...");
 //		addPlugin(morphologyMenu, new ImageMorphologicalFilter3D(), "Morphological Filters (3D)...");
+        addPlugin(morphologyMenu, new BinaryImageMorphologicalFilter(), "Binary Morphological Filters...");
 
 		morphologyMenu.addSeparator();
         addPlugin(morphologyMenu, new ImageRegionalExtrema(), "Regional Min./Max...", hasScalarImage);
