@@ -26,6 +26,15 @@ import net.sci.table.Table;
 import net.sci.table.io.DelimitedTableReader;
 
 /**
+ * Imports a series of polylines obtained on XY cross sections of a 3D image.
+ * 
+ * Polylines are encapsulated into ShapeNode instances, each ShapeNode is
+ * encapsulated into an "ImageSliceNode", and each Slice Node is added into a
+ * "ImageSerialSectionsNode". The ImageSerialSectionsNode, at the end, is added
+ * to the group node of the current Image Handler, using the file name as index.
+ *
+ * @see imago.app.scene.ShapeNode
+ * 
  * @author dlegland
  *
  */
