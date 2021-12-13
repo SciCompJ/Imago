@@ -46,6 +46,7 @@ public abstract class ObjectHandle
     
     /**
      * The name of the object (used for display in GUI).
+     * Can be updated. The ImagoApp class contains methods to ensure handles keep unique names.
      */
     protected String name;
     
@@ -68,6 +69,20 @@ public abstract class ObjectHandle
     public String getName() 
     {
         return this.name;
+    }
+    
+    /**
+     * Changes the name of this handle. To avoid two or moerz handle to share
+     * the same name, the ImagoApp class contains methods to create unique
+     * names.
+     * 
+     * @see ImagoApp#createHandleName(String)
+     * @param newName the new name for this handle.
+     */
+    public void setName(String newName) 
+    {
+        this.name = newName;
+        this.modified = true;
     }
     
     public String getTag() 

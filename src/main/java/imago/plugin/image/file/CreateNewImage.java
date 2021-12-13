@@ -50,8 +50,9 @@ public class CreateNewImage implements FramePlugin
 
 		String[] typeList = new String[]{"Binary", "Gray8", "Gray16", "Int32", "Float32", "Float64"};
 		
+		String baseName = frame.getGui().getAppli().createHandleName("NoName");
 		GenericDialog gd = new GenericDialog(frame, "Create Image");
-		gd.addTextField("Name: ", "NoName");
+		gd.addTextField("Name: ", baseName);
         gd.addNumericField("Width: ", 200, 0);
 		gd.addNumericField("Height: ", 200, 0);
 		gd.addNumericField("Depth: ", 1, 0);

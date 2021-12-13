@@ -95,6 +95,7 @@ import imago.plugin.image.edit.PrintImageInfos;
 import imago.plugin.image.edit.PrintImageSceneGraph;
 import imago.plugin.image.edit.PrintImageTiffTags;
 import imago.plugin.image.edit.RefreshDisplay;
+import imago.plugin.image.edit.RenameImage;
 import imago.plugin.image.edit.SetImageDisplayRange;
 import imago.plugin.image.edit.SetImageDisplayRangeToData;
 import imago.plugin.image.edit.SetImageDisplayRangeToDataType;
@@ -396,6 +397,7 @@ public class GuiBuilder
 		JMenu menu = new JMenu("Image");
 
 		// First general info and calibration about images
+        addPlugin(menu, new RenameImage(), "Rename...", hasImage);
         addPlugin(menu, new PrintImageInfos(), "Print Image Info", hasImage);
         addPlugin(menu, new ImageSetScale(), "Image Scale...", hasImage);
         addPlugin(menu, new PrintImageTiffTags(), "Show TIFF Tags", hasImage);

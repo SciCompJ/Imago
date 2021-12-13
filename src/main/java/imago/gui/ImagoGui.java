@@ -122,7 +122,7 @@ public class ImagoGui
      * Used to remove the document from the app instance when the last frame
      * referring to a document is closed.
      */
-	Map<String, ArrayList<ImageFrame>> imageFrames = new HashMap<>(); 
+	private Map<String, ArrayList<ImageFrame>> imageFrames = new HashMap<>(); 
 	
 	/**
 	 * An empty frame without document, displayed at startup.
@@ -506,16 +506,16 @@ public class ImagoGui
     	}
 		
 		// add the frame to the list of frames associated to the document
-		String docName = handle.getName();
-		if (imageFrames.containsKey(docName))
+		String key = handle.getTag();
+		if (imageFrames.containsKey(key))
 		{
-		    imageFrames.get(docName).add(frame);
+		    imageFrames.get(key).add(frame);
 		}
 		else
 		{
 		    ArrayList<ImageFrame> frameList = new ArrayList<>(1);
 		    frameList.add(frame);
-		    imageFrames.put(docName, frameList);
+		    imageFrames.put(key, frameList);
 		}
 		
 		frame.setVisible(true);
@@ -574,7 +574,7 @@ public class ImagoGui
         if (frame instanceof ImageFrame)
         {
             ImageHandle handle = ((ImageFrame) frame).getImageHandle();
-            ArrayList<ImageFrame> frameList = imageFrames.get(handle.getName());
+            ArrayList<ImageFrame> frameList = imageFrames.get(handle.getTag());
             if (!frameList.contains(frame))
             {
                 System.err.println("Warning: frame " + frame.getWidget().getName() + " is not referenced by image handle " + handle.getName());
