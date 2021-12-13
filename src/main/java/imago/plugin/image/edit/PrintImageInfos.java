@@ -64,6 +64,10 @@ public class PrintImageInfos implements FramePlugin
         textLines.add("  name: " + channelAxis.getName());
         textLines.add("  string: " + channelAxis.toString());
         
+        // Show technical info about Array instance
+        textLines.add("Inner representation:");
+        textLines.add("  Array class: " + image.getData().getClass());
+        
         ImagoTextFrame newFrame = new ImagoTextFrame(frame, "Image Info", textLines);
         newFrame.getWidget().pack();
         newFrame.getWidget().setSize(new Dimension(600, 400));
