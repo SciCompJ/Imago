@@ -91,34 +91,38 @@ public class DrawBrushValueTool extends ImagoTool
         double r2 = (radius + 0.5) * (radius + 0.5);
         int ri = (int) Math.ceil(radius);
         
+        // select the 2D array to update
+        ScalarArray2D<?> array2d = null;
         if (array.dimensionality() == 2)
         {
-            ScalarArray2D<?> array2d = ScalarArray2D.wrap((ScalarArray<?>) array);
-            for (int y2 = yi - ri; y2 <= yi + ri; y2++)
-            {
-                if (y2 < 0 || y2 > sizeY-1) continue;
-                double dy2 = (y2 - yi) * (y2 - yi);
-                
-                for (int x2 = xi - ri; x2 <= xi + ri; x2++)
-                {
-                    if (x2 < 0 || x2 > sizeX-1) continue;
-                    
-                    double d2 = (x2 - xi) * (x2 - xi) + dy2;
-                    if (d2 < r2)
-                    {
-                        array2d.setValue(x2, y2, value);
-                    }
-                }
-            }
+            array2d = ScalarArray2D.wrap((ScalarArray<?>) array);
         }
         else if (array.dimensionality() == 3)
         {
-            ScalarArray3D<?> array3d = ScalarArray3D.wrap((ScalarArray<?>) array);
             // TODO: check class or use abstraction
             int zi = ((StackSliceViewer) this.viewer.getImageView()).getSliceIndex();
-            array3d.setValue(xi, yi, zi, value);
+            array2d = ScalarArray3D.wrap((ScalarArray<?>) array).slice(zi);
         }
         
+        // update the array
+        for (int y2 = yi - ri; y2 <= yi + ri; y2++)
+        {
+            if (y2 < 0 || y2 > sizeY-1) continue;
+            double dy2 = (y2 - yi) * (y2 - yi);
+            
+            for (int x2 = xi - ri; x2 <= xi + ri; x2++)
+            {
+                if (x2 < 0 || x2 > sizeX-1) continue;
+                
+                double d2 = (x2 - xi) * (x2 - xi) + dy2;
+                if (d2 < r2)
+                {
+                    array2d.setValue(x2, y2, value);
+                }
+            }
+        }
+        
+        // refresh display
         this.viewer.getImageView().refreshDisplay();
         this.viewer.repaint();
     }
