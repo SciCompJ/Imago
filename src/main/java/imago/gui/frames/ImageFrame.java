@@ -21,6 +21,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Locale;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -192,6 +193,63 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
 		this.jFrame.setLocation(posX, posY);
 	}
 	
+	/**
+     * Display elapsed time, converted into seconds, and computes number of
+     * processed elements per second. Also returns the created message.
+     * 
+     * <p>
+     * Example of use:
+     * <pre><code>
+     * // initialize processing 
+     * ImageStack image = IJ.getImage().getStack();
+     * Strel3D strel = CubeStrel.fromDiameter(5);
+     * 
+     * // initialize timing 
+     * long t0 = System.currentTimeMillis();
+     * 
+     * // start processing 
+     * ImageStack res = Morphology.dilation(image, strel);
+     * ImagePlus resPlus = new ImagePlus("Dilation Result", res);
+     * resPlus.show();
+     * 
+     * // Display elapsed time
+     * long t1 = System.currentTimeMillis();
+     * IJUtils.showElapsedTime("dilation", t1 - t0, resPlus);
+     * </code></pre>
+     *
+     * @param opName
+     *            the name of the operation (algorithm, plugin...)
+     * @param timeInMillis
+     *            the elapsed time, in milliseconds
+     * @param refImage
+     *            the image on which process was applied
+     * @return the String corresponding to the message displayed in status bar
+     */
+    public String showElapsedTime(String opName, double timeInMillis, Image refImage) 
+    {
+        // compute number of elements within image (using double to avoid int overflow)
+        int[] dims = refImage.getSize();
+        double nItems = 1;
+        for (int d = 0; d < dims.length; d++)
+        {
+            nItems *= dims[d];
+        }
+        
+        // adapt output
+        String elementName = dims.length == 3 ? "voxels" : "pixels";
+        
+        double timeInSecs = timeInMillis / 1000.0;
+        int elementsPerSecond = (int) (nItems / timeInSecs);
+                
+        String pattern = "%s: %.3f seconds, %d %s/second";
+        String status = String.format(Locale.ENGLISH, pattern, opName, timeInSecs, elementsPerSecond, elementName);
+        
+        System.out.println(status);
+        this.statusBar.setCurrentStepLabel(status);
+        
+        return status;
+    }
+    
 	
 	// ===================================================================
 	// General methods
