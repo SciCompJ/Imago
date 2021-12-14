@@ -17,7 +17,6 @@ import imago.gui.viewer.PlanarImageViewer;
 import imago.gui.viewer.StackSliceViewer;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
@@ -165,20 +164,13 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         
 		// put into global layout
 		JPanel mainPanel = new JPanel(new BorderLayout());
-		mainPanel.setBackground(Color.GREEN);
 		mainPanel.add((JPanel) imageViewer.getWidget(), BorderLayout.CENTER);
 		mainPanel.add(this.statusBar, BorderLayout.SOUTH);
 		
-        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                imageDisplayOptionsPanel, mainPanel);
-        if (image.getDimension() < 4)
-        {
-            splitPane.setResizeWeight(0.0);
-        }
-        else
-        {
-            splitPane.setResizeWeight(0.25);
-        }
+		// setup the layout for the option panel:
+		// uses JSplitPanel, initial visibility depends on image dimensionality
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, imageDisplayOptionsPanel, mainPanel);
+        splitPane.setResizeWeight(image.getDimension() < 4 ? 0.0 : 0.25);
         splitPane.setOneTouchExpandable(true);
         splitPane.setContinuousLayout(true);
 
@@ -276,7 +268,7 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         }
     }
     
-	public StatusBar getStatusBar () 
+	public StatusBar getStatusBar() 
 	{
 		return statusBar;
 	}
@@ -284,7 +276,6 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
 	@Override
 	public void algoProgressChanged(AlgoEvent evt)
 	{
-//		System.out.println("progress: " + evt.getCurrentProgress() + "/" + evt.getTotalProgress());
 		int progress = (int) (evt.getProgressRatio() * 100);
 		this.getStatusBar().setProgressBarPercent(progress);
 	}

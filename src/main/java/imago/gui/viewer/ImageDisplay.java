@@ -57,6 +57,9 @@ public class ImageDisplay extends JPanel
 	// ===================================================================
 	// Class variables
 
+	/**
+	 * The representation of the image data to display, as a BufferedImage instance.
+	 */
 	BufferedImage image;
 	
 	Collection<Shape> shapes = new ArrayList<Shape>();
@@ -72,11 +75,19 @@ public class ImageDisplay extends JPanel
      */
     protected Geometry2D selection = null;
     
+    /**
+     * The zoom level used to represent the image.
+     */
 	double zoom = 1;
 	
+	/**
+     * The X- and Y- offset of the image with respect to the upper left corner
+     * of the panel. Values depends on panel and image size, and of current zoom
+     * level.
+     */
 	int offsetX;
 	int offsetY;
-
+	
 	
 	// ===================================================================
 	// Constructor
@@ -84,7 +95,7 @@ public class ImageDisplay extends JPanel
 	public ImageDisplay(BufferedImage image) 
 	{
 		this.image = image;
-		this.setBackground(Color.WHITE);
+		this.setBackground(Color.LIGHT_GRAY);
 	}
 
 	// ===================================================================
