@@ -7,11 +7,14 @@ import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.frames.ImageFrame;
+import imago.gui.viewer.StackSliceViewer;
 import imago.gui.FramePlugin;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.scalar.ScalarArray;
+import net.sci.array.scalar.ScalarArray3D;
 import net.sci.image.Image;
 import net.sci.image.process.segment.OtsuThreshold;
+import net.sci.image.process.segment.ValueThreshold;
 
 
 /**
@@ -43,18 +46,32 @@ public class ImageManualThreshold implements FramePlugin
 		{
 		    return;
 		}
-		
-		// Extract min/max values
-        System.out.println("Compute threshold value guess");
 		ScalarArray<?> array = (ScalarArray<?>) image.getData();
-		double[] range = array.finiteValueRange();
-		double initValue = new OtsuThreshold().computeThresholdValue(array);
+        
+		// Extract min/max values
+		ScalarArray<?> slice = array;
+		if (slice.dimensionality() > 2)
+		{
+	        // get slice index
+	        StackSliceViewer viewer3d = (StackSliceViewer) ((ImageFrame) frame).getImageView();
+	        // TODO: have some "Image3DViewer" interface
+	        int sliceIndex = viewer3d.getSliceIndex();
+	        slice = ScalarArray3D.wrapScalar3d(slice).slice(sliceIndex);
+		}
+//        System.out.println("Compute initial guess for threshold value...");
+//        long t0 = System.nanoTime();
+        double[] range = slice.finiteValueRange();
+//        long t1 = System.nanoTime();
+//        System.out.println("  computation of range: " + (t1 - t0) / 1_000_000.0 + " ms");
+        double initValue = new OtsuThreshold().computeThresholdValue(slice, range, 256);
+//        long t2 = System.nanoTime();
+//        System.out.println("  computation of threshold: " + (t2 - t1) / 1_000_000.0 + " ms");
         
 		// Creates generic dialog
         GenericDialog gd = new GenericDialog(frame, "Choose Threshold");
-        // TODO: add histogram representation
+        // TODO: add widget for histogram representation
         gd.addSlider("Threshold Value: ", range[0], range[1], initValue);
-        gd.addCheckBox("Dark Background", true);
+        gd.addCheckBox("Upper values threshold", true);
         gd.showDialog();
         
         if (gd.getOutput() == GenericDialog.Output.CANCEL) 
@@ -63,25 +80,23 @@ public class ImageManualThreshold implements FramePlugin
         }
         
         // parse dialog results
-        double threshold = gd.getNextNumber();
-        boolean dark = gd.getNextBoolean();
-
-        // create output array
-        BinaryArray result = BinaryArray.create(array.size());
-               
-        // iterate on array positions for computing segmented values
-        for (int[] pos : result.positions())
-        {
-            if (dark)
-                result.setBoolean(pos, array.getValue(pos) >= threshold);
-            else
-                result.setBoolean(pos, array.getValue(pos) <= threshold);
-        }
+        double thresholdValue = gd.getNextNumber();
+        boolean upperThreshold = gd.getNextBoolean();
+        
+        // compute threshold
+        ValueThreshold algo = new ValueThreshold(thresholdValue, upperThreshold);
+        algo.addAlgoListener((ImageFrame) frame);
+        
+        long t0 = System.nanoTime();
+        BinaryArray result = algo.processScalar(array);
+        long t1 = System.nanoTime();
+        
+        // display elapsed time
+        ((ImageFrame) frame).showElapsedTime("Value Threshold", (t1 - t0) / 1_000_000.0, image);
 
 		Image resultImage = new Image(result, image);
 				
 		// add the image document to GUI
 		frame.getGui().createImageFrame(resultImage); 
 	}
-
 }
