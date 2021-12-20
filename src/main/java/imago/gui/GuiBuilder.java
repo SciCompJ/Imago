@@ -149,6 +149,7 @@ import imago.plugin.image.process.ImageWatershed;
 import imago.plugin.image.process.MergeChannelImages;
 import imago.plugin.image.process.VectorImageChannelView;
 import imago.plugin.image.process.binary.BinaryImageMorphologicalFilter;
+import imago.plugin.image.process.binary.BinaryImageMorphologicalReconstruction;
 import imago.plugin.image.shape.Image3DGetCurrentSlice;
 import imago.plugin.image.shape.Image3DGetSlice;
 import imago.plugin.image.shape.Image3DRotate90;
@@ -581,6 +582,7 @@ public class GuiBuilder
         addPlugin(morphologyMenu, new ImageRegionalExtrema(), "Regional Min./Max...", hasScalarImage);
 		addPlugin(morphologyMenu, new ImageExtendedExtrema(), "Extended Min./Max...", hasScalarImage);
 		addPlugin(morphologyMenu, new ImageMorphologicalReconstruction(), "Morphological Reconstruction...");
+        addPlugin(morphologyMenu, new BinaryImageMorphologicalReconstruction(), "Binary Morphological Reconstruction...");
         addPlugin(morphologyMenu, new ImageIteratedGeodesicDilations(), "Geodesic Dilation...");
 		morphologyMenu.addSeparator();
         addPlugin(morphologyMenu, new ImageFillHoles(), "Fill Holes");
