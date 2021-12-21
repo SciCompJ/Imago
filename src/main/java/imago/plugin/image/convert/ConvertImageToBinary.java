@@ -10,6 +10,7 @@ import imago.gui.frames.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.binary.BinaryArray;
+import net.sci.array.process.type.ConvertToBinary;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.image.Image;
 
@@ -33,13 +34,17 @@ public class ConvertImageToBinary implements FramePlugin
 		System.out.println("convert to binary image");
 		
 		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-		Image image = doc.getImage();
+		ImageFrame imageFrame = (ImageFrame) frame;
 		
+		// retrieve image
+		ImageHandle doc = imageFrame.getImageHandle();
+		Image image = doc.getImage();
 		if (image == null)
 		{
 			return;
 		}
+		
+		// check array type
 		Array<?> array = image.getData();
 		if (array == null)
 		{
@@ -51,12 +56,18 @@ public class ConvertImageToBinary implements FramePlugin
 			return;
 		}
 
-		
-		BinaryArray result = BinaryArray.convert((ScalarArray<?>) array);
-		Image resultImage = new Image(result, image);
-				
+		// Create and run operator
+		ConvertToBinary algo = new ConvertToBinary();
+		algo.addAlgoListener((ImageFrame) frame);
+		long t0 = System.nanoTime();
+		BinaryArray result = algo.process(array);
+        long t1 = System.nanoTime();
+        
+        // display elapsed time
+        imageFrame.showElapsedTime("Convert To Binary", (t1 - t0) / 1_000_000.0, image);
+        
 		// add the image document to GUI
+        Image resultImage = new Image(result, image);
 		frame.getGui().createImageFrame(resultImage); 
 	}
-
 }
