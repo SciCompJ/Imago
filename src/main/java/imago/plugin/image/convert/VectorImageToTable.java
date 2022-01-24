@@ -71,8 +71,15 @@ public class VectorImageToTable implements FramePlugin
 
         boolean includeCoords = dlg.getNextBoolean();
         
+        // check table can be created
+        long nElems = array.elementCount();
+        if (nElems > Integer.MAX_VALUE)
+        {
+            throw new RuntimeException("Array has too many elements to be transformed as Table");
+        }
+
         // input image dimensions
-        int nRows = array.elementCount();
+        int nRows = (int) nElems;
         int nDims = array.dimensionality();
         
         Calibration calib = image.getCalibration();
