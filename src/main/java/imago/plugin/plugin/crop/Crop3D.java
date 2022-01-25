@@ -97,14 +97,11 @@ public class Crop3D extends AlgoStub
         }
         
         // create a new plugin
-        Crop3DPlugin newFrame = new Crop3DPlugin();
-        newFrame.run(parentFrame, null);
+        Crop3DPlugin plugin = new Crop3DPlugin();
+        plugin.run(parentFrame, null);
+        plugin.initialize(data);
         
-//        // create an image viewer for the file given in ImageInfo
-//        newFrame.initializeFromImageFile(new File(imageInfo.filePath));
-        newFrame.initialize(data);
-        
-        Crop3D crop3d = newFrame.crop3d;
+        Crop3D crop3d = plugin.crop3d;
         if (crop3d == null)
         {
             throw new RuntimeException("Expect inner crop3d field to be initialized");
@@ -113,10 +110,10 @@ public class Crop3D extends AlgoStub
         // update polygons of the new analysis
         ImageSerialSectionsNode polygonsNode = data.regions.get(0).polygons;
         crop3d.populatePolygons(polygonsNode);
-        newFrame.updatePolygonListView();
+        plugin.updatePolygonListView();
         
         // need to call this to update items to display 
-        ImageViewer viewer = newFrame.imageFrame.getImageView();
+        ImageViewer viewer = plugin.imageFrame.getImageView();
         viewer.refreshDisplay(); 
         viewer.repaint();
         
@@ -127,6 +124,9 @@ public class Crop3D extends AlgoStub
     // ===================================================================
     // Class members
     
+    /**
+     * The data for performing crop: image info, polygons...
+     */
     Crop3DData data;
     
     /**
@@ -145,13 +145,6 @@ public class Crop3D extends AlgoStub
     public Crop3D(ImageHandle imageHandle)
     {
         this(new Crop3DData(imageHandle.getImage()), imageHandle);
-//        this.data = new Crop3DData(imageHandle.getImage());
-//        this.imageHandle = imageHandle;
-//        
-////        this.data.imageInfo = new ImageInfo(imageHandle.getImage());
-//        
-//        initializeSliceIndexPattern();
-//        initializeCrop3dNodes();
     }
     
     public Crop3D(Crop3DData data, ImageHandle imageHandle)
@@ -177,12 +170,21 @@ public class Crop3D extends AlgoStub
     // ===================================================================
     // Management of regions
     
+    /**
+     * Adds a new region with the specified name.
+     * 
+     * @param regionName the name of the region.
+     */
     public void addRegion(String regionName)
     {
+        // create the region
         Crop3DRegion region = new Crop3DRegion();
         region.name = regionName;
+        
+        // add to data
         this.data.addRegion(region);
         
+        // update current region
         if (this.currentRegion == null)
         {
             this.currentRegion = region;
@@ -486,73 +488,6 @@ public class Crop3D extends AlgoStub
 
             smoothNode.addSliceNode(sliceNode2);
         }
-
-        // clear interpolated polygons node
-        ImageSerialSectionsNode interpNode = getInterpolatedPolygonsNode();
-        interpNode.clear();
-
-        Collection<Integer> indices = polyNode.getSliceIndices();
-        Iterator<Integer> sliceIndexIter = indices.iterator();
-        if (!sliceIndexIter.hasNext())
-        {
-            return;
-        }
-        
-        // Extract polygon of bottom slice
-        int currentSliceIndex = sliceIndexIter.next();
-        int minSliceIndex = currentSliceIndex;
-        
-        // get last index and indices number
-        int lastIndex = minSliceIndex;
-        for (int ind : polyNode.getSliceIndices())
-        {
-            lastIndex = ind;
-        }
-        int indexCount = lastIndex - minSliceIndex + 1;
-        
-        LinearRing2D currentPoly = getLinearRing(smoothNode, currentSliceIndex);
-        
-        // iterate over pairs of indices
-        while (sliceIndexIter.hasNext())
-        {
-            int nextSliceIndex = sliceIndexIter.next();
-            System.out.println("process slice range " + currentSliceIndex + " - " + nextSliceIndex);
-            this.fireStatusChanged(new AlgoEvent(this, "process slice range " + currentSliceIndex + " - " + nextSliceIndex));
-            
-            // Extract polygon of upper slice
-            LinearRing2D nextPolyRef = getLinearRing(smoothNode, nextSliceIndex);
-            
-            // compute projection points of current poly over next poly
-            LinearRing2D nextPoly = projectRingVerticesNormal(currentPoly, nextPolyRef);
-            // smooth and re-project to have vertices distributed more regularly along target polygon
-            nextPoly = projectRingVerticesNormal(nextPoly.smooth(15), nextPolyRef);
-
-            // create shape for interpolated polygon
-            interpNode.addSliceNode(createInterpolatedPolygonNode(currentPoly, currentSliceIndex));
-
-            // iterate over slices in-between bottom and upper
-            double dz = nextSliceIndex - currentSliceIndex;
-            for (int sliceIndex = currentSliceIndex + 1; sliceIndex < nextSliceIndex; sliceIndex++)
-            {
-                System.out.println("  interpolate slice " + sliceIndex);
-                this.fireProgressChanged(new AlgoEvent(this, sliceIndex - minSliceIndex, indexCount));
-                
-                double t0 = ((double) (sliceIndex - currentSliceIndex)) / dz;
-                LinearRing2D interpPoly = LinearRing2D.interpolate(currentPoly, nextPoly, t0);
-                
-                // create shape for interpolated polygon
-                interpNode.addSliceNode(createInterpolatedPolygonNode(interpPoly, sliceIndex));
-            }
-            
-            // prepare for next pair of indices
-            currentSliceIndex = nextSliceIndex;
-            currentPoly = nextPoly;
-        }
-
-        this.fireProgressChanged(new AlgoEvent(this, 1, 1));
-        
-        // create shape for interpolated polygon
-        interpNode.addSliceNode(createInterpolatedPolygonNode(currentPoly, currentSliceIndex));
     }
     
     private ImageSliceNode createSmoothPolylineNode(LinearRing2D ring, int sliceIndex)

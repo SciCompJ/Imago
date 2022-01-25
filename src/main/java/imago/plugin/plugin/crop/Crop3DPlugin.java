@@ -60,13 +60,16 @@ import net.sci.image.io.TiffImageReader;
  */
 public class Crop3DPlugin implements FramePlugin, ListSelectionListener
 {
+    // ===================================================================
+    // Fields
+    
     ImagoFrame parentFrame;
     
     ImageFrame imageFrame;
     JFrame jframe;
     
+    /** The processing class */
     Crop3D crop3d;
-    
     
     // menu items
     JMenuItem loadAnalysisItem;
@@ -89,7 +92,6 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     JButton cropImageButton;
     
     // the widget that displays the names of the crop regions
-//    JList<String> regionList;
     JComboBox<String> regionComboBox;
     
     // the widget that displays the names of base polygons
@@ -104,6 +106,9 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     String imagePath = null;
     String lastOpenPath = "D:/images/wheat/perigrain/Psiche_2018/HR/selection";
 
+    // ===================================================================
+    // Constructor
+    
     /**
      * Simply creates an empty plugin.
      */
@@ -111,6 +116,10 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     {
         System.out.println("create the crop3D plugin");
     }
+
+    
+    // ===================================================================
+    // Implementation of the Plugin interface
     
     @Override
     public void run(ImagoFrame parentFrame, String args)
@@ -305,6 +314,10 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         frame.add(mainPanel, BorderLayout.CENTER);
         frame.setSize(340, 420);
     }
+    
+    
+    // ===================================================================
+    // Widget callbacks
     
     /**
      * Callback for the "Load Analysis" menu item.
