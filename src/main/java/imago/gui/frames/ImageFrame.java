@@ -29,7 +29,9 @@ import javax.swing.JSplitPane;
 
 import net.sci.algo.AlgoEvent;
 import net.sci.algo.AlgoListener;
+import net.sci.array.ArrayOperator;
 import net.sci.image.Image;
+import net.sci.image.ImageArrayOperator;
 
 
 /**
@@ -47,9 +49,6 @@ import net.sci.image.Image;
  */
 public class ImageFrame extends ImagoFrame implements AlgoListener
 {
-	// ===================================================================
-	// Static class variables
-
 	// ===================================================================
 	// Class variables
     
@@ -193,7 +192,45 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
 		this.jFrame.setLocation(posX, posY);
 	}
 	
+    
+    // ===================================================================
+    // General methods
+    
 	/**
+     * Utility methods that run the algorithm on the data array from an image
+     * and return the result image, by managing the algorithm events and
+     * displaying elapsed time at the end.
+     * 
+     * @param op
+     *            the array operator to run
+     * @param image
+     *            the image containing the data array to process
+     * @return a new Image instance encapsulating the result of array processing
+     */
+    public Image runOperator(ArrayOperator op, Image image)
+    {
+        // initialize listener and timer
+        op.addAlgoListener(this);
+        long t0 = System.nanoTime();
+        
+        // run process, switching to the best appropriate method depending on
+        // the class of the operator
+        Image result = (op instanceof ImageArrayOperator) 
+                ? ((ImageArrayOperator) op).process(image) 
+                : new Image(op.process(image.getData()), image);
+        long t1 = System.nanoTime();
+        
+        // cleanup listener and status bar
+        op.removeAlgoListener(this);
+        this.getStatusBar().setProgressBarPercent(0);
+        
+        // display elapsed time
+        showElapsedTime(op.getClass().getSimpleName(), (t1 - t0) / 1_000_000.0, image);
+        
+        return result;
+    }
+    
+    /**
      * Display elapsed time, converted into seconds, and computes number of
      * processed elements per second. Also returns the created message.
      * 
@@ -228,15 +265,10 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
     public String showElapsedTime(String opName, double timeInMillis, Image refImage) 
     {
         // compute number of elements within image (using double to avoid int overflow)
-        int[] dims = refImage.getSize();
-        double nItems = 1;
-        for (int d = 0; d < dims.length; d++)
-        {
-            nItems *= dims[d];
-        }
+        double nItems = elementCount(image);
         
         // adapt output
-        String elementName = dims.length == 3 ? "voxels" : "pixels";
+        String elementName = image.getDimension() == 3 ? "voxels" : "pixels";
         
         double timeInSecs = timeInMillis / 1000.0;
         int elementsPerSecond = (int) (nItems / timeInSecs);
@@ -250,10 +282,25 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         return status;
     }
     
-	
-	// ===================================================================
-	// General methods
-	
+    /**
+     * Computes the number of elements within an image, using double to avoid
+     * int overflow.
+     * 
+     * @param image
+     *            the image to count elements.
+     * @return the number of elements within image.
+     */
+    private static final double elementCount(Image image)
+    {
+        int[] dims = image.getSize();
+        double nItems = 1;
+        for (int d = 0; d < dims.length; d++)
+        {
+            nItems *= dims[d];
+        }
+        return nItems;
+    }
+        
 	/**
      * Updates the title of the frame with a sting containing document name,
      * image dimensions and type.
@@ -331,16 +378,32 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
 		return statusBar;
 	}
 
+	/**
+     * Completes the default implementation to display the progression in the
+     * status bar.
+     * 
+     * @param evt
+     *            the algorithm event
+     */
 	@Override
 	public void algoProgressChanged(AlgoEvent evt)
 	{
+	    super.algoProgressChanged(evt);
 		int progress = (int) (evt.getProgressRatio() * 100);
 		this.getStatusBar().setProgressBarPercent(progress);
 	}
 
+    /**
+     * Completes the default implementation to display the algorithm status in
+     * the status bar.
+     * 
+     * @param evt
+     *            the algorithm event
+     */
 	@Override
 	public void algoStatusChanged(AlgoEvent evt)
 	{
+        super.algoProgressChanged(evt);
 		System.out.println("status: " + evt.getStatus());
 		this.getStatusBar().setCurrentStepLabel(evt.getStatus());
 	}

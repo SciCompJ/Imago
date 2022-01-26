@@ -30,7 +30,8 @@ public class ImageBoxVarianceFilter implements FramePlugin
 		System.out.println("variance box filter (generic)");
 
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
+        ImageFrame imageFrame = (ImageFrame) frame;
+		ImageHandle doc = imageFrame.getImageHandle();
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();
 
@@ -58,10 +59,9 @@ public class ImageBoxVarianceFilter implements FramePlugin
 		
 		// create median box operator
 		BoxVarianceFilter filter = new BoxVarianceFilter(diameters);
-		filter.addAlgoListener((ImageFrame) frame); 
 		
 		// apply operator on current image
-		Image result = filter.process(image);
+		Image result = imageFrame.runOperator(filter, image);
 		result.setName(image.getName() + "-varFilt");
 		
 		// add the image document to GUI

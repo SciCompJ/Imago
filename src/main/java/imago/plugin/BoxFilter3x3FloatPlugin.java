@@ -36,8 +36,8 @@ public class BoxFilter3x3FloatPlugin implements FramePlugin
 		
 		// get current image data
 		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-		Image metaImage = doc.getImage();
-		Array<?> array = metaImage.getData();
+		Image image = doc.getImage();
+		Array<?> array = image.getData();
 
 		// Check array is scalar
 		if (!(array instanceof ScalarArray))
@@ -48,17 +48,21 @@ public class BoxFilter3x3FloatPlugin implements FramePlugin
 		// create result image with specified type
 		Float32Array output = Float32Array.create(array.size());
 
-		// create operator and apply
+		// create operator
 		BoxFilter3x3 filter = new BoxFilter3x3();
 		if (frame instanceof ImageFrame)
 		{
 		    filter.addAlgoListener((ImageFrame) frame);
 		}
+        long t0 = System.nanoTime();
 		filter.processScalar((ScalarArray<?>) array, output);
-		Image result = new Image(output, metaImage);
-
+        long t1 = System.nanoTime();
+        
+		Image result = new Image(output, image);
+		((ImageFrame) frame).showElapsedTime("BoxFilter3x3", (t1 - t0) / 1_000_000.0, image);
+		
 		// add the image document to GUI
-		frame.getGui().createImageFrame(result);
+		frame.createImageFrame(result);
 	}
 
 }

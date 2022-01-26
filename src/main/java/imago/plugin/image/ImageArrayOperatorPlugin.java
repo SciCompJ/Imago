@@ -23,6 +23,10 @@ public class ImageArrayOperatorPlugin implements FramePlugin
     ArrayOperator operator;
     
     /**
+     * Creates a new plugin from an operator.
+     * 
+     * @param operator
+     *            the instance of ArrayOperator
      */
     public ImageArrayOperatorPlugin(ArrayOperator operator)
     {
@@ -36,10 +40,23 @@ public class ImageArrayOperatorPlugin implements FramePlugin
     public void run(ImagoFrame frame, String args)
     {
         // get current frame
-    	Image image = ((ImageFrame) frame).getImage();
-
-        Image result = new Image(operator.process(image.getData()), image);
-
+        ImageFrame imageFrame = (ImageFrame) frame;
+        Image image = imageFrame.getImage();
+        
+        // initialize listener and timer
+        operator.addAlgoListener(frame);
+        long t0 = System.nanoTime();
+        Image result = imageFrame.runOperator(operator, image);
+        long t1 = System.nanoTime();
+        
+        // cleanup listener and status bar
+        operator.removeAlgoListener(frame);
+        imageFrame.getStatusBar().setProgressBarPercent(0);
+        
+        // display elapsed time
+        String opName = operator.getClass().getSimpleName();
+        imageFrame.showElapsedTime(opName, (t1 - t0) / 1_000_000.0, image);
+        
         // add the image document to GUI
         frame.getGui().createImageFrame(result, frame);
     }

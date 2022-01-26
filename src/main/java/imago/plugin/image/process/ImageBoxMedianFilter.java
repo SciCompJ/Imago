@@ -64,11 +64,10 @@ public class ImageBoxMedianFilter implements FramePlugin
 		
 		// create median box operator
 		BoxMedianFilter filter = new BoxMedianFilter(diameters);
-		filter.addAlgoListener((ImageFrame) frame);
 		
 		// apply operator on current image
-		Image result = filter.process(image);
-		result.setName(image.getName() + "-medFilt");
+		Image result = ((ImageFrame) frame).runOperator(filter, image);
+        result.setName(image.getName() + "-medFilt");
 		
 		// add the image document to GUI
 		frame.getGui().createImageFrame(result);

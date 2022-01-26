@@ -9,7 +9,6 @@ import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.frames.ImageFrame;
 import net.sci.array.Array;
-import net.sci.array.binary.BinaryArray;
 import net.sci.image.Image;
 import net.sci.image.morphology.Strel;
 import net.sci.image.morphology.filter.BinaryClosing;
@@ -65,8 +64,8 @@ public class BinaryImageMorphologicalFilter implements FramePlugin
         System.out.println("binary morphological filter (2d)");
 
         // get current image data
-        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-        Image image = doc.getImage();
+        ImageFrame imageFrame = (ImageFrame) frame;
+        Image image = imageFrame.getImageHandle().getImage();
         Array<?> array = image.getData();
 
         int nd = array.dimensionality();
@@ -102,7 +101,6 @@ public class BinaryImageMorphologicalFilter implements FramePlugin
         
         // parse dialog results
         // extract chosen parameters
-//        this.op         = Operation.fromLabel(gd.getNextChoice());
         int opIndex = gd.getNextChoiceIndex();
         Strel strel;
         if (nd == 2)
@@ -129,17 +127,9 @@ public class BinaryImageMorphologicalFilter implements FramePlugin
             default:
                 throw new RuntimeException("Unknown Operation index");
         }
-
-        // add listener
-        algo.addAlgoListener((ImageFrame) frame); 
         
-        // Execute core of the plugin on the binary array
-        BinaryArray result = algo.processBinary((BinaryArray) array);
-
-        // encapsulate result into Image
-        Image resultImage = new Image(result, image);
+        Image resultImage = imageFrame.runOperator(algo, image);
         
-		// add the image document to GUI
 		frame.getGui().createImageFrame(resultImage); 
 	}
 

@@ -61,12 +61,11 @@ public class ImageBoxFilter implements FramePlugin
 			diameters[d] = (int) gd.getNextNumber();
 		}
 
-		// create operator box filtering operator
+		// create box filtering operator from user settings
 		BoxFilter filter = new BoxFilter(diameters);
-		filter.addAlgoListener((ImageFrame) frame);
 		
 		// apply operator on current image
-		Image result = filter.process(image);
+		Image result = ((ImageFrame) frame).runOperator(filter, image);
 		result.setName(image.getName() + "-filt");
 		
 		// add the image document to GUI

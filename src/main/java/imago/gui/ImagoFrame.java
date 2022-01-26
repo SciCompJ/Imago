@@ -10,6 +10,8 @@ import javax.swing.JFrame;
 
 import imago.gui.frames.ImageFrame;
 import imago.gui.frames.TableFrame;
+import net.sci.algo.AlgoEvent;
+import net.sci.algo.AlgoListener;
 import net.sci.image.Image;
 import net.sci.table.Table;
 
@@ -26,7 +28,7 @@ import net.sci.table.Table;
  * @author David Legland
  *
  */
-public abstract class ImagoFrame  
+public abstract class ImagoFrame implements AlgoListener
 {
 	/**
 	 * Reference to the global GUI, for retrieving other frames open within the
@@ -251,5 +253,39 @@ public abstract class ImagoFrame
         }
         
         this.children.clear();
+    }
+    
+
+    // ===================================================================
+    // Implementation of the AlgoListener interface
+    
+    /**
+     * Default (empty) implementation for monitoring changes in the progression
+     * of an algorithm.
+     * 
+     * In the current implementation, this method is empty, and management of
+     * algorithm events is left to overriding classes.
+     * 
+     * @param evt
+     *            the algorithm event
+     */
+    @Override
+    public void algoProgressChanged(AlgoEvent evt)
+    {
+    }
+    
+    /**
+     * Default (empty) implementation for monitoring changes in the status of an
+     * algorithm.
+     * 
+     * In the current implementation, this method is empty, and management of
+     * algorithm events is left to overriding classes.
+     * 
+     * @param evt
+     *            the algorithm event
+     */
+    @Override
+    public void algoStatusChanged(AlgoEvent evt)
+    {
     }
 }

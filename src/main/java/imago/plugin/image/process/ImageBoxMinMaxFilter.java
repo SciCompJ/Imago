@@ -67,11 +67,10 @@ public class ImageBoxMinMaxFilter implements FramePlugin
 		// create operator box filtering operator
 		BoxMinMaxFilterNaive.Type type = minFilter ? BoxMinMaxFilterNaive.Type.MIN : BoxMinMaxFilterNaive.Type.MAX;  
 		BoxMinMaxFilterNaive filter = new BoxMinMaxFilterNaive(type, diameters);
-		filter.addAlgoListener((ImageFrame) frame); 
-
-		// apply operator on current image
-		Image result = filter.process(image);
 		
+		// apply operator on current image
+		Image result = ((ImageFrame) frame).runOperator(filter, image);
+        
 		// choose name of result
 		String suffix = minFilter ? "-minFilt" : "-maxFilt";
 		result.setName(image.getName() + suffix);

@@ -3,11 +3,10 @@
  */
 package imago.plugin.image.process;
 
-import imago.app.ImageHandle;
+import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.frames.ImageFrame;
-import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.image.Image;
 import net.sci.image.morphology.MorphologicalFilter.Operation;
@@ -59,11 +58,11 @@ public class ImageMorphologicalFilter implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("morphological filter (2d)");
+		System.out.println("morphological filter");
 
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-		Image image	= doc.getImage();
+		ImageFrame imageFrame = (ImageFrame) frame;
+		Image image	= imageFrame.getImageHandle().getImage();
 		Array<?> array = image.getData();
 
 		int nd = array.dimensionality();
@@ -98,7 +97,7 @@ public class ImageMorphologicalFilter implements FramePlugin
 		
 		// parse dialog results
 		// extract chosen parameters
-		this.op 		= Operation.fromLabel(gd.getNextChoice());
+		this.op = Operation.fromLabel(gd.getNextChoice());
 		Strel strel;
 		if (nd == 2)
 		{
@@ -118,29 +117,31 @@ public class ImageMorphologicalFilter implements FramePlugin
 		
 		// Execute core of the plugin on the array of original image
 		Array<?> result = op.process(array, strel);
-		
-		// determine operation short name
-		String opName;
-		switch (op)
-		{
-        case DILATION: opName = "Dil"; break;
-        case EROSION: opName = "Ero"; break;
-        case OPENING: opName = "Op"; break;
-        case CLOSING: opName = "Cl"; break;
-        case TOPHAT: opName = "WTH"; break;
-        case BOTTOMHAT: opName = "BTH"; break;
-        case GRADIENT: opName = "Grad"; break;
-        case LAPLACIAN: opName = "Lap"; break;
-        
-        default: opName = "Filt"; break;
-		}
 
 		// create new image with filter result
 		Image resultImage = new Image(result, image);
+
+		// determine operation short name
+        String opName = chooseSuffix(op);
 		resultImage.setName(image.getName() + "-" + opName);
 		
 		// add the image document to GUI
 		frame.createImageFrame(resultImage);
 	}
-
+	
+	private String chooseSuffix(Operation op)
+	{
+        switch (op)
+        {
+            case DILATION: return "Dil"; 
+            case EROSION: return "Ero";
+            case OPENING: return "Op";
+            case CLOSING: return "Cl";
+            case TOPHAT: return "WTH";
+            case BOTTOMHAT: return "BTH";
+            case GRADIENT: return "Grad";
+            case LAPLACIAN: return "Lap";
+            default: return "Filt"; 
+        }
+	}
 }

@@ -9,13 +9,17 @@ import imago.gui.ImagoGui;
 import imago.gui.frames.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
-import net.sci.array.binary.BinaryArray;
 import net.sci.array.process.type.ConvertToBinary;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.image.Image;
 
 
 /**
+ * Convert a scalar image (grayscale, intensity) into a binary image, by setting
+ * all values greater than zero to true.
+ *
+ * @see net.sci.array.process.type.ConvertToBinary
+ * 
  * @author David Legland
  *
  */
@@ -55,19 +59,12 @@ public class ConvertImageToBinary implements FramePlugin
             ImagoGui.showErrorDialog(frame, "Requires a scalar image", "Data Type Error");
 			return;
 		}
-
-		// Create and run operator
+		
+		// create and run algo
 		ConvertToBinary algo = new ConvertToBinary();
-		algo.addAlgoListener((ImageFrame) frame);
-		long t0 = System.nanoTime();
-		BinaryArray result = algo.process(array);
-        long t1 = System.nanoTime();
-        
-        // display elapsed time
-        imageFrame.showElapsedTime("Convert To Binary", (t1 - t0) / 1_000_000.0, image);
-        
+		Image resultImage = imageFrame.runOperator(algo, image);
+
 		// add the image document to GUI
-        Image resultImage = new Image(result, image);
-		frame.getGui().createImageFrame(resultImage); 
+		frame.createImageFrame(resultImage); 
 	}
 }
