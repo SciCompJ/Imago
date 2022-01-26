@@ -9,7 +9,8 @@ import imago.gui.ImagoFrame;
 import imago.gui.frames.ImageFrame;
 import net.sci.array.Array;
 import net.sci.image.Image;
-import net.sci.image.morphology.MorphologicalFilter.Operation;
+import net.sci.image.morphology.MorphologicalFilters.Operation;
+import net.sci.image.morphology.MorphologicalFilter;
 import net.sci.image.morphology.Strel;
 import net.sci.image.morphology.strel.Strel2D;
 import net.sci.image.morphology.strel.Strel3D;
@@ -112,36 +113,16 @@ public class ImageMorphologicalFilter implements FramePlugin
 		    strel = shape3d.fromRadius(radius);
 		}
 
-		// add listener
-		strel.addAlgoListener((ImageFrame) frame); 
+		// Create the morphological filter
+		MorphologicalFilter algo = op.createOperator(strel);
 		
-		// Execute core of the plugin on the array of original image
-		Array<?> result = op.process(array, strel);
+        // Execute core of the plugin on the array of original image
+		Image resultImage = imageFrame.runOperator(algo, image);
 
-		// create new image with filter result
-		Image resultImage = new Image(result, image);
-
-		// determine operation short name
-        String opName = chooseSuffix(op);
-		resultImage.setName(image.getName() + "-" + opName);
+		// setup name of result image
+		resultImage.setName(image.getName() + "-" + op.suffix());
 		
 		// add the image document to GUI
 		frame.createImageFrame(resultImage);
-	}
-	
-	private String chooseSuffix(Operation op)
-	{
-        switch (op)
-        {
-            case DILATION: return "Dil"; 
-            case EROSION: return "Ero";
-            case OPENING: return "Op";
-            case CLOSING: return "Cl";
-            case TOPHAT: return "WTH";
-            case BOTTOMHAT: return "BTH";
-            case GRADIENT: return "Grad";
-            case LAPLACIAN: return "Lap";
-            default: return "Filt"; 
-        }
 	}
 }

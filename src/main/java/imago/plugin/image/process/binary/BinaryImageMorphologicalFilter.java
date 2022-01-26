@@ -10,11 +10,11 @@ import imago.gui.ImagoFrame;
 import imago.gui.frames.ImageFrame;
 import net.sci.array.Array;
 import net.sci.image.Image;
+import net.sci.image.morphology.BinaryMorphologicalFilter;
 import net.sci.image.morphology.Strel;
 import net.sci.image.morphology.filter.BinaryClosing;
 import net.sci.image.morphology.filter.BinaryDilation;
 import net.sci.image.morphology.filter.BinaryErosion;
-import net.sci.image.morphology.filter.BinaryMorphologicalFilterAlgo;
 import net.sci.image.morphology.filter.BinaryOpening;
 import net.sci.image.morphology.strel.Strel2D;
 import net.sci.image.morphology.strel.Strel3D;
@@ -117,7 +117,7 @@ public class BinaryImageMorphologicalFilter implements FramePlugin
         }
         
         // create operation
-        BinaryMorphologicalFilterAlgo algo;
+        BinaryMorphologicalFilter algo;
         switch (opIndex)
         {
             case 0: algo = new BinaryDilation(strel); break;

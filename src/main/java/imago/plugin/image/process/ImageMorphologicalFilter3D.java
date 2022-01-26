@@ -11,15 +11,17 @@ import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.scalar.ScalarArray3D;
 import net.sci.image.Image;
-import net.sci.image.morphology.MorphologicalFilter.Operation;
+import net.sci.image.morphology.MorphologicalFilters.Operation;
 import net.sci.image.morphology.strel.Strel3D;
 
 /**
  * Applies various types of morphological filtering on a multidimensional image.
  * 
+ * @deprecated: superseeded by ImageMorphologicalFilter class
  * @author David Legland
- *
+ * 
  */
+@Deprecated 
 public class ImageMorphologicalFilter3D implements FramePlugin
 {
 	Operation op = Operation.DILATION;
