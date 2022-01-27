@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.plugin.image.process.binary;
+package imago.plugin.image.binary;
 
 import imago.app.ImageHandle;
 import imago.gui.FramePlugin;
