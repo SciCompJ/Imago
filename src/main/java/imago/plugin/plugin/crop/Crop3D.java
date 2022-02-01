@@ -107,11 +107,6 @@ public class Crop3D extends AlgoStub
             throw new RuntimeException("Expect inner crop3d field to be initialized");
         }
         
-        // update polygons of the new analysis
-        ImageSerialSectionsNode polygonsNode = data.regions.get(0).polygons;
-        crop3d.populatePolygons(polygonsNode);
-        plugin.updatePolygonListView();
-        
         // need to call this to update items to display 
         ImageViewer viewer = plugin.imageFrame.getImageView();
         viewer.refreshDisplay(); 

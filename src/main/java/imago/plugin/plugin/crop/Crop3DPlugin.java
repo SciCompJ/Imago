@@ -585,15 +585,30 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         this.crop3d = new Crop3D(data, imageFrame.getImageHandle());
         this.crop3d.addAlgoListener(imageFrame);
         
+        // choose the default region to display:
+        // either the first non-empty one, or the first one if they are all empty
+        Crop3DRegion refRegion = data.regions.get(0);
+        for (Crop3DRegion region : data.regions())
+        {
+            if (!region.polygons.isLeaf())
+            {
+                refRegion = region;
+                break;
+            }
+        }
+        crop3d.selectCurrentRegion(refRegion.name);
+        
+        // enable widgets for regions management
+        updateRegionWidgets();
+        this.regionComboBox.setSelectedItem(refRegion.name);
+        updatePolygonListView();
+        
         // and updates the current frame
         // need to call this to update items to display
         ImageViewer viewer = imageFrame.getImageView();
         viewer.refreshDisplay(); 
         viewer.repaint();
         viewer.setCurrentTool(new SelectPolygonTool(imageFrame, "selectPolygon"));
-        
-        // enable widgets for regions management
-        updateRegionWidgets();
     }
     
     /**
