@@ -882,7 +882,8 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
             {
                 try 
                 {
-                    crop3d.smoothAndInterpolatePolygons();
+                    crop3d.interpolatePolygons();
+//                    crop3d.smoothAndInterpolatePolygons();
                     progress.setProgressRatio(1.0);
                 }
                 catch (Exception ex)
