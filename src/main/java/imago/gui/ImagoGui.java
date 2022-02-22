@@ -578,6 +578,7 @@ public class ImagoGui
             if (!frameList.contains(frame))
             {
                 System.err.println("Warning: frame " + frame.getWidget().getName() + " is not referenced by image handle " + handle.getName());
+                return false;
             }
             
             frameList.remove(frame);
