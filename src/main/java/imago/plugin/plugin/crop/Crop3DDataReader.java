@@ -9,12 +9,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 
 import com.google.gson.stream.JsonReader;
 
-import imago.app.scene.ImageSerialSectionsNode;
-import imago.app.scene.Node;
 import imago.app.scene.io.JsonSceneReader;
+import net.sci.geom.Geometry;
+import net.sci.geom.geom2d.polygon.LinearRing2D;
 
 /**
  * Reads Crop3D data from a file in JSON format.
@@ -178,17 +180,48 @@ public class Crop3DDataReader
         return region;
     }
     
-    public ImageSerialSectionsNode readPolygons() throws IOException
+    public Map<Integer, LinearRing2D> readPolygons() throws IOException
     {
-        // create a scene reader to geometry data
-        JsonSceneReader sceneReader = new JsonSceneReader(reader);
-        Node node = sceneReader.readNode();
-
-        // expect a group node...
-        if (!(node instanceof ImageSerialSectionsNode))
+        Map<Integer, LinearRing2D> polygons = new TreeMap<Integer, LinearRing2D>();
+        
+        reader.beginArray();
+        while(reader.hasNext())
         {
-            throw new RuntimeException("JSON file should contains a single ImageSerialSectionsNode instance.");
+            readPolygon(polygons);
         }
-        return (ImageSerialSectionsNode) node;
+        reader.endArray();
+        
+        return polygons;
+    }
+    
+    private void readPolygon(Map<Integer, LinearRing2D> polygons) throws IOException
+    {
+        int sliceIndex = 0;
+        
+        reader.beginObject();
+        while(reader.hasNext())
+        {
+            String name = reader.nextName();
+            if (name.equalsIgnoreCase("sliceIndex"))
+            {
+                sliceIndex = reader.nextInt();
+            }
+            else if (name.equalsIgnoreCase("geometry"))
+            {
+                Geometry geometry = new JsonSceneReader(reader).readGeometry();
+                if (!(geometry instanceof LinearRing2D))
+                {
+                    throw new RuntimeException("Expect the geometry to be a LinearRing2D");
+                }
+                polygons.put(sliceIndex, (LinearRing2D) geometry); 
+            }
+            else
+            {
+                System.out.println("Unknown field name when reading Slice polygon: " + name);
+                reader.skipValue();
+            }
+        }
+        
+        reader.endObject();
     }
 }

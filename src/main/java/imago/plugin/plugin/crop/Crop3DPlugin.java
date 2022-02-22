@@ -590,7 +590,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         Crop3DRegion refRegion = data.regions.get(0);
         for (Crop3DRegion region : data.regions())
         {
-            if (!region.polygons.isLeaf())
+            if (!region.polygons.isEmpty())
             {
                 refRegion = region;
                 break;

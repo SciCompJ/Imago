@@ -5,8 +5,12 @@ package imago.plugin.plugin.crop;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
+import java.util.TreeMap;
 
-import imago.app.scene.ImageSerialSectionsNode;
+//import imago.app.scene.ImageSerialSectionsNode;
+//import imago.app.scene.ImageSliceNode;
+import net.sci.geom.geom2d.polygon.LinearRing2D;
 
 /**
  * The data necessary for cropping a region within a 3D image.
@@ -27,14 +31,13 @@ public class Crop3DRegion
     /**
      * The manually selected polygons for a selection of slices.
      */
-    // TODO: replace ImageSerialSectionsNode by Map<Int,LinearRing2D> 
-    ImageSerialSectionsNode polygons;
+    Map<Integer, LinearRing2D> polygons;
     
     /**
      * The series of polygons obtained after interpolation of the "polygons"
      * node.
      */
-    ImageSerialSectionsNode interpolatedPolygons = null;
+    Map<Integer, LinearRing2D> interpolatedPolygons = null;
     
     
     // ===================================================================
@@ -45,7 +48,7 @@ public class Crop3DRegion
      */
     public Crop3DRegion()
     {
-        this("", new ImageSerialSectionsNode(""));
+        this("", new TreeMap<Integer, LinearRing2D>());
     }
     
     /**
@@ -56,12 +59,12 @@ public class Crop3DRegion
      * @param polygons
      *            the reference polygons
      */
-    public Crop3DRegion(String name, ImageSerialSectionsNode polygons)
+    public Crop3DRegion(String name, Map<Integer, LinearRing2D> polygons)
     {
         this.name = name;
         this.polygons = polygons;
         
-        this.interpolatedPolygons = new ImageSerialSectionsNode("");
+        this.interpolatedPolygons = new TreeMap<Integer, LinearRing2D>();
     }
     
     
@@ -73,6 +76,7 @@ public class Crop3DRegion
         // read polygons of current region
         Crop3DDataReader reader = new Crop3DDataReader(file);
         this.polygons = reader.readPolygons();
+        
         this.interpolatedPolygons.clear();
     }
 }

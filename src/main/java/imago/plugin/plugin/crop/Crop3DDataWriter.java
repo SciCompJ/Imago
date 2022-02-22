@@ -6,12 +6,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 import com.google.gson.stream.JsonWriter;
 
 import imago.app.scene.ImageSerialSectionsNode;
 import imago.app.scene.Node;
 import imago.app.scene.io.JsonSceneWriter;
+import net.sci.geom.geom2d.polygon.LinearRing2D;
 import net.sci.image.Image;
 
 /**
@@ -61,20 +63,6 @@ public class Crop3DDataWriter
         }
         jsonWriter.endArray();
         
-//        // one node for the default crop polygons
-//        jsonWriter.beginObject();
-//        jsonWriter.name("name").value("crop");
-//        // write crop polygon data
-//        ImageSerialSectionsNode polyNode = crop3d.getPolygonsNode();
-//        if (polyNode != null)
-//        {
-//            jsonWriter.name("polygons");
-//            writePolygons(polyNode);
-//        }
-//      
-//        jsonWriter.endObject(); // array item
-//        jsonWriter.endArray(); // array of models
-
         // close Crop3D
         jsonWriter.endObject();
     }
@@ -142,6 +130,25 @@ public class Crop3DDataWriter
     {
         JsonSceneWriter writer = new JsonSceneWriter(jsonWriter);
         writer.writeNode(polyNode);
+    }
+    
+    public void writePolygons(Map<Integer, LinearRing2D> polygons) throws IOException
+    {
+        // one node for the collection of XY-slices
+        jsonWriter.beginArray();
+        for (int sliceIndex : polygons.keySet())
+        {
+            LinearRing2D ring = polygons.get(sliceIndex);
+            
+            jsonWriter.beginObject();
+            jsonWriter.name("sliceIndex").value(sliceIndex);
+            jsonWriter.name("geometry");
+            
+            JsonSceneWriter writer = new JsonSceneWriter(jsonWriter);
+            writer.writeGeometry(ring);
+            jsonWriter.endObject();        
+        }
+        jsonWriter.endArray();
     }
     
     public void writeSceneNode(Node node) throws IOException

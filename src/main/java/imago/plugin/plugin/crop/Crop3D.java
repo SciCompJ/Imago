@@ -3,6 +3,7 @@
  */
 package imago.plugin.plugin.crop;
 
+import java.awt.Color;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,13 +14,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 
 import imago.app.ImageHandle;
 import imago.app.scene.GroupNode;
 import imago.app.scene.ImageSerialSectionsNode;
 import imago.app.scene.ImageSliceNode;
-import imago.app.scene.Node;
 import imago.app.scene.ShapeNode;
+import imago.app.scene.Style;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
 import net.sci.algo.AlgoEvent;
@@ -128,6 +130,9 @@ public class Crop3D extends AlgoStub implements AlgoListener
     
     String sliceIndexPattern = "%02d";
     
+    Style polygonStyle = new Style();
+    Style interpStyle = new Style();
+    
     
     // ===================================================================
     // Constructor
@@ -141,6 +146,11 @@ public class Crop3D extends AlgoStub implements AlgoListener
     {
         this.data = data;
         this.imageHandle = imageHandle;
+        
+        // initialize drawing styles for polygons
+        polygonStyle.setLineWidth(3.5);
+        interpStyle.setColor(Color.MAGENTA);
+        interpStyle.setLineWidth(1.0);
         
         initializeSliceIndexPattern();
         initializeCrop3dNodes();
@@ -332,7 +342,7 @@ public class Crop3D extends AlgoStub implements AlgoListener
         String name = createSliceName("slice", sliceIndex);
         
         // update current region
-        setPolygonSliceNode(currentRegion.polygons, sliceIndex, poly, name);
+        currentRegion.polygons.put(sliceIndex, poly.boundary());
         
         // update scene node in current image handle
         setPolygonSliceNode(getPolygonsNode(), sliceIndex, poly, name);
@@ -373,7 +383,7 @@ public class Crop3D extends AlgoStub implements AlgoListener
         System.out.println("crop3d - remove polygon");
         
         // update current region
-        currentRegion.polygons.removeSliceNode(sliceIndex);
+        currentRegion.polygons.remove(sliceIndex);
         
         // update scene node in current image handle
         getPolygonsNode().removeSliceNode(sliceIndex);
@@ -407,48 +417,30 @@ public class Crop3D extends AlgoStub implements AlgoListener
      */
     public void populatePolygons(Crop3DRegion region)
     {
-        // Process 
+        // Process polygons
         ImageSerialSectionsNode polyNode = getPolygonsNode();
-        polyNode.clear();
-        for(ImageSliceNode child : region.polygons.children())
-        {
-            // check that all children of slice nodes are shape nodes with polyline2D geometry
-            for (Node child2 : child.children())
-            {
-                if (!(child2 instanceof ShapeNode))
-                {
-                    throw new RuntimeException("Expect all ImageSliceNode to contain shape nodes.");
-                }
-
-                if(!(((ShapeNode) child2).getGeometry() instanceof LinearRing2D))
-                {
-                    throw new RuntimeException("Expect all Shape nodes to contain LinearRing2D geometries.");
-                }
-            }
-            polyNode.addSliceNode(child);
-        }
+        populateSliceNodes(polyNode, region.polygons, polygonStyle);
         
+        // Process interpolated polygons
         ImageSerialSectionsNode interpNode = getInterpolatedPolygonsNode();
-        interpNode.clear();
-        for(ImageSliceNode child : region.interpolatedPolygons.children())
-        {
-            // check that all children of slice nodes are shape nodes with polyline2D geometry
-            for (Node child2 : child.children())
-            {
-                if (!(child2 instanceof ShapeNode))
-                {
-                    throw new RuntimeException("Expect all ImageSliceNode to contain shape nodes.");
-                }
-
-                if(!(((ShapeNode) child2).getGeometry() instanceof LinearRing2D))
-                {
-                    throw new RuntimeException("Expect all Shape nodes to contain LinearRing2D geometries.");
-                }
-            }
-            interpNode.addSliceNode(child);
-        }
+        populateSliceNodes(interpNode, region.interpolatedPolygons, interpStyle);
     }
     
+    private void populateSliceNodes(ImageSerialSectionsNode node, Map<Integer, LinearRing2D> polygons, Style style)
+    {
+        node.clear();
+        for(int sliceIndex : polygons.keySet())
+        {
+            LinearRing2D ring = polygons.get(sliceIndex);
+            String name = createSliceName("slice", sliceIndex);
+            ShapeNode shapeNode = new ShapeNode(name, ring, new Style(style));
+            
+            ImageSliceNode sliceNode = new ImageSliceNode(name, sliceIndex);
+            sliceNode.addNode(shapeNode);
+            node.addSliceNode(sliceNode);
+        }
+   
+    }
 
     // ===================================================================
     // Computation of interpolated polygons
@@ -465,8 +457,8 @@ public class Crop3D extends AlgoStub implements AlgoListener
 
         Crop3DRegionInterpolator algo = new Crop3DRegionInterpolator();
         algo.addAlgoListener(this);
-        ImageSerialSectionsNode interpNode = algo.interpolatePolygons(currentRegion.polygons);
-        currentRegion.interpolatedPolygons = interpNode;
+        
+        algo.interpolatePolygons(currentRegion);
         
         populatePolygons(currentRegion);
     }
