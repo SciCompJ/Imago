@@ -3,6 +3,9 @@
  */
 package imago.plugin.plugin.crop;
 
+import java.io.File;
+import java.io.IOException;
+
 import imago.app.scene.ImageSerialSectionsNode;
 
 /**
@@ -13,6 +16,9 @@ import imago.app.scene.ImageSerialSectionsNode;
  */
 public class Crop3DRegion
 {
+    // ===================================================================
+    // Class members
+
     /** 
      * The name of the region.
      */
@@ -21,16 +27,52 @@ public class Crop3DRegion
     /**
      * The manually selected polygons for a selection of slices.
      */
+    // TODO: replace ImageSerialSectionsNode by Map<Int,LinearRing2D> 
     ImageSerialSectionsNode polygons;
     
+    /**
+     * The series of polygons obtained after interpolation of the "polygons"
+     * node.
+     */
+    ImageSerialSectionsNode interpolatedPolygons = null;
+    
+    
+    // ===================================================================
+    // Constructors
+
+    /**
+     * Creates a new region with default settings.
+     */
     public Crop3DRegion()
     {
-        this.polygons = new ImageSerialSectionsNode("");
+        this("", new ImageSerialSectionsNode(""));
     }
     
+    /**
+     * Creates a new region, by specifying its name and the series of polygon.
+     * 
+     * @param name
+     *            the name of the regions
+     * @param polygons
+     *            the reference polygons
+     */
     public Crop3DRegion(String name, ImageSerialSectionsNode polygons)
     {
         this.name = name;
         this.polygons = polygons;
+        
+        this.interpolatedPolygons = new ImageSerialSectionsNode("");
+    }
+    
+    
+    // ===================================================================
+    // Methods
+    
+    public void readPolygonsFromJson(File file) throws IOException
+    {
+        // read polygons of current region
+        Crop3DDataReader reader = new Crop3DDataReader(file);
+        this.polygons = reader.readPolygons();
+        this.interpolatedPolygons.clear();
     }
 }

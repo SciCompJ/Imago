@@ -114,7 +114,7 @@ public class Crop3DData
                 return region;
             }
         }
-        throw new RuntimeException("Crop2DData does not contain any region with name: " + regionName);
+        throw new RuntimeException("Crop3DData does not contain any region with name: " + regionName);
     }
 
 }

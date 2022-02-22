@@ -3,7 +3,6 @@
  */
 package imago.plugin.plugin.crop;
 
-import java.awt.Color;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,7 +10,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Locale;
@@ -25,6 +23,7 @@ import imago.app.scene.ShapeNode;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
 import net.sci.algo.AlgoEvent;
+import net.sci.algo.AlgoListener;
 import net.sci.algo.AlgoStub;
 import net.sci.array.Array;
 import net.sci.array.scalar.ScalarArray;
@@ -45,12 +44,11 @@ import net.sci.image.io.MetaImageWriter;
  * 
  * Several Processing steps:
  * <ol>
- * <li>Initialize node tree for the plugin. Create a node "crop3d" and three
- * subnodes: "polygons", "smooth", and "interpolate".</li>
+ * <li>Initialize node tree for the plugin. Create a node "crop3d" and two
+ * subnodes: "polygons", and "interpolate".</li>
  * <li>Populate the 'polygons" node, either manually or by loading data from a
  * JSON file.</li>
- * <li>Smooth each polygons (resample and smooth).</li>
- * <li>Interpolate smoothed polygons to populate also slices within annotated
+ * <li>Interpolate polygons to populate also slices within annotated
  * slices.</li>
  * <li>Compute cropped image of each slice, and save the result in a 3D image
  * using MetaImage file format.</li>
@@ -62,7 +60,7 @@ import net.sci.image.io.MetaImageWriter;
  * @author dlegland
  *
  */
-public class Crop3D extends AlgoStub
+public class Crop3D extends AlgoStub implements AlgoListener
 {
     // ===================================================================
     // Static factories
@@ -213,7 +211,8 @@ public class Crop3D extends AlgoStub
         initializeCrop3dNodes();
         
         // setup new data
-        populatePolygons(region.polygons);
+        populatePolygons(region);
+//        populatePolygons(region.polygons);
     }
     
     public void initializeDefaultRegions()
@@ -247,7 +246,6 @@ public class Crop3D extends AlgoStub
     
         // add child nodes
         cropNode.addNode(new ImageSerialSectionsNode("polygons"));
-        cropNode.addNode(new ImageSerialSectionsNode("smooth"));
         cropNode.addNode(new ImageSerialSectionsNode("interp"));
     }
 
@@ -275,7 +273,6 @@ public class Crop3D extends AlgoStub
     
         // add child nodes
         if (!(cropNode.hasChildWithName("polygons"))) return false;
-        if (!(cropNode.hasChildWithName("smooth"))) return false;
         if (!(cropNode.hasChildWithName("interp"))) return false;
         
         // if all conditions are checked, return true
@@ -391,27 +388,29 @@ public class Crop3D extends AlgoStub
         }
         
         // read polygons of current region
-        Crop3DDataReader reader = new Crop3DDataReader(file);
-        currentRegion.polygons = reader.readPolygons();
+        currentRegion.readPolygonsFromJson(file);
 
         // reset current state of the Crop3D plugin
         initializeCrop3dNodes();
-        populatePolygons(currentRegion.polygons);
+        populatePolygons(currentRegion);
         
         System.out.println("reading polygons terminated.");
     }
        
     /**
-     * Populates the "polygons" node of current image handle from the specified
-     * ImageSerialSectionsNode.
+     * Populates the "polygons" and "interp" nodes of the current image handle
+     * from the specified region.
      * 
-     * @param polygonsNode
-     *            the node containing the map between slice indices and shape
+     * @param region
+     *            the region containing the polygons to display on the current
+     *            Image Viewer
      */
-    public void populatePolygons(ImageSerialSectionsNode polygonsNode)
+    public void populatePolygons(Crop3DRegion region)
     {
+        // Process 
         ImageSerialSectionsNode polyNode = getPolygonsNode();
-        for(ImageSliceNode child : polygonsNode.children())
+        polyNode.clear();
+        for(ImageSliceNode child : region.polygons.children())
         {
             // check that all children of slice nodes are shape nodes with polyline2D geometry
             for (Node child2 : child.children())
@@ -426,8 +425,27 @@ public class Crop3D extends AlgoStub
                     throw new RuntimeException("Expect all Shape nodes to contain LinearRing2D geometries.");
                 }
             }
-
             polyNode.addSliceNode(child);
+        }
+        
+        ImageSerialSectionsNode interpNode = getInterpolatedPolygonsNode();
+        interpNode.clear();
+        for(ImageSliceNode child : region.interpolatedPolygons.children())
+        {
+            // check that all children of slice nodes are shape nodes with polyline2D geometry
+            for (Node child2 : child.children())
+            {
+                if (!(child2 instanceof ShapeNode))
+                {
+                    throw new RuntimeException("Expect all ImageSliceNode to contain shape nodes.");
+                }
+
+                if(!(((ShapeNode) child2).getGeometry() instanceof LinearRing2D))
+                {
+                    throw new RuntimeException("Expect all Shape nodes to contain LinearRing2D geometries.");
+                }
+            }
+            interpNode.addSliceNode(child);
         }
     }
     
@@ -438,103 +456,19 @@ public class Crop3D extends AlgoStub
     /**
      * Computes interpolated polygons. Retrieves the "crop3d/polygons" node, and
      * interpolated polygons for slices in between slices containing polygons.
+     * 
+     * @see Crop3DRegionInterpolator
      */
     public void interpolatePolygons()
     {
         System.out.println("crop3d - interpolate polygons (Fuchs)");
 
-        interpolatePolygons_Fuchs();
-    }
-    
-    /**
-     * Computes interpolated polygons from the original polygons, using Fuchs'
-     * algorithm.
-     */
-    private void interpolatePolygons_Fuchs()
-    {
-        // retrieve smooth node
-        ImageSerialSectionsNode polygonsNode = getPolygonsNode();
-
-        // clear interpolated polygons node
-        ImageSerialSectionsNode interpNode = getInterpolatedPolygonsNode();
-        interpNode.clear();
+        Crop3DRegionInterpolator algo = new Crop3DRegionInterpolator();
+        algo.addAlgoListener(this);
+        ImageSerialSectionsNode interpNode = algo.interpolatePolygons(currentRegion.polygons);
+        currentRegion.interpolatedPolygons = interpNode;
         
-        // get iterator on polygon slices
-        Collection<Integer> indices = polygonsNode.getSliceIndices();
-        Iterator<Integer> sliceIndexIter = indices.iterator();
-        if (!sliceIndexIter.hasNext())
-        {
-            return;
-        }
-        
-        // Extract polygon of bottom slice
-        int currentSliceIndex = sliceIndexIter.next();
-        int minSliceIndex = currentSliceIndex;
-        
-        // get last index and indices number
-        int lastIndex = minSliceIndex;
-        for (int ind : polygonsNode.getSliceIndices())
-        {
-            lastIndex = ind;
-        }
-        int indexCount = lastIndex - minSliceIndex + 1;
-        
-        LinearRing2D currentPoly = getLinearRing(polygonsNode, currentSliceIndex);
-        
-        // iterate over pairs of indices
-        while (sliceIndexIter.hasNext())
-        {
-            // create shape for current manual polygon (equivalent to interpolated polygon by definition)
-            interpNode.addSliceNode(createInterpolatedPolygonNode(currentPoly, currentSliceIndex));
-
-            int nextSliceIndex = sliceIndexIter.next();
-            System.out.println("process slice range " + currentSliceIndex + " - " + nextSliceIndex);
-            this.fireStatusChanged(new AlgoEvent(this, "process slice range " + currentSliceIndex + " - " + nextSliceIndex));
-            
-            // Extract polygon of upper slice
-            LinearRing2D nextPoly = getLinearRing(polygonsNode, nextSliceIndex);
-            
-            // Create interpolation algorithm
-            ParallelPolygonsInterpolator algo = new ParallelPolygonsInterpolator(currentPoly, currentSliceIndex, nextPoly, nextSliceIndex);
-
-            // iterate over slices in-between bottom and upper
-            for (int sliceIndex = currentSliceIndex + 1; sliceIndex < nextSliceIndex; sliceIndex++)
-            {
-                System.out.println("  interpolate slice " + sliceIndex);
-                this.fireProgressChanged(new AlgoEvent(this, sliceIndex - minSliceIndex, indexCount));
-                
-                LinearRing2D interpPoly = algo.interpolate(sliceIndex);
-                
-                // create shape for interpolated polygon
-                interpNode.addSliceNode(createInterpolatedPolygonNode(interpPoly, sliceIndex));
-            }
-            
-            // prepare for next pair of indices
-            currentSliceIndex = nextSliceIndex;
-            currentPoly = nextPoly;
-        }
-
-        this.fireProgressChanged(new AlgoEvent(this, 1, 1));
-        
-        // create a shape for the last manual polygon (equivalent to interpolated polygon by definition)
-        interpNode.addSliceNode(createInterpolatedPolygonNode(currentPoly, currentSliceIndex));
-    }
-    
-    private ImageSliceNode createInterpolatedPolygonNode(LinearRing2D ring, int sliceIndex)
-    {
-        // compute name (of both shape and slice nodes)
-        String sliceName = createSliceName("interp", sliceIndex);
-
-        // create a node for the shape
-        ShapeNode shapeNode = new ShapeNode(sliceName, ring);
-        shapeNode.getStyle().setColor(Color.MAGENTA);
-        shapeNode.getStyle().setLineWidth(1.0);
-    
-        // create the slice for interpolated version
-        ImageSliceNode sliceNode = new ImageSliceNode(sliceName, sliceIndex);
-        sliceNode.addNode(shapeNode);
-        
-        return sliceNode;
+        populatePolygons(currentRegion);
     }
     
     /**
@@ -838,5 +772,17 @@ public class Crop3D extends AlgoStub
         {
             throw new RuntimeException("Can not manage arays with class: " + array.getClass()); 
         }
+    }
+
+    @Override
+    public void algoProgressChanged(AlgoEvent evt)
+    {
+        this.fireProgressChanged(evt);
+    }
+
+    @Override
+    public void algoStatusChanged(AlgoEvent evt)
+    {
+        this.fireStatusChanged(evt);
     }
 }
