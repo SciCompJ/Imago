@@ -124,7 +124,15 @@ public abstract class ImageViewer
      *            within the viewer.
      */
 	public abstract void setSelection(Geometry selection);
-
+	
+	/**
+	 * Clears the selection of the current viewer.
+	 */
+    public void clearSelection()
+    {
+        setSelection(null);
+    }
+    
 	
 	// ===================================================================
 	// General methods

@@ -769,12 +769,11 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
      */
     public void onAddPolygonButton()
     {
-        ImageViewer viewer = imageFrame.getImageView();
+        StackSliceViewer viewer = (StackSliceViewer) imageFrame.getImageView();
 
-        StackSliceViewer piv = (StackSliceViewer) viewer;
-        int sliceIndex = piv.getSliceIndex();
+        int sliceIndex = viewer.getSliceIndex();
         
-        Geometry selection = piv.getSelection();
+        Geometry selection = viewer.getSelection();
         if (!(selection instanceof Polygon2D))
         {
             System.out.println("requires selection to be a simple polygon");
@@ -793,7 +792,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         updatePolygonListView();
         
         // clear selection of current viewer
-        piv.setSelection(null);
+        viewer.clearSelection();
         
         // need to call this to update items to display 
         viewer.refreshDisplay(); 

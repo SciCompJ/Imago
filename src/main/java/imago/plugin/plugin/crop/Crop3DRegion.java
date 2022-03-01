@@ -52,10 +52,21 @@ public class Crop3DRegion
     }
     
     /**
+     * Creates a new empty region identified by its name.
+     * 
+     * @param name
+     *            the name of the region
+     */
+    public Crop3DRegion(String name)
+    {
+        this(name, new TreeMap<Integer, LinearRing2D>());
+    }
+    
+    /**
      * Creates a new region, by specifying its name and the series of polygon.
      * 
      * @param name
-     *            the name of the regions
+     *            the name of the region
      * @param polygons
      *            the reference polygons
      */

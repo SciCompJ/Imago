@@ -147,15 +147,22 @@ public class Crop3D extends AlgoStub implements AlgoListener
         this.data = data;
         this.imageHandle = imageHandle;
         
-        // initialize drawing styles for polygons
-        polygonStyle.setLineWidth(3.5);
-        interpStyle.setColor(Color.MAGENTA);
-        interpStyle.setLineWidth(1.0);
-        
+        // various initializations
+        initializeDrawStyles();
         initializeSliceIndexPattern();
         initializeCrop3dNodes();
     }
 
+    /**
+     * Initialize drawing styles for polygons.
+     */
+    private void initializeDrawStyles()
+    {
+        polygonStyle.setLineWidth(3.5);
+        interpStyle.setColor(Color.MAGENTA);
+        interpStyle.setLineWidth(1.0);
+    }
+    
     private void initializeSliceIndexPattern()
     {
         // retrieve number of slices from crop data
@@ -178,8 +185,7 @@ public class Crop3D extends AlgoStub implements AlgoListener
     public void addRegion(String regionName)
     {
         // create the region
-        Crop3DRegion region = new Crop3DRegion();
-        region.name = regionName;
+        Crop3DRegion region = new Crop3DRegion(regionName);
         
         // add to data
         this.data.addRegion(region);
@@ -222,7 +228,6 @@ public class Crop3D extends AlgoStub implements AlgoListener
         
         // setup new data
         populatePolygons(region);
-//        populatePolygons(region.polygons);
     }
     
     public void initializeDefaultRegions()
@@ -342,7 +347,8 @@ public class Crop3D extends AlgoStub implements AlgoListener
         String name = createSliceName("slice", sliceIndex);
         
         // update current region
-        currentRegion.polygons.put(sliceIndex, poly.boundary());
+        LinearRing2D ring = poly.boundary();
+        currentRegion.polygons.put(sliceIndex, ring);
         
         // update scene node in current image handle
         setPolygonSliceNode(getPolygonsNode(), sliceIndex, poly, name);
@@ -504,20 +510,6 @@ public class Crop3D extends AlgoStub implements AlgoListener
         
         // return with correct class cast
         return (LinearRing2D) shapeNode.getGeometry();
-    }
-    
-    public ImageSerialSectionsNode getSmoothPolygonsNode()
-    {
-        GroupNode cropNode = getCrop3dNode();
-        
-        if (cropNode.hasChildWithName("smooth"))
-        {
-            return (ImageSerialSectionsNode) cropNode.getChild("smooth");
-        }
-        
-        ImageSerialSectionsNode polyNode = new ImageSerialSectionsNode("smooth");
-        cropNode.addNode(polyNode);
-        return polyNode;
     }
     
     public ImageSerialSectionsNode getInterpolatedPolygonsNode()

@@ -122,10 +122,10 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 	        throw new RuntimeException("Selection must be an instance of Geometry2D");
 	    }
 	    
-	    
 		this.selection = (Geometry2D) selection;
 		this.imageDisplay.setSelection((Geometry2D) selection);
 	}
+	
 	
 	// ===================================================================
 	// Zoom management

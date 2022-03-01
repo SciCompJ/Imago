@@ -179,7 +179,8 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
         	this.imageDisplay.selection = (Geometry2D) selection;
         }
     }
-	    
+
+    
 	// ===================================================================
 	// Display methods
 
