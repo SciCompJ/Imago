@@ -72,8 +72,9 @@ public class ImageLineProfile implements ImagePlugin
             return;
         }
         
+        // retrieve line selection, in pixels coordinates
         LineSegment2D line = (LineSegment2D) selection;
-        int n = 200;
+        int nPositions = (int) Math.round(line.length());
         Point2D p1 = line.getP1();
         Point2D p2 = line.getP2();
         
@@ -81,18 +82,18 @@ public class ImageLineProfile implements ImagePlugin
         if (array instanceof ScalarArray)
         {
         	ScalarArray2D<?> array2d = ScalarArray2D.wrap((ScalarArray<?>) array);
-            table = intensityProfile(array2d, p1, p2, n);
+            table = intensityProfile(array2d, p1, p2, nPositions);
             plotIntensityProfile(frame, table);
         }
         else if (array instanceof RGB8Array2D)
         {
-            table = colorProfile((RGB8Array2D) array, p1, p2, n);
+            table = colorProfile((RGB8Array2D) array, p1, p2, nPositions);
             plotRGB8LineProfile(frame, table);
         }
         else if (array instanceof VectorArray2D)
         {
             ScalarArray2D<?> normImage = ((VectorArray2D<?>) array).norm();
-            table = intensityProfile(normImage, p1, p2, n);
+            table = intensityProfile(normImage, p1, p2, nPositions);
             plotIntensityProfile(frame, table);
         }
         else
@@ -170,7 +171,7 @@ public class ImageLineProfile implements ImagePlugin
                 .width(600)
                 .height(500)
                 .title(titleString)
-                .xAxisTitle("Position")
+                .xAxisTitle("Position [pixels]")
                 .yAxisTitle("Intensity")
                 .build();
         
@@ -225,7 +226,6 @@ public class ImageLineProfile implements ImagePlugin
         {
             series[c] = chart.addSeries(colNames[c], xData, table.getColumnValues(c));
             series[c].setMarker(SeriesMarkers.NONE);
-            
         }
         
         // changes default colors
