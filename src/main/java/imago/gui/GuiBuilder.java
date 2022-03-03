@@ -127,6 +127,7 @@ import imago.plugin.image.process.Image3DOrthoslicesImage;
 import imago.plugin.image.process.Image3DSetOrthoSlicesDisplay;
 import imago.plugin.image.process.ImageApplyMathFunction;
 import imago.plugin.image.process.ImageArrayBinaryMathOperator;
+import imago.plugin.image.process.ImageArrayLogicalBinaryOperator;
 import imago.plugin.image.process.ImageBivariateHistogram;
 import imago.plugin.image.process.ImageBoxFilter;
 import imago.plugin.image.process.ImageBoxMedianFilter;
@@ -546,8 +547,9 @@ public class GuiBuilder
         addArrayOperatorPlugin(mathsMenu, new Sqrt(), "Sqrt", hasScalarImage);
         addArrayOperatorPlugin(mathsMenu, new PowerOfTwo(), "Power Of Two", hasScalarImage);
         mathsMenu.addSeparator();
-        addPlugin(mathsMenu, new ImageValueOperator(), "Image value operator...");
-        addPlugin(mathsMenu, new ImageArrayBinaryMathOperator(), "Image pair operator...");
+        addPlugin(mathsMenu, new ImageValueOperator(), "Math operator (image+value)...");
+        addPlugin(mathsMenu, new ImageArrayBinaryMathOperator(), "Math operator (Image pair)...");
+        addPlugin(mathsMenu, new ImageArrayLogicalBinaryOperator(), "Logical operator (Image pair)...");
 		menu.add(mathsMenu);
 		menu.addSeparator();
 
