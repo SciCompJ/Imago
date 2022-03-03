@@ -8,7 +8,7 @@ import java.util.function.BiFunction;
 import imago.gui.*;
 import imago.gui.frames.ImageFrame;
 import net.sci.array.Arrays;
-import net.sci.array.process.Math;
+import net.sci.array.process.math.MathBinaryOperator;
 import net.sci.array.scalar.Float32Array;
 import net.sci.array.scalar.Float64Array;
 import net.sci.array.scalar.ScalarArray;
@@ -56,7 +56,7 @@ public class ImageArrayBinaryMathOperator implements FramePlugin
 		}
 		int index2 = (int) java.lang.Math.min(index1 + 1, imageNames.length-1);
 
-		GenericDialog gd = new GenericDialog(frame, "Binary Math Operator");
+		GenericDialog gd = new GenericDialog(frame, "Math Binary Operator");
 		gd.addChoice("Image 1", imageNames, imageNames[index1]);
         gd.addChoice("Operation", functionNames, functionNames[0]);
         gd.addChoice("Image 2", imageNames, imageNames[index2]);
@@ -136,20 +136,34 @@ public class ImageArrayBinaryMathOperator implements FramePlugin
             fun = (x, y) -> x / y;
             break;
         case "Min":
-            fun = (x, y) -> java.lang.Math.min(x, y);
+            fun = java.lang.Math::min;
             break;
         case "Max":
-            fun = (x, y) -> java.lang.Math.max(x, y);
+            fun = java.lang.Math::max;
             break;
         default: throw new RuntimeException("Unknown function name: " + functionName); 
 		}
 
-        // apply operator on current images
-		Math.apply(array1, array2, result, fun);
+		// create operator
+		MathBinaryOperator op = new MathBinaryOperator(fun);
+        op.addAlgoListener(frame);
+        
+        // run operator
+		long t0 = System.nanoTime();
+        op.process(array1, array2, result);
+        long t1 = System.nanoTime();
+        
+        // display elapsed time
+		if (frame instanceof ImageFrame)
+        {
+		    double dt = (t1 - t0) / 1_000_000.0;
+           ((ImageFrame) frame).showElapsedTime(functionName, dt, image1);
+        }
 		
+		// create and display result image
 		Image resultImage = new Image(result, image1);
-		resultImage.setName(image1.getName() + "-" + functionName);
-		
+		resultImage.setName(String.format("%s(%s, %s)", functionName, image1.getName(), image2.getName()));
+        
 		// add the image document to GUI
 		frame.getGui().createImageFrame(resultImage);
 	}
