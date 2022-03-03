@@ -201,8 +201,23 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
      * and return the result image, by managing the algorithm events and
      * displaying elapsed time at the end.
      * 
+     * Performs the following operations:
+     * <ol>
+     * <li>Add the frame as algorithm listener to the operator, in order to
+     * monitor the process</li>
+     * <li>Run the operator on the input image, generating a new image</li>
+     * <li>Reset progress monitoring</li>
+     * <li>Display elapsed time in status bar</li>
+     * </ol>
+     * 
+     * @see net.sci.algo.AlgoListener
+     * @see #showElapsedTime(String, double, Image)
+     * 
      * @param op
-     *            the array operator to run
+     *            the array operator to run. Can be an instance of
+     *            ImageArrayOperator; in that case, the operator will run the
+     *            "process(Image)" method instead of the "process(Array)"
+     *            method.
      * @param image
      *            the image containing the data array to process
      * @return a new Image instance encapsulating the result of array processing
@@ -231,28 +246,31 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
     }
     
     /**
-     * Display elapsed time, converted into seconds, and computes number of
+     * Display elapsed time, converted into seconds, and computes the number of
      * processed elements per second. Also returns the created message.
      * 
      * <p>
      * Example of use:
-     * <pre><code>
+     * 
+     * <pre>
+     * {@code
      * // initialize processing 
-     * ImageStack image = IJ.getImage().getStack();
+     * UInt8Array3D array = ...;
      * Strel3D strel = CubeStrel.fromDiameter(5);
      * 
      * // initialize timing 
      * long t0 = System.currentTimeMillis();
      * 
      * // start processing 
-     * ImageStack res = Morphology.dilation(image, strel);
-     * ImagePlus resPlus = new ImagePlus("Dilation Result", res);
-     * resPlus.show();
+     * Array<?> res = MorphologicalFilters.dilation(image, strel);
+     * Image resImage = new Image(res);
+     * resImage.show();
      * 
      * // Display elapsed time
      * long t1 = System.currentTimeMillis();
-     * IJUtils.showElapsedTime("dilation", t1 - t0, resPlus);
-     * </code></pre>
+     * currentFrame.showElapsedTime("dilation", t1 - t0, resPlus);
+     * }
+     * </pre>
      *
      * @param opName
      *            the name of the operation (algorithm, plugin...)
@@ -265,20 +283,22 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
     public String showElapsedTime(String opName, double timeInMillis, Image refImage) 
     {
         // compute number of elements within image (using double to avoid int overflow)
-        double nItems = elementCount(image);
+        double nItems = elementCount(refImage);
         
-        // adapt output
-        String elementName = image.getDimension() == 3 ? "voxels" : "pixels";
+        // adapt output display to image dimensionality
+        String elementName = refImage.getDimension() == 3 ? "voxels" : "pixels";
         
+        // compute number of processed elements per unit time
         double timeInSecs = timeInMillis / 1000.0;
         int elementsPerSecond = (int) (nItems / timeInSecs);
-                
+        
+        // format display
         String pattern = "%s: %.3f seconds, %d %s/second";
         String status = String.format(Locale.ENGLISH, pattern, opName, timeInSecs, elementsPerSecond, elementName);
         
+        // display message
         System.out.println(status);
         this.statusBar.setCurrentStepLabel(status);
-        
         return status;
     }
     
