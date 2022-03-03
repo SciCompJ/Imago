@@ -61,7 +61,7 @@ public class BinaryImageMorphologicalFilter implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args) 
 	{
-        System.out.println("binary morphological filter (2d)");
+        System.out.println("binary morphological filter");
 
         // get current image data
         ImageFrame imageFrame = (ImageFrame) frame;
@@ -71,7 +71,7 @@ public class BinaryImageMorphologicalFilter implements FramePlugin
         int nd = array.dimensionality();
         if (nd != 2 && nd != 3)
         {
-            System.err.println("Requires image of dimensionality equal to 2");
+            System.err.println("Requires image of dimensionality equal to 2 or 3");
             return;
         }
         
