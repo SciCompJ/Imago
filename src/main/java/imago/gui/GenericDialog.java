@@ -480,8 +480,10 @@ public class GenericDialog
         combo.addKeyListener(this.controller);
         //      thisChoice.addItemListener(this);
         for (T item : items)
+        {
             combo.addItem(item.toString());
-        combo.setSelectedItem(defaultItem);
+        }
+        combo.setSelectedItem(defaultItem.toString());
         
         c.gridx = 1;
         c.gridy = currentRow;
@@ -958,18 +960,25 @@ public class GenericDialog
 //	      IJ.setKeyDown(keyCode);
 	        
 //	      if (keyCode == KeyEvent.VK_ENTER && textArea1 == null) {
-	        if (keyCode == KeyEvent.VK_ENTER) {
+	        if (keyCode == KeyEvent.VK_ENTER) 
+	        {
+	            // validate entry when typing ENTER
 	            output = Output.OK;
 //	          if (IJ.isMacOSX() && IJ.isJava15())
 //	              accessTextFields();
 	            this.dialog.dispose();
-	        } else if (keyCode == KeyEvent.VK_ESCAPE) {
+	        }
+	        else if (keyCode == KeyEvent.VK_ESCAPE) 
+	        {
+                // Cancel dialog when typing escape
 	            output = Output.CANCEL;
 	            this.dialog.dispose();
 //	          IJ.resetEscape();
-	        } else if (keyCode == KeyEvent.VK_W
-	                && (evt.getModifiersEx() & Toolkit.getDefaultToolkit()
-	                        .getMenuShortcutKeyMask()) != 0) {
+	        }
+            else if (keyCode == KeyEvent.VK_W && (evt.getModifiersEx() &
+                    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0)
+	        {
+                // CTRL + "W"
 	            output = Output.CANCEL;
 	            this.dialog.dispose();
 	        }
