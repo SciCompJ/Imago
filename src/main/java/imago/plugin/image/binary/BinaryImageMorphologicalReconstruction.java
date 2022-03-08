@@ -10,6 +10,7 @@ import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
+import imago.gui.frames.ImageFrame;
 import net.sci.array.Array;
 import net.sci.array.Arrays;
 import net.sci.array.binary.BinaryArray;
@@ -29,6 +30,11 @@ import net.sci.image.morphology.reconstruct.RunLengthBinaryReconstruction3D;
  */
 public class BinaryImageMorphologicalReconstruction implements FramePlugin
 {
+    
+    private final static String[] connNameArray = new String[] {"Min", "Full"};
+    private final static int[] conn3dArray = new int[] {6, 26};
+    private final static int[] conn2dArray = new int[] {4, 8};
+    
 	public BinaryImageMorphologicalReconstruction()
 	{
 	}
@@ -61,6 +67,7 @@ public class BinaryImageMorphologicalReconstruction implements FramePlugin
 		GenericDialog gd = new GenericDialog(frame, "Morpho. Rec.");
 		gd.addChoice("Marker: ", imageNameArray, firstImageName);
 		gd.addChoice("Mask: ", imageNameArray, firstImageName);
+		gd.addChoice("Connectivity: ", connNameArray, connNameArray[0]);
 		gd.showDialog();
 		
 		if (gd.wasCanceled()) 
@@ -71,6 +78,7 @@ public class BinaryImageMorphologicalReconstruction implements FramePlugin
 		// parse dialog results
 		Image markerImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
 		Image maskImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
+		int connIndex = gd.getNextChoiceIndex();
 
 		// extract arrays and check dimensions
 		Array<?> marker = markerImage.getData();
@@ -89,19 +97,28 @@ public class BinaryImageMorphologicalReconstruction implements FramePlugin
         }
         BinaryArray result;
         
+        long t0 = System.nanoTime();
         if (marker.dimensionality() == 2 && mask.dimensionality() == 2)
         {
-            RunLengthBinaryReconstruction2D algo = new RunLengthBinaryReconstruction2D();
+            int conn = conn2dArray[connIndex];
+            RunLengthBinaryReconstruction2D algo = new RunLengthBinaryReconstruction2D(conn);
             result = algo.processBinary2d(BinaryArray2D.wrap((BinaryArray) marker), BinaryArray2D.wrap((BinaryArray) mask));
         }
         else if (marker.dimensionality() == 3 && mask.dimensionality() == 3)
         {
-            RunLengthBinaryReconstruction3D algo = new RunLengthBinaryReconstruction3D();
+            int conn = conn3dArray[connIndex];
+            RunLengthBinaryReconstruction3D algo = new RunLengthBinaryReconstruction3D(conn);
             result = algo.processBinary3d(BinaryArray3D.wrap((BinaryArray) marker), BinaryArray3D.wrap((BinaryArray) mask));
         }
         else
         {
-            throw new RuntimeException("Can process onlt dimensions 2 or 3.");
+            throw new RuntimeException("Can process only dimensions 2 or 3.");
+        }
+        long t1 = System.nanoTime();
+        double dt = (t1 - t0) / 1_000_000.0;
+        if (frame instanceof ImageFrame)
+        {
+            ((ImageFrame) frame).showElapsedTime("Binary Morpho Rec.", dt, maskImage);
         }
         
         // encapsulate into image
