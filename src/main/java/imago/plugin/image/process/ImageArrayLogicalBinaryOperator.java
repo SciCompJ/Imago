@@ -9,7 +9,7 @@ import imago.gui.*;
 import imago.gui.frames.ImageFrame;
 import net.sci.array.Arrays;
 import net.sci.array.binary.BinaryArray;
-import net.sci.array.process.math.LogicalBinaryOperator;
+import net.sci.array.process.binary.LogicalBinaryOperator;
 import net.sci.image.Image;
 
 /**
