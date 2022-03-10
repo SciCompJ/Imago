@@ -43,22 +43,11 @@ public class ImageArrayOperatorPlugin implements FramePlugin
         ImageFrame imageFrame = (ImageFrame) frame;
         Image image = imageFrame.getImage();
         
-        // initialize listener and timer
-        operator.addAlgoListener(frame);
-        long t0 = System.nanoTime();
+        // run the operator on current image, using the dedicated method in ImageFrame instance
         Image result = imageFrame.runOperator(operator, image);
-        long t1 = System.nanoTime();
         
-        // cleanup listener and status bar
-        operator.removeAlgoListener(frame);
-        imageFrame.getStatusBar().setProgressBarPercent(0);
-        
-        // display elapsed time
-        String opName = operator.getClass().getSimpleName();
-        imageFrame.showElapsedTime(opName, (t1 - t0) / 1_000_000.0, image);
-        
-        // add the image document to GUI
-        frame.getGui().createImageFrame(result, frame);
+        // display result image in a new frame
+        imageFrame.createImageFrame(result);
     }
 
     /**
