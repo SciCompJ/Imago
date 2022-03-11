@@ -63,6 +63,7 @@ import imago.plugin.image.binary.BinaryImageMorphologicalFilter;
 import imago.plugin.image.binary.BinaryImageMorphologicalReconstruction;
 import imago.plugin.image.binary.BinaryImageOverlay;
 import imago.plugin.image.binary.BinaryImageSkeleton;
+import imago.plugin.image.binary.ApplyBinaryMask;
 import imago.plugin.image.convert.ConvertChannelsToDimension;
 import imago.plugin.image.convert.ConvertDimensionToChannels;
 import imago.plugin.image.convert.ConvertImage3DToVectorImage;
@@ -617,6 +618,7 @@ public class GuiBuilder
 		addPlugin(binaryMenu, new ImageGeodesicDistanceMap(), "Geodesic Distance Map...");
         addPlugin(binaryMenu, new BinaryImageSkeleton(), "IJ Skeleton");
         addPlugin(binaryMenu, new BinaryImageOverlay(), "Binary Overlay...");
+        addPlugin(binaryMenu, new ApplyBinaryMask(), "Apply Binary Mask...");
         binaryMenu.addSeparator();
         addPlugin(binaryMenu, new BinaryImageBoundaryGraph(),
                 "Boundary Graph", hasImage2D && hasBinaryImage);
