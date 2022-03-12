@@ -3,13 +3,11 @@
  */
 package imago.plugin.image.process;
 
-import imago.app.ImageHandle;
+import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.frames.ImageFrame;
 import imago.gui.viewer.StackSliceViewer;
-import imago.gui.FramePlugin;
-import net.sci.array.binary.BinaryArray;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.ScalarArray3D;
 import net.sci.image.Image;
@@ -38,8 +36,8 @@ public class ImageManualThreshold implements FramePlugin
 		System.out.println("Manual Threshold");
 		
 		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-		Image image = doc.getImage();
+		ImageFrame imageFrame = (ImageFrame) frame;
+		Image image = imageFrame.getImageHandle().getImage();
 
 		// requires scalar array
 		if (!(image.getData() instanceof ScalarArray))
@@ -58,14 +56,10 @@ public class ImageManualThreshold implements FramePlugin
 	        int sliceIndex = viewer3d.getSliceIndex();
 	        slice = ScalarArray3D.wrapScalar3d(slice).slice(sliceIndex);
 		}
-//        System.out.println("Compute initial guess for threshold value...");
-//        long t0 = System.nanoTime();
+		
+		// compute initial threshold value from values in current slice
         double[] range = slice.finiteValueRange();
-//        long t1 = System.nanoTime();
-//        System.out.println("  computation of range: " + (t1 - t0) / 1_000_000.0 + " ms");
         double initValue = new OtsuThreshold().computeThresholdValue(slice, range, 256);
-//        long t2 = System.nanoTime();
-//        System.out.println("  computation of threshold: " + (t2 - t1) / 1_000_000.0 + " ms");
         
 		// Creates generic dialog
         GenericDialog gd = new GenericDialog(frame, "Choose Threshold");
@@ -84,19 +78,12 @@ public class ImageManualThreshold implements FramePlugin
         boolean upperThreshold = gd.getNextBoolean();
         
         // compute threshold
+//        ScalarToBinary algo = new ScalarToBinary(upperThreshold ? x -> x >= thresholdValue : x -> x <= thresholdValue);
         ValueThreshold algo = new ValueThreshold(thresholdValue, upperThreshold);
-        algo.addAlgoListener((ImageFrame) frame);
+        Image resultImage = imageFrame.runOperator(algo, image);
+        resultImage.setName(image.getName() + "-bin");
         
-        long t0 = System.nanoTime();
-        BinaryArray result = algo.processScalar(array);
-        long t1 = System.nanoTime();
-        
-        // display elapsed time
-        ((ImageFrame) frame).showElapsedTime("Value Threshold", (t1 - t0) / 1_000_000.0, image);
-
-		Image resultImage = new Image(result, image);
-				
 		// add the image document to GUI
-		frame.getGui().createImageFrame(resultImage); 
+		imageFrame.createImageFrame(resultImage); 
 	}
 }
