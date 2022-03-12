@@ -4,11 +4,14 @@
 package imago.plugin.image.convert;
 
 import imago.app.ImageHandle;
+import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.frames.ImageFrame;
-import imago.gui.FramePlugin;
 import net.sci.array.Array;
+import net.sci.array.binary.Binary;
+import net.sci.array.binary.BinaryArray;
+import net.sci.array.process.type.BinaryToUInt8;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.UInt8Array;
 import net.sci.image.Image;
@@ -53,13 +56,25 @@ public class ConvertScalarImageToUInt8 implements FramePlugin
 			return;
 		}
 		
-		// extract range, and convert to UInt8
-		double[] range = image.getDisplaySettings().getDisplayRange();
-		UInt8Array result = processScalar((ScalarArray<?>) array, range);
+		Image resultImage;
+		if (array.dataType() == Binary.class)
+		{
+//		    BinaryToUInt8 algo = new BinaryToUInt8();
+		    UInt8Array res = new BinaryToUInt8.View(BinaryArray.wrap(array));
+		    resultImage = new Image(res, image);
+//		    resultImage = ((ImageFrame) frame).runOperator(algo, image);
+		}
+		else
+		{
+		    // extract range, and convert to UInt8
+		    double[] range = image.getDisplaySettings().getDisplayRange();
+		    UInt8Array result = processScalar((ScalarArray<?>) array, range);
+
+		    // create image
+		    resultImage = new Image(result, image);
+		}
+		resultImage.setName(image.getName() + "-uint8");
 		
-		// create image
-		Image resultImage = new Image(result, image);
-				
 		// add the image document to GUI
 		frame.getGui().createImageFrame(resultImage); 
 	}
