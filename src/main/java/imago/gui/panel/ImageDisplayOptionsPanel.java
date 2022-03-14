@@ -18,6 +18,9 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeListener;
 
+import net.sci.array.Array;
+import net.sci.array.color.RGB16;
+import net.sci.array.color.RGB8;
 import net.sci.array.vector.VectorArray;
 import net.sci.image.Calibration;
 import net.sci.image.Image;
@@ -103,8 +106,11 @@ public class ImageDisplayOptionsPanel extends JPanel
 
     private JPanel createChannelPanel()
     {
-        VectorArray<?> array = (VectorArray<?>) this.image.getData();
-        int nChannels = array.channelCount();
+//        VectorArray<?> array = VectorArray.wrap(this.);
+//        VectorArray<?> array = (VectorArray<?>) this.image.getData();
+        
+        int nChannels = countChannels(image.getData());
+        
         int channelIndex = imageViewer.getCurrentChannelIndex();
         if (channelIndex >= nChannels)
         {
@@ -132,6 +138,16 @@ public class ImageDisplayOptionsPanel extends JPanel
         });
         
         return this.channelPanel;
+    }
+    
+    private int countChannels(Array<?> array)
+    {
+        if (array instanceof VectorArray) return ((VectorArray<?>) array).channelCount();
+        Class<?> elementClass = array.dataType();
+        if (elementClass.equals(RGB8.class)) return 3;
+        if (elementClass.equals(RGB16.class)) return 3;
+                
+        throw new RuntimeException("Unable to count channels...");
     }
     
     private JPanel createAxisPanel(int d)
