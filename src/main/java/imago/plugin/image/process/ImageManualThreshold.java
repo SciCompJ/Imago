@@ -7,7 +7,6 @@ import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.frames.ImageFrame;
-import imago.gui.viewer.StackSliceViewer;
 import net.sci.array.process.type.ScalarToBinary;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.ScalarArray3D;
@@ -50,10 +49,7 @@ public class ImageManualThreshold implements FramePlugin
 		ScalarArray<?> slice = array;
 		if (slice.dimensionality() > 2)
 		{
-	        // get slice index
-	        StackSliceViewer viewer3d = (StackSliceViewer) ((ImageFrame) frame).getImageView();
-	        // TODO: have some "Image3DViewer" interface
-	        int sliceIndex = viewer3d.getSliceIndex();
+	        int sliceIndex = imageFrame.getImageView().getSlicingPosition(2);
 	        slice = ScalarArray3D.wrapScalar3d(slice).slice(sliceIndex);
 		}
 		

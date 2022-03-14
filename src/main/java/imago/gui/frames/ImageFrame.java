@@ -136,7 +136,7 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         else if (image.getDimension() == 3) 
         {
             StackSliceViewer sliceViewer = new StackSliceViewer(imageHandle);
-            sliceViewer.setSliceIndex(this.imageHandle.getCurrentSliceIndex());
+            sliceViewer.setSlicingPosition(2, this.imageHandle.getCurrentSliceIndex());
             
             ImagoTool cursorDisplay = new DisplayCurrentValueTool(this, "showValue");
             sliceViewer.getImageDisplay().addMouseListener(cursorDisplay);
@@ -147,7 +147,7 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         else 
         {
             Image5DXYSliceViewer sliceViewer = new Image5DXYSliceViewer(imageHandle);
-            sliceViewer.setSliceIndex(this.imageHandle.getCurrentSliceIndex());
+            sliceViewer.setSlicingPosition(2, this.imageHandle.getCurrentSliceIndex());
             
             ImagoTool cursorDisplay = new DisplayCurrentValueTool(this, "showValue");
             sliceViewer.getImageDisplay().addMouseListener(cursorDisplay);

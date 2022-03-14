@@ -490,7 +490,7 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         ImageViewer viewer = imageFrame.getImageView();
 
         StackSliceViewer piv = (StackSliceViewer) viewer;
-        int sliceIndex = piv.getSliceIndex();
+        int sliceIndex = piv.getSlicingPosition(2);
         
         Geometry selection = piv.getSelection();
         if (!(selection instanceof Polyline2D))
@@ -718,7 +718,7 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
              
             // need to call this to update items to display
             StackSliceViewer viewer = (StackSliceViewer) imageFrame.getImageView();
-            viewer.setSliceIndex(sliceIndex);
+            viewer.setSlicingPosition(2, sliceIndex);
             
             viewer.refreshDisplay(); 
             viewer.repaint();

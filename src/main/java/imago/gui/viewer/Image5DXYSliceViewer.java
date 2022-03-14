@@ -94,16 +94,6 @@ public class Image5DXYSliceViewer extends ImageViewer implements ChangeListener,
 	// ===================================================================
 	// General methods
 
-	public int getSliceIndex() 
-	{
-		return this.slicingPosition[2];
-	}
-
-	public void setSliceIndex(int index)
-	{
-	    this.slicingPosition[2] = index;
-	}
-
 	public ImageDisplay getImageDisplay() 
 	{
 		return imageDisplay;

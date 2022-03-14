@@ -771,7 +771,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     {
         StackSliceViewer viewer = (StackSliceViewer) imageFrame.getImageView();
 
-        int sliceIndex = viewer.getSliceIndex();
+        int sliceIndex = viewer.getSlicingPosition(2);
         
         Geometry selection = viewer.getSelection();
         if (!(selection instanceof Polygon2D))
@@ -1017,11 +1017,10 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
             
             String name = cropItemList.getSelectedValue();
             int sliceIndex = Integer.parseInt(name.substring(6).trim());
-            
              
             // need to call this to update items to display
             StackSliceViewer viewer = (StackSliceViewer) imageFrame.getImageView();
-            viewer.setSliceIndex(sliceIndex);
+            viewer.setSlicingPosition(2, sliceIndex);
             
             viewer.refreshDisplay(); 
             viewer.repaint();

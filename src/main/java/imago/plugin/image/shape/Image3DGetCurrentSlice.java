@@ -47,11 +47,10 @@ public class Image3DGetCurrentSlice implements FramePlugin
 		    return;
 		}
 		
-        // get slice index
-		// TODO: have some "Image3DViewer" interface
-		StackSliceViewer viewer3d = (StackSliceViewer) viewer;
-		int sliceIndex = viewer3d.getSliceIndex();
+        // retrieve slice index
+		int sliceIndex = viewer.getSlicingPosition(2);
 		
+		// compute slice
 		Image result = ImageSlicer.slice2d(image, sliceIndex);
 		
 		// new name contains slice index, with number of digits depending on slice number

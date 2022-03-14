@@ -3,14 +3,12 @@
  */
 package imago.gui.tool;
 
-import imago.gui.ImagoTool;
-import imago.gui.frames.ImageFrame;
-import imago.gui.viewer.ImageDisplay;
-import imago.gui.viewer.StackSliceViewer;
-
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 
+import imago.gui.ImagoTool;
+import imago.gui.frames.ImageFrame;
+import imago.gui.viewer.ImageDisplay;
 import net.sci.array.Array;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.ScalarArray2D;
@@ -96,8 +94,7 @@ public class DrawValueTool extends ImagoTool
         else if (array.dimensionality() == 3)
         {
             ScalarArray3D<?> array3d = ScalarArray3D.wrap((ScalarArray<?>) array);
-            // TODO: check class or use abstraction
-            int zi = ((StackSliceViewer) this.viewer.getImageView()).getSliceIndex();
+            int zi = this.viewer.getImageView().getSlicingPosition(2);
             array3d.setValue(xi, yi, zi, value);
         }
         

@@ -40,7 +40,6 @@ import net.sci.image.process.shape.ImageSlicer;
  * @author David Legland
  *
  */
-//TODO: should implement an interface "Image3DViewer" 
 public class StackSliceViewer extends ImageViewer implements ChangeListener, ActionListener, ComponentListener 
 {	
 	// ===================================================================
@@ -134,28 +133,39 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 	// ===================================================================
 	// General methods
 
-	public int getSliceIndex() 
-	{
-        return this.slicingPosition[2];
-	}
+//	public int getSliceIndex() 
+//	{
+//        return this.slicingPosition[2];
+//	}
 
-	public void setSliceIndex(int index)
-	{
-        this.slicingPosition[2] = index;
-		
-		// update widgets
-		String txt = Integer.toString(index);
-		this.sliceSlider.setValue(index);
-		this.sliceEdit.setText(txt);
-		
-//		// also update document containing the image
-//		ImageFrame viewer = this.getViewer();
-//		if (viewer != null)
-//		{
-//			ImageHandle handle = viewer.getDocument();
-//			handle.setCurrentSliceIndex(index);
-//		}
-	}
+//	// TODO: replace by setSlicingPosition(int)
+//	public void setSliceIndex(int index)
+//	{
+//        this.slicingPosition[2] = index;
+//		
+//		// update widgets
+//		String txt = Integer.toString(index);
+//		this.sliceSlider.setValue(index);
+//		this.sliceEdit.setText(txt);
+//		
+////		// also update document containing the image
+////		ImageFrame viewer = this.getViewer();
+////		if (viewer != null)
+////		{
+////			ImageHandle handle = viewer.getDocument();
+////			handle.setCurrentSliceIndex(index);
+////		}
+//	}
+	
+    public void setSlicingPosition(int index, int pos)
+    {
+        this.slicingPosition[index] = pos;
+        
+        // update widgets
+        String txt = Integer.toString(pos);
+        this.sliceSlider.setValue(pos);
+        this.sliceEdit.setText(txt);
+    }
 
 	public ImageDisplay getImageDisplay() 
 	{
@@ -295,7 +305,7 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 		{
 			// check slice index to display only items of current slice 
 			int index = ((ImageSliceNode) node).getSliceIndex();
-			if (index != this.getSliceIndex())
+			if (index != this.getSlicingPosition(2))
 			{
 				return;
 			}
@@ -334,7 +344,7 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 	public void stateChanged(ChangeEvent evt)
 	{
 		int index = sliceSlider.getValue();
-		this.setSliceIndex(index);
+		this.setSlicingPosition(2, index);
 		updateSliceImage();
 		this.panel.repaint();
 		refreshSceneGraph();//TODO: split refresh graph and draw graph
@@ -349,11 +359,10 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 	    int index = Integer.parseInt(text);
 	    if (index < 0 || index >= this.image.getSize(2)) 
 	    {
-			this.setSliceIndex(index);
-	    	return;
+			return;
 	    }
 	    
-		this.setSliceIndex(index);
+		this.setSlicingPosition(2, index);
 		updateSliceImage();
 		this.panel.repaint();
 	}

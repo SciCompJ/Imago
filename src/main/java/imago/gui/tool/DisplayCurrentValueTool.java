@@ -3,21 +3,20 @@
  */
 package imago.gui.tool;
 
+import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.util.Locale;
+
 import imago.gui.ImageViewer;
 import imago.gui.ImagoTool;
 import imago.gui.frames.ImageFrame;
 import imago.gui.panel.StatusBar;
 import imago.gui.viewer.ImageDisplay;
-import imago.gui.viewer.StackSliceViewer;
-
-import java.awt.Point;
-import java.awt.event.MouseEvent;
-import java.util.Locale;
-
 import net.sci.array.Array;
 import net.sci.array.color.RGB16Array;
 import net.sci.array.color.RGB8Array;
 import net.sci.array.scalar.IntArray;
+import net.sci.array.scalar.Scalar;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.vector.VectorArray;
 import net.sci.geom.geom2d.Point2D;
@@ -109,15 +108,15 @@ public class DisplayCurrentValueTool extends ImagoTool
 		}
 		else if (nd == 3)
 		{
-		    if (imageView instanceof StackSliceViewer)
-		    {
-    			indz = ((StackSliceViewer) imageView).getSliceIndex();
+//		    if (imageView instanceof StackSliceViewer)
+//		    {
+    			indz = imageView.getSlicingPosition(2);
                 pos[2] = indz;
 
 //    			String format = "pos=(%g, %g, %d)";
     			String format = String.format("pos=(%s, %s, %s)", floatFormat, floatFormat, "%d");
     			posString = String.format(Locale.ENGLISH, format, x, y, indz);
-		    }
+//		    }
 		}
 
 		// Create string for representing image value
@@ -141,7 +140,7 @@ public class DisplayCurrentValueTool extends ImagoTool
      */
 	private static final String createValueString(Array<?> array, int[] pos)
 	{
-        if (array instanceof ScalarArray)
+        if (Scalar.class.isAssignableFrom(array.dataType()))
         {
             if (array instanceof IntArray)
             {

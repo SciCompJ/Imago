@@ -71,12 +71,14 @@ public abstract class ImageViewer
 	
 	
     /**
-     * For 3D+ images, the position of a point visible in the image, used to compute slice images.
+     * For 3D+ images, the position of a point visible in the image, used to
+     * compute slice images.
      * 
      * The first two indices correspond to the X and Y indices. The other ones
-     * correspond to indices of the slice in the other dimensions.
+     * correspond to indices of the slice in the other dimensions (usually Z,
+     * channel, and frame).
      */
-	protected int[] slicingPosition;
+    protected int[] slicingPosition;
 	
 	/**
 	 * The strategy for displaying a vector image. 
@@ -254,7 +256,13 @@ public abstract class ImageViewer
 		this.displaySceneGraph = displaySceneGraph;
 	}
 
-
+	/**
+     * Changes the current reference point for displaying a multi-dimensional
+     * image.
+     * 
+     * @param pos
+     *            the new reference position for the viewer.
+     */
 	public void setSlicingPosition(int[] pos)
 	{
 	    this.slicingPosition = pos;
@@ -265,6 +273,18 @@ public abstract class ImageViewer
         this.slicingPosition[dim] = pos;
     }
 
+    /**
+     * Returns the reference position for the given dimension. For example, to
+     * retrieve the z-slice index:
+     * 
+     * <pre>
+     * @{code int index = viewer.getSlicingPosition(2);}
+     * </pre>
+     * 
+     * @param dim
+     *            the dimension to consider
+     * @return the reference position along the given dimension.
+     */
 	public int getSlicingPosition(int dim)
 	{
 	    return this.slicingPosition[dim];
