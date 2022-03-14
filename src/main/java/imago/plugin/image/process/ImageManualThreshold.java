@@ -8,11 +8,11 @@ import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.frames.ImageFrame;
 import imago.gui.viewer.StackSliceViewer;
+import net.sci.array.process.type.ScalarToBinary;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.ScalarArray3D;
 import net.sci.image.Image;
 import net.sci.image.process.segment.OtsuThreshold;
-import net.sci.image.process.segment.ValueThreshold;
 
 
 /**
@@ -66,6 +66,7 @@ public class ImageManualThreshold implements FramePlugin
         // TODO: add widget for histogram representation
         gd.addSlider("Threshold Value: ", range[0], range[1], initValue);
         gd.addCheckBox("Upper values threshold", true);
+        gd.addCheckBox("Create view", true);
         gd.showDialog();
         
         if (gd.getOutput() == GenericDialog.Output.CANCEL) 
@@ -76,11 +77,20 @@ public class ImageManualThreshold implements FramePlugin
         // parse dialog results
         double thresholdValue = gd.getNextNumber();
         boolean upperThreshold = gd.getNextBoolean();
+        boolean createView = gd.getNextBoolean();
         
-        // compute threshold
-//        ScalarToBinary algo = new ScalarToBinary(upperThreshold ? x -> x >= thresholdValue : x -> x <= thresholdValue);
-        ValueThreshold algo = new ValueThreshold(thresholdValue, upperThreshold);
-        Image resultImage = imageFrame.runOperator(algo, image);
+        // create operator for threshold computation
+        ScalarToBinary algo = new ScalarToBinary(upperThreshold ? x -> x >= thresholdValue : x -> x <= thresholdValue);
+        
+        Image resultImage;
+        if (createView)
+        {
+            resultImage = new Image(algo.createView(array), image);
+        }
+        else
+        {
+            resultImage = imageFrame.runOperator(algo, image);
+        }
         resultImage.setName(image.getName() + "-bin");
         
 		// add the image document to GUI

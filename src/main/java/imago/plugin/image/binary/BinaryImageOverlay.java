@@ -6,12 +6,14 @@ package imago.plugin.image.binary;
 import java.util.Collection;
 
 import imago.app.ImagoApp;
+import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
-import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.Arrays;
+import net.sci.array.binary.Binary;
 import net.sci.array.binary.BinaryArray;
+import net.sci.array.color.BinaryOverlayRGB8Array;
 import net.sci.array.color.CommonColors;
 import net.sci.array.color.RGB8;
 import net.sci.array.color.RGB8Array;
@@ -63,37 +65,30 @@ public class BinaryImageOverlay implements FramePlugin
 		Image baseImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
         Image maskImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
         RGB8 color = new RGB8(CommonColors.fromLabel(gd.getNextChoice()).getColor());
-
+        
+        // retrieve image data
 		Array<?> baseArray = baseImage.getData();
 		Array<?> overlay = maskImage.getData();
+		
+		// check validity of input images
 		if (!Arrays.isSameDimensionality(baseArray, overlay))
 		{
 			frame.showErrorDialog("Both arrays must have same dimensionality", "Dimensionality Error");
 			return;
 		}
-		
 		if (!Arrays.isSameSize(baseArray, overlay))
 		{
 			frame.showErrorDialog("Both arrays must have same size", "Image Size Error");
 			return;
 		}
-		
-		if ( !(overlay instanceof BinaryArray) )
+        if (overlay.dataType() != Binary.class)
 		{
-			frame.showErrorDialog("overlay array should be binary", "Image Type Error");
+			frame.showErrorDialog("overlay array must be binary", "Image Type Error");
 			return;
 		}
 		
-		
-		// Create the RGB8 result array
-		RGB8Array result;
-		if (baseArray instanceof RGB8Array) 
-		    result = ((RGB8Array) baseArray).duplicate();
-		else
-		    result = RGB8Array.convert(baseArray);
-		
-		// compute overlay
-		RGB8Array.binaryOverlay(result, (BinaryArray) overlay, color);
+		// create RGB8 array as a view
+		RGB8Array result = new BinaryOverlayRGB8Array(baseArray, BinaryArray.wrap(overlay), color);
 		
 		// Create result image
 		Image resultImage = new Image(result, baseImage);
