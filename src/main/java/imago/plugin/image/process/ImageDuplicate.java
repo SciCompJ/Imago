@@ -3,12 +3,11 @@
  */
 package imago.plugin.image.process;
 
-import imago.app.ImageHandle;
+import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.gui.frames.ImageFrame;
-import imago.gui.FramePlugin;
+import net.sci.array.process.shape.Duplicate;
 import net.sci.image.Image;
-
 
 
 /**
@@ -32,11 +31,13 @@ public class ImageDuplicate implements FramePlugin
     {
         System.out.println("duplicate");
         
-        // get current frame
-        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-        Image image = doc.getImage();
+        // retrieve current image
+        ImageFrame imageFrame = (ImageFrame) frame;
+        Image image = imageFrame.getImageHandle().getImage();
         
-        Image result = image.duplicate();
+        // run Duplicate operator on current image
+        Duplicate op = new Duplicate();
+        Image result = imageFrame.runOperator(op, image);
         
         // add the image document to GUI
         frame.createImageFrame(result);

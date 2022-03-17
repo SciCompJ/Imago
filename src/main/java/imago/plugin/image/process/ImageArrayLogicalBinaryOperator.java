@@ -3,8 +3,6 @@
  */
 package imago.plugin.image.process;
 
-import java.util.function.BiFunction;
-
 import imago.gui.*;
 import imago.gui.frames.ImageFrame;
 import net.sci.array.Arrays;
@@ -91,33 +89,29 @@ public class ImageArrayLogicalBinaryOperator implements FramePlugin
             return;
         }
         
-        // allocate memory for result
-        System.out.println("allocate memory");
-        BinaryArray result = array1.newInstance(array1.size());
 
-        // use a lambda to represent the function to apply
-		BiFunction<Boolean,Boolean,Boolean> fun;
+        // Creates the operator, using specialized implementation when available
+        LogicalBinaryOperator op;
 		switch (functionName)
 		{
         case "OR":
-            fun = (x, y) -> x || y;
+            op = LogicalBinaryOperator.OR;
             break;
         case "AND":
-            fun = (x, y) -> x && y;
+            op = LogicalBinaryOperator.AND;
             break;
         case "XOR":
-            fun = (x, y) -> x ^ y;
+            op = new LogicalBinaryOperator((x, y) -> x ^ y);
             break;
         default: throw new RuntimeException("Unknown function name: " + functionName); 
 		}
-
+		
 		// create operator
-		LogicalBinaryOperator op = new LogicalBinaryOperator(fun);
         op.addAlgoListener(frame);
         
         // run operator
 		long t0 = System.nanoTime();
-        op.process(array1, array2, result);
+		BinaryArray result = op.process(array1, array2);
         long t1 = System.nanoTime();
         
         // display elapsed time
@@ -152,7 +146,6 @@ public class ImageArrayLogicalBinaryOperator implements FramePlugin
 	    
 	    return 0;
 	}
-	
 	
     @Override
     public boolean isEnabled(ImagoFrame frame)
