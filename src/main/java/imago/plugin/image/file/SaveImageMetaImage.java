@@ -44,13 +44,6 @@ public class SaveImageMetaImage implements FramePlugin
         
         ImageViewer viewer = iframe.getImageView();
         Image image = viewer.getImage();
-//        Array<?> array = image.getData();
-//        if (!(array instanceof ScalarArray3D))
-//        {
-//            System.out.println("requires a 3D scalar image as input");
-//            return;
-//        }
-
         
         // create file dialog using last open path
 		String lastPath = ".";
@@ -73,7 +66,6 @@ public class SaveImageMetaImage implements FramePlugin
 			file = new File(file.getParent(), file.getName() + ".mhd");
 		}
 		
-
 //		// eventually keep path for future opening
 //		String path = file.getPath();
 //		lastPath = frame.getLastOpenPath();
@@ -83,8 +75,9 @@ public class SaveImageMetaImage implements FramePlugin
 //			frame.setLastOpenPath(path);
 //		}
 		
-		// Create a writer with
+		// Create a writer with specified file
 		MetaImageWriter writer = new MetaImageWriter(file);
+		writer.addAlgoListener(iframe);
 		try
 		{
 			writer.writeImage(image);
