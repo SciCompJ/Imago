@@ -9,6 +9,7 @@ import imago.app.ImagoApp;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
+import imago.gui.frames.ImageFrame;
 import net.sci.array.Array;
 import net.sci.array.Arrays;
 import net.sci.array.binary.BinaryArray;
@@ -41,12 +42,13 @@ public class ApplyBinaryMask implements FramePlugin
 			return;
 		}
 		
+		// retrieve necessary information
 		String[] imageNameArray = imageNames.toArray(new String[]{});
 		String firstImageName = imageNameArray[0];
 		String secondImageName = imageNameArray[Math.min(1, imageNameArray.length-1)];
 	
 		// Creates the dialog
-		GenericDialog gd = new GenericDialog(frame, "Binary Overlay");
+		GenericDialog gd = new GenericDialog(frame, "Binary Mask");
 		gd.addChoice("Reference Image: ", imageNameArray, firstImageName);
 		gd.addChoice("Binary Image: ", imageNameArray, secondImageName);
         gd.showDialog();
@@ -81,15 +83,24 @@ public class ApplyBinaryMask implements FramePlugin
 			return;
 		}
 		
-		// combine array with mask
+		// Create operator
 		BinaryMask op = new BinaryMask();
+		op.addAlgoListener(frame);
+		
+		// run operator
+		long t0 = System.nanoTime();
 		Array<?> result = op.process(array, BinaryArray.wrap(mask));
+        long t1 = System.nanoTime();
+		
+        // show elapsed time
+        double dt = (t1 - t0) / 1_000_000.0;
+		((ImageFrame) frame).showElapsedTime("Binary Mask", dt, baseImage);
 		
 		// Create result image
 		Image resultImage = new Image(result, baseImage);
 		resultImage.setName(baseImage.getName() + "-mask");
 		
 		// add the image document to GUI
-		frame.getGui().createImageFrame(resultImage, frame);
+		frame.createImageFrame(resultImage);
 	}
 }

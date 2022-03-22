@@ -299,6 +299,8 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         // display message
         System.out.println(status);
         this.statusBar.setCurrentStepLabel(status);
+        // also reset porogress bar
+        this.statusBar.setProgressBarPercent(0);
         return status;
     }
     
