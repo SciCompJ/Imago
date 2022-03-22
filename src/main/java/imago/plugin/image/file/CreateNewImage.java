@@ -5,6 +5,7 @@ package imago.plugin.image.file;
 
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
+import imago.gui.frames.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.scalar.Float32Array;
@@ -16,23 +17,19 @@ import net.sci.array.scalar.UInt8Array;
 import net.sci.image.Image;
 
 /**
- * Creates a new empty image.
+ * Creates a new image, filled with the specified value.
  * 
  * @author David Legland
  *
  */
 public class CreateNewImage implements FramePlugin
 {
-
-	enum ImageType
-	{
-		GRAY8,
-		GRAY16,
-		INT32,
-		FLOAT32,
-		FLOAT64
-	};
+    /** The list of possible types for creating array. */
+    static String[] typeList = new String[]{"Binary", "Gray8", "Gray16", "Int32", "Float32", "Float64"};
 	
+	/**
+     * Default empty constructor.
+     */
 	public CreateNewImage()
 	{
 	}
@@ -47,15 +44,29 @@ public class CreateNewImage implements FramePlugin
 	public void run(ImagoFrame frame, String args)
 	{
 		System.out.println("create new image");
-
-		String[] typeList = new String[]{"Binary", "Gray8", "Gray16", "Int32", "Float32", "Float64"};
 		
-		String baseName = frame.getGui().getAppli().createHandleName("NoName");
-		GenericDialog gd = new GenericDialog(frame, "Create Image");
+		// determine default values for dialog
+        String baseName = frame.getGui().getAppli().createHandleName("NoName");
+		int sizeX_init = 200;
+        int sizeY_init = 200;
+        int sizeZ_init = 1;
+        if (frame instanceof ImageFrame)
+        {
+            Image image = ((ImageFrame) frame).getImage();
+            sizeX_init = image.getSize(0);
+            sizeY_init = image.getSize(1);
+            if (image.getDimension() > 2)
+            {
+                sizeZ_init = image.getSize(2);
+            }
+        }
+		
+        // create dialog to enter options
+		GenericDialog gd = new GenericDialog(frame, "New Image");
 		gd.addTextField("Name: ", baseName);
-        gd.addNumericField("Width: ", 200, 0);
-		gd.addNumericField("Height: ", 200, 0);
-		gd.addNumericField("Depth: ", 1, 0);
+        gd.addNumericField("Width: ", sizeX_init, 0);
+		gd.addNumericField("Height: ", sizeY_init, 0);
+		gd.addNumericField("Depth: ", sizeZ_init, 0);
 		gd.addChoice("Image Type: ", typeList, typeList[1]);
 		gd.addNumericField("Fill Value: ", 0, 0);
 		gd.showDialog();
@@ -74,15 +85,13 @@ public class CreateNewImage implements FramePlugin
 		double fillValue = gd.getNextNumber();
 		
 		// create dimension vector for the new array
-		boolean is2D = sizeZ <= 1;
-		int[] dims = is2D ? new int[]{sizeX, sizeY} : new int[]{sizeX, sizeY, sizeZ}; 
+		int[] dims = sizeZ <= 1 ? new int[]{sizeX, sizeY} : new int[]{sizeX, sizeY, sizeZ}; 
 		
 		// Create the array depending on the type
 		ScalarArray<?> array = null;
 		switch (typeIndex)
 		{
-		case 0: 
-			array = BinaryArray.create(dims); break;
+		case 0: array = BinaryArray.create(dims); break;
 		case 1: array = UInt8Array.create(dims); break;
 		case 2: array = UInt16Array.create(dims); break;
 		case 3: array = Int32Array.create(dims); break;
