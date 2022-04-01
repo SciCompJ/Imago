@@ -11,6 +11,9 @@ import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.gui.frames.ImageFrame;
 import imago.gui.frames.ImagoTextFrame;
+import net.sci.array.Array;
+import net.sci.array.binary.RunLengthBinaryArray2D;
+import net.sci.array.binary.RunLengthBinaryArray3D;
 import net.sci.axis.Axis;
 import net.sci.image.Calibration;
 import net.sci.image.Image;
@@ -42,12 +45,11 @@ public class PrintImageInfos implements FramePlugin
 		textLines.add("Image file: " + image.getFilePath());
         
         int nd = image.getDimension();
-        String sizeText = "Image size: [" + image.getSize(0);
+        String sizeText = "Image size: " + image.getSize(0);
         for (int d = 1; d < nd; d++)
         {
-            sizeText += ", " + image.getSize(d);
+            sizeText += " x " + image.getSize(d);
         }
-        sizeText += "]";
         textLines.add(sizeText);
 
         // Show infos about axes (usually space+time)
@@ -65,8 +67,17 @@ public class PrintImageInfos implements FramePlugin
         textLines.add("  string: " + channelAxis.toString());
         
         // Show technical info about Array instance
+        Array<?> array = image.getData();
         textLines.add("Inner representation:");
-        textLines.add("  Array class: " + image.getData().getClass());
+        textLines.add("  Array class: " + array.getClass());
+        if (array instanceof RunLengthBinaryArray2D)
+        {
+            textLines.add("  Number of runs: " + ((RunLengthBinaryArray2D) array).runCount());
+        }
+        else if (array instanceof RunLengthBinaryArray3D)
+        {
+            textLines.add("  Number of runs: " + ((RunLengthBinaryArray3D) array).runCount());
+        }
         
         ImagoTextFrame newFrame = new ImagoTextFrame(frame, "Image Info", textLines);
         newFrame.getWidget().pack();
