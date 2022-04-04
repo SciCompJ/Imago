@@ -22,7 +22,7 @@ public class ImageArrayLogicalBinaryOperator implements FramePlugin
     /**
      * The list of functions that can be applied.
      */
-    String[] functionNames = new String[]{"OR", "AND", "XOR"};
+    String[] functionNames = new String[]{"OR", "AND", "XOR", "AND NOT"};
     
  	public ImageArrayLogicalBinaryOperator()
 	{
@@ -102,6 +102,9 @@ public class ImageArrayLogicalBinaryOperator implements FramePlugin
             break;
         case "XOR":
             op = new LogicalBinaryOperator((x, y) -> x ^ y);
+            break;
+        case "AND NOT":
+            op = LogicalBinaryOperator.AND_NOT;
             break;
         default: throw new RuntimeException("Unknown function name: " + functionName); 
 		}
