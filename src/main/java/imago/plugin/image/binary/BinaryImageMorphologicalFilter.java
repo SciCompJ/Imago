@@ -15,6 +15,7 @@ import net.sci.image.morphology.Strel;
 import net.sci.image.morphology.filter.BinaryClosing;
 import net.sci.image.morphology.filter.BinaryDilation;
 import net.sci.image.morphology.filter.BinaryErosion;
+import net.sci.image.morphology.filter.BinaryGradient;
 import net.sci.image.morphology.filter.BinaryOpening;
 import net.sci.image.morphology.strel.Strel2D;
 import net.sci.image.morphology.strel.Strel3D;
@@ -52,7 +53,7 @@ public class BinaryImageMorphologicalFilter implements FramePlugin
      */
     int radius = 2;
   
-    private String[] operationStrings = new String[] {"Dilation", "Erosion", "Opening", "Closing"};
+    private String[] operationStrings = new String[] {"Dilation", "Erosion", "Opening", "Closing", "Gradient"};
     
 	public BinaryImageMorphologicalFilter() 
 	{
@@ -124,6 +125,7 @@ public class BinaryImageMorphologicalFilter implements FramePlugin
             case 1: algo = new BinaryErosion(strel); break;
             case 2: algo = new BinaryOpening(strel); break;
             case 3: algo = new BinaryClosing(strel); break;
+            case 4: algo = new BinaryGradient(strel); break;
             default:
                 throw new RuntimeException("Unknown Operation index");
         }
