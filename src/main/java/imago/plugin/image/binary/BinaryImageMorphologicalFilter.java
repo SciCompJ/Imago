@@ -3,6 +3,8 @@
  */
 package imago.plugin.image.binary;
 
+import java.util.Locale;
+
 import imago.app.ImageHandle;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
@@ -54,6 +56,7 @@ public class BinaryImageMorphologicalFilter implements FramePlugin
     int radius = 2;
   
     private String[] operationStrings = new String[] {"Dilation", "Erosion", "Opening", "Closing", "Gradient"};
+    private String[] operationSuffixes = new String[] {"Dil", "Ero", "Op", "Cl", "Gr"};
     
 	public BinaryImageMorphologicalFilter() 
 	{
@@ -104,20 +107,23 @@ public class BinaryImageMorphologicalFilter implements FramePlugin
         // extract chosen parameters
         int opIndex = gd.getNextChoiceIndex();
         Strel strel;
+        String shapeSuffix;
         if (nd == 2)
         {
             this.shape2d = Strel2D.Shape.fromLabel(gd.getNextChoice());
+            shapeSuffix = this.shape2d.suffix();
             this.radius  = (int) gd.getNextNumber();
             strel = shape2d.fromRadius(radius);
         }
         else
         {
             this.shape3d = Strel3D.Shape.fromLabel(gd.getNextChoice());
+            shapeSuffix = this.shape3d.suffix();
             this.radius  = (int) gd.getNextNumber();
             strel = shape3d.fromRadius(radius);
         }
         
-        // create operation
+        // Create the morphological filter
         BinaryMorphologicalFilter algo;
         switch (opIndex)
         {
@@ -130,7 +136,12 @@ public class BinaryImageMorphologicalFilter implements FramePlugin
                 throw new RuntimeException("Unknown Operation index");
         }
         
+        // Execute core of the plugin on the array of original image
         Image resultImage = imageFrame.runOperator(algo, image);
+        
+        // setup name of result image
+        String suffix = String.format(Locale.ENGLISH, "%s%s%02d", operationSuffixes[opIndex], shapeSuffix, radius);
+        resultImage.setName(image.getName() + "-" + suffix);
         
 		frame.getGui().createImageFrame(resultImage); 
 	}

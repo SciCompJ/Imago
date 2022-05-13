@@ -3,6 +3,8 @@
  */
 package imago.plugin.image.process;
 
+import java.util.Locale;
+
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
@@ -75,8 +77,7 @@ public class ImageMorphologicalFilter implements FramePlugin
 		
 		// Create dialog for entering parameters
 		GenericDialog gd = new GenericDialog(frame, "Morphological Filter");
-		gd.addChoice("Operation", Operation.getAllLabels(), 
-				this.op.toString());
+        gd.addChoice("Operation", Operation.getAllLabels(), this.op.toString());
 		if (nd == 2)
 		{
 	        gd.addChoice("Element", Strel2D.Shape.getAllLabels(), 
@@ -99,16 +100,19 @@ public class ImageMorphologicalFilter implements FramePlugin
 		// parse dialog results
 		// extract chosen parameters
 		this.op = Operation.fromLabel(gd.getNextChoice());
+		String shapeSuffix = "";
 		Strel strel;
 		if (nd == 2)
 		{
 		    this.shape2d = Strel2D.Shape.fromLabel(gd.getNextChoice());
+            shapeSuffix = this.shape2d.suffix();
 	        this.radius  = (int) gd.getNextNumber();
 		    strel = shape2d.fromRadius(radius);
 		}
 		else
 		{
 		    this.shape3d = Strel3D.Shape.fromLabel(gd.getNextChoice());
+            shapeSuffix = this.shape3d.suffix();
 	        this.radius  = (int) gd.getNextNumber();
 		    strel = shape3d.fromRadius(radius);
 		}
@@ -120,7 +124,8 @@ public class ImageMorphologicalFilter implements FramePlugin
 		Image resultImage = imageFrame.runOperator(algo, image);
 
 		// setup name of result image
-		resultImage.setName(image.getName() + "-" + op.suffix());
+        String suffix = String.format(Locale.ENGLISH, "%s%s%02d", op.suffix(), shapeSuffix, radius);
+		resultImage.setName(image.getName() + "-" + suffix);
 		
 		// add the image document to GUI
 		frame.createImageFrame(resultImage);
