@@ -88,6 +88,7 @@ import imago.plugin.image.convert.VectorImageToTable;
 import imago.plugin.image.edit.CreateColorCubeImage3D;
 import imago.plugin.image.edit.CreateDistanceToOctahedronImage3D;
 import imago.plugin.image.edit.ImageCopySelectionToWorkspace;
+import imago.plugin.image.edit.ImageFillBox;
 import imago.plugin.image.edit.ImageFillDisk;
 import imago.plugin.image.edit.ImageFillEllipse;
 import imago.plugin.image.edit.ImageSelectionToDistanceMap;
@@ -529,6 +530,7 @@ public class GuiBuilder
         JMenu phantomMenu = new JMenu("Phantoms");
         addPlugin(phantomMenu, new ImageFillDisk(), "Fill Disk...");
         addPlugin(phantomMenu, new ImageFillEllipse(), "Fill Ellipse...");
+        addPlugin(phantomMenu, new ImageFillBox(), "Fill Box...");
         addPlugin(phantomMenu, new ImageSelectionToMask(), "Selection To Mask");
         addPlugin(phantomMenu, new ImageSelectionToDistanceMap(), "Selection To Distance Map");
         menu.add(phantomMenu);
