@@ -25,7 +25,7 @@ public class StatusBar extends JPanel
 	
 	JLabel cursorLabel = new JLabel("");
 
-	JLabel currentStepLabel = new JLabel("algo");
+	JLabel currentStepLabel = new JLabel(" ");
 
 	JProgressBar progressBar;
 	
@@ -44,7 +44,6 @@ public class StatusBar extends JPanel
 		this.progressBar = new JProgressBar(0, 100);
 		this.progressBar.setStringPainted(true);
 		progressPanel.add(progressBar);
-		
 		
 		// layout panels onto main panel
 		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));

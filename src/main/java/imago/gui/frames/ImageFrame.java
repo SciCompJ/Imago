@@ -213,6 +213,9 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
      * @see net.sci.algo.AlgoListener
      * @see #showElapsedTime(String, double, Image)
      * 
+     * @param opName
+     *            the name of the operator to run. Used to populate the status
+     *            bar at the beginning of the algorithm.
      * @param op
      *            the array operator to run. Can be an instance of
      *            ImageArrayOperator; in that case, the operator will run the
@@ -222,8 +225,12 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
      *            the image containing the data array to process
      * @return a new Image instance encapsulating the result of array processing
      */
-    public Image runOperator(ArrayOperator op, Image image)
+    public Image runOperator(String opName, ArrayOperator op, Image image)
     {
+        // reset status bar
+        this.getStatusBar().setCurrentStepLabel("Run: " + opName);
+        this.getStatusBar().setProgressBarPercent(0);
+        
         // initialize listener and timer
         op.addAlgoListener(this);
         long t0 = System.nanoTime();
@@ -240,9 +247,41 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         this.getStatusBar().setProgressBarPercent(0);
         
         // display elapsed time
-        showElapsedTime(op.getClass().getSimpleName(), (t1 - t0) / 1_000_000.0, image);
+        showElapsedTime(opName, (t1 - t0) / 1_000_000.0, image);
         
         return result;
+    }
+    
+    /**
+     * Utility methods that run the algorithm on the data array from an image
+     * and return the result image, by managing the algorithm events and
+     * displaying elapsed time at the end.
+     * 
+     * Performs the following operations:
+     * <ol>
+     * <li>Add the frame as algorithm listener to the operator, in order to
+     * monitor the process</li>
+     * <li>Run the operator on the input image, generating a new image</li>
+     * <li>Reset progress monitoring</li>
+     * <li>Display elapsed time in status bar</li>
+     * </ol>
+     * 
+     * @see net.sci.algo.AlgoListener
+     * @see #showElapsedTime(String, double, Image)
+     * 
+     * @param op
+     *            the array operator to run. Can be an instance of
+     *            ImageArrayOperator; in that case, the operator will run the
+     *            "process(Image)" method instead of the "process(Array)"
+     *            method.
+     * @param image
+     *            the image containing the data array to process
+     * @return a new Image instance encapsulating the result of array processing
+     */
+    public Image runOperator(ArrayOperator op, Image image)
+    {
+        String opName = op.getClass().getSimpleName();
+        return runOperator(opName, op, image);
     }
     
     /**
