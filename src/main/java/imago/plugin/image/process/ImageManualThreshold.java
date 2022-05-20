@@ -62,7 +62,7 @@ public class ImageManualThreshold implements FramePlugin
         // TODO: add widget for histogram representation
         gd.addSlider("Threshold Value: ", range[0], range[1], initValue);
         gd.addCheckBox("Upper values threshold", true);
-        gd.addCheckBox("Create view", true);
+        gd.addCheckBox("Create view", false);
         gd.showDialog();
         
         if (gd.getOutput() == GenericDialog.Output.CANCEL) 
@@ -85,7 +85,7 @@ public class ImageManualThreshold implements FramePlugin
         }
         else
         {
-            resultImage = imageFrame.runOperator(algo, image);
+            resultImage = imageFrame.runOperator("Manual Threshold", algo, image);
         }
         resultImage.setName(image.getName() + "-bin");
         
