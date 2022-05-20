@@ -81,7 +81,7 @@ public class BinaryImageMorphologicalFilter implements FramePlugin
         
         // Create dialog for entering parameters
         GenericDialog gd = new GenericDialog(frame, "Binary Morphological Filter");
-        gd.addChoice("Operation", operationStrings, operationStrings[1]);
+        gd.addChoice("Operation", operationStrings, operationStrings[0]);
 //        gd.addChoice("Operation", Operation.getAllLabels(), 
 //                this.op.toString());
         if (nd == 2)
