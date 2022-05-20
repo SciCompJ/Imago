@@ -26,7 +26,7 @@ public class ChooseBrushRadius implements FramePlugin
     public void run(ImagoFrame frame, String args)
 	{
 	    ImagoGui gui = frame.getGui();
-	    double brushRadius = gui.settings.brushRadius;
+	    double brushRadius = gui.userPreferences.brushRadius;
 	    
 	    GenericDialog dlg = new GenericDialog(frame, "Brush Radius");
 	    dlg.addNumericField("Brush Radius", brushRadius, 2, "The radius ofthe brush used to draw on images");
@@ -38,9 +38,9 @@ public class ChooseBrushRadius implements FramePlugin
 	    }
 	    
 	    double value = dlg.getNextNumber();
-	    gui.settings.brushRadius = value;
+	    gui.userPreferences.brushRadius = value;
 
-	    System.out.println("brush radius changed to: " + gui.settings.brushRadius);
+	    System.out.println("brush radius changed to: " + gui.userPreferences.brushRadius);
 	}
 
 }

@@ -24,7 +24,7 @@ public class ChooseBrushValue implements FramePlugin
     public void run(ImagoFrame frame, String args)
 	{
 	    ImagoGui gui = frame.getGui();
-	    double brushValue = gui.settings.brushValue;
+	    double brushValue = gui.userPreferences.brushValue;
 	    
 	    GenericDialog dlg = new GenericDialog(frame, "Brush Value");
 	    dlg.addNumericField("Brush Value", brushValue, 2, "The value used to draw on intensity images");
@@ -36,9 +36,9 @@ public class ChooseBrushValue implements FramePlugin
 	    }
 	    
 	    double value = dlg.getNextNumber();
-	    gui.settings.brushValue = value;
+	    gui.userPreferences.brushValue = value;
 
-	    System.out.println("brush value changed to: " + gui.settings.brushValue);
+	    System.out.println("brush value changed to: " + gui.userPreferences.brushValue);
 	}
 
 }

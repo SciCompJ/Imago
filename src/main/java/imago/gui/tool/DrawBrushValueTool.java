@@ -108,8 +108,8 @@ public class DrawBrushValueTool extends ImagoTool
         xprev = xi;
         yprev = yi;
         
-        double value = this.viewer.getGui().settings.brushValue;
-        double radius = this.viewer.getGui().settings.brushRadius;
+        double value = this.viewer.getGui().userPreferences.brushValue;
+        double radius = this.viewer.getGui().userPreferences.brushRadius;
         double r2 = (radius + 0.5) * (radius + 0.5);
         int ri = (int) Math.ceil(radius);
         
@@ -175,8 +175,8 @@ public class DrawBrushValueTool extends ImagoTool
         if (xi >= sizeX || yi >= sizeY) return;
         
         // retrieve brush settings
-        double value = this.viewer.getGui().settings.brushValue;
-        double radius = this.viewer.getGui().settings.brushRadius;
+        double value = this.viewer.getGui().userPreferences.brushValue;
+        double radius = this.viewer.getGui().userPreferences.brushRadius;
         
         drawLineOnArray(array2d, xprev, yprev, xi, yi, radius, value);
         

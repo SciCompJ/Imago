@@ -84,7 +84,7 @@ public class DrawValueTool extends ImagoTool
         if (xi < 0 || yi < 0) return;
         if (xi >= sizeX || yi >= sizeY) return;
         
-        double value = this.viewer.getGui().settings.brushValue;
+        double value = this.viewer.getGui().userPreferences.brushValue;
 
         if (array.dimensionality() == 2)
         {

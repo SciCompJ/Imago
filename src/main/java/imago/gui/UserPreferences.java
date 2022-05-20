@@ -9,7 +9,7 @@ package imago.gui;
  * @author dlegland
  *
  */
-public class Settings
+public class UserPreferences
 {
     /**
      * The value of the brush for intensity images.

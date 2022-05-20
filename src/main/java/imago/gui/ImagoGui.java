@@ -130,9 +130,9 @@ public class ImagoGui
 	ImagoFrame emptyFrame = null;
 	
 	/**
-	 * Some global settings.
+	 * Some global settings / preferences for current user.
 	 */
-	public Settings settings = new Settings();
+	public UserPreferences userPreferences = new UserPreferences();
 	
     ArrayList<PluginHandler> pluginHandlers = new ArrayList<PluginHandler>();
 
@@ -144,8 +144,8 @@ public class ImagoGui
 	 * The amount of displacement in the x-direction to locate a new frame with
 	 * respect to the parent one
 	 */
-	
 	private static final int FRAME_OFFSET_X = 20;
+	
 	/**
 	 * The amount of displacement in the y-direction to locate a new frame with
 	 * respect to the parent one
