@@ -23,9 +23,6 @@ import net.sci.image.io.RawImageReader.DataType;
  */
 public class ImportImageRawData implements FramePlugin
 {
-    private JFileChooser openWindow = null;
-
-
     public ImportImageRawData()
     {
     }
@@ -37,14 +34,9 @@ public class ImportImageRawData implements FramePlugin
     public void run(ImagoFrame frame, String args)
     {
         System.out.println("import raw data");
-
-        // create file dialog if it doesn't exist
-        if (openWindow == null)
-        {
-            openWindow = new JFileChooser(".");
-//            openWindow.setFileFilter(new FileNameExtensionFilter("MetaImage files (*.mhd, *.mha)", "mhd", "mha"));
-        }
-
+        // create new file dialog
+        JFileChooser openWindow = frame.getGui().createOpenFileDialog("Open Raw Image File");
+        
         // Open dialog to choose the file
         int ret = openWindow.showOpenDialog(frame.getWidget());
         if (ret != JFileChooser.APPROVE_OPTION)

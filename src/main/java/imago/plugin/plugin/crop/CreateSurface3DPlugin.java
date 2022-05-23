@@ -238,6 +238,7 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         {
             return;
         }
+        this.lastOpenPath = file.getParent();
         
         try 
         {
@@ -272,8 +273,7 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         surf3d.initializeNodes();
         
         // create file dialog using last open path
-        String lastPath = ".";
-        openWindow = new JFileChooser(lastPath);
+        openWindow = new JFileChooser(lastOpenPath);
         openWindow.setDialogTitle("Read list of input polylines");
         openWindow.setFileFilter(new FileNameExtensionFilter("JSON files (*.json)", "json"));
 
@@ -286,6 +286,7 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
 
         // Check the chosen file is state
         File file = openWindow.getSelectedFile();
+        this.lastOpenPath = file.getParent();
         try
         {
             surf3d.readPolylinesFromJson(file);
@@ -409,10 +410,8 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
     
     private File chooseInputImageFile(ImagoFrame parentFrame)
     {
-        // create file dialog to read the 3D TIFF Image
-        //        String lastPath = frame.getLastOpenPath();
-        JFileChooser openWindow = new JFileChooser(this.lastOpenPath);
-        openWindow.setDialogTitle("Choose TIFF 3D Image");
+        // create new file dialog
+        JFileChooser openWindow = parentFrame.getGui().createOpenFileDialog("Choose TIFF 3D Image");
         openWindow.setFileFilter(new FileNameExtensionFilter("TIFF files (*.tif, *.tiff)", "tif", "tiff"));
 
         // Open dialog to choose the file
@@ -456,7 +455,7 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         // update last open path
         this.imagePath = file.getAbsolutePath();
         this.lastOpenPath = file.getPath();
-        this.imageFrame.setLastOpenPath(this.lastOpenPath);
+        this.imageFrame.getGui().userPreferences.lastOpenPath = lastOpenPath;
     }
     
     private void initializeImage(Image image)

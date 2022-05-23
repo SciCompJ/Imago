@@ -22,8 +22,6 @@ import net.sci.table.io.DelimitedTableReader;
  */
 public class OpenTable implements FramePlugin
 {
-    private JFileChooser openWindow = null;
-    
     public OpenTable()
     {
     }
@@ -34,13 +32,9 @@ public class OpenTable implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		// create file dialog if it doesn't exist
-		if (openWindow == null)
-		{
-			openWindow = new JFileChooser(".");
-			// openWindow.setFileFilter(fileFilter);
-		}
-
+        // create new file dialog
+        JFileChooser openWindow = frame.getGui().createOpenFileDialog("Open Table");
+        
 		// Open dialog to choose the file
 		int ret = openWindow.showOpenDialog(frame.getWidget());
 		if (ret != JFileChooser.APPROVE_OPTION)
@@ -55,6 +49,7 @@ public class OpenTable implements FramePlugin
 			return;
 		}
 
+        // try reading the table
 		Table table;
 		try
 		{
@@ -79,6 +74,6 @@ public class OpenTable implements FramePlugin
 		table.setName(file.getName());
 		
         // add the new frame to the GUI
-        frame.getGui().createTableFrame(table, frame);
+        frame.createTableFrame(table);
 	}
 }

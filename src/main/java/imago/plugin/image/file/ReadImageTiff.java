@@ -13,7 +13,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.frames.ImageFrame;
 import net.sci.algo.AlgoEvent;
 import net.sci.algo.AlgoListener;
 import net.sci.image.Image;
@@ -43,11 +42,9 @@ public class ReadImageTiff implements FramePlugin, AlgoListener
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		// create file dialog using last open path
-		String lastPath = getLastOpenPath(frame);
-		JFileChooser openWindow = new JFileChooser(lastPath);
+        // create new file dialog
+        JFileChooser openWindow = frame.getGui().createOpenFileDialog("Open Tiff Image");
 		openWindow.setFileFilter(new FileNameExtensionFilter("TIFF files (*.tif, *.tiff)", "tif", "tiff"));
-
 
 		// Open dialog to choose the file
 		int ret = openWindow.showOpenDialog(frame.getWidget());
@@ -61,15 +58,6 @@ public class ReadImageTiff implements FramePlugin, AlgoListener
 		if (!file.isFile()) 
 		{
 			return;
-		}
-
-		// eventually keep path for future opening
-		String path = file.getPath();
-		lastPath = frame.getLastOpenPath();
-		if (lastPath == null || lastPath.isEmpty())
-		{
-			System.out.println("update frame path");
-			frame.setLastOpenPath(path);
 		}
 		
 		// Create a Tiff reader with the chosen file
@@ -113,20 +101,7 @@ public class ReadImageTiff implements FramePlugin, AlgoListener
 		}
 		
 		// add the image document to GUI
-		ImageFrame newFrame = frame.createImageFrame(image);
-		newFrame.setLastOpenPath(path);
-	}
-
-	private String getLastOpenPath(ImagoFrame frame)
-	{
-		String path = ".";
-		path = frame.getLastOpenPath();
-		if (path == null || path.isEmpty())
-		{
-			path = ".";
-		}
-		
-		return path;
+		frame.createImageFrame(image);
 	}
 
     @Override

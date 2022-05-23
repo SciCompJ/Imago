@@ -9,9 +9,8 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import imago.gui.ImagoFrame;
-import imago.gui.frames.ImageFrame;
 import imago.gui.FramePlugin;
+import imago.gui.ImagoFrame;
 import net.sci.image.Image;
 import net.sci.image.io.VgiImageReader;
 
@@ -21,8 +20,6 @@ import net.sci.image.io.VgiImageReader;
  */
 public class ImportImageVgi implements FramePlugin
 {
-	private JFileChooser openWindow = null;
-
 	public ImportImageVgi()
 	{
 	}
@@ -36,12 +33,9 @@ public class ImportImageVgi implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		// create file dialog if it doesn't exist
-		if (openWindow == null)
-		{
-			openWindow = new JFileChooser(".");
-			openWindow.setFileFilter(new FileNameExtensionFilter("MetaImage files (*.vgi)", "vgi"));
-		}
+        // create new file dialog
+        JFileChooser openWindow = frame.getGui().createOpenFileDialog("Open VGI File");
+        openWindow.setFileFilter(new FileNameExtensionFilter("MetaImage files (*.vgi)", "vgi"));
 
 		// Open dialog to choose the file
 		int ret = openWindow.showOpenDialog(frame.getWidget());
@@ -56,10 +50,6 @@ public class ImportImageVgi implements FramePlugin
 		{
 			return;
 		}
-
-		// keep path for future opening
-		String path = file.getPath();
-		frame.setLastOpenPath(path);
 
 		// Create a MetaImage Format reader with the chosen file
 		VgiImageReader reader;
@@ -89,8 +79,6 @@ public class ImportImageVgi implements FramePlugin
 		}
 		
 		// add the image document to GUI
-        ImageFrame newFrame = frame.createImageFrame(image);
-        newFrame.setLastOpenPath(path);
+        frame.createImageFrame(image);
 	}
-
 }

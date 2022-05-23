@@ -544,9 +544,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     private File chooseInputImageFile(ImagoFrame parentFrame)
     {
         // create file dialog to read the 3D TIFF Image
-        //        String lastPath = frame.getLastOpenPath();
-        JFileChooser openWindow = new JFileChooser(this.lastOpenPath);
-        openWindow.setDialogTitle("Choose Input 3D TIFF Image");
+        JFileChooser openWindow = parentFrame.getGui().createOpenFileDialog("Choose Input 3D TIFF Image");
         openWindow.setFileFilter(new FileNameExtensionFilter("TIFF files (*.tif, *.tiff)", "tif", "tiff"));
 
         // Open dialog to choose the file
@@ -640,7 +638,8 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         // update last open path
         this.imagePath = imageFileName.getAbsolutePath();
         this.lastOpenPath = imageFileName.getPath();
-        this.imageFrame.setLastOpenPath(this.lastOpenPath);
+        // update path for future opening
+        this.imageFrame.getGui().userPreferences.lastOpenPath = lastOpenPath;
         
         // update widgets
         imageNameLabel.setText(image.getName());

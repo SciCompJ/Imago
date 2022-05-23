@@ -12,7 +12,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.frames.ImageFrame;
 import net.sci.image.Image;
 import net.sci.image.io.TiffImageReader;
 
@@ -23,8 +22,6 @@ import net.sci.image.io.TiffImageReader;
  */
 public class ReadTiffVirtualImage3D implements FramePlugin
 {
-	private JFileChooser openWindow = null;
-
 	public ReadTiffVirtualImage3D() 
 	{
 	}
@@ -35,10 +32,8 @@ public class ReadTiffVirtualImage3D implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		// create file dialog uqsing last open path
-		String lastPath = getLastOpenPath(frame);
-		openWindow = new JFileChooser(lastPath);
-		openWindow.setDialogTitle("Open TIFF as Virtual Image");
+        // create new file dialog
+        JFileChooser openWindow = frame.getGui().createOpenFileDialog("Open TIFF as Virtual Image");
 		openWindow.setFileFilter(new FileNameExtensionFilter("TIFF files (*.tif, *.tiff)", "tif", "tiff"));
 
 
@@ -56,15 +51,6 @@ public class ReadTiffVirtualImage3D implements FramePlugin
 			return;
 		}
 
-		// eventually keep path for future opening
-		String path = file.getPath();
-		lastPath = frame.getLastOpenPath();
-		if (lastPath == null || lastPath.isEmpty())
-		{
-			System.out.println("update frame path");
-			frame.setLastOpenPath(path);
-		}
-		
 		// Create a Tiff reader with the chosen file
 		TiffImageReader reader;
 		try 
@@ -94,19 +80,6 @@ public class ReadTiffVirtualImage3D implements FramePlugin
         }
 		
 		// add the image document to GUI
-		ImageFrame newFrame = frame.createImageFrame(image);
-		newFrame.setLastOpenPath(path);
-	}
-
-	private String getLastOpenPath(ImagoFrame frame)
-	{
-		String path = ".";
-		path = frame.getLastOpenPath();
-		if (path == null || path.isEmpty())
-		{
-			path = ".";
-		}
-		
-		return path;
+		frame.createImageFrame(image);
 	}
 }

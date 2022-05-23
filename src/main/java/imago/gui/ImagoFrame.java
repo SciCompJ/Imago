@@ -44,12 +44,7 @@ public abstract class ImagoFrame implements AlgoListener
 	 * The Swing widget used to display this frame.
 	 */
 	protected JFrame jFrame;
-	
-	/**
-	 * The path to the directory that was used to save this document.
-	 */
-	protected String lastOpenPath = ".";
-	
+		
 
 	// ===================================================================
 	// Constructors
@@ -161,16 +156,6 @@ public abstract class ImagoFrame implements AlgoListener
 
 	// ===================================================================
 	// Getters and setters
-
-	public String getLastOpenPath()
-	{
-		return lastOpenPath;
-	}
-
-	public void setLastOpenPath(String lastOpenPath)
-	{
-		this.lastOpenPath = lastOpenPath;
-	}
 	
 	public ImagoGui getGui()
 	{

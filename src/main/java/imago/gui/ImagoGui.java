@@ -23,12 +23,14 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileFilter;
 
 import imago.app.ImagoApp;
 import imago.app.ImageHandle;
@@ -434,17 +436,55 @@ public class ImagoGui
     }
  	
 	// ===================================================================
-    // Creation of new frames for specific objects
+    // Creation of dialogs
+    
+    /**
+     * Creates a new JFileChooser instance to open a file. The dialog
+     * automatically opens within the last open directory.
+     * 
+     * @param title
+     *            the title of the dialog
+     * @param fileFilters
+     *            an optional list of file filters
+     * @return the reference to the JFileChooser
+     */
+    public JFileChooser createOpenFileDialog(String title, FileFilter... fileFilters)
+    {
+        // create dialog using last open path
+        JFileChooser dlg = new JFileChooser(this.userPreferences.lastOpenPath);
+        
+        // setup dialog title
+        if (title != null)
+        {
+            dlg.setDialogTitle(title);
+        }
+        
+        // add optional file filters
+        for (FileFilter filter : fileFilters)
+        {
+            dlg.addChoosableFileFilter(filter);
+        }
+        
+        // add an action listener to keep path for future opening
+        dlg.addActionListener(evt -> 
+        {
+            if (evt.getActionCommand() == JFileChooser.APPROVE_SELECTION)
+            {
+                // update path for future opening
+                File file = dlg.getSelectedFile();
+                String path = file.getParent();
+                this.userPreferences.lastOpenPath = path;
+            }
+        });
+        return dlg;
+    }
+
+    
+	// ===================================================================
+    // Creation and management of new frames for specific objects
 	
-	public TableFrame createTableFrame(Table table, ImagoFrame parentFrame)
+    public TableFrame createTableFrame(Table table, ImagoFrame parentFrame)
 	{
-//	    // try to get parent table handle
-//	    TableHandle parentHandle = null;
-//	    if (parentFrame instanceof TableFrame)
-//	    {
-//	        parentHandle = ((TableFrame) parentFrame).handle;
-//	    }
-//
 	    // Create the new handle, keeping the maximum of settings
         TableHandle handle = this.app.createTableHandle(table);
         
@@ -461,10 +501,6 @@ public class ImagoGui
         this.addFrame(frame); 
         return frame;
 	}
-	
-
-	// ===================================================================
-    // Creation of new frames for images
 	
     /** 
 	 * Creates a new document from an image, adds it to the application, 
@@ -522,6 +558,9 @@ public class ImagoGui
         return frame;
     }
 	
+    // ===================================================================
+    // Frame management
+    
 	public Collection<ImageFrame> getImageFrames()
 	{
 		ArrayList<ImageFrame> viewers = new ArrayList<ImageFrame>(this.frames.size());
@@ -556,9 +595,6 @@ public class ImagoGui
 	}
 
 	
-    // ===================================================================
-    // Frame management
-    
     public Collection<ImagoFrame> getFrames()
     {
     	return Collections.unmodifiableCollection(this.frames);
@@ -610,6 +646,12 @@ public class ImagoGui
     {
         this.emptyFrame.getWidget().dispose();
     }
+
+    
+    // ===================================================================
+    // Creation of dialogs
+    
+    
     
 
 	// ===================================================================

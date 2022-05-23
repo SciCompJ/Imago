@@ -24,17 +24,14 @@ import imago.gui.FramePlugin;
  */
 public class ImportImageSeries implements FramePlugin
 {
-    private JFileChooser openWindow = null;
-
     /* (non-Javadoc)
      * @see imago.gui.Plugin#run(imago.gui.ImagoFrame, java.lang.String)
      */
     @Override
     public void run(ImagoFrame frame, String args)
     {
-        // create file dialog uqsing last open path
-        String lastPath = getLastOpenPath(frame);
-        openWindow = new JFileChooser(lastPath);
+        // create new file dialog
+        JFileChooser openWindow = frame.getGui().createOpenFileDialog("Open Image Series");
         openWindow.setFileFilter(new FileNameExtensionFilter("TIFF files (*.tif, *.tiff)", "tif", "tiff"));
 
         // Open dialog to choose the file
@@ -51,17 +48,8 @@ public class ImportImageSeries implements FramePlugin
             return;
         }
 
-        // eventually keep path for future opening
-        String path = file.getPath();
-        lastPath = frame.getLastOpenPath();
-        if (lastPath == null || lastPath.isEmpty())
-        {
-            System.out.println("update frame path");
-            frame.setLastOpenPath(path);
-        }
-        
+        // create a dialog to choose files to read
         GenericDialog gd = new GenericDialog(frame, "Import Series");
-        
         gd.addNumericField("First Image", 1, 0);
         gd.addNumericField("Increment", 1, 0);
         gd.addTextField("Contains", "");
@@ -158,17 +146,5 @@ public class ImportImageSeries implements FramePlugin
     {
         int index = fileName.lastIndexOf(".");
         return fileName.substring(index+1);
-    }
-    
-    private String getLastOpenPath(ImagoFrame frame)
-    {
-        String path = ".";
-        path = frame.getLastOpenPath();
-        if (path == null || path.isEmpty())
-        {
-            path = ".";
-        }
-        
-        return path;
     }
 }

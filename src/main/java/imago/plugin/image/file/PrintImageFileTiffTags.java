@@ -36,9 +36,8 @@ public class PrintImageFileTiffTags implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		// create file dialog using last open path
-		String lastPath = getLastOpenPath(frame);
-		JFileChooser openWindow = new JFileChooser(lastPath);
+        // create new file dialog
+        JFileChooser openWindow = frame.getGui().createOpenFileDialog("Open Tiff Image");
 		openWindow.setFileFilter(new FileNameExtensionFilter("TIFF files (*.tif, *.tiff)", "tif", "tiff"));
 
 		// Open dialog to choose the file
@@ -55,7 +54,6 @@ public class PrintImageFileTiffTags implements FramePlugin
 			return;
 		}
 
-		
 		// Create a Tiff reader with the chosen file
 		TiffImageReader reader;
 		try 
@@ -80,17 +78,5 @@ public class PrintImageFileTiffTags implements FramePlugin
             String desc = String.format("Tag code: %5d %-30s", tag.code, id);
             System.out.println(desc + "\tType=" + tag.type + ", \tcount=" + tag.count + ", content=" + tag.content);
         }
-	}
-
-	private String getLastOpenPath(ImagoFrame frame)
-	{
-		String path = ".";
-		path = frame.getLastOpenPath();
-		if (path == null || path.isEmpty())
-		{
-			path = ".";
-		}
-		
-		return path;
 	}
 }

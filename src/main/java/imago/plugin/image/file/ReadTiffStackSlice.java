@@ -13,7 +13,6 @@ import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.frames.ImageFrame;
 import net.sci.image.Image;
 import net.sci.image.io.TiffImageReader;
 
@@ -26,8 +25,6 @@ import net.sci.image.io.TiffImageReader;
  */
 public class ReadTiffStackSlice implements FramePlugin
 {
-	private JFileChooser openWindow = null;
-
 	public ReadTiffStackSlice() 
 	{
 	}
@@ -38,9 +35,8 @@ public class ReadTiffStackSlice implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		// create file dialog uqsing last open path
-		String lastPath = getLastOpenPath(frame);
-		openWindow = new JFileChooser(lastPath);
+        // create new file dialog
+        JFileChooser openWindow = frame.getGui().createOpenFileDialog("Open Tiff Slice");
 		openWindow.setFileFilter(new FileNameExtensionFilter("TIFF files (*.tif, *.tiff)", "tif", "tiff"));
 
 		// Open dialog to choose the file
@@ -57,15 +53,6 @@ public class ReadTiffStackSlice implements FramePlugin
 			return;
 		}
 
-		// eventually keep path for future opening
-		String path = file.getPath();
-		lastPath = frame.getLastOpenPath();
-		if (lastPath == null || lastPath.isEmpty())
-		{
-			System.out.println("update frame path");
-			frame.setLastOpenPath(path);
-		}
-		
 		// Create a Tiff reader with the chosen file
 		TiffImageReader reader;
 		try 
@@ -109,19 +96,6 @@ public class ReadTiffStackSlice implements FramePlugin
 		}
 		
 		// add the image document to GUI
-		ImageFrame newFrame = frame.createImageFrame(image);
-		newFrame.setLastOpenPath(path);
-	}
-
-	private String getLastOpenPath(ImagoFrame frame)
-	{
-		String path = ".";
-		path = frame.getLastOpenPath();
-		if (path == null || path.isEmpty())
-		{
-			path = ".";
-		}
-		
-		return path;
+		frame.createImageFrame(image);
 	}
 }

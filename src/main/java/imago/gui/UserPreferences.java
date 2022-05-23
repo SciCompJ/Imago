@@ -12,6 +12,16 @@ package imago.gui;
 public class UserPreferences
 {
     /**
+     * The path to the last directory that was used to open a file.
+     */
+    public String lastOpenPath = ".";
+    
+    /**
+     * The path to the last directory that was used to save a file.
+     */
+    public String lastSavePath = ".";
+    
+    /**
      * The value of the brush for intensity images.
      * Default is 255, corresponding to white for UInt8 images.
      */

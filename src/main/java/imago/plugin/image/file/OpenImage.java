@@ -15,13 +15,14 @@ import javax.swing.JFileChooser;
 import net.sci.image.Image;
 
 /**
+ * Opens a dialog to choose an image file, and opens the selected file in a new
+ * image frame.
+ * 
  * @author David Legland
  *
  */
 public class OpenImage implements FramePlugin
 {
-    private JFileChooser openWindow = null;
-    
     public OpenImage()
     {
     }
@@ -35,11 +36,8 @@ public class OpenImage implements FramePlugin
     @Override
     public void run(ImagoFrame frame, String args)
     {
-        // create file dialog if it doesn't exist
-        if (this.openWindow == null)
-        {
-            createFileChooserFrame();
-        }
+        // create new file dialog
+        JFileChooser openWindow = frame.getGui().createOpenFileDialog("Open Image");
         
         // Open dialog to choose the file
         int ret = openWindow.showOpenDialog(frame.getWidget());
@@ -66,13 +64,6 @@ public class OpenImage implements FramePlugin
         }
         
         // add the image document to GUI
-        frame.getGui().createImageFrame(image);
-    }
-    
-    private void createFileChooserFrame()
-    {
-        this.openWindow = new JFileChooser("."); 
-        // openWindow.setFileFilter(fileFilter);
-    }
-    
+        frame.createImageFrame(image);
+    }    
 }

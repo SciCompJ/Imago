@@ -21,8 +21,6 @@ import net.sci.image.io.MetaImageReader;
  */
 public class ImportImageMetaImage implements FramePlugin
 {
-	private JFileChooser openWindow = null;
-
 	public ImportImageMetaImage()
 	{
 	}
@@ -36,13 +34,10 @@ public class ImportImageMetaImage implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		// create file dialog if it doesn't exist
-		if (openWindow == null)
-		{
-			openWindow = new JFileChooser(".");
-			openWindow.setFileFilter(new FileNameExtensionFilter("MetaImage files (*.mhd, *.mha)", "mhd", "mha"));
-		}
-
+        // create new file dialog
+        JFileChooser openWindow = frame.getGui().createOpenFileDialog("Open MetaImage File");
+        openWindow.setFileFilter(new FileNameExtensionFilter("MetaImage files (*.mhd, *.mha)", "mhd", "mha"));
+		
 		// Open dialog to choose the file
 		int ret = openWindow.showOpenDialog(frame.getWidget());
 		if (ret != JFileChooser.APPROVE_OPTION)
