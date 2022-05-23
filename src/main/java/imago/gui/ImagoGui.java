@@ -479,6 +479,47 @@ public class ImagoGui
         return dlg;
     }
 
+    /**
+     * Creates a new JFileChooser instance to save a file. The dialog
+     * automatically opens within the last directory used for saving a file.
+     * 
+     * @param title
+     *            the title of the dialog
+     * @param fileFilters
+     *            an optional list of file filters
+     * @return the reference to the JFileChooser
+     */
+    public JFileChooser createSaveFileDialog(String title, FileFilter... fileFilters)
+    {
+        // create dialog using last open path
+        JFileChooser dlg = new JFileChooser(this.userPreferences.lastSavePath);
+        
+        // setup dialog title
+        if (title != null)
+        {
+            dlg.setDialogTitle(title);
+        }
+        
+        // add optional file filters
+        for (FileFilter filter : fileFilters)
+        {
+            dlg.addChoosableFileFilter(filter);
+        }
+        
+        // add an action listener to keep path for future opening
+        dlg.addActionListener(evt -> 
+        {
+            if (evt.getActionCommand() == JFileChooser.APPROVE_SELECTION)
+            {
+                // update path for future opening
+                File file = dlg.getSelectedFile();
+                String path = file.getParent();
+                this.userPreferences.lastSavePath = path;
+            }
+        });
+        return dlg;
+    }
+
     
 	// ===================================================================
     // Creation and management of new frames for specific objects

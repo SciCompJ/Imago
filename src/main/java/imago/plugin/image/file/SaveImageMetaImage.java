@@ -25,8 +25,6 @@ import net.sci.image.io.MetaImageWriter;
  */
 public class SaveImageMetaImage implements FramePlugin
 {
-	private JFileChooser openWindow = null;
-
 	public SaveImageMetaImage() 
 	{
 	}
@@ -46,8 +44,8 @@ public class SaveImageMetaImage implements FramePlugin
         Image image = viewer.getImage();
         
         // create file dialog using last open path
-		String lastPath = ".";
-		openWindow = new JFileChooser(lastPath);
+        // create new file dialog
+        JFileChooser openWindow = frame.getGui().createOpenFileDialog("Save As MetaImage");
 		openWindow.setFileFilter(new FileNameExtensionFilter("MetaImage files (*.mhd, *.mha)", "mhd", "mha"));
 
 
@@ -65,15 +63,6 @@ public class SaveImageMetaImage implements FramePlugin
 		{
 			file = new File(file.getParent(), file.getName() + ".mhd");
 		}
-		
-//		// eventually keep path for future opening
-//		String path = file.getPath();
-//		lastPath = frame.getLastOpenPath();
-//		if (lastPath == null || lastPath.isEmpty())
-//		{
-//			System.out.println("update frame path");
-//			frame.setLastOpenPath(path);
-//		}
 		
 		// Create a writer with specified file
 		MetaImageWriter writer = new MetaImageWriter(file);
