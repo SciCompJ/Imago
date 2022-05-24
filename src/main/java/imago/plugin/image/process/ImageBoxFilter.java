@@ -36,7 +36,8 @@ public class ImageBoxFilter implements FramePlugin
 		System.out.println("box filter (generic)");
 
 		// get current image data
-		Image image	= ((ImageFrame) frame).getImage();
+        ImageFrame imageFrame = (ImageFrame) frame;
+        Image image = imageFrame.getImageHandle().getImage();
 		Array<?> array = image.getData();
 
 		int nd = array.dimensionality();
@@ -65,7 +66,7 @@ public class ImageBoxFilter implements FramePlugin
 		BoxFilter filter = new BoxFilter(diameters);
 		
 		// apply operator on current image
-		Image result = ((ImageFrame) frame).runOperator(filter, image);
+		Image result = imageFrame.runOperator(filter, image);
 		result.setName(image.getName() + "-filt");
 		
 		// add the image document to GUI

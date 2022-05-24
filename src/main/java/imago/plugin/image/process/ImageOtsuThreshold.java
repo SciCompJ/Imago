@@ -34,10 +34,10 @@ public class ImageOtsuThreshold implements FramePlugin
 		Image image = doc.getImage();
 
 		OtsuThreshold op = new OtsuThreshold();
-		Image result = op.process(image);
+		Image resultImage = ((ImageFrame) frame).runOperator("Otsu Threshold", op, image);
 				
 		// add the image document to GUI
-		frame.getGui().createImageFrame(result); 
+		frame.getGui().createImageFrame(resultImage); 
 	}
 
 }

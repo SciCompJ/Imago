@@ -3,7 +3,6 @@
  */
 package imago.plugin.image.analyze;
 
-import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
@@ -38,8 +37,8 @@ public class GrayLevelImageCooccurenceMatrix implements FramePlugin
         System.out.println("Co occurence matrix");
         
         // get current image data
-        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-        Image image = doc.getImage();
+        ImageFrame imageFrame = (ImageFrame) frame;
+        Image image = imageFrame.getImageHandle().getImage();
         Array<?> array = image.getData();
 
         // check input data type
