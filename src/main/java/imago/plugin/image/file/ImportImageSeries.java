@@ -6,9 +6,6 @@ package imago.plugin.image.file;
 import java.io.File;
 import java.io.FileFilter;
 
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 import net.sci.array.Array;
 import net.sci.image.Image;
 import imago.Imago;
@@ -30,20 +27,11 @@ public class ImportImageSeries implements FramePlugin
     @Override
     public void run(ImagoFrame frame, String args)
     {
-        // create new file dialog
-        JFileChooser openWindow = frame.getGui().createOpenFileDialog("Open Image Series");
-        openWindow.setFileFilter(new FileNameExtensionFilter("TIFF files (*.tif, *.tiff)", "tif", "tiff"));
-
-        // Open dialog to choose the file
-        int ret = openWindow.showOpenDialog(frame.getWidget());
-        if (ret != JFileChooser.APPROVE_OPTION) 
-        {
-            return;
-        }
-
-        // Check the chosen file is state
-        File file = openWindow.getSelectedFile();
-        if (!file.isFile()) 
+        // opens a dialog to choose the file
+        File file = frame.getGui().chooseFileToOpen(frame, "Open Image Series", CommonImageFileFilters.TIFF);
+        
+        // Check the chosen file is valid
+        if (file == null || !file.isFile())
         {
             return;
         }

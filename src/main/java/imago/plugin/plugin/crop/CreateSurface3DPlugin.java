@@ -40,6 +40,7 @@ import imago.gui.frames.ImageFrame;
 import imago.gui.frames.ImagoEmptyFrame;
 import imago.gui.tool.SelectPolygonTool;
 import imago.gui.viewer.StackSliceViewer;
+import imago.plugin.image.file.CommonImageFileFilters;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.polygon.LineString2D;
 import net.sci.geom.geom2d.polygon.Polyline2D;
@@ -399,35 +400,13 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
     public void onOpenImageButton()
     {
         this.imageFrame = null;
-        File file = chooseInputImageFile(parentFrame);
+        File file = parentFrame.getGui().chooseFileToOpen(parentFrame, "Choose 3D TIFF Image", CommonImageFileFilters.TIFF);
         if (file == null)
         {
             return;
         }
         
         openImage(file);
-    }
-    
-    private File chooseInputImageFile(ImagoFrame parentFrame)
-    {
-        // create new file dialog
-        JFileChooser openWindow = parentFrame.getGui().createOpenFileDialog("Choose TIFF 3D Image");
-        openWindow.setFileFilter(new FileNameExtensionFilter("TIFF files (*.tif, *.tiff)", "tif", "tiff"));
-
-        // Open dialog to choose the file
-        int ret = openWindow.showOpenDialog(parentFrame.getWidget());
-        if (ret != JFileChooser.APPROVE_OPTION) 
-        {
-            return null;
-        }
-
-        // Check the chosen file is valid
-        File file = openWindow.getSelectedFile();
-        if (!file.isFile()) 
-        {
-            return null;
-        }
-        return file;
     }
     
     /**

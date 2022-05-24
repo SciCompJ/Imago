@@ -442,13 +442,26 @@ public class ImagoGui
      * Creates a new JFileChooser instance to open a file. The dialog
      * automatically opens within the last open directory.
      * 
+     * Usage:
+     * 
+     * <pre>
+     * {@code
+        ImagoFrame frame = ...
+        File file = frame.getGui().chooseFileToOpen(frame, "Open Image");
+     * }
+     * </pre>
+     * 
+     * @param frame
+     *            the reference frame for positioning the file chooser dialog
+     *            (may be null)
      * @param title
      *            the title of the dialog
      * @param fileFilters
-     *            an optional list of file filters
-     * @return the reference to the JFileChooser
+     *            an optional list of file filters. The first one of the file
+     *            filters is selected as current filter.
+     * @return the selected file, or null if the dialog was canceled
      */
-    public JFileChooser createOpenFileDialog(String title, FileFilter... fileFilters)
+    public File chooseFileToOpen(ImagoFrame frame, String title, FileFilter... fileFilters)
     {
         // create dialog using last open path
         JFileChooser dlg = new JFileChooser(this.userPreferences.lastOpenPath);
@@ -464,6 +477,10 @@ public class ImagoGui
         {
             dlg.addChoosableFileFilter(filter);
         }
+        if (fileFilters.length > 0)
+        {
+            dlg.setFileFilter(fileFilters[0]);
+        }
         
         // add an action listener to keep path for future opening
         dlg.addActionListener(evt -> 
@@ -476,20 +493,33 @@ public class ImagoGui
                 this.userPreferences.lastOpenPath = path;
             }
         });
-        return dlg;
+        
+        // Open dialog to choose the file
+        int ret = dlg.showOpenDialog(frame == null ? null : frame.getWidget());
+        if (ret != JFileChooser.APPROVE_OPTION)
+        {
+            return null;
+        }
+        
+        // return the selected file
+        return dlg.getSelectedFile();
     }
 
     /**
-     * Creates a new JFileChooser instance to save a file. The dialog
-     * automatically opens within the last directory used for saving a file.
+     * Creates a new JFileChooser instance to open a file. The dialog
+     * automatically opens within the last directory used for saving.
      * 
+     * @param frame
+     *            the reference frame for positioning the file chooser dialog
+     *            (may be null)
      * @param title
      *            the title of the dialog
      * @param fileFilters
-     *            an optional list of file filters
-     * @return the reference to the JFileChooser
+     *            an optional list of file filters. The first one of the file
+     *            filters is selected as current filter.
+     * @return the selected file, or null if the dialog was canceled
      */
-    public JFileChooser createSaveFileDialog(String title, FileFilter... fileFilters)
+    public File chooseFileToSave(ImagoFrame frame, String title, String defaultName, FileFilter... fileFilters)
     {
         // create dialog using last open path
         JFileChooser dlg = new JFileChooser(this.userPreferences.lastSavePath);
@@ -505,6 +535,16 @@ public class ImagoGui
         {
             dlg.addChoosableFileFilter(filter);
         }
+        if (fileFilters.length > 0)
+        {
+            dlg.setFileFilter(fileFilters[0]);
+        }
+        
+        // if a name is selected, use it as default file
+        if (defaultName != null)
+        {
+            dlg.setSelectedFile(new File(this.userPreferences.lastSavePath, defaultName));
+        }
         
         // add an action listener to keep path for future opening
         dlg.addActionListener(evt -> 
@@ -517,7 +557,16 @@ public class ImagoGui
                 this.userPreferences.lastSavePath = path;
             }
         });
-        return dlg;
+        
+        // Open dialog to choose the file
+        int ret = dlg.showSaveDialog(frame == null ? null : frame.getWidget());
+        if (ret != JFileChooser.APPROVE_OPTION)
+        {
+            return null;
+        }
+        
+        // return the selected file
+        return dlg.getSelectedFile();
     }
 
     

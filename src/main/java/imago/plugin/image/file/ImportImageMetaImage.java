@@ -7,11 +7,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
-import imago.gui.ImagoFrame;
 import imago.gui.FramePlugin;
+import imago.gui.ImagoFrame;
 import net.sci.image.Image;
 import net.sci.image.io.MetaImageReader;
 
@@ -34,20 +31,11 @@ public class ImportImageMetaImage implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-        // create new file dialog
-        JFileChooser openWindow = frame.getGui().createOpenFileDialog("Open MetaImage File");
-        openWindow.setFileFilter(new FileNameExtensionFilter("MetaImage files (*.mhd, *.mha)", "mhd", "mha"));
-		
-		// Open dialog to choose the file
-		int ret = openWindow.showOpenDialog(frame.getWidget());
-		if (ret != JFileChooser.APPROVE_OPTION)
-		{
-			return;
-		}
-
-		// Check the chosen file is value
-		File file = openWindow.getSelectedFile();
-		if (!file.isFile())
+        // choose the file to open
+	    File file = frame.getGui().chooseFileToOpen(frame, "Open MetaImage File", CommonImageFileFilters.META_IMAGE);
+	    
+		// Check the chosen file is valid
+		if (file == null || !file.isFile())
 		{
 			return;
 		}

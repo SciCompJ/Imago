@@ -5,20 +5,17 @@ package imago.plugin.image.file;
 
 import java.io.File;
 
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
+import imago.gui.FramePlugin;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.frames.ImageFrame;
-import imago.gui.FramePlugin;
 import net.sci.image.Image;
 import net.sci.image.io.MetaImageWriter;
 
 
 /**
- * Save an image to MetaImag file format.
+ * Save an image to MetaImage file format.
  * 
  * @author David Legland
  *
@@ -43,22 +40,14 @@ public class SaveImageMetaImage implements FramePlugin
         ImageViewer viewer = iframe.getImageView();
         Image image = viewer.getImage();
         
-        // create file dialog using last open path
-        // create new file dialog
-        JFileChooser openWindow = frame.getGui().createOpenFileDialog("Save As MetaImage");
-		openWindow.setFileFilter(new FileNameExtensionFilter("MetaImage files (*.mhd, *.mha)", "mhd", "mha"));
+        // create file dialog using last save path
+        File file = frame.getGui().chooseFileToSave(frame, "Save As MetaImage", image.getName() + ".mhd", CommonImageFileFilters.META_IMAGE);
 
-
-		// Open dialog to choose the file
-		int ret = openWindow.showSaveDialog(frame.getWidget());
-		if (ret != JFileChooser.APPROVE_OPTION) 
+		// Check the selected file is valid
+		if (file == null)
 		{
-			return;
+		    return;
 		}
-
-		// Check the chosen file is state
-		File file = openWindow.getSelectedFile();
-		
 		if (!file.getName().endsWith(".mhd"))
 		{
 			file = new File(file.getParent(), file.getName() + ".mhd");
@@ -78,20 +67,7 @@ public class SaveImageMetaImage implements FramePlugin
 			return;
 		}
 		
+		iframe.getStatusBar().setProgressBarPercent(0);
 		System.out.println("save done");
 	}
-
-//	private String getLastOpenPath(ImagoFrame frame)
-//	{
-//		String path = ".";
-//		frame.get
-//		path = frame.getLastOpenPath();
-//		if (path == null || path.isEmpty())
-//		{
-//			path = ".";
-//		}
-//		
-//		return path;
-//	}
-	
 }

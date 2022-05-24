@@ -44,6 +44,7 @@ import imago.gui.frames.ImageFrame;
 import imago.gui.frames.ImagoEmptyFrame;
 import imago.gui.tool.SelectPolygonTool;
 import imago.gui.viewer.StackSliceViewer;
+import imago.plugin.image.file.CommonImageFileFilters;
 import net.sci.array.scalar.UInt8Array3D;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.polygon.Polygon2D;
@@ -522,7 +523,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     public void onOpenImageButton()
     {
         // Ask for the filename of the image to open
-        File file = chooseInputImageFile(parentFrame);
+        File file = parentFrame.getGui().chooseFileToOpen(parentFrame, "Choose Input 3D TIFF Image", CommonImageFileFilters.TIFF);
 
         // Check the chosen file is valid
         if (file == null)
@@ -539,26 +540,6 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         
         // create a viewer and a Crop3D object for the new image
         initializeFromImageFile(file);
-    }
-    
-    private File chooseInputImageFile(ImagoFrame parentFrame)
-    {
-        // create file dialog to read the 3D TIFF Image
-        JFileChooser openWindow = parentFrame.getGui().createOpenFileDialog("Choose Input 3D TIFF Image");
-        openWindow.setFileFilter(new FileNameExtensionFilter("TIFF files (*.tif, *.tiff)", "tif", "tiff"));
-
-        // Open dialog to choose the file
-        int ret = openWindow.showOpenDialog(parentFrame.getWidget());
-        if (ret != JFileChooser.APPROVE_OPTION) 
-        {
-            return null;
-        }
-
-        File file = openWindow.getSelectedFile();
-        
-        // keep path for future opening
-        this.lastOpenPath = file.getPath();
-        return file;
     }
     
     /**

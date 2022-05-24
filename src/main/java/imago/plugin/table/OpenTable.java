@@ -3,15 +3,12 @@
  */
 package imago.plugin.table;
 
-import imago.gui.ImagoFrame;
-import imago.gui.ImagoGui;
-import imago.gui.FramePlugin;
-
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.JFileChooser;
-
+import imago.gui.FramePlugin;
+import imago.gui.ImagoFrame;
+import imago.gui.ImagoGui;
 import net.sci.table.Table;
 import net.sci.table.io.DelimitedTableReader;
 
@@ -32,23 +29,22 @@ public class OpenTable implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-        // create new file dialog
-        JFileChooser openWindow = frame.getGui().createOpenFileDialog("Open Table");
+        // opens a dialog to choose the file
+        File file = frame.getGui().chooseFileToOpen(frame, "Open Table");
+        if (file == null)
+        {
+            return;
+        }
         
-		// Open dialog to choose the file
-		int ret = openWindow.showOpenDialog(frame.getWidget());
-		if (ret != JFileChooser.APPROVE_OPTION)
-		{
-			return;
-		}
-
-		// Check the chosen file is state
-		File file = openWindow.getSelectedFile();
-		if (!file.isFile())
-		{
-			return;
-		}
-
+        // Check the chosen file is valid
+        if (!file.isFile())
+        {
+            ImagoGui.showErrorDialog(frame,
+                    "Could not find the selected file: " + file.getName(),
+                    "Image I/O Error");
+            return;
+        }
+        
         // try reading the table
 		Table table;
 		try

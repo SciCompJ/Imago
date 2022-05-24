@@ -6,8 +6,6 @@ package imago.plugin.table;
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.JFileChooser;
-
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.frames.TableFrame;
@@ -16,13 +14,13 @@ import net.sci.table.io.DelimitedTableWriter;
 
 
 /**
+ * Opens a dialog to choose a file to save a table.
+ * 
  * @author David Legland
  *
  */
 public class SaveTable implements TablePlugin
 {
-    private JFileChooser saveWindow = null;
-    
     public SaveTable()
     {
     }
@@ -33,26 +31,25 @@ public class SaveTable implements TablePlugin
 	@Override
     public void run(ImagoFrame frame, String args)
 	{
-		// create file dialog if it doesn't exist
-		if (saveWindow == null)
-		{
-			saveWindow = new JFileChooser(".");
-			// openWindow.setFileFilter(fileFilter);
-		}
-
-		// Open dialog to choose the file
-		int ret = saveWindow.showSaveDialog(frame.getWidget());
-		if (ret != JFileChooser.APPROVE_OPTION)
-		{
-			return;
-		}
-
-		// Check the chosen file
-		File file = saveWindow.getSelectedFile();
+        // get table references by the frame
+        Table table = ((TableFrame) frame).getTable();
+        
+        // opens a dialog to choose the file
+        File file = frame.getGui().chooseFileToSave(frame, "Save Table", table.getName() + ".csv");
+        if (file == null)
+        {
+            return;
+        }
+        
+        // Check the chosen file is valid
+        if (!file.isFile())
+        {
+            ImagoGui.showErrorDialog(frame,
+                    "Could not find the selected file: " + file.getName(),
+                    "Image I/O Error");
+            return;
+        }
 	
-		// get table references by the frame
-		Table table = ((TableFrame) frame).getTable();
-		
 		try
 		{
 		    new DelimitedTableWriter().writeTable(table, file);

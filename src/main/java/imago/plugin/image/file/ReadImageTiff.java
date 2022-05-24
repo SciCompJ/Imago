@@ -6,9 +6,7 @@ package imago.plugin.image.file;
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.JFileChooser;
 import javax.swing.ProgressMonitor;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
@@ -42,23 +40,14 @@ public class ReadImageTiff implements FramePlugin, AlgoListener
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-        // create new file dialog
-        JFileChooser openWindow = frame.getGui().createOpenFileDialog("Open Tiff Image");
-		openWindow.setFileFilter(new FileNameExtensionFilter("TIFF files (*.tif, *.tiff)", "tif", "tiff"));
-
-		// Open dialog to choose the file
-		int ret = openWindow.showOpenDialog(frame.getWidget());
-		if (ret != JFileChooser.APPROVE_OPTION) 
-		{
-			return;
-		}
-
-		// Check the chosen file is valid
-		File file = openWindow.getSelectedFile();
-		if (!file.isFile()) 
-		{
-			return;
-		}
+        // opens a dialog to choose the file
+		File file = frame.getGui().chooseFileToOpen(frame, "Open Tiff Image", CommonImageFileFilters.TIFF);
+        
+        // Check the chosen file is valid
+        if (file == null || !file.isFile())
+        {
+            return;
+        }
 		
 		// Create a Tiff reader with the chosen file
 		TiffImageReader reader;

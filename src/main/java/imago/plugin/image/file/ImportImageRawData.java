@@ -8,16 +8,17 @@ import java.io.IOException;
 import java.nio.ByteOrder;
 import java.util.EnumSet;
 
-import javax.swing.JFileChooser;
-
+import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
-import imago.gui.FramePlugin;
+import imago.gui.ImagoGui;
 import net.sci.image.Image;
 import net.sci.image.io.RawImageReader;
 import net.sci.image.io.RawImageReader.DataType;
 
 /**
+ * Opens a dialog to read image raw data.
+ * 
  * @author dlegland
  *
  */
@@ -34,23 +35,23 @@ public class ImportImageRawData implements FramePlugin
     public void run(ImagoFrame frame, String args)
     {
         System.out.println("import raw data");
-        // create new file dialog
-        JFileChooser openWindow = frame.getGui().createOpenFileDialog("Open Raw Image File");
-        
-        // Open dialog to choose the file
-        int ret = openWindow.showOpenDialog(frame.getWidget());
-        if (ret != JFileChooser.APPROVE_OPTION)
+        // opens a dialog to choose the file
+        File file = frame.getGui().chooseFileToOpen(frame, "Open Image");
+        if (file == null)
         {
             return;
         }
-
-        // Check the chosen file is value
-        File file = openWindow.getSelectedFile();
+        
+        // Check the chosen file is valid
         if (!file.isFile())
         {
+            ImagoGui.showErrorDialog(frame,
+                    "Could not find the selected file: " + file.getName(),
+                    "Image I/O Error");
             return;
         }
-
+        
+        // Opens a dialog to select image size and type
         GenericDialog gd = new GenericDialog(frame, "Import Raw Data");
         gd.addNumericField("Size X ", 200, 0);
         gd.addNumericField("Size Y ", 200, 0);

@@ -3,15 +3,12 @@
  */
 package imago.plugin.image.file;
 
-import imago.Imago;
-import imago.gui.ImagoFrame;
-import imago.gui.ImagoGui;
-import imago.gui.FramePlugin;
-
 import java.io.File;
 
-import javax.swing.JFileChooser;
-
+import imago.Imago;
+import imago.gui.FramePlugin;
+import imago.gui.ImagoFrame;
+import imago.gui.ImagoGui;
 import net.sci.image.Image;
 
 /**
@@ -36,18 +33,14 @@ public class OpenImage implements FramePlugin
     @Override
     public void run(ImagoFrame frame, String args)
     {
-        // create new file dialog
-        JFileChooser openWindow = frame.getGui().createOpenFileDialog("Open Image");
-        
-        // Open dialog to choose the file
-        int ret = openWindow.showOpenDialog(frame.getWidget());
-        if (ret != JFileChooser.APPROVE_OPTION)
+        // opens a dialog to choose the file
+        File file = frame.getGui().chooseFileToOpen(frame, "Open Image");
+        if (file == null)
         {
             return;
         }
         
-        // Check the chosen file is state
-        File file = openWindow.getSelectedFile();
+        // Check the chosen file is valid
         if (!file.isFile())
         {
             ImagoGui.showErrorDialog(frame,
