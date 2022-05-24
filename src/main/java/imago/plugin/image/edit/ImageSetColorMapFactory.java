@@ -10,9 +10,9 @@ import imago.gui.ImagoFrame;
 import imago.gui.frames.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.color.Color;
-import net.sci.image.ColorMap;
-import net.sci.image.ColorMapFactory;
-import net.sci.image.DefaultColorMap;
+import net.sci.array.color.ColorMap;
+import net.sci.array.color.ColorMapFactory;
+import net.sci.array.color.DefaultColorMap;
 import net.sci.image.Image;
 
 /**

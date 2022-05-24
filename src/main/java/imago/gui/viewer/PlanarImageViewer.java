@@ -20,13 +20,13 @@ import imago.app.scene.ShapeNode;
 import imago.app.shape.Shape;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoTool;
+import net.sci.array.color.ColorMap;
+import net.sci.array.color.ColorMaps;
 import net.sci.array.scalar.ScalarArray2D;
 import net.sci.array.vector.VectorArray;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.image.BufferedImageUtils;
-import net.sci.image.ColorMap;
-import net.sci.image.ColorMaps;
 import net.sci.image.Image;
 
 
