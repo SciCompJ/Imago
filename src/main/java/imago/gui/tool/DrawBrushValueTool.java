@@ -111,7 +111,7 @@ public class DrawBrushValueTool extends ImagoTool
         double value = this.viewer.getGui().userPreferences.brushValue;
         double radius = this.viewer.getGui().userPreferences.brushRadius;
         double r2 = (radius + 0.5) * (radius + 0.5);
-        int ri = (int) Math.ceil(radius);
+        int ri = (int) Math.floor(radius);
         
         // select the 2D array to update
         ScalarArray2D<?> array2d = wrapArray(array);
@@ -120,18 +120,9 @@ public class DrawBrushValueTool extends ImagoTool
         for (int y2 = yi - ri; y2 <= yi + ri; y2++)
         {
             if (y2 < 0 || y2 > sizeY-1) continue;
-            double dy2 = (y2 - yi) * (y2 - yi);
-            
-            for (int x2 = xi - ri; x2 <= xi + ri; x2++)
-            {
-                if (x2 < 0 || x2 > sizeX-1) continue;
-                
-                double d2 = (x2 - xi) * (x2 - xi) + dy2;
-                if (d2 < r2)
-                {
-                    array2d.setValue(x2, y2, value);
-                }
-            }
+            int deltaY = y2 - yi;
+            int deltaX = (int) Math.floor(Math.sqrt(r2 - deltaY * deltaY));
+            fillHorizontalInterval(array2d, Math.max(xi - deltaX, 0), Math.min(xi + deltaX, sizeX - 1), y2, value);
         }
         
         // refresh display
@@ -189,14 +180,16 @@ public class DrawBrushValueTool extends ImagoTool
         this.viewer.repaint();
     }
     
-    private void drawLineOnArray(ScalarArray2D<?> array, int x1, int y1, int x2, int y2, double radius, double value)
+    private static void drawLineOnArray(ScalarArray2D<?> array, int x1, int y1, int x2, int y2, double radius, double value)
     {
         // array size
         int sizeX = array.size(0);
         int sizeY = array.size(1);
         
         // compute integer radius
-        int ri = (int) Math.round(radius);
+        int ri = (int) Math.floor(radius);
+        // compute squared radius
+        double r2 = radius * radius;
 
         // first determines if line is mostly horizontal or mostly vertical
         double dx = x2 - x1;
@@ -207,11 +200,13 @@ public class DrawBrushValueTool extends ImagoTool
             double slope = dy / dx;
                     
             // ensure positive increment of y
+            boolean swap = false;
             if (x1 > x2)
             {
                 // swap coords
                 int tmp = y1; y1 = y2; y2 = tmp;
                 tmp = x1; x1 = x2; x2 = tmp;
+                swap = true;
             }
             
             // draw a thick (mostly horizontal) line between extremities
@@ -224,6 +219,30 @@ public class DrawBrushValueTool extends ImagoTool
                     array.setValue(x, y, value);
                 }
             }
+            
+            // draw a half-disk after the end of the line
+            if (swap)
+            {
+                // draw half disk for x < x1
+                for (int x = x1 - 1; x >= x1 - ri; x--)
+                {
+                    if (x <= 0) break;
+                    int deltaX = x1 - x;
+                    int deltaY = (int) Math.floor(Math.sqrt(r2 - deltaX * deltaX));
+                    fillVerticalInterval(array, x, Math.max(y1 - deltaY, 0), Math.min(y1 + deltaY, sizeY - 1), value);
+                }
+            }
+            else
+            {
+                // draw half disk for x > x2
+                for (int x = x2 + 1; x <= x2 + ri; x++)
+                {
+                    if (x >= sizeX) break;
+                    int deltaX = x - x2;
+                    int deltaY = (int) Math.floor(Math.sqrt(r2 - deltaX * deltaX));
+                    fillVerticalInterval(array, x, Math.max(y2 - deltaY, 0), Math.min(y2 + deltaY, sizeY - 1), value);
+                }
+            }
         }
         else
         {
@@ -231,11 +250,13 @@ public class DrawBrushValueTool extends ImagoTool
             double slope = dx / dy;
                     
             // ensure positive increment of y
+            boolean swap = false;
             if (y1 > y2)
             {
                 // swap coords
                 int tmp = y1; y1 = y2; y2 = tmp;
                 tmp = x1; x1 = x2; x2 = tmp;
+                swap = true;
             }
             
             // draw a thick (mostly vertical) line between extremities
@@ -248,6 +269,46 @@ public class DrawBrushValueTool extends ImagoTool
                     array.setValue(x, y, value);
                 }
             }
+            
+            // draw a half-disk after the end of the line
+            if (swap)
+            {
+                // draw half disk for y < y1
+                for (int y = y1 - 1; y >= y1 - ri; y--)
+                {
+                    if (y <= 0) break;
+                    int deltaY = y1 - y;
+                    int deltaX = (int) Math.floor(Math.sqrt(r2 - deltaY * deltaY));
+                    fillHorizontalInterval(array, Math.max(x1 - deltaX, 0), Math.min(x1 + deltaX, sizeX - 1), y, value);
+                }
+            }
+            else
+            {
+                // draw half disk for y > y2
+                for (int y = y2 + 1; y <= y2 + ri; y++)
+                {
+                    if (y >= sizeY) break;
+                    int deltaY = y - y2;
+                    int deltaX = (int) Math.floor(Math.sqrt(r2 - deltaY * deltaY));
+                    fillHorizontalInterval(array, Math.max(x2 - deltaX, 0), Math.min(x2 + deltaX, sizeX - 1), y, value);
+                }
+            }
+        }
+    }
+    
+    private static void fillVerticalInterval(ScalarArray2D<?> array, int x, int y1, int y2, double value)
+    {
+        for (int y = y1; y <= y2; y++)
+        {
+            array.setValue(x, y, value);
+        }
+    }
+    
+    private static void fillHorizontalInterval(ScalarArray2D<?> array, int x1, int x2, int y, double value)
+    {
+        for (int x = x1; x <= x2; x++)
+        {
+            array.setValue(x, y, value);
         }
     }
     
