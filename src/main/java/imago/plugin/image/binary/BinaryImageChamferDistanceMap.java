@@ -16,12 +16,14 @@ import net.sci.array.color.ColorMaps;
 import net.sci.array.color.RGB8;
 import net.sci.image.DisplaySettings;
 import net.sci.image.Image;
-import net.sci.image.binary.ChamferWeights2D;
-import net.sci.image.binary.ChamferWeights3D;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DFloat32;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DUInt16;
 import net.sci.image.binary.distmap.ChamferDistanceTransform3DFloat32;
 import net.sci.image.binary.distmap.ChamferDistanceTransform3DUInt16;
+import net.sci.image.binary.distmap.ChamferMask2D;
+import net.sci.image.binary.distmap.ChamferMask3D;
+import net.sci.image.binary.distmap.ChamferMasks2D;
+import net.sci.image.binary.distmap.ChamferMasks3D;
 import net.sci.image.binary.distmap.DistanceTransform2D;
 import net.sci.image.binary.distmap.DistanceTransform3D;
 
@@ -68,14 +70,14 @@ public class BinaryImageChamferDistanceMap implements FramePlugin
 		GenericDialog gd = new GenericDialog(frame, "Distance Map");
 		if (nd == 2)
 		{
-            gd.addChoice("Chamfer Weights: ", ChamferWeights2D.getAllLabels(), ChamferWeights2D.CHESSKNIGHT.toString());
+            gd.addChoice("Chamfer Weights: ", ChamferMasks2D.getAllLabels(), ChamferMasks2D.CHESSKNIGHT.toString());
 		}
 		else if (nd == 3)
 		{
-            gd.addChoice("Chamfer Weights: ", ChamferWeights3D.getAllLabels(), ChamferWeights3D.WEIGHTS_3_4_5_7.toString());
+            gd.addChoice("Chamfer Weights: ", ChamferMasks3D.getAllLabels(), ChamferMasks3D.SVENSSON_3_4_5_7.toString());
 		}
         gd.addChoice("Output Type: ", new String[]{"16-bits", "32-bits float"}, "16-bits");
-        gd.addCheckBox("Normalize: ", true);
+        gd.addCheckBox("Normalize", true);
 		gd.showDialog();
 		
 		if (gd.wasCanceled())
@@ -92,7 +94,7 @@ public class BinaryImageChamferDistanceMap implements FramePlugin
 		Array<?> result;
 		if (nd == 2)
 		{
-            ChamferWeights2D weights = ChamferWeights2D.fromLabel(weightsName);
+            ChamferMask2D weights = ChamferMasks2D.fromLabel(weightsName).getMask();
 		    DistanceTransform2D op;
 		    if (bitDepthIndex == 0)
 		    {
@@ -108,7 +110,7 @@ public class BinaryImageChamferDistanceMap implements FramePlugin
 		else
 		{
 		    // Process 3D case
-            ChamferWeights3D weights = ChamferWeights3D.fromLabel(weightsName);
+            ChamferMask3D weights = ChamferMasks3D.fromLabel(weightsName).getMask();
             DistanceTransform3D op;
             if (bitDepthIndex == 0)
             {
