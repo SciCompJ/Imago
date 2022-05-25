@@ -88,7 +88,7 @@ public class BinaryImageChamferDistanceMap implements FramePlugin
 		int bitDepthIndex = gd.getNextChoiceIndex();
 		boolean normalize = gd.getNextBoolean();
 		
-		// apply connected components labeling
+		// Compute distance map
 		Array<?> result;
 		if (nd == 2)
 		{
@@ -129,7 +129,7 @@ public class BinaryImageChamferDistanceMap implements FramePlugin
 		settings.setBackgroundColor(RGB8.WHITE);
 		
 		// add the image document to GUI
-		frame.getGui().createImageFrame(resultImage);
+		frame.createImageFrame(resultImage);
 	}
 
     /**
