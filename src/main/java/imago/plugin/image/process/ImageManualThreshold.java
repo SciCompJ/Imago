@@ -8,6 +8,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.frames.ImageFrame;
 import net.sci.array.process.type.ScalarToBinary;
+import net.sci.array.scalar.IntArray;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.ScalarArray3D;
 import net.sci.image.Image;
@@ -87,7 +88,18 @@ public class ImageManualThreshold implements FramePlugin
         {
             resultImage = imageFrame.runOperator("Manual Threshold", algo, image);
         }
-        resultImage.setName(image.getName() + "-bin");
+        
+        // create image name
+        String suffix = upperThreshold ? "-ge" : "-le";
+        if (array instanceof IntArray)
+        {
+            suffix = suffix + ((int) thresholdValue);
+        }
+        else
+        {
+            suffix = suffix + thresholdValue;
+        }
+        resultImage.setName(image.getName() + suffix);
         
 		// add the image document to GUI
 		imageFrame.createImageFrame(resultImage); 
