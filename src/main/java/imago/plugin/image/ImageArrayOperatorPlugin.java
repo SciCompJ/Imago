@@ -5,6 +5,9 @@ package imago.plugin.image;
 
 import imago.gui.ImagoFrame;
 import imago.gui.frames.ImageFrame;
+
+import java.util.Locale;
+
 import imago.gui.FramePlugin;
 import net.sci.array.ArrayOperator;
 import net.sci.image.Image;
@@ -22,6 +25,10 @@ public class ImageArrayOperatorPlugin implements FramePlugin
 {    
     ArrayOperator operator;
     
+    String opName = null;
+    
+    String newNamePattern = null;
+    
     /**
      * Creates a new plugin from an operator.
      * 
@@ -31,6 +38,19 @@ public class ImageArrayOperatorPlugin implements FramePlugin
     public ImageArrayOperatorPlugin(ArrayOperator operator)
     {
         this.operator = operator;
+    }
+
+    /**
+     * Creates a new plugin from an operator.
+     * 
+     * @param operator
+     *            the instance of ArrayOperator
+     */
+    public ImageArrayOperatorPlugin(ArrayOperator operator, String opName, String newNamePattern)
+    {
+        this.operator = operator;
+        this.opName = opName;
+        this.newNamePattern = newNamePattern;
     }
 
     /* (non-Javadoc)
@@ -44,7 +64,18 @@ public class ImageArrayOperatorPlugin implements FramePlugin
         Image image = imageFrame.getImage();
         
         // run the operator on current image, using the dedicated method in ImageFrame instance
-        Image result = imageFrame.runOperator(operator, image);
+        Image result; 
+        if (opName != null)
+            result = imageFrame.runOperator(opName, operator, image);
+        else
+            result = imageFrame.runOperator(operator, image);
+        
+        // optionally creates new name
+        if (newNamePattern != null)
+        {
+            String newName = String.format(Locale.ENGLISH, newNamePattern, image.getName());
+            result.setName(newName);
+        }
         
         // display result image in a new frame
         imageFrame.createImageFrame(result);

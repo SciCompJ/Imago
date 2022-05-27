@@ -524,7 +524,7 @@ public class GuiBuilder
 
         menu.addSeparator();
 		addPlugin(menu, new ImageDuplicate(), "Duplicate", hasImage);
-		addArrayOperatorPlugin(menu, new ImageInverter(), "Invert", hasScalarImage || hasColorImage);
+		addArrayOperatorPlugin(menu, new ImageInverter(), "Invert", "%s-inv");
         
         // submenu for creation of phantoms
         JMenu phantomMenu = new JMenu("Phantoms");
@@ -834,6 +834,12 @@ public class GuiBuilder
     {
         FramePlugin plugin = new ImageArrayOperatorPlugin(operator);
         return addPlugin(menu, plugin, label, enabled);
+    }
+
+    private JMenuItem addArrayOperatorPlugin(JMenu menu, ArrayOperator operator, String label, String newNamePattern)
+    {
+        FramePlugin plugin = new ImageArrayOperatorPlugin(operator, label, newNamePattern);
+        return addPlugin(menu, plugin, label, plugin.isEnabled(frame));
     }
 
     private void addPlugin(JMenu menu, PluginHandler handler)
