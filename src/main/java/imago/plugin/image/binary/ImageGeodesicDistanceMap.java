@@ -11,20 +11,24 @@ import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.frames.ImageFrame;
 import imago.gui.FramePlugin;
-import net.sci.array.Array;
 import net.sci.array.Arrays;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.binary.BinaryArray2D;
 import net.sci.array.binary.BinaryArray3D;
 import net.sci.array.scalar.ScalarArray;
+import net.sci.array.scalar.UInt16;
+import net.sci.array.scalar.UInt16Array;
 import net.sci.image.Image;
-import net.sci.image.binary.ChamferWeights2D;
-import net.sci.image.binary.ChamferWeights3D;
+import net.sci.image.binary.distmap.ChamferMask2D;
+import net.sci.image.binary.distmap.ChamferMask3D;
+import net.sci.image.binary.distmap.ChamferMasks2D;
+import net.sci.image.binary.distmap.ChamferMasks3D;
 import net.sci.image.binary.geoddist.GeodesicDistanceTransform2D;
-import net.sci.image.binary.geoddist.GeodesicDistanceTransform2DFloat32Hybrid5x5;
-import net.sci.image.binary.geoddist.GeodesicDistanceTransform2DUInt16Hybrid5x5;
+import net.sci.image.binary.geoddist.GeodesicDistanceTransform2DFloat32Hybrid;
+import net.sci.image.binary.geoddist.GeodesicDistanceTransform2DUInt16Hybrid;
 import net.sci.image.binary.geoddist.GeodesicDistanceTransform3D;
-import net.sci.image.binary.geoddist.GeodesicDistanceTransform3DFloat32Hybrid3x3;
+import net.sci.image.binary.geoddist.GeodesicDistanceTransform3DFloat32Hybrid;
+import net.sci.image.binary.geoddist.GeodesicDistanceTransform3DUInt16Hybrid;
 
 /**
  * Computes geodesic distance map of a marker image constrained by a mask image.
@@ -78,14 +82,14 @@ public class ImageGeodesicDistanceMap implements FramePlugin
 		gd.addChoice("Mask: ", imageNameArray, firstImageName);
         if (nd == 2)
         {
-            gd.addChoice("Chamfer Weights: ", ChamferWeights2D.getAllLabels(), ChamferWeights2D.CHESSKNIGHT.toString());
+            gd.addChoice("Chamfer Mask: ", ChamferMasks2D.getAllLabels(), ChamferMasks2D.CHESSKNIGHT.toString());
         }
         else if (nd == 3)
         {
-            gd.addChoice("Chamfer Weights: ", ChamferWeights3D.getAllLabels(), ChamferWeights3D.WEIGHTS_3_4_5_7.toString());
+            gd.addChoice("Chamfer Mask: ", ChamferMasks3D.getAllLabels(), ChamferMasks3D.SVENSSON_3_4_5_7.toString());
         }
-        gd.addChoice("Output Type: ", new String[]{"16-bits", "32-bits float"}, "16-bits");
-        gd.addCheckBox("Normalize: ", true);
+        gd.addChoice("Output Type: ", new String[]{"16-bits integer", "32-bits float"}, "16-bits integer");
+        gd.addCheckBox("Normalize ", true);
         gd.showDialog();
 		
 		if (gd.getOutput() == GenericDialog.Output.CANCEL) 
@@ -93,16 +97,23 @@ public class ImageGeodesicDistanceMap implements FramePlugin
 			return;
 		}
 		
-		// parse input image names
+		// parse user choices
 		Image markerImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
 		Image maskImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
-		Array<?> marker = markerImage.getData();
-		Array<?> mask = maskImage.getData();
 		String weightsName = gd.getNextChoice();
 		int bitDepthIndex = gd.getNextChoiceIndex();
 		boolean normalize = gd.getNextBoolean();
 
-		// check inputs
+        // check input type 
+		if (!(markerImage.getData() instanceof BinaryArray) || !(maskImage.getData() instanceof BinaryArray) )
+		{
+			frame.showErrorDialog("Both arrays must be binary", "Image Type Error");
+			return;
+		}
+        BinaryArray marker = BinaryArray.wrap(markerImage.getData());
+        BinaryArray mask = BinaryArray.wrap(maskImage.getData());
+        
+		// check inputs dimensionality and size 
 		if (!Arrays.isSameDimensionality(marker, mask))
 		{
 			frame.showErrorDialog("Both arrays must have same dimensionality", "Dimensionality Error");
@@ -112,12 +123,6 @@ public class ImageGeodesicDistanceMap implements FramePlugin
 		if (!Arrays.isSameSize(marker, mask))
 		{
 			frame.showErrorDialog("Both arrays must have same size", "Image Size Error");
-			return;
-		}
-		
-		if (!(marker instanceof BinaryArray) || !(mask instanceof BinaryArray) )
-		{
-			frame.showErrorDialog("Both arrays must be binary", "Image Type Error");
 			return;
 		}
 		if (marker.dimensionality() != nd)
@@ -134,21 +139,21 @@ public class ImageGeodesicDistanceMap implements FramePlugin
 		if (nd == 2)
 		{
 		    // cast dimensions
-            BinaryArray2D marker2d = BinaryArray2D.wrap(BinaryArray.wrap(marker));
-            BinaryArray2D mask2d = BinaryArray2D.wrap(BinaryArray.wrap(mask));
-            ChamferWeights2D weights = ChamferWeights2D.fromLabel(weightsName);
+            BinaryArray2D marker2d = BinaryArray2D.wrap(marker);
+            BinaryArray2D mask2d = BinaryArray2D.wrap(mask);
+            ChamferMask2D chamferMask = ChamferMasks2D.fromLabel(weightsName).getMask();
             
             // create algorithm depending on output data type
             GeodesicDistanceTransform2D algo;
             if (bitDepthIndex == 0)
             {
                 // compute using 16-bits integers
-                algo = new GeodesicDistanceTransform2DUInt16Hybrid5x5(weights, normalize);
+                algo = new GeodesicDistanceTransform2DUInt16Hybrid(chamferMask, normalize);
             }
             else
             {
                 // compute using 32-bits floating-points
-                algo = new GeodesicDistanceTransform2DFloat32Hybrid5x5(weights, normalize);
+                algo = new GeodesicDistanceTransform2DFloat32Hybrid(chamferMask, normalize);
             }
             
             // run algorithm using progress monitoring
@@ -163,23 +168,21 @@ public class ImageGeodesicDistanceMap implements FramePlugin
 		else if (nd == 3)
 		{
             // cast dimensions
-            BinaryArray3D marker3d = BinaryArray3D.wrap(BinaryArray.wrap(marker));
-            BinaryArray3D mask3d = BinaryArray3D.wrap(BinaryArray.wrap(mask));
-            ChamferWeights3D weights = ChamferWeights3D.fromLabel(weightsName);
+            BinaryArray3D marker3d = BinaryArray3D.wrap(marker);
+            BinaryArray3D mask3d = BinaryArray3D.wrap(mask);
+            ChamferMask3D chamferMask = ChamferMasks3D.fromLabel(weightsName).getMask();
             
             // create algorithm depending on output data type
             GeodesicDistanceTransform3D algo;
             if (bitDepthIndex == 0)
             {
-                // compute using 16-bits integers
-                frame.showErrorDialog("Computation for 3D Integer images not implemented...", "Dimensionality Error");
-                return;
-//                algo = new GeodesicDistanceTransform3DUInt16Hybrid5x5(weights, normalize);
+             // compute using 16-bits integer
+                algo = new GeodesicDistanceTransform3DUInt16Hybrid(chamferMask, normalize);
             }
             else
             {
                 // compute using 32-bits floating-points
-                algo = new GeodesicDistanceTransform3DFloat32Hybrid3x3(weights, normalize);
+                algo = new GeodesicDistanceTransform3DFloat32Hybrid(chamferMask, normalize);
             }
             
             // run algorithm using progress monitoring
@@ -206,6 +209,30 @@ public class ImageGeodesicDistanceMap implements FramePlugin
 		// Create result image
 		Image resultImage = new Image(result, markerImage);
 		resultImage.setName(markerImage.getName() + "-geodDist");
+		
+		// compute maximum (finite) distance value within mask image
+		double maxDist = 0;
+		if (bitDepthIndex == 0)
+		{
+		    for (int dist : ((UInt16Array) result).selectInts(mask))
+		    {
+                if (dist < UInt16.MAX_VALUE)
+                {
+                    maxDist = Math.max(dist, maxDist);
+                }		        
+		    }
+		}
+		else
+		{
+		    for (double dist : result.selectValues(mask))
+		    {
+                if (Double.isFinite(dist))
+                {
+                    maxDist = Math.max(dist, maxDist);
+                }
+		    }
+		}
+		resultImage.getDisplaySettings().setDisplayRange(new double[] {0, maxDist});
 		
         // add the image document to GUI
         frame.createImageFrame(resultImage);
