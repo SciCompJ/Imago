@@ -214,7 +214,7 @@ public class ImageGeodesicDistanceMap implements FramePlugin
 		double maxDist = 0;
 		if (bitDepthIndex == 0)
 		{
-		    for (int dist : ((UInt16Array) result).selectInts(mask))
+		    for (int dist : mask.selectInts((UInt16Array) result))
 		    {
                 if (dist < UInt16.MAX_VALUE)
                 {
@@ -224,7 +224,7 @@ public class ImageGeodesicDistanceMap implements FramePlugin
 		}
 		else
 		{
-		    for (double dist : result.selectValues(mask))
+		    for (double dist : mask.selectValues(result))
 		    {
                 if (Double.isFinite(dist))
                 {
