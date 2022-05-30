@@ -155,6 +155,7 @@ import imago.plugin.image.process.MergeChannelImages;
 import imago.plugin.image.process.VectorImageChannelView;
 import imago.plugin.image.shape.Image3DGetCurrentSlice;
 import imago.plugin.image.shape.Image3DGetSlice;
+import imago.plugin.image.shape.Image3DMontage;
 import imago.plugin.image.shape.Image3DRotate90;
 import imago.plugin.image.shape.ImageConcatenate;
 import imago.plugin.image.shape.ImageCropDialog;
@@ -516,6 +517,7 @@ public class GuiBuilder
         addPlugin(stackMenu, new Image3DGetCurrentSlice(), "Extract Current Slice", hasImage3D);
         addPlugin(stackMenu, new Image3DGetSlice(), "Extract Slice...", hasImage3D);
         addPlugin(stackMenu, new Image3DOrthoslicesImage(), "Create OrthoSlices Image...", hasImage3D);
+        addPlugin(stackMenu, new Image3DMontage(), "Image 3D Montage...", hasImage3D);
         stackMenu.addSeparator();
         addPlugin(stackMenu, new Image3DSetOrthoSlicesDisplay(), "Set Orthoslices Display", hasImage3D);
         stackMenu.addSeparator();
