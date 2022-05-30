@@ -33,6 +33,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import imago.app.ImagoApp;
+import imago.app.UserPreferences;
 import imago.app.scene.ImageSerialSectionsNode;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
@@ -620,7 +621,8 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         this.imagePath = imageFileName.getAbsolutePath();
         this.lastOpenPath = imageFileName.getPath();
         // update path for future opening
-        this.imageFrame.getGui().userPreferences.lastOpenPath = lastOpenPath;
+        UserPreferences prefs = parentFrame.getGui().getAppli().userPreferences;
+        prefs.lastOpenPath = lastOpenPath;
         
         // update widgets
         imageNameLabel.setText(image.getName());

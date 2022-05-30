@@ -30,9 +30,9 @@ public class ImagoApp
     Workspace workspace = new Workspace();
 
     /**
-     * The path of the last file that was open (global for the application).
+     * Some global settings / preferences for current user.
      */
-	File lastOpenFile = new File(".");
+    public UserPreferences userPreferences = new UserPreferences();
 	
 	
 	// =============================================================
@@ -43,6 +43,27 @@ public class ImagoApp
 	 */
 	public ImagoApp()
 	{
+	    this.userPreferences = loadUserPreferences();
+	}
+	
+	private UserPreferences loadUserPreferences()
+	{
+	    // retrieve imago directory within user home directory
+        String userHome = System.getProperty("user.home");
+        File prefsDir = new File(userHome, ".imago");
+        if (!prefsDir.exists())
+        {
+            return new UserPreferences();
+        }
+        
+        // identify property file containing preferences
+        File initFile = new File(prefsDir, "imago_prefs.txt");
+        if (!initFile.exists())
+        {
+            return new UserPreferences();
+        }
+        
+        return UserPreferences.read(initFile);
 	}
 
 	
@@ -331,6 +352,30 @@ public class ImagoApp
             return baseName + "." + extensionName;
     }
     
+    // =============================================================
+    // Management of user preferences
+    
+    /**
+     * Save user preferences within default file in
+     * "[user.home]/.imago/imago_prefs.txt".
+     */
+    public void saveUserPreferences()
+    {
+        // retrieve imago directory within user home directory
+        String userHome = System.getProperty("user.home");
+        File prefsDir = new File(userHome, ".imago");
+        if (!prefsDir.exists())
+        {
+            prefsDir.mkdir();
+        }
+        
+        // identify property file containing preferences
+        File initFile = new File(prefsDir, "imago_prefs.txt");
+        
+        // save preferences
+        this.userPreferences.write(initFile);
+    }
+
 
     // =============================================================
     // Management of workspace
@@ -343,18 +388,4 @@ public class ImagoApp
         return workspace;
     }
 
-
-    // =============================================================
-    // Management of global settings
-
-	public File getLastOpenFile()
-	{
-		return lastOpenFile;
-	}
-
-
-	public void setLastOpenFile(File lastOpenFile)
-	{
-		this.lastOpenFile = lastOpenFile;
-	}
 }

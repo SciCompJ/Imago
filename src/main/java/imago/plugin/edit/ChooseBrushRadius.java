@@ -6,6 +6,7 @@ package imago.plugin.edit;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
+import imago.app.UserPreferences;
 import imago.gui.FramePlugin;
 
 /**
@@ -26,7 +27,8 @@ public class ChooseBrushRadius implements FramePlugin
     public void run(ImagoFrame frame, String args)
 	{
 	    ImagoGui gui = frame.getGui();
-	    double brushRadius = gui.userPreferences.brushRadius;
+	    UserPreferences prefs = gui.getAppli().userPreferences;
+        double brushRadius = prefs.brushRadius;
 	    
 	    GenericDialog dlg = new GenericDialog(frame, "Brush Radius");
 	    dlg.addNumericField("Brush Radius", brushRadius, 2, "The radius ofthe brush used to draw on images");
@@ -38,9 +40,9 @@ public class ChooseBrushRadius implements FramePlugin
 	    }
 	    
 	    double value = dlg.getNextNumber();
-	    gui.userPreferences.brushRadius = value;
+	    prefs.brushRadius = value;
 
-	    System.out.println("brush radius changed to: " + gui.userPreferences.brushRadius);
+	    System.out.println("brush radius changed to: " + prefs.brushRadius);
 	}
 
 }

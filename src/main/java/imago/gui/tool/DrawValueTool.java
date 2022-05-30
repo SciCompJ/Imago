@@ -6,6 +6,7 @@ package imago.gui.tool;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 
+import imago.app.UserPreferences;
 import imago.gui.ImagoTool;
 import imago.gui.frames.ImageFrame;
 import imago.gui.viewer.ImageDisplay;
@@ -84,7 +85,8 @@ public class DrawValueTool extends ImagoTool
         if (xi < 0 || yi < 0) return;
         if (xi >= sizeX || yi >= sizeY) return;
         
-        double value = this.viewer.getGui().userPreferences.brushValue;
+        UserPreferences prefs = viewer.getGui().getAppli().userPreferences;
+        double value = prefs.brushValue;
 
         if (array.dimensionality() == 2)
         {

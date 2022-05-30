@@ -6,6 +6,7 @@ package imago.gui.tool;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 
+import imago.app.UserPreferences;
 import imago.gui.ImagoTool;
 import imago.gui.frames.ImageFrame;
 import imago.gui.viewer.ImageDisplay;
@@ -108,8 +109,9 @@ public class DrawBrushValueTool extends ImagoTool
         xprev = xi;
         yprev = yi;
         
-        double value = this.viewer.getGui().userPreferences.brushValue;
-        double radius = this.viewer.getGui().userPreferences.brushRadius;
+        UserPreferences prefs = this.viewer.getGui().getAppli().userPreferences;
+        double value = prefs.brushValue;
+        double radius = prefs.brushRadius;
         double r2 = (radius + 0.5) * (radius + 0.5);
         int ri = (int) Math.floor(radius);
         
@@ -166,8 +168,9 @@ public class DrawBrushValueTool extends ImagoTool
         if (xi >= sizeX || yi >= sizeY) return;
         
         // retrieve brush settings
-        double value = this.viewer.getGui().userPreferences.brushValue;
-        double radius = this.viewer.getGui().userPreferences.brushRadius;
+        UserPreferences prefs = this.viewer.getGui().getAppli().userPreferences;
+        double value = prefs.brushValue;
+        double radius = prefs.brushRadius;
         
         drawLineOnArray(array2d, xprev, yprev, xi, yi, radius, value);
         

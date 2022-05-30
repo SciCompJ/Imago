@@ -130,12 +130,7 @@ public class ImagoGui
 	 * An empty frame without document, displayed at startup.
 	 */
 	ImagoFrame emptyFrame = null;
-	
-	/**
-	 * Some global settings / preferences for current user.
-	 */
-	public UserPreferences userPreferences = new UserPreferences();
-	
+		
     ArrayList<PluginHandler> pluginHandlers = new ArrayList<PluginHandler>();
 
     
@@ -161,6 +156,9 @@ public class ImagoGui
 	public ImagoGui(ImagoApp app)
 	{
 		this.app = app;
+		
+		
+		
 		setupLookAndFeel();
 		
 		try 
@@ -464,7 +462,7 @@ public class ImagoGui
     public File chooseFileToOpen(ImagoFrame frame, String title, FileFilter... fileFilters)
     {
         // create dialog using last open path
-        JFileChooser dlg = new JFileChooser(this.userPreferences.lastOpenPath);
+        JFileChooser dlg = new JFileChooser(this.app.userPreferences.lastOpenPath);
         
         // setup dialog title
         if (title != null)
@@ -490,7 +488,7 @@ public class ImagoGui
                 // update path for future opening
                 File file = dlg.getSelectedFile();
                 String path = file.getParent();
-                this.userPreferences.lastOpenPath = path;
+                this.app.userPreferences.lastOpenPath = path;
             }
         });
         
@@ -522,7 +520,7 @@ public class ImagoGui
     public File chooseFileToSave(ImagoFrame frame, String title, String defaultName, FileFilter... fileFilters)
     {
         // create dialog using last open path
-        JFileChooser dlg = new JFileChooser(this.userPreferences.lastSavePath);
+        JFileChooser dlg = new JFileChooser(this.app.userPreferences.lastSavePath);
         
         // setup dialog title
         if (title != null)
@@ -543,7 +541,7 @@ public class ImagoGui
         // if a name is selected, use it as default file
         if (defaultName != null)
         {
-            dlg.setSelectedFile(new File(this.userPreferences.lastSavePath, defaultName));
+            dlg.setSelectedFile(new File(this.app.userPreferences.lastSavePath, defaultName));
         }
         
         // add an action listener to keep path for future opening
@@ -554,7 +552,7 @@ public class ImagoGui
                 // update path for future opening
                 File file = dlg.getSelectedFile();
                 String path = file.getParent();
-                this.userPreferences.lastSavePath = path;
+                this.app.userPreferences.lastSavePath = path;
             }
         });
         
