@@ -15,7 +15,8 @@ import net.sci.array.scalar.IntArray2D;
 import net.sci.geom.geom2d.polygon.Polyline2D;
 import net.sci.image.Image;
 import net.sci.image.analyze.region2d.GeodesicDiameter;
-import net.sci.image.binary.ChamferWeights2D;
+import net.sci.image.binary.distmap.ChamferMask2D;
+import net.sci.image.binary.distmap.ChamferMasks2D;
 import net.sci.table.Table;
 
 /**
@@ -61,8 +62,7 @@ public class LabelImageGeodesicDiameters implements FramePlugin
         ImagoGui gui = frame.getGui();
         
         GenericDialog dlg = new GenericDialog(frame, "Geodesic Diameters");
-        dlg.addChoice("Distances", ChamferWeights2D.getAllLabels(), 
-                ChamferWeights2D.CHESSKNIGHT.toString());
+        dlg.addChoice("Chamfer Weights: ", ChamferMasks2D.getAllLabels(), ChamferMasks2D.CHESSKNIGHT.toString());
         dlg.addCheckBox("Display Table ", true);
         dlg.addCheckBox("Overlay Results ", true);
         Collection<String> imageNames = gui.getAppli().getImageHandleNames();
@@ -71,13 +71,13 @@ public class LabelImageGeodesicDiameters implements FramePlugin
         dlg.addChoice("Image to Overlay ", imageNameArray, firstImageName);
         dlg.showDialog();
         
-        ChamferWeights2D weights = ChamferWeights2D.fromLabel(dlg.getNextChoice());
+        ChamferMask2D mask = ChamferMasks2D.fromLabel(dlg.getNextChoice()).getMask();
         boolean showTable = dlg.getNextBoolean();
         boolean overlayPaths = dlg.getNextBoolean();
         String imageToOverlay = dlg.getNextChoice();
         
         // Extract diameters
-        GeodesicDiameter algo = new GeodesicDiameter(weights);
+        GeodesicDiameter algo = new GeodesicDiameter(mask);
         algo.setComputePaths(overlayPaths);
         Map<Integer, GeodesicDiameter.Result> diams = algo.analyzeRegions(image);
         
@@ -99,7 +99,6 @@ public class LabelImageGeodesicDiameters implements FramePlugin
             for (GeodesicDiameter.Result res : diams.values())
             {
                 Polyline2D poly = Polyline2D.create(res.path, false);
-//                LineSegment2D line = new LineSegment2D(res.firstExtremity, res.secondExtremity);
                 ovrDoc.addShape(new Shape(poly));
             }
             
