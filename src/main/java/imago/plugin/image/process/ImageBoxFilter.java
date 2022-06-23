@@ -4,11 +4,12 @@
 package imago.plugin.image.process;
 
 import imago.app.ImageHandle;
+import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.frames.ImageFrame;
-import imago.gui.FramePlugin;
 import net.sci.array.Array;
+import net.sci.array.scalar.ScalarArray;
 import net.sci.image.Image;
 import net.sci.image.process.filter.BoxFilter;
 
@@ -20,7 +21,7 @@ import net.sci.image.process.filter.BoxFilter;
  */
 public class ImageBoxFilter implements FramePlugin
 {
-	public ImageBoxFilter()
+    public ImageBoxFilter()
 	{
 	}
 
@@ -42,14 +43,16 @@ public class ImageBoxFilter implements FramePlugin
 
 		int nd = array.dimensionality();
 		
-		
+		// create a dialog for the user to choose options
 		GenericDialog gd = new GenericDialog(frame, "Flat Blur");
 		for (int d = 0; d < nd; d++)
 		{
 			gd.addNumericField("Size dim. " + (d+1), 3, 0);
 		}
-		gd.showDialog();
+        gd.addChoice("Output Type", ScalarOutputTypes.all(), ScalarOutputTypes.SAME_AS_INPUT);
 		
+		// wait the user to choose
+		gd.showDialog();
 		if (gd.getOutput() == GenericDialog.Output.CANCEL) 
 		{
 			return;
@@ -61,9 +64,11 @@ public class ImageBoxFilter implements FramePlugin
 		{
 			diameters[d] = (int) gd.getNextNumber();
 		}
+		ScalarArray.Factory<?> factory = ScalarOutputTypes.fromLabel(gd.getNextChoice()).getFactory();
 
 		// create box filtering operator from user settings
 		BoxFilter filter = new BoxFilter(diameters);
+		filter.setFactory(factory);
 		
 		// apply operator on current image
 		Image result = imageFrame.runOperator(filter, image);
