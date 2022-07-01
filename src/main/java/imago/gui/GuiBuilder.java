@@ -59,6 +59,7 @@ import imago.plugin.image.analyze.LabelImageGeodesicDiameters;
 import imago.plugin.image.analyze.LabelImageMaxFeretDiameters;
 import imago.plugin.image.binary.BinaryImageChamferDistanceMap;
 import imago.plugin.image.binary.BinaryImageConnectedComponentsLabeling;
+import imago.plugin.image.binary.BinaryImageFillHoles;
 import imago.plugin.image.binary.BinaryImageMorphologicalFilter;
 import imago.plugin.image.binary.BinaryImageMorphologicalReconstruction;
 import imago.plugin.image.binary.BinaryImageOverlay;
@@ -593,6 +594,7 @@ public class GuiBuilder
         addPlugin(morphologyMenu, new ImageIteratedGeodesicDilations(), "Geodesic Dilation...");
 		morphologyMenu.addSeparator();
         addPlugin(morphologyMenu, new ImageFillHoles(), "Fill Holes");
+        addPlugin(morphologyMenu, new BinaryImageFillHoles(), "Binary Fill Holes");
         addPlugin(morphologyMenu, new ImageKillBorders(), "Kill Borders");
 		menu.add(morphologyMenu);
 		
