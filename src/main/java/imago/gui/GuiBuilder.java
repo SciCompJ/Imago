@@ -160,6 +160,7 @@ import imago.plugin.image.shape.Image3DGetCurrentSlice;
 import imago.plugin.image.shape.Image3DGetSlice;
 import imago.plugin.image.shape.Image3DMontage;
 import imago.plugin.image.shape.Image3DRotate90;
+import imago.plugin.image.shape.ImageApplyTransformFromTable;
 import imago.plugin.image.shape.ImageConcatenate;
 import imago.plugin.image.shape.ImageCropDialog;
 import imago.plugin.image.shape.ImageCropSelection;
@@ -503,6 +504,7 @@ public class GuiBuilder
         addArrayOperatorPlugin(geometryMenu, new Rotate90(+1), "Rotate Right", hasImage2D);
 		addPlugin(geometryMenu, new ImageRotateAroundCenter(), "Rotate...", hasImage2D);
         addPlugin(geometryMenu, new Image3DRotate90(), "Rotate 3D by 90 degrees...", hasImage3D);
+        addPlugin(geometryMenu, new ImageApplyTransformFromTable(), "Apply Affine Transform in Table", hasImage2D);
         geometryMenu.addSeparator();
         addPlugin(geometryMenu, new ImageReshape(), "Reshape Image...", hasImage);
         addPlugin(geometryMenu, new ImagePermuteDims(), "Permute Image Dimensions...", hasImage);
