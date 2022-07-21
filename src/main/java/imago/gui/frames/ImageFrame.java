@@ -21,6 +21,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Locale;
 
 import javax.swing.JFrame;
@@ -49,6 +51,48 @@ import net.sci.image.ImageArrayOperator;
  */
 public class ImageFrame extends ImagoFrame implements AlgoListener
 {
+    // ===================================================================
+    // Static methods
+    
+    public static final Collection<ImageFrame> getImageFrames(ImagoGui gui)
+    {
+        ArrayList<ImageFrame> res = new ArrayList<ImageFrame>();
+        for (ImagoFrame frame : gui.getFrames())
+        {
+            if (frame instanceof ImageFrame)
+            {
+                res.add((ImageFrame) frame);
+            }
+        }
+        
+        return res;
+    }
+    
+    /**
+     * Returns the ImageFrame in the specified GUI instance that contains the
+     * image with the specified name.
+     * 
+     * @param gui
+     *            the GUI to explore.
+     * @param name
+     *            the name of the image within the frame
+     * @return the frame containing the image, or null if no such Image exists.
+     */
+    public static final ImageFrame getImageFrame(ImagoGui gui, String name)
+    {
+        for (ImageFrame frame : getImageFrames(gui))
+        {
+            if (name.equals(frame.getImage().getName()))
+            {
+                return frame;
+            }
+        }
+        
+        return null;
+    }
+    
+
+    
 	// ===================================================================
 	// Class variables
     

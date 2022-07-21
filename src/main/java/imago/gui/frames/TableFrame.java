@@ -6,6 +6,7 @@ package imago.gui.frames;
 import imago.app.TableHandle;
 import imago.gui.GuiBuilder;
 import imago.gui.ImagoFrame;
+import imago.gui.ImagoGui;
 import imago.gui.util.RowNumberTable;
 
 import java.awt.BorderLayout;
@@ -14,6 +15,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -30,6 +33,48 @@ import net.sci.table.Table;
  */
 public class TableFrame extends ImagoFrame
 {
+    // ===================================================================
+    // Static methods
+    
+    public static final Collection<TableFrame> getTableFrames(ImagoGui gui)
+    {
+        ArrayList<TableFrame> res = new ArrayList<TableFrame>();
+        for (ImagoFrame frame : gui.getFrames())
+        {
+            if (frame instanceof TableFrame)
+            {
+                res.add((TableFrame) frame);
+            }
+        }
+        
+        return res;
+    }
+    
+    /**
+     * Returns the TableFrame in the specified GUI instance that contains the
+     * table with the specified name.
+     * 
+     * @param gui
+     *            the GUI to explore.
+     * @param name
+     *            the name of the table within the frame
+     * @return the frame containing the table, or null if no such Table exists.
+     */
+    public static final TableFrame getTableFrame(ImagoGui gui, String name)
+    {
+        for (TableFrame frame : getTableFrames(gui))
+        {
+            if (name.equals(frame.getTable().getName()))
+            {
+                return frame;
+            }
+        }
+        
+        return null;
+    }
+    
+    
+    
     // ===================================================================
     // Class variables
 

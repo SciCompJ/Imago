@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -594,6 +595,7 @@ public class ImagoGui
 	 * Creates a new document from an image, adds it to the application, 
 	 * and returns a new frame associated to this document. 
 	 */
+    //TODO: deprecate to switch to static method in ImageFrame
 	public ImageFrame createImageFrame(Image image)
 	{
 		return createImageFrame(image, null);
@@ -603,6 +605,7 @@ public class ImagoGui
      * Creates a new document from an image, adds it to the application, 
      * and returns a new frame associated to this document. 
      */
+    //TODO: deprecate to switch to static method in ImageFrame
     public ImageFrame createImageFrame(Image image, ImagoFrame parentFrame)
     {
     	// First create a handle for the image
@@ -648,6 +651,20 @@ public class ImagoGui
 	
     // ===================================================================
     // Frame management
+    
+    public Collection<ImagoFrame> getFrames(Function<ImagoFrame, Boolean> filter)
+    {
+        ArrayList<ImagoFrame> res = new ArrayList<ImagoFrame>();
+        for (ImagoFrame frame : this.frames)
+        {
+            if (filter.apply(frame))
+            {
+                res.add(frame);
+            }
+        }
+        
+        return res;
+    }
     
 	public Collection<ImageFrame> getImageFrames()
 	{
