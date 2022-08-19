@@ -127,6 +127,7 @@ import imago.plugin.image.file.ReadImageTiff;
 import imago.plugin.image.file.ReadTiffStackSlice;
 import imago.plugin.image.file.ReadTiffVirtualImage3D;
 import imago.plugin.image.file.SaveImageMetaImage;
+import imago.plugin.image.process.BinaryImageBoxMedianFilter;
 import imago.plugin.image.process.ColorImageExtractChannel;
 import imago.plugin.image.process.Image3DKymograph;
 import imago.plugin.image.process.Image3DOrthoslicesImage;
@@ -567,6 +568,7 @@ public class GuiBuilder
 		addPlugin(filtersMenu, new BoxFilter3x3FloatPlugin(), "Box Filter 2D 3x3 (float)", hasScalarImage);
 		addArrayOperatorPlugin(filtersMenu, new GaussianFilter5x5(), "Gaussian Filter 5x5", hasScalarImage && hasImage2D);
         addPlugin(filtersMenu, new ImageBoxMedianFilter(), "Median Filter...");
+        addPlugin(filtersMenu, new BinaryImageBoxMedianFilter(), "Binary Median Filter...");
         addPlugin(filtersMenu, new ImageBoxMinMaxFilter(), "Min/Max Filter...");
         filtersMenu.addSeparator();
 		addPlugin(filtersMenu, new ImageBoxVarianceFilter(), "Variance Filter...");
