@@ -63,7 +63,8 @@ public class ConvertImageToBinary implements FramePlugin
 		// create and run algo
 		ConvertToBinary algo = new ConvertToBinary();
 		Image resultImage = imageFrame.runOperator(algo, image);
-
+		resultImage.setName(image.getName() + "-bin");
+		
 		// add the image document to GUI
 		frame.createImageFrame(resultImage); 
 	}
