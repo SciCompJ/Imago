@@ -403,6 +403,10 @@ public class ImagoGui
                 {
                     throw new RuntimeException("Security exception when accessing plugin constructor.", ex);
                 }
+                catch (java.lang.NoClassDefFoundError err)
+                {
+                    throw new RuntimeException("Error encoutered during plugin creation.", err);
+                }
                 
                 // Instantiate a new plugin from the constructor
                 FramePlugin plugin;
