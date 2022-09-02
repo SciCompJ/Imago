@@ -4,11 +4,20 @@
 package imago.gui.util;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Frame;
+import java.awt.Toolkit;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
@@ -19,6 +28,40 @@ import javax.swing.border.EmptyBorder;
  */
 public class GuiHelper
 {
+    /**
+     * Puts the given frame in the center of the screen.
+     * 
+     * @param frame
+     */
+    public static final void centerFrame(Frame frame)
+    {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension frameSize = frame.getSize();
+        
+        int posX = screenSize.width / 2 - frameSize.width / 2;
+        int posY = Math.max((screenSize.height - frameSize.height) / 4, 0);
+        frame.setLocation(posX, posY);
+    }
+    
+    public static final JSpinner createNumberSpinner(double value, double minVal, double maxVal, double step)
+    {
+        JSpinner spinner = new JSpinner(new SpinnerNumberModel(value, minVal, maxVal, step));
+        
+        // some hack to make the text fully editable when focus is gained
+        // see: https://stackoverflow.com/questions/15328185/make-jspinner-select-text-when-focused
+        JTextField textField = ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
+        textField.addFocusListener(new FocusAdapter()
+        {
+            public void focusGained(final FocusEvent e)
+            {
+                SwingUtilities.invokeLater(() -> {textField.selectAll(); textField.grabFocus();});
+            }
+        });
+        return spinner;
+    }
+
+    
+    
     public JPanel createOptionsPanel(String title)
     {
         JPanel panel = new JPanel();

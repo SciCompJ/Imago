@@ -175,28 +175,28 @@ public class ImageRotatedCrop2D implements FramePlugin
         
         private void setupWidgets()
         {
-            sizeXWidget = new JSpinner(new SpinnerNumberModel(boxSizeX, 0, 10000, 1));
+            sizeXWidget = GuiHelper.createNumberSpinner(boxSizeX, 0, 10000, 1);
             sizeXWidget.addChangeListener(evt -> 
             {
                 this.boxSizeX = ((SpinnerNumberModel) sizeXWidget.getModel()).getNumber().intValue();
                 updatePreviewIfNeeded();
             });
             
-            sizeYWidget = new JSpinner(new SpinnerNumberModel(boxSizeY, 0, 10000, 1));
+            sizeYWidget = GuiHelper.createNumberSpinner(boxSizeY, 0, 10000, 1);
             sizeYWidget.addChangeListener(evt -> 
             {
                 this.boxSizeY = ((SpinnerNumberModel) sizeYWidget.getModel()).getNumber().intValue();
                 updatePreviewIfNeeded();
             });
             
-            boxCenterXWidget = new JSpinner(new SpinnerNumberModel(boxCenterX, 0, 10000, 1));
+            boxCenterXWidget = GuiHelper.createNumberSpinner(boxCenterX, 0, 10000, 1);
             boxCenterXWidget.addChangeListener(evt -> 
             {
                 this.boxCenterX = ((SpinnerNumberModel) boxCenterXWidget.getModel()).getNumber().intValue();
                 updatePreviewIfNeeded();
             });
             
-            boxCenterYWidget = new JSpinner(new SpinnerNumberModel(boxCenterY, 0, 10000, 1));
+            boxCenterYWidget = GuiHelper.createNumberSpinner(boxCenterY, 0, 10000, 1);
             boxCenterYWidget.addChangeListener(evt -> 
             {
                 this.boxCenterY = ((SpinnerNumberModel) boxCenterYWidget.getModel()).getNumber().intValue();
@@ -204,7 +204,7 @@ public class ImageRotatedCrop2D implements FramePlugin
             });
             
             
-            boxAngleWidget = new JSpinner(new SpinnerNumberModel(boxAngle, -180, 180, 1));
+            boxAngleWidget = GuiHelper.createNumberSpinner(boxAngle, -180, 180, 1);
             boxAngleWidget.addChangeListener(evt -> 
             {
                 this.boxAngle = ((SpinnerNumberModel) boxAngleWidget.getModel()).getNumber().doubleValue();
