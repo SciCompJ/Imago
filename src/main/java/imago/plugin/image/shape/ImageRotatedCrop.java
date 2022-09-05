@@ -33,11 +33,15 @@ import imago.gui.viewer.StackSliceViewer;
 import net.sci.array.Array;
 import net.sci.array.Array2D;
 import net.sci.array.Array3D;
+import net.sci.array.color.RGB8Array;
+import net.sci.array.color.RGB8Array2D;
+import net.sci.array.color.RGB8Array3D;
 import net.sci.array.interp.ScalarFunction3D;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.ScalarArray2D;
 import net.sci.array.scalar.ScalarArray3D;
 import net.sci.array.scalar.UInt8Array2D;
+import net.sci.array.scalar.UInt8Array3D;
 import net.sci.geom.geom2d.AffineTransform2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom3d.AffineTransform3D;
@@ -55,7 +59,31 @@ public class ImageRotatedCrop implements FramePlugin
     // ==================================================
     // Static methods
  
-    public static final ScalarArray2D<?> rotatedCrop(ScalarArray2D<?> image, int[] dims, Point2D refPoint, double angleInDegrees)
+    public static final Array2D<?> rotatedCrop(Array2D<?> array, int[] dims, Point2D refPoint, double angleInDegrees)
+    {
+        AffineTransform2D transfo = computeTransform(refPoint, dims, angleInDegrees);
+
+        if (array instanceof ScalarArray2D<?>)
+        {
+            return rotatedCropUInt8((ScalarArray2D<?>) array, dims, transfo);
+        }
+        else if (array instanceof RGB8Array2D)
+        {
+            // allocate result image
+            RGB8Array2D rgbArray = (RGB8Array2D) array;
+            UInt8Array2D red   = rotatedCropUInt8(rgbArray.channel(0), dims, transfo);
+            UInt8Array2D green = rotatedCropUInt8(rgbArray.channel(1), dims, transfo);
+            UInt8Array2D blue  = rotatedCropUInt8(rgbArray.channel(2), dims, transfo);
+            RGB8Array2D res = RGB8Array2D.wrap(RGB8Array.mergeChannels(red, green, blue));
+            return res;
+        }
+        else
+        {
+            throw new IllegalArgumentException("Requires a scalar array as input");
+        }
+    }
+    
+    private static final AffineTransform2D computeTransform(Point2D refPoint, int[] dims, double angleInDegrees)
     {
         // retrieve image dimensions
         int sizeX = dims[0];
@@ -67,37 +95,49 @@ public class ImageRotatedCrop implements FramePlugin
         AffineTransform2D trRefPoint = AffineTransform2D.createTranslation(refPoint);
 
         // concatenate into global display-image-to-source-image transform
-        AffineTransform2D transfo = trRefPoint.concatenate(rot).concatenate(trBoxCenter);
-
-        // Create interpolation class, that encapsulates both the image and the
-        // transform
-        TransformedImage2D interp = new TransformedImage2D(image, transfo);
+        return trRefPoint.concatenate(rot).concatenate(trBoxCenter);
+    }
+    
+    private static final UInt8Array2D rotatedCropUInt8(ScalarArray2D<?> array, int[] dims, AffineTransform2D transfo)
+    {
+        // Create interpolation class, that encapsulates both the image and the transform
+        TransformedImage2D interp = new TransformedImage2D(array, transfo);
 
         // allocate result image
-        UInt8Array2D res = UInt8Array2D.create(sizeX, sizeY);
+        UInt8Array2D res = UInt8Array2D.create(dims[0], dims[1]);
         res.fillValues((x, y) -> interp.evaluate(x, y));
 
         return res;
     }
     
-    public static final ScalarArray3D<?> rotatedCrop(ScalarArray3D<?> image, int[] dims, Point3D refPoint, double[] anglesInDegrees)
+    
+    public static final Array3D<?> rotatedCrop(Array3D<?> array, int[] dims, Point3D refPoint, double[] anglesInDegrees)
     {
         // Computes the transform that will map indices from within result image
         // into coordinates within source image
         AffineTransform3D transfo = computeTransform(refPoint, dims, anglesInDegrees);
         
-        // Create interpolation class, that encapsulates both the image and the
-        // transform
-        ScalarFunction3D interp = new TransformedImage3D(image, transfo);
-
-        // allocate result image
-        ScalarArray3D<?> res = ScalarArray3D.wrapScalar3d(image.newInstance(dims[0], dims[1], dims[2]));
-        res.fillValues((x,y,z) -> interp.evaluate(x, y, z));
-        
-        return res;
+        if (array instanceof ScalarArray3D<?>)
+        {
+            return rotatedCropScalar((ScalarArray3D<?>) array, dims, transfo);
+        }
+        else if (array instanceof RGB8Array3D)
+        {
+            // allocate result image
+            RGB8Array3D rgbArray = (RGB8Array3D) array;
+            UInt8Array3D red   = (UInt8Array3D) rotatedCropScalar(rgbArray.channel(0), dims, transfo);
+            UInt8Array3D green = (UInt8Array3D) rotatedCropScalar(rgbArray.channel(1), dims, transfo);
+            UInt8Array3D blue  = (UInt8Array3D) rotatedCropScalar(rgbArray.channel(2), dims, transfo);
+            RGB8Array3D res = (RGB8Array3D) RGB8Array.mergeChannels(red, green, blue);
+            return res;
+        }
+        else
+        {
+            throw new IllegalArgumentException("Requires a scalar array as input");
+        }
     }
     
-    public static final AffineTransform3D computeTransform(Point3D boxCenter, int[] boxSize, double[] anglesInDegrees)
+    private static final AffineTransform3D computeTransform(Point3D boxCenter, int[] boxSize, double[] anglesInDegrees)
     {
         // create a translation to put center of the box at the origin
         int sizeX = boxSize[0];
@@ -125,7 +165,7 @@ public class ImageRotatedCrop implements FramePlugin
      * @return an affine transform that can be used to compute coordinates of
      *         box corners in global basis
      */
-    public static final AffineTransform3D rotateAndShift(double[] anglesInDegrees, Point3D refPoint)
+    private static final AffineTransform3D rotateAndShift(double[] anglesInDegrees, Point3D refPoint)
     {
         AffineTransform3D rotX = AffineTransform3D.createRotationOx(Math.toRadians(anglesInDegrees[0]));
         AffineTransform3D rotY = AffineTransform3D.createRotationOy(Math.toRadians(anglesInDegrees[1]));
@@ -136,7 +176,20 @@ public class ImageRotatedCrop implements FramePlugin
         return trans.concatenate(rotZ).concatenate(rotY).concatenate(rotX);
     }
 
-    public static final ScalarArray2D<?> orthoSlices(ScalarFunction3D fun, int[] stackDims)
+    private static final ScalarArray3D<?> rotatedCropScalar(ScalarArray3D<?> image, int[] dims, AffineTransform3D transfo)
+    {
+        // Create interpolation class, that encapsulates both the image and the
+        // transform
+        ScalarFunction3D interp = new TransformedImage3D(image, transfo);
+
+        // allocate result image
+        ScalarArray3D<?> res = ScalarArray3D.wrapScalar3d(image.newInstance(dims[0], dims[1], dims[2]));
+        res.fillValues((x,y,z) -> interp.evaluate(x, y, z));
+        
+        return res;
+    }
+    
+    private static final ScalarArray2D<?> orthoSlices(ScalarFunction3D fun, int[] stackDims)
     {
         int sizeX = stackDims[0];
         int sizeY = stackDims[1];
@@ -174,50 +227,6 @@ public class ImageRotatedCrop implements FramePlugin
             for (int y = 0; y < sizeY; y++)
             {
                 res.setInt(y + 2 * sizeX, z, (int) fun.evaluate(posX, y, z));
-            }
-        }
-        
-        return res;
-    }
-    
-    public static final <T> Array2D<T> orthoSlices(Array3D<T> array, int[] pos)
-    {
-        int sizeX = array.size(0);
-        int sizeY = array.size(1);
-        int sizeZ = array.size(2);
-        
-        int posX = pos[0];
-        int posY = pos[1];
-        int posZ = pos[2];
-        
-        int sizeX2 = 2 * sizeX + sizeY;
-        int sizeY2 = Math.max(sizeY,  sizeZ);
-        Array2D<T> res = Array2D.wrap(array.newInstance(sizeX2, sizeY2));
-        
-        // add XY slice
-        for (int y = 0; y < sizeY; y++)
-        {
-            for (int x = 0; x < sizeX; x++)
-            {
-                res.set(x, y, array.get(x, y, posZ));
-            }
-        }
-        
-        // add XZ slice
-        for (int z = 0; z < sizeZ; z++)
-        {
-            for (int x = 0; x < sizeX; x++)
-            {
-                res.set(x + sizeX, z, array.get(x, posY, z));
-            }
-        }
-        
-        // add YZ slice
-        for (int z = 0; z < sizeZ; z++)
-        {
-            for (int y = 0; y < sizeY; y++)
-            {
-                res.set(y + 2 * sizeX, z, array.get(posX, y, z));
             }
         }
         
@@ -307,7 +316,7 @@ public class ImageRotatedCrop implements FramePlugin
        
         Image image;
         
-        ScalarArray2D<?> array;
+        Array2D<?> array;
         
         int boxSizeX;
         int boxSizeY;
@@ -329,8 +338,8 @@ public class ImageRotatedCrop implements FramePlugin
         JButton previewButton;
         JButton runButton;
         
-        /** The frame used to display the result of rotated crop. */
-        ImageFrame resultFrame = null;
+        /** The frame used to preview the result of rotated crop. */
+        ImageFrame previewFrame = null;
         
         
         public SettingsFrame2D(ImageFrame parentFrame, int[] boxSize, Point2D refPoint, double rotAngle)
@@ -339,7 +348,7 @@ public class ImageRotatedCrop implements FramePlugin
             
             this.parentFrame = parentFrame;
             this.image = parentFrame.getImage();
-            this.array = ScalarArray2D.wrapScalar2d((ScalarArray<?>) image.getData());
+            this.array = Array2D.wrap(image.getData());
             
             // init default values
             boxSizeX = boxSize[0];
@@ -398,8 +407,11 @@ public class ImageRotatedCrop implements FramePlugin
             autoUpdateCheckBox = new JCheckBox("Auto-Update", false);
             autoUpdateCheckBox.addItemListener(evt -> updatePreviewIfNeeded());
             
-            runButton = new JButton("Run!");
-            runButton.addActionListener(evt -> updateCrop());
+            previewButton = new JButton("Preview");
+            previewButton.addActionListener(evt -> updatePreview());
+
+            runButton = new JButton("Create Result!");
+            runButton.addActionListener(evt -> displayResult());
         }
 
         private void setupLayout()
@@ -429,7 +441,8 @@ public class ImageRotatedCrop implements FramePlugin
             mainPanel.add(boxPanel);
             
             // also add buttons
-            gh.addInLine(mainPanel, FlowLayout.CENTER, autoUpdateCheckBox, runButton);
+            gh.addInLine(mainPanel, FlowLayout.CENTER, autoUpdateCheckBox, previewButton);
+            gh.addInLine(mainPanel, FlowLayout.CENTER, runButton);
             
             // put main panel in the middle of frame
             this.setLayout(new BorderLayout());
@@ -449,32 +462,44 @@ public class ImageRotatedCrop implements FramePlugin
             this.setLocation(posX, posY);
         }
         
-        
-        public void updateCrop()
+        public void updatePreview()
         {
             int[] dims = new int[] {boxSizeX, boxSizeY};
             Point2D cropCenter = new Point2D(boxCenterX, boxCenterY);
             
-            ScalarArray2D<?> res = rotatedCrop(this.array, dims, cropCenter, boxAngle);
-            Image resultImage = new Image(res, image);
+            Array2D<?> res = rotatedCrop(this.array, dims, cropCenter, boxAngle);
+            Image previewImage = new Image(res, image);
+            previewImage.setName(image.getName() + "-cropPreview");
             
             // retrieve frame for displaying result
-            if (this.resultFrame == null)
+            if (this.previewFrame == null)
             {
-                this.resultFrame = this.parentFrame.createImageFrame(resultImage);
+                this.previewFrame = this.parentFrame.createImageFrame(previewImage);
             }
             
             // update display frame
-            this.resultFrame.getImageView().setPreviewImage(resultImage);
-            this.resultFrame.getImageView().refreshDisplay();
-            this.resultFrame.setVisible(true);
+            this.previewFrame.getImageView().setPreviewImage(previewImage);
+            this.previewFrame.getImageView().refreshDisplay();
+            this.previewFrame.setVisible(true);
+        }
+
+        public void displayResult()
+        {
+            int[] dims = new int[] {boxSizeX, boxSizeY};
+            Point2D cropCenter = new Point2D(boxCenterX, boxCenterY);
+            
+            Array2D<?> res = rotatedCrop(this.array, dims, cropCenter, boxAngle);
+            Image resultImage = new Image(res, image);
+            resultImage.setName(image.getName() + "-crop");
+            
+            this.parentFrame.createImageFrame(resultImage);
         }
 
         private void updatePreviewIfNeeded()
         {
             if (this.autoUpdateCheckBox.isSelected())
             {
-                updateCrop();
+                updatePreview();
             }
         }
 
@@ -497,7 +522,7 @@ public class ImageRotatedCrop implements FramePlugin
             
             if (this.autoUpdateCheckBox.isSelected())
             {
-                updateCrop();
+                updatePreview();
             }
         }
 
@@ -782,7 +807,7 @@ public class ImageRotatedCrop implements FramePlugin
             System.out.println(String.format("  Euler Angles: %5.2f, %5.2f, %5.2f", boxRotX, boxRotY, boxRotZ));
             
             // compute the crop
-            ScalarArray3D<?> res = rotatedCrop(this.array, dims, cropCenter, angles);
+            Array3D<?> res = rotatedCrop(this.array, dims, cropCenter, angles);
             Image resultImage = new Image(res, this.image);
             resultImage.setName(this.image.getName() + "-crop");
             
