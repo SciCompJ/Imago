@@ -18,7 +18,7 @@ import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom3d.Point3D;
 import net.sci.image.Image;
 import net.sci.image.analyze.RegionAnalysis3D;
-import net.sci.image.analyze.region2d.Centroid;
+import net.sci.image.analyze.region2d.Centroid2D;
 import net.sci.image.label.LabelImages;
 import net.sci.table.Table;
 
@@ -70,7 +70,7 @@ public class LabelImageCentroids implements FramePlugin
 //            int[] labels = LabelImages.findAllLabels(array2d); 
 //            Point2D[] centroids = RegionAnalysis2D.centroids(array2d, labels);
              
-            Centroid algo = new Centroid();
+            Centroid2D algo = new Centroid2D();
             Map<Integer, Point2D> centroids = algo.analyzeRegions(image);
             // add to the document
             for (Point2D centroid : centroids.values())

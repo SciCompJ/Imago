@@ -1,1 +1,1 @@
-java -cp ../../cs4j/dev/target/classes;target/classes;lib/jcommon-1.0.17.jar;lib/xchart-3.8.0/xchart-3.8.0.jar;lib/jfreechart-1.0.14.jar;. imago.Imago
+java -Xmx12g -Xms12g -cp ../../cs4j/dev/target/classes;target/classes;lib/jcommon-1.0.17.jar;lib/xchart-3.8.0/xchart-3.8.0.jar;lib/jfreechart-1.0.14.jar;. imago.Imago

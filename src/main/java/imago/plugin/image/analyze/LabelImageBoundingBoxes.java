@@ -3,20 +3,26 @@
  */
 package imago.plugin.image.analyze;
 
+import java.util.Collection;
+
 import imago.app.ImageHandle;
 import imago.app.shape.Shape;
 import imago.gui.ImagoFrame;
+import imago.gui.ImagoGui;
 import imago.gui.frames.ImageFrame;
 import imago.gui.FramePlugin;
+import imago.gui.GenericDialog;
 import net.sci.array.Array;
 import net.sci.array.scalar.IntArray2D;
 import net.sci.array.scalar.IntArray3D;
 import net.sci.geom.geom2d.Bounds2D;
 import net.sci.geom.geom2d.polygon.Polygon2D;
 import net.sci.geom.geom3d.Bounds3D;
+import net.sci.image.Calibration;
 import net.sci.image.Image;
-import net.sci.image.analyze.RegionAnalysis2D;
 import net.sci.image.analyze.RegionAnalysis3D;
+import net.sci.image.analyze.RegionAnalyzer;
+import net.sci.image.analyze.region2d.RegionBounds2D;
 import net.sci.image.label.LabelImages;
 import net.sci.table.Table;
 
@@ -55,6 +61,7 @@ public class LabelImageBoundingBoxes implements FramePlugin
         
         Array<?> array = image.getData();
         int nd = array.dimensionality();
+        Calibration calib = image.getCalibration();
 
         if (nd == 2)
         {
@@ -64,22 +71,57 @@ public class LabelImageBoundingBoxes implements FramePlugin
                 System.out.println("Requires a planar array of ints");
                 return;
             }
+            
+            ImagoGui gui = frame.getGui();
+            
+            GenericDialog dlg = new GenericDialog(frame, "Equivalent Disks");
+            dlg.addCheckBox("Display Table ", true);
+            dlg.addCheckBox("Overlay Results ", true);
+            Collection<String> imageNames = gui.getAppli().getImageHandleNames();
+            String[] imageNameArray = imageNames.toArray(new String[]{});
+            String firstImageName = doc.getName();
+            dlg.addChoice("Image to Overlay ", imageNameArray, firstImageName);
+            dlg.showDialog();
+            
+            boolean showTable = dlg.getNextBoolean();
+            boolean overlay = dlg.getNextBoolean();
+            String imageToOverlay = dlg.getNextChoice();
+            
     
-            // Extract centroids as an array of coordinates
+            // Extract bounding boxes as an array of Bound2D instances
             IntArray2D<?> array2d = (IntArray2D<?>) array;
-            int[] labels = LabelImages.findAllLabels(array2d); 
-            Bounds2D[] boxes = RegionAnalysis2D.boundingBoxes(array2d, labels);
+            int[] labels = LabelImages.findAllLabels(array2d);
+            
+            RegionBounds2D analyzer = new RegionBounds2D();
+            Bounds2D[] boxes = analyzer.analyzeRegions(array2d, labels, calib);
              
             // number of boxes
             int nPoints = boxes.length;
-    
-            // add to the document
-            for (int i = 0; i < nPoints; i++)
+            
+            if (showTable)
             {
-            	Polygon2D poly = boxes[i].getRectangle();
-                doc.addShape(new Shape(poly));
+                // Convert bounds to table, and display
+                Table table = analyzer.createTable(RegionAnalyzer.createMap(labels, boxes));
+                
+                // add the new frame to the GUI
+                gui.createTableFrame(table, frame);
             }
-            frame.repaint();
+
+            if (overlay)
+            {
+                ImageHandle ovrDoc = gui.getAppli().getImageHandleFromName(imageToOverlay);
+                ImageFrame viewer = gui.getImageFrame(ovrDoc);
+                
+                // add to the document
+                for (int i = 0; i < nPoints; i++)
+                {
+                    Polygon2D poly = boxes[i].getRectangle();
+                    ovrDoc.addShape(new Shape(poly));
+                }
+                
+                // TODO: maybe propagating events would be better
+                viewer.repaint(); 
+            }
         }
         else if (nd == 3)
         {

@@ -18,6 +18,7 @@ import net.sci.array.scalar.IntArray2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.curve.Circle2D;
 import net.sci.geom.geom2d.curve.Ellipse2D;
+import net.sci.image.Calibration;
 import net.sci.image.Image;
 import net.sci.image.analyze.RegionAnalysis2D;
 import net.sci.image.label.LabelImages;
@@ -66,6 +67,7 @@ public class LabelImageEquivalentDisks implements FramePlugin
             ImagoGui.showErrorDialog(frame, "Requires a planar array of labels");
             return;
         }
+        Calibration calib = image.getCalibration();
 
         ImagoGui gui = frame.getGui();
         
@@ -85,7 +87,7 @@ public class LabelImageEquivalentDisks implements FramePlugin
         // Extract ellipses
         IntArray2D<?> array2d = (IntArray2D<?>) array;
         int[] labels = LabelImages.findAllLabels(array2d);
-        Ellipse2D[] ellipses = RegionAnalysis2D.equivalentEllipses(array2d, labels);
+        Ellipse2D[] ellipses = RegionAnalysis2D.equivalentEllipses(array2d, labels, calib);
          
         if (showTable)
         {

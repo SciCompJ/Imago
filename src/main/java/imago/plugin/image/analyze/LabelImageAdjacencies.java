@@ -16,6 +16,7 @@ import net.sci.array.scalar.IntArray;
 import net.sci.array.scalar.IntArray2D;
 import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
+import net.sci.image.Calibration;
 import net.sci.image.Image;
 import net.sci.image.analyze.RegionAnalysis2D;
 import net.sci.image.label.RegionAdjacencies;
@@ -57,6 +58,7 @@ public class LabelImageAdjacencies implements FramePlugin
         
         Array<?> array = image.getData();
         int nd = array.dimensionality();
+        Calibration calib = image.getCalibration();
         
         if (nd == 2)
         {
@@ -73,7 +75,7 @@ public class LabelImageAdjacencies implements FramePlugin
             // Extract centroids as an array of points
             int[] labels = LabelImages.findAllLabels(array2d);
             // Would be better to return the map directly
-            Point2D[] centroids = RegionAnalysis2D.centroids(array2d, labels);
+            Point2D[] centroids = RegionAnalysis2D.centroids(array2d, labels, calib);
             TreeMap<Integer, Point2D> centroidMap = new TreeMap<>();
             for (int i = 0; i < labels.length; i++)
             {
