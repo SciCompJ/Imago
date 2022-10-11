@@ -3,18 +3,20 @@
  */
 package imago.plugin.image.analyze;
 
-import imago.gui.ImagoFrame;
-import imago.gui.frames.ImageFrame;
-import imago.gui.frames.ImagoChartFrame;
-import imago.gui.FramePlugin;
-import net.sci.array.Array;
-import net.sci.array.color.RGB16Array;
-import net.sci.array.color.RGB8Array;
-import net.sci.array.process.Histogram;
-import net.sci.array.scalar.ScalarArray;
-import net.sci.image.Image;
-import net.sci.table.DefaultNumericTable;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+
+import org.knowm.xchart.XChartPanel;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries;
@@ -22,6 +24,17 @@ import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
 import org.knowm.xchart.style.Styler.LegendPosition;
 import org.knowm.xchart.style.colors.XChartSeriesColors;
 import org.knowm.xchart.style.markers.SeriesMarkers;
+
+import imago.gui.FramePlugin;
+import imago.gui.ImagoFrame;
+import imago.gui.frames.ImageFrame;
+import net.sci.array.Array;
+import net.sci.array.color.RGB16Array;
+import net.sci.array.color.RGB8Array;
+import net.sci.array.process.Histograms;
+import net.sci.array.scalar.ScalarArray;
+import net.sci.array.scalar.UInt8Array;
+import net.sci.image.Image;
 
 /**
  * @author David Legland
@@ -47,291 +60,423 @@ public class ImageHistogram implements FramePlugin
 			return;
 		ImageFrame iframe = (ImageFrame) frame;
 		Image image = iframe.getImageHandle().getImage();
-
-		DefaultNumericTable histo = computeHistogram(image);
 		
-        int nChannels = histo.columnCount();
-        if (nChannels == 2)
+		// Create the class containing histogram data
+		Histogram histo = new Histogram(image);
+		
+        String name = "Histogram of " + image.getName();
+		ImageHistogramDisplayFrame histoFrame = new ImageHistogramDisplayFrame(frame, name, histo);
+		
+        // Schedule a job for the event-dispatching thread:
+        // creating and showing this application's GUI.
+        try
         {
-            showIntensityHistogram(frame, histo);
-        } 
-        else if (nChannels == 4)
+            javax.swing.SwingUtilities.invokeAndWait(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    // Display the windows.
+                    histoFrame.setVisible(true);
+                }
+            });
+        }
+        catch (InterruptedException e)
         {
-            showColorHistogram(frame, histo);
+            e.printStackTrace();
+        }
+        catch (InvocationTargetException e)
+        {
+            e.printStackTrace();
         }
 	}
-
-	private DefaultNumericTable computeHistogram(Image image)
-	{
-		Array<?> array = image.getData();
-		if (array instanceof RGB8Array)            
-        {
-            return histogram((RGB8Array) array);
-        }
-        else if (array instanceof ScalarArray)
-		{
-			double[] range = image.getDisplaySettings().getDisplayRange();
-			System.out.println(String.format("Display range for histogram: (%f ; %f)", range[0], range[1]));
-			return histogram((ScalarArray<?>) array, range, 256);
-		}
-        else if (array instanceof RGB16Array)            
-        {
-            return histogramRGB16((RGB16Array) array);
-        }
-		else
-		{
-			throw new RuntimeException("Unable to compute histogram for array class: " + array.getClass());
-		}
-	}
-	
-	/**
-	 * Computes histogram of a scalar array, and returns the result in a data
-	 * table. The result is stored in a data table with two columns. The first
-	 * column contains the position of the bin center. The second column
-	 * contains the count of array element for the corresponding bin.
-	 * 
-	 * @param array
-	 *            the input array
-	 * @param range
-	 *            the range of values for histogram computation
-	 * @param nBins
-	 *            the number of bins of the resulting histogram
-	 * @return a new instance of DefaultNumericTable containing the resulting histogram
-	 */
-	public static final DefaultNumericTable histogram(ScalarArray<?> array, double[] range, int nBins)
-	{
-		// compute the sizeX of an individual bin
-		double binWidth = (range[1] - range[0]) / (nBins - 1);
-		
-		// allocate memory for result
-		int[] histo = Histogram.histogram(array, range, nBins);
-
-		// format the result into data table
-		DefaultNumericTable table = new DefaultNumericTable(nBins, 2);
-		for (int i = 0; i < nBins; i++)
-		{
-			table.setValue(i, 0, range[0] + i * binWidth);
-			table.setValue(i, 1, histo[i]);
-		}
-		
-		table.setColumnNames(new String[]{"Intensity", "Count"});
-		
-		return table;
-	}
-	
+	   
     /**
-     * Computes histogram of an array of RGB8 elements, and returns the result
-     * in a data table.
-     * 
-     * The data table has four columns. The first column contains the bin center
-     * (from 0 to 255). The three other columns contain the count of the
-     * corresponding red, green and blue channels respectively.
-     * 
-     * @param array
-     *            the input array of RGB8 elements
-     * @return a new instance of DefaultNumericTable containing the resulting histogram.
+     * The histogram data.
      */
-    public static final DefaultNumericTable histogram(RGB8Array array)
+    class Histogram
     {
-        // allocate memory for result
-        int[][] histo = Histogram.histogram(array);
+        /** the reference image, for retrieving meta-data and eventually recomputing the histogram */
+        Image refImage;
+        
+        /**
+         * The range of values of image. Computed once at initialization.
+         */
+        double[] imageValueRange;
+        
+        /** The position of histogram bins. */
+        double[] xData;
+        
+        /**
+         * The frequency count for each channel. On array per channel, the same
+         * size as xData.
+         */
+        int[][] yData;
+        
+        double minValue = 0.0;
+        double maxValue = 255.0;
+        int nBins = 256;
+        
+        /** The name of each channel. Same size as yData. */
+        String[] channelNames;
 
-        // format the result into data table
-        DefaultNumericTable table = new DefaultNumericTable(256, 4);
-        for (int i = 0; i < 256; i++)
+        public Histogram(Image image)
         {
-            table.setValue(i, 0, i);
-            table.setValue(i, 1, histo[0][i]);
-            table.setValue(i, 2, histo[1][i]);
-            table.setValue(i, 3, histo[2][i]);
-        }
-        
-        table.setColumnNames(new String[]{"Value", "Red", "Green", "Blue"});
-        
-        return table;
-    }
-    
-    /**
-     * Computes histogram of an array of RGB16 elements, and returns the result
-     * in a data table.
-     * 
-     * The data table has four columns. The first column contains the bin
-     * center. The three other columns contain the count of the corresponding
-     * red, green and blue channels respectively.
-     * 
-     * @param array
-     *            the input array of RGB16 elements
-     * @return a new instance of DefaultNumericTable containing the resulting histogram.
-     */
-    public static final DefaultNumericTable histogramRGB16(RGB16Array array)
-    {
-        // allocate memory for result
-        int[][] histo = Histogram.histogramRGB16(array);
-
-        // format the result into data table
-        DefaultNumericTable table = new DefaultNumericTable(256, 4);
-        for (int i = 0; i < 256; i++)
-        {
-            table.setValue(i, 0, histo[0][i]);
-            table.setValue(i, 1, histo[1][i]);
-            table.setValue(i, 2, histo[2][i]);
-            table.setValue(i, 3, histo[3][i]);
-        }
-        
-        table.setColumnNames(new String[]{"Value", "Red", "Green", "Blue"});
-        
-        return table;
-    }
-
-	/**
-	 * Display histogram of 256 gray scale images.
-	 */
-	private void showIntensityHistogram(ImagoFrame parentFrame, DefaultNumericTable table)
-	{
-        // Title of the plot
-        ImageFrame iframe = (ImageFrame) parentFrame;
-        Image image = iframe.getImageHandle().getImage();
-		String titleString = createTitleString("Histogram", image.getName());
-
-		// Create Chart
-	    XYChart chart = new XYChartBuilder()
-	            .width(800)
-	            .height(600)
-	            .title(titleString)
-	            .xAxisTitle("Intensity Level")
-	            .yAxisTitle("Frequency")
-	            .build();
-	 
-	    // Customize Chart
-	    chart.getStyler().setLegendVisible(false);
-	    chart.getStyler().setPlotGridLinesVisible(false);
-	    chart.getStyler().setPlotGridVerticalLinesVisible(false);
-
-	    // Series
-        double[] xdata = table.getColumnValues(0);
-        double[] ydata = table.getColumnValues(1);
-        XYSeries series = chart.addSeries("Histogram", xdata, ydata);
-        series.setXYSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Area);
-        series.setMarker(SeriesMarkers.NONE);
-     
-        ImagoChartFrame.displayChart(parentFrame, "Histogram", chart);
-	}
-
-	private void showColorHistogram(ImagoFrame parentFrame, DefaultNumericTable table)
-	{
-		int nChannels = table.columnCount() - 1;
-		int nValues = table.rowCount();
-        String[] colNames = table.getColumnNames();
-        
-        // Default name for table
-        String tableName = table.getName();
-        if (tableName == null || tableName.length() == 0)
-        {
-            tableName = "data";
-        }
-
-        // Title of the plot
-        ImageFrame iframe = (ImageFrame) parentFrame;
-        Image image = iframe.getImageHandle().getImage();
-        String titleString = createTitleString("Histogram", image.getName());
-        
-        // Create Chart
-        XYChart chart = new XYChartBuilder()
-                .width(600)
-                .height(500)
-                .title(titleString)
-                .xAxisTitle("Channel value")
-                .yAxisTitle("Frequency")
-                .build();
-        
-        // Additional chart style
-        chart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
-        chart.getStyler().setLegendPosition(LegendPosition.InsideNE);
-        
-        // create a new series for each channel
-        double[] xData = generateLinearVector(nValues, 0);
-        XYSeries[] series  = new XYSeries[nChannels];
-        for (int c = 0; c < nChannels; c++)
-        {
-            series[c] = chart.addSeries(colNames[c], xData, table.getColumnValues(c+1));
-            series[c].setMarker(SeriesMarkers.NONE);
+            this.refImage = image;
             
+            computeDefaultValueRange();
+            update();
         }
         
-        // changes default colors
-        series[0].setLineColor(XChartSeriesColors.RED);
-        series[1].setLineColor(XChartSeriesColors.GREEN);
-        series[2].setLineColor(XChartSeriesColors.BLUE);
+        private void computeDefaultValueRange()
+        {
+            Array<?> array = this.refImage.getData();
+            if (!(array instanceof ScalarArray)) return;
+            
+            if (array instanceof UInt8Array)
+            {
+                this.imageValueRange = new double[] {0, 255};
+            }
+            else
+            {
+                this.imageValueRange = ((ScalarArray<?>) array).finiteValueRange();
+            }
+            this.minValue = imageValueRange[0];
+            this.maxValue = imageValueRange[1];
+        }
         
-        // Show it
-        ImagoChartFrame.displayChart(parentFrame, "Color Histogram", chart);
-	}
+        /**
+         * Updates histogram data based on the inner bounds and bin number. Image
+         * values will be iterated.
+         */
+        public void update()
+        {
+            Array<?> array = this.refImage.getData();
+            
+            if (array instanceof UInt8Array)            
+            {
+                computeHistogramData_UInt8((UInt8Array) array);
+            }
+            else if (array instanceof RGB8Array)            
+            {
+                computeHistogramData_RGB8((RGB8Array) array);
+            }
+            else if (array instanceof RGB16Array)            
+            {
+                computeHistogramData_RGB16((RGB16Array) array);
+            }
+            else if (array instanceof ScalarArray)            
+            {
+                computeHistogramData_Scalar((ScalarArray<?>) array);
+            }
+            else
+            {
+                throw new RuntimeException("Unable to compute histogram for array class: " + array.getClass());
+            }
+        }
+        
+        private void computeHistogramData_UInt8(UInt8Array array)
+        {
+            this.xData = new double[256];
+            for (int i = 0; i < 256; i++)
+            {
+                xData[i] = i;
+            }
+            
+            // allocate memory for result
+            this.yData = new int[1][];
+            this.yData[0] = Histograms.histogramUInt8(array);
+            
+            this.channelNames = new String[] {"Intensity"};
+        }
+        
+        private void computeHistogramData_Scalar(ScalarArray<?> array)
+        {
+            // compute the sizeX of an individual bin
+            double binWidth = (maxValue - minValue) / (nBins - 1);
+            
+            // allocate memory for result
+            double[] range = new double[] {minValue, maxValue};
 
-//    private double[] convertXData(double[] input)
-//    {
-//        int n = input.length;
-//        if (n < 2)
-//        {
-//            throw new IllegalArgumentException("Requires at least two inputs");
-//        }
-//        
-//        double[] output = new double[n*2];
-//        
-//        output[0] = input[0] - (input[1] - input[0]) / 2;
-//        for (int i = 1; i < n-1; i++)
-//        {
-//            output[2*i - 1] = input[i] - 1e-8;
-//            output[2*i] = input[i] + 1e-8;
-//        }
-//        output[2*n-1] = input[n-1] + (input[n-1] - input[n-2]) / 2;
-//
-//        return output;
-//    }
-//    
-//    private double[] convertYData(double[] input)
-//    {
-//        int n = input.length;
-//        if (n < 2)
-//        {
-//            throw new IllegalArgumentException("Requires at least two inputs");
-//        }
-//        
-//        double[] output = new double[n*2];
-//        
-//        for (int i = 0; i < n; i++)
-//        {
-//            output[2 * i] = input[i];
-//            output[2 * i + 1] = input[i];
-//        }
-//
-//        return output;
-//    }
-    
-	private String createTitleString(String baseTitle, String imageName)
-    {
-        if (imageName != null)
-        {
-            baseTitle += " of " + imageName;
+            this.xData = new double[nBins];
+            for (int i = 0; i < nBins; i++)
+            {
+                xData[i] = range[0] + i * binWidth;
+            }
+            
+            // allocate memory for result
+            this.yData = new int[1][];
+            this.yData[0] = Histograms.histogramScalar(array, range, nBins);
+            
+            this.channelNames = new String[] {"Intensity"};
         }
-        return baseTitle;
+        
+        private void computeHistogramData_RGB8(RGB8Array array)
+        {
+            this.xData = new double[256];
+            for (int i = 0; i < 256; i++)
+            {
+                xData[i] = i;
+            }
+            this.yData = Histograms.histogramRGB8((RGB8Array) array);
+            
+            this.channelNames = new String[] {"Red", "Green", "Blue"};
+        }
+
+        private void computeHistogramData_RGB16(RGB16Array array)
+        { 
+            int[][] histo = Histograms.histogramRGB16((RGB16Array) array);
+            
+            this.xData = convertToDouble(histo[0]);
+            this.yData = new int[3][];
+            for (int i = 0; i < 3; i++)
+            {
+                this.yData[i] = histo[i+1];
+            }
+            this.channelNames = new String[] {"Red", "Green", "Blue"};
+        }
+
+        /**
+         * Check if it is possible to update bounds of the histogram. Bounds can
+         * be update for scalar array that are not instances of UInt8Array.
+         */
+        public boolean canUpdateBounds()
+        {
+            if (this.refImage.getData() instanceof UInt8Array) 
+            {
+                return false;
+            }
+            return this.refImage.isScalarImage();
+        }
     }
-    
+
     /**
-     * Generate a linear vectors containing values starting from 1, 2... to
-     * nRows.
-     * 
-     * @param nRows
-     *            the number of values
-     * @return a linear vector of nRows values
+     * The frame that displays the histogram.
      */
-    private double[] generateLinearVector(int nRows, double startValue)
+    class ImageHistogramDisplayFrame extends ImagoFrame
     {
-        double[] values = new double[nRows];
-        for (int i = 0; i < nRows; i++)
+        Histogram histogram;
+        
+        boolean logScale = false;
+        boolean hideBackground = false;
+        boolean showLegend = true;
+        
+        XChartPanel<?> chartPanel;
+        XYChart chart;
+        
+        JPanel statusBar;
+        JLabel statusLabel;
+        JCheckBox logScaleCheckBox;
+        JCheckBox hideBackgroundCheckBox;
+        JCheckBox showLegendCheckBox;
+        JSpinner minValueSpinner;
+        JSpinner maxValueSpinner;
+        JSpinner nBinsSpinner;
+        
+        public ImageHistogramDisplayFrame(ImagoFrame parentFrame, String name, Histogram histogram) 
         {
-            values[i] = startValue + i;
+            super(parentFrame, name);
+            
+            this.histogram = histogram;
+            
+            createChart();
+            
+            setupWidgets();
+            setupLayout();
         }
-        return values;
+        
+        private void setupWidgets()
+        {
+            // Create a status bar
+            this.statusBar = new JPanel();
+            this.statusLabel = new JLabel("Status");
+            
+            this.logScaleCheckBox = new JCheckBox("Log Scale");
+            this.logScaleCheckBox.addChangeListener(evt -> {
+                boolean b = logScaleCheckBox.isSelected();
+                if (b != logScale)
+                {
+                    logScale = b;
+                    updateDisplay();
+                }
+            });
+            this.hideBackgroundCheckBox = new JCheckBox("Hide Bounds");
+            this.hideBackgroundCheckBox.addChangeListener(evt -> {
+                boolean b = hideBackgroundCheckBox.isSelected();
+                if (b != hideBackground)
+                {
+                    hideBackground = b;
+                    updateDisplay();
+                }
+            });
+            
+            this.showLegendCheckBox = new JCheckBox("Show Legend", true);
+            this.showLegendCheckBox.addChangeListener(evt -> {
+                boolean b = showLegendCheckBox.isSelected();
+                if (b != showLegend)
+                {
+                    showLegend = b;
+                    chart.getStyler().setLegendVisible(showLegend);
+                    this.chartPanel.repaint();
+                }
+            });
+
+            if (this.histogram.canUpdateBounds())
+            {
+                this.histogram.computeDefaultValueRange();
+                
+                this.minValueSpinner = new JSpinner(new SpinnerNumberModel(this.histogram.minValue, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 1.0));
+                getTextField(this.minValueSpinner).setColumns(8);
+                this.minValueSpinner.addChangeListener(evt -> {
+                    this.histogram.minValue = ((SpinnerNumberModel) minValueSpinner.getModel()).getNumber().doubleValue();
+                    this.histogram.update();
+                    updateDisplay();
+                });
+                this.maxValueSpinner = new JSpinner(new SpinnerNumberModel(this.histogram.maxValue, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 1.0));
+                getTextField(this.maxValueSpinner).setColumns(8);
+                this.maxValueSpinner.addChangeListener(evt -> {
+                    this.histogram.maxValue = ((SpinnerNumberModel) maxValueSpinner.getModel()).getNumber().doubleValue();
+                    this.histogram.update();
+                    updateDisplay();
+                });
+                this.nBinsSpinner = new JSpinner(new SpinnerNumberModel(this.histogram.nBins, 10, 1024, 1));
+                this.nBinsSpinner.addChangeListener(evt -> {
+                    this.histogram.nBins = ((SpinnerNumberModel) nBinsSpinner.getModel()).getNumber().intValue();
+                    this.histogram.update();
+                    updateDisplay();
+                });
+            }
+        }
+        
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        private void setupLayout()
+        {
+            // add a panel containing the chart 
+            chartPanel = new XChartPanel(chart);
+            
+            this.statusBar.add(statusLabel);
+            
+            // create control panel
+            JPanel controlPanel = new JPanel(new FlowLayout());
+            
+            controlPanel.add(logScaleCheckBox);
+            controlPanel.add(hideBackgroundCheckBox);
+            controlPanel.add(showLegendCheckBox);
+            
+            if (this.histogram.canUpdateBounds())
+            {
+                controlPanel.add(new JLabel("Min:"));
+                controlPanel.add(minValueSpinner);
+                controlPanel.add(new JLabel("Max:"));
+                controlPanel.add(maxValueSpinner);
+                controlPanel.add(new JLabel("NBins"));
+                controlPanel.add(nBinsSpinner);
+            }
+            
+            JPanel middlePanel = new JPanel(new BorderLayout());
+            middlePanel.add(chartPanel, BorderLayout.CENTER);
+            middlePanel.add(statusBar, BorderLayout.SOUTH);
+            
+            JPanel mainPanel = new JPanel(new BorderLayout());
+            mainPanel.add(middlePanel, BorderLayout.CENTER);
+            mainPanel.add(controlPanel, BorderLayout.SOUTH);
+            
+            jFrame.add(mainPanel);
+            jFrame.pack();            
+        }
+        
+        private void createChart()
+        {
+            int nChannels = this.histogram.yData.length;
+
+            // Create Chart
+            this.chart = new XYChartBuilder()
+                    .width(600)
+                    .height(500)
+                    .xAxisTitle("Value")
+                    .yAxisTitle("Count")
+                    .build();
+
+            // Additional chart style
+            chart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
+            chart.getStyler().setLegendPosition(LegendPosition.InsideNE);
+            
+            // create curve for each channel
+            XYSeries[] series  = new XYSeries[nChannels];
+            for (int c = 0; c < nChannels; c++)
+            {
+                double[] data = convertToDouble(this.histogram.yData[c]);
+                series[c] = chart.addSeries(this.histogram.channelNames[c], this.histogram.xData, data);
+                series[c].setMarker(SeriesMarkers.NONE);
+            }
+
+            // changes default colors of color histograms
+            if (nChannels == 3)
+            {
+                series[0].setLineColor(XChartSeriesColors.RED);
+                series[1].setLineColor(XChartSeriesColors.GREEN);
+                series[2].setLineColor(XChartSeriesColors.BLUE);
+            }
+        }
+        
+        public void updateDisplay()
+        {
+            Map<String, XYSeries> map = chart.getSeriesMap();
+            for (int c = 0; c < this.histogram.yData.length; c++)
+            {
+                String name = this.histogram.channelNames[c];
+                XYSeries series = map.get(name);
+                
+                // check log scale
+                double[] data = convertToDouble(this.histogram.yData[c]);
+                if (logScale)
+                {
+                    for (int i = 0; i < data.length; i++)
+                    {
+                        data[i] = Math.log(data[i] + 1);
+                    }
+                    this.chart.setYAxisTitle("Log Count");
+                }
+                else
+                {
+                    this.chart.setYAxisTitle("Count");
+                }
+                
+                // check display of histogram bound bins
+                if (hideBackground)
+                {
+                    data[0] = 0;
+                    data[data.length-1] = 0;
+                }
+                
+                series.replaceData(this.histogram.xData, data, null);
+            }
+            
+            this.chartPanel.repaint();
+        }
     }
-   
+
+    private static final double[] convertToDouble(int[] array)
+    {
+        double[] res = new double[array.length];
+        for (int i = 0; i < array.length; i++)
+        {
+            res[i] = array[i];
+        }
+        return res;
+    }
+
+    private static final JFormattedTextField getTextField(JSpinner spinner)
+    {
+        JComponent editor = spinner.getEditor();
+        if (editor instanceof JSpinner.DefaultEditor)
+        {
+            return ((JSpinner.DefaultEditor) editor).getTextField();
+        }
+        else
+        {
+            System.err.println("Unexpected editor type: " + spinner.getEditor().getClass() + " isn't a descendant of DefaultEditor");
+            return null;
+        }
+    }   
 }
