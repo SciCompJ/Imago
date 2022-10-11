@@ -583,12 +583,7 @@ public class ImagoGui
         
         // create the frame
         TableFrame frame = new TableFrame(parentFrame, handle);
-
-        if (parentFrame != null)
-        {
-			Point pos = parentFrame.getWidget().getLocation();
-			frame.getWidget().setLocation(pos.x + FRAME_OFFSET_X, pos.y + FRAME_OFFSET_Y);
-        }
+        updateFrameLocation(frame, parentFrame);
         
         // add to frame manager
         this.addFrame(frame); 
@@ -599,7 +594,6 @@ public class ImagoGui
 	 * Creates a new document from an image, adds it to the application, 
 	 * and returns a new frame associated to this document. 
 	 */
-    //TODO: deprecate to switch to static method in ImageFrame
 	public ImageFrame createImageFrame(Image image)
 	{
 		return createImageFrame(image, null);
@@ -609,7 +603,6 @@ public class ImagoGui
      * Creates a new document from an image, adds it to the application, 
      * and returns a new frame associated to this document. 
      */
-    //TODO: deprecate to switch to static method in ImageFrame
     public ImageFrame createImageFrame(Image image, ImagoFrame parentFrame)
     {
     	// First create a handle for the image
@@ -622,12 +615,7 @@ public class ImagoGui
 
 		// Create the frame
 		ImageFrame frame = new ImageFrame(this, handle);
-		
-        if (parentFrame != null)
-        {
-			Point pos = parentFrame.getWidget().getLocation();
-			frame.getWidget().setLocation(pos.x + FRAME_OFFSET_X, pos.y + FRAME_OFFSET_Y);
-        }
+		updateFrameLocation(frame, parentFrame);
 			
         // link the frames
 		this.frames.add(frame);
@@ -653,6 +641,16 @@ public class ImagoGui
         return frame;
     }
 	
+    public void updateFrameLocation(ImagoFrame frame, ImagoFrame parentFrame)
+    {
+        if (parentFrame != null)
+        {
+            Point pos = parentFrame.getWidget().getLocation();
+            frame.getWidget().setLocation(pos.x + FRAME_OFFSET_X, pos.y + FRAME_OFFSET_Y);
+        }
+    }
+    
+    
     // ===================================================================
     // Frame management
     

@@ -130,24 +130,26 @@ public abstract class ImagoFrame implements AlgoListener
 	}
 	
 	/**
-	 * Creates a new frame for displaying image, using this frame as basis for
-	 * placement.
-	 * 
-	 * @param image the image to display.
-	 * @return a new instance of ImageFrame.
-	 */
+     * Creates a new frame for displaying image, using this frame as basis for
+     * placement.
+     * 
+     * @param image
+     *            the image to display.
+     * @return a new instance of ImageFrame.
+     */
 	public ImageFrame createImageFrame(Image image)
 	{
-		return this.gui.createImageFrame(image, this);
+	    return this.gui.createImageFrame(image, this);
 	}
 	
 	/**
-	 * Creates a new frame for displaying table, using this frame as basis for
-	 * placement.
-	 * 
-	 * @param table the table to display.
-	 * @return a new instance of ImageFrame.
-	 */
+     * Creates a new frame for displaying table, using this frame as basis for
+     * placement.
+     * 
+     * @param table
+     *            the table to display.
+     * @return a new instance of ImageFrame.
+     */
 	public TableFrame createTableFrame(Table table)
 	{
 		return this.gui.createTableFrame(table, this);

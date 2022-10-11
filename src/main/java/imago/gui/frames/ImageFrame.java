@@ -3,19 +3,6 @@
  */
 package imago.gui.frames;
 
-import imago.app.ImageHandle;
-import imago.gui.GuiBuilder;
-import imago.gui.ImageViewer;
-import imago.gui.ImagoFrame;
-import imago.gui.ImagoGui;
-import imago.gui.ImagoTool;
-import imago.gui.panel.ImageDisplayOptionsPanel;
-import imago.gui.panel.StatusBar;
-import imago.gui.tool.DisplayCurrentValueTool;
-import imago.gui.viewer.Image5DXYSliceViewer;
-import imago.gui.viewer.PlanarImageViewer;
-import imago.gui.viewer.StackSliceViewer;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -29,6 +16,18 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
+import imago.app.ImageHandle;
+import imago.gui.GuiBuilder;
+import imago.gui.ImageViewer;
+import imago.gui.ImagoFrame;
+import imago.gui.ImagoGui;
+import imago.gui.ImagoTool;
+import imago.gui.panel.ImageDisplayOptionsPanel;
+import imago.gui.panel.StatusBar;
+import imago.gui.tool.DisplayCurrentValueTool;
+import imago.gui.viewer.Image5DXYSliceViewer;
+import imago.gui.viewer.PlanarImageViewer;
+import imago.gui.viewer.StackSliceViewer;
 import net.sci.algo.AlgoEvent;
 import net.sci.algo.AlgoListener;
 import net.sci.array.ArrayOperator;
