@@ -862,8 +862,7 @@ public class GenericDialog
     }
     
 	/**
-	 * Returns the contents of the next numeric field, or NaN if the field does
-	 * not contain a number.
+	 * Returns the state of the next checkbox item.
 	 */
 	public boolean getNextBoolean()
 	{
@@ -976,7 +975,7 @@ public class GenericDialog
 //	          IJ.resetEscape();
 	        }
             else if (keyCode == KeyEvent.VK_W && (evt.getModifiersEx() &
-                    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0)
+                    Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()) != 0)
 	        {
                 // CTRL + "W"
 	            output = Output.CANCEL;
