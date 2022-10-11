@@ -68,7 +68,7 @@ public class ConvertScalarImageToUInt8 implements FramePlugin
 		{
 		    // extract range, and convert to UInt8
 		    double[] range = image.getDisplaySettings().getDisplayRange();
-		    UInt8Array result = processScalar((ScalarArray<?>) array, range);
+		    UInt8Array result = UInt8Array.convert((ScalarArray<?>) array, range[0], range[1]);
 
 		    // create image
 		    resultImage = new Image(result, image);
@@ -79,12 +79,13 @@ public class ConvertScalarImageToUInt8 implements FramePlugin
 		frame.getGui().createImageFrame(resultImage); 
 	}
 	
-	public UInt8Array processScalar(ScalarArray<?> array, double[] range)
-	{
-        // compute ratio 
-	    double ratio = 255 / (range[1] - range[0]);
-	    
-	    // remove min, rescale and convert type
-        return UInt8Array.convert(array.minus(range[0]).times(ratio));
-	}
+//	public UInt8Array processScalar(ScalarArray<?> array, double[] range)
+//	{
+//        // compute ratio 
+////	    double ratio = 255 / (range[1] - range[0]);
+//	    
+//	    // remove min, rescale and convert type
+////        return UInt8Array.convert(array.minus(range[0]).times(ratio));
+//        return UInt8Array.convert(array, range[0], range[1]);
+//	}
 }

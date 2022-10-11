@@ -76,6 +76,7 @@ import imago.plugin.image.convert.ConvertImageToFloat32;
 import imago.plugin.image.convert.ConvertImageToFloat64;
 import imago.plugin.image.convert.ConvertImageToInt16;
 import imago.plugin.image.convert.ConvertImageToInt32;
+import imago.plugin.image.convert.ConvertImageToLabel;
 import imago.plugin.image.convert.ConvertImageToUInt16;
 import imago.plugin.image.convert.ConvertImageToUInt8;
 import imago.plugin.image.convert.ConvertRGB8ImageToRGB16;
@@ -442,25 +443,27 @@ public class GuiBuilder
         
         // Several options for converting images
         menu.addSeparator();
-        JMenu imageTypeMenu = new JMenu("Image Type");
-        addPlugin(imageTypeMenu, new SetImageTypeToLabel(), "Set to Label Image", hasScalarImage);
-        menu.add(imageTypeMenu);
+//        JMenu imageTypeMenu = new JMenu("Image Type");
+//        menu.add(imageTypeMenu);
         
-        addPlugin(menu, new ConvertScalarImageToUInt8(), "Convert to Gray8", hasScalarImage);
-        JMenu convertDataTypeMenu = new JMenu("Convert Data-Type");
-        convertDataTypeMenu.setEnabled(hasImage);
-        addPlugin(convertDataTypeMenu, new ConvertImageToBinary(), "Binary", hasScalarImage);
-        addPlugin(convertDataTypeMenu, new ConvertImageToUInt8(), "UInt8", hasScalarImage);
-        addPlugin(convertDataTypeMenu, new ConvertImageToUInt16(), "UInt16", hasScalarImage);
-        convertDataTypeMenu.addSeparator();
-        addPlugin(convertDataTypeMenu, new CreateScaledUInt8View(), "UInt8 View", hasScalarImage);
-        convertDataTypeMenu.addSeparator();
-        addPlugin(convertDataTypeMenu, new ConvertImageToInt16(), "Int16", hasScalarImage);
-        addPlugin(convertDataTypeMenu, new ConvertImageToInt32(), "Int32", hasScalarImage);
-        convertDataTypeMenu.addSeparator();
-        addPlugin(convertDataTypeMenu, new ConvertImageToFloat32(), "Float32", hasImage);
-        addPlugin(convertDataTypeMenu, new ConvertImageToFloat64(), "Float64", hasImage);
-        menu.add(convertDataTypeMenu);
+        addPlugin(menu, new ConvertScalarImageToUInt8(), "Convert to Gray8", hasScalarImage);// TODO: merge with ConvertImageToUInt8
+        JMenu convertTypeMenu = new JMenu("Convert Type");
+        convertTypeMenu.setEnabled(hasImage);
+        addPlugin(convertTypeMenu, new ConvertImageToBinary(), "Binary");
+        addPlugin(convertTypeMenu, new ConvertImageToUInt8(), "UInt8");
+        addPlugin(convertTypeMenu, new ConvertImageToUInt16(), "UInt16", hasScalarImage);
+        convertTypeMenu.addSeparator();
+        addPlugin(convertTypeMenu, new ConvertImageToLabel(), "Label");
+        addPlugin(convertTypeMenu, new SetImageTypeToLabel(), "Set to Label Image", hasScalarImage);
+        convertTypeMenu.addSeparator();
+        addPlugin(convertTypeMenu, new CreateScaledUInt8View(), "UInt8 View", hasScalarImage); // TODO: merge with ConvertImageToUInt8
+        convertTypeMenu.addSeparator();
+        addPlugin(convertTypeMenu, new ConvertImageToInt16(), "Int16", hasScalarImage);
+        addPlugin(convertTypeMenu, new ConvertImageToInt32(), "Int32", hasScalarImage);
+        convertTypeMenu.addSeparator();
+        addPlugin(convertTypeMenu, new ConvertImageToFloat32(), "Float32", hasImage);
+        addPlugin(convertTypeMenu, new ConvertImageToFloat64(), "Float64", hasImage);
+        menu.add(convertTypeMenu);
         
         // image type conversion handles
         addPlugin(menu, new ConvertStackToMovie(), "Convert stack to movie", hasImage3D);
@@ -470,7 +473,7 @@ public class GuiBuilder
         menu.addSeparator();
         JMenu colorMenu = new JMenu("Color");
         // editMenu.add(convertTypeMenu);
-        addPlugin(colorMenu, new ConvertRGB8ImageToUInt8(), "Convert to UInt8", hasColorImage);
+        addPlugin(colorMenu, new ConvertRGB8ImageToUInt8(), "Convert to UInt8", hasColorImage); // TODO: already in "Convert to UInt8"
         addPlugin(colorMenu, new ImageSplitChannels(), "Split Channels", hasVectorImage || hasColorImage);
         addPlugin(colorMenu, new MergeChannelImages(), "Merge Channels");
         addPlugin(colorMenu, new ColorImageExtractChannel(), "Extract Channel...", hasColorImage);
@@ -512,7 +515,7 @@ public class GuiBuilder
 //        geometryMenu.addSeparator();
 //        addPlugin(geometryMenu, new ImageRotatedCrop2D(), "Rotated Crop 2D", hasImage2D);
         geometryMenu.addSeparator();
-        addPlugin(geometryMenu, new ImageConcatenate(), "Concatenate...");
+        addPlugin(geometryMenu, new ImageConcatenate(), "Concatenate..."); 
         addPlugin(geometryMenu, new ImageSubsample(), "Subsample...", hasImage);
         
 		menu.add(geometryMenu);

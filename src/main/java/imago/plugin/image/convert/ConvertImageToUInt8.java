@@ -10,6 +10,7 @@ import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.binary.Binary;
 import net.sci.array.binary.BinaryArray;
+import net.sci.array.color.RGB8Array;
 import net.sci.array.process.type.BinaryToUInt8;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.UInt8Array;
@@ -32,7 +33,7 @@ public class ConvertImageToUInt8 implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("convert to uint8 image");
+		System.out.println("convert to UInt8 image");
 		
 		// get current frame
 		ImageFrame imageFrame = (ImageFrame) frame;
@@ -42,33 +43,55 @@ public class ConvertImageToUInt8 implements FramePlugin
 			return;
 		}
 		
+		// retrieve data
 		Array<?> array = image.getData();
 		if (array == null)
 		{
 			return;
 		}
-		if (!(array instanceof ScalarArray))
-		{
-            ImagoGui.showErrorDialog(frame, "Requires a scalar image", "Data Type Error");
-			return;
-		}
-
+		
+		// dispatch processing depending on input image data type
 		Image resultImage;
 		if (array.dataType() == Binary.class)
 		{
-//		    BinaryToUInt8 algo = new BinaryToUInt8();
-            UInt8Array res = new BinaryToUInt8.View(BinaryArray.wrap(array));
-            resultImage = new Image(res, image);
-//            resultImage = imageFrame.runOperator(algo, image);
+            UInt8Array result = new BinaryToUInt8.View(BinaryArray.wrap(array));
+            resultImage = new Image(result, image);
 		}
-		else
+		else if (array instanceof RGB8Array)
 		{
+            // TODO: uses algo
+		    UInt8Array result = ((RGB8Array) array).convertToUInt8();
+		    resultImage = new Image(result, image);
+		}
+		else if (array instanceof ScalarArray)
+		{
+		    // TODO: uses algo
 		    UInt8Array result = UInt8Array.convert((ScalarArray<?>) array);
 		    resultImage = new Image(result, image);
 		}
-		resultImage.setName(image.getName() + "-uint8");
+		else
+		{
+		    ImagoGui.showErrorDialog(frame, "Requires a scalar or color image", "Data Type Error");
+			return;
+		}
 		
 		// add the image document to GUI
+        resultImage.setName(image.getName() + "-uint8");
 		imageFrame.createImageFrame(resultImage);
 	}
+	
+	@Override
+    public boolean isEnabled(ImagoFrame frame)
+    {
+	    // check frame type
+	    if (!(frame instanceof ImageFrame)) return false;
+	    
+	    // retrieve image
+        Image image = ((ImageFrame) frame).getImageHandle().getImage();
+        if (image == null) return false;
+        
+        // retrieve data
+        Array<?> array = image.getData();
+        return array instanceof ScalarArray || array instanceof RGB8Array;
+    }
 }

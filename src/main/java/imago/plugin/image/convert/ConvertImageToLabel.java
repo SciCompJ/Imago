@@ -9,23 +9,25 @@ import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.frames.ImageFrame;
 import net.sci.array.Array;
-import net.sci.array.process.type.ConvertToBinary;
 import net.sci.array.scalar.ScalarArray;
+import net.sci.array.scalar.UInt16Array;
+import net.sci.array.scalar.UInt8Array;
 import net.sci.image.Image;
 
 
 /**
- * Convert a scalar image (grayscale, intensity) into a binary image, by setting
- * all values greater than zero to true.
+ * Convert a binary of grayscale image into a label image, by using integer
+ * values as label values.
  *
- * @see net.sci.array.process.type.ConvertToBinary
+ * @see CovnertImageToBinary
+ * @see CovnertImageToUInt8
  * 
  * @author David Legland
  *
  */
-public class ConvertImageToBinary implements FramePlugin 
+public class ConvertImageToLabel implements FramePlugin 
 {
-	public ConvertImageToBinary()
+	public ConvertImageToLabel()
 	{
 	}
 	
@@ -35,7 +37,7 @@ public class ConvertImageToBinary implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args) 
 	{
-		System.out.println("convert to binary image");
+		System.out.println("convert to label image");
 		
 		// get current frame
 		ImageFrame imageFrame = (ImageFrame) frame;
@@ -50,21 +52,25 @@ public class ConvertImageToBinary implements FramePlugin
 		
 		// check array type
 		Array<?> array = image.getData();
-		if (array == null)
-		{
-			return;
-		}
-		if (!(array instanceof ScalarArray))
+		
+		Array<?> result;
+        if (array instanceof UInt8Array || array instanceof UInt16Array)
+        {
+            result = array; 
+        }
+        else if (array instanceof ScalarArray)
+        {
+            result = UInt8Array.wrap(array); 
+        }
+        else
 		{
             ImagoGui.showErrorDialog(frame, "Requires a scalar image", "Data Type Error");
 			return;
 		}
 		
-		// create and run algo
-		ConvertToBinary algo = new ConvertToBinary();
-		Image resultImage = imageFrame.runOperator(algo, image);
-		resultImage.setName(image.getName() + "-bin");
-		
+        Image resultImage = new Image(result, Image.Type.LABEL, image);
+        resultImage.setName(image.getName() + "-lbl");
+
 		// add the image document to GUI
 		frame.createImageFrame(resultImage); 
 	}
