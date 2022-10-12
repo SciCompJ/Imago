@@ -205,16 +205,9 @@ public class ImagoGui
 	 */
 	public void loadPlugins() throws ClassNotFoundException, IOException
 	{
-	    System.out.println("Load plugins");
-	    
         String baseDirName = System.getProperty("user.dir");
-        
-	    File baseDir = new File(System.getProperty("user.dir"));
-        System.out.println("base directory: " + baseDir.getAbsolutePath());
-        
 	    String pluginsDirName = baseDirName + File.separator + "plugins";
 	    File pluginsDir = new File(pluginsDirName);
-        System.out.println("plugins directory: " + pluginsDir.getAbsolutePath());
 	    if (!pluginsDir.exists())
 	    {
 	        System.out.println("No plugin directory, abort.");
@@ -227,7 +220,6 @@ public class ImagoGui
         // For each jar, find the plugins within
         for (File file : subFiles)
         {
-            System.out.println("Found plugin file: " + file.getName());
             try 
             {
                 loadPluginsFromJarFile(file);
@@ -258,8 +250,6 @@ public class ImagoGui
         {
             for (String entry : entries)
             {
-                System.out.println("installing plugin: " + entry);
-
                 PluginHandler handler = createPluginHandler(file, entry);
                 if (handler != null && handler.plugin != null)
                 {

@@ -116,7 +116,6 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
      */
     public Crop3DPlugin()
     {
-        System.out.println("create the crop3D plugin");
     }
 
     

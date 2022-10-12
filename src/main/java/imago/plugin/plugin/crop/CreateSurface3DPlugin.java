@@ -103,7 +103,6 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
     
     public CreateSurface3DPlugin()
     {
-        System.out.println("create the CreateSurface3D plugin");
     }
     
     
