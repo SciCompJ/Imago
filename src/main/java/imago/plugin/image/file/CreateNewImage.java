@@ -28,13 +28,48 @@ public class CreateNewImage implements FramePlugin
 {
     public enum Type
     {
-        BINARY("Binary"),
-        GRAY8("Gray8"),
-        GRAY16("Gray16"),
-        INT32("Int32"),
-        FLOAT32("Float32"),
-        FLOAT64("Float64"),
-        RGB8("Color");
+        BINARY("Binary", (dims,  value) -> {
+            BinaryArray array = BinaryArray.create(dims); 
+            if (value > 0)
+            {
+                array.fill(true);
+            }
+            return array;
+        }),
+        GRAY8("Gray8", (dims, value) -> {
+            UInt8Array array = UInt8Array.create(dims);
+            // convert fill value to int before calling fill method
+            array.fillInt((int) value);
+            return array;
+        }),
+        GRAY16("Gray16", (dims, value) -> {
+            UInt16Array array = UInt16Array.create(dims);
+            // convert fill value to int before calling fill method
+            array.fillInt((int) value);
+            return array;
+        }),
+        INT32("Int32", (dims, value) -> {
+            Int32Array array = Int32Array.create(dims);
+            // convert fill value to int before calling fill method
+            array.fillInt((int) value);
+            return array;
+        }),
+        FLOAT32("Float32", (dims, value) -> {
+            Float32Array array = Float32Array.create(dims); 
+            array.fillValue(value);
+            return array;
+        }),
+        FLOAT64("Float64", (dims, value) -> {
+            Float64Array array = Float64Array.create(dims); 
+            array.fillValue(value);
+            return array;
+        }),
+        RGB8("Color", (dims, value) -> {
+            RGB8Array array = RGB8Array.create(dims);
+            RGB8 rgb = new RGB8(value, value, value);
+            array.fill(rgb);
+            return array;
+        });
         
         /**
          * Returns a set of labels for most of classical types.
@@ -123,58 +158,17 @@ public class CreateNewImage implements FramePlugin
 
         private final String label;
         
-        private Type(String label)
+        private final Factory factory;
+        
+        private Type(String label, Factory factory)
         {
             this.label = label;
+            this.factory = factory;
         }
         
         public Array<?> createArray(int[] dims, double fillValue)
         {
-            if (this == BINARY)
-            {
-                BinaryArray array = BinaryArray.create(dims); 
-                array.fill(fillValue > 0);
-                return array;
-            }
-            else if (this == GRAY8)
-            {
-                UInt8Array array = UInt8Array.create(dims); 
-                array.fillInt((int) fillValue);
-                return array;
-            }
-            else if (this == GRAY16)
-            {
-                UInt16Array array = UInt16Array.create(dims); 
-                array.fillInt((int) fillValue);
-                return array;
-            }
-            else if (this == INT32)
-            {
-                Int32Array array = Int32Array.create(dims); 
-                array.fillInt((int) fillValue);
-                return array;
-            }
-            else if (this == FLOAT32)
-            {
-                Float32Array array = Float32Array.create(dims); 
-                array.fillValue(fillValue);
-                return array;
-            }
-            else if (this == FLOAT64)
-            {
-                Float64Array array = Float64Array.create(dims); 
-                array.fillValue(fillValue);
-                return array;
-            }
-            else if (this == RGB8)
-            {
-                RGB8Array array = RGB8Array.create(dims);
-                RGB8 rgb = new RGB8(fillValue, fillValue, fillValue);
-                array.fill(rgb);
-                return array;
-            }
-            
-            throw new IllegalArgumentException("No default method for creating array with type " + this.label);
+            return factory.create(dims, fillValue);
         }
         
         /** 
@@ -184,17 +178,27 @@ public class CreateNewImage implements FramePlugin
         {
             return this.label;
         }
+
+        /**
+         * Inner interface used for defining the creation function used by the
+         * different types.
+         */
+        private interface Factory
+        {
+            /**
+             * Creates a new array.
+             * 
+             * @param dims
+             *            the size of the new array
+             * @param value
+             *            the value to fill the array with.
+             * @return a new array filled with the specified value.
+             */
+            public Array<?> create(int[] dims, double value);
+        }
     };
     
-    
-	/**
-     * Default empty constructor.
-     */
-	public CreateNewImage()
-	{
-	}
-
-	/*
+    /*
 	 * (non-Javadoc)
 	 * 
 	 * @see
@@ -227,12 +231,12 @@ public class CreateNewImage implements FramePlugin
         }
 		
         // create dialog to enter options
-		GenericDialog gd = new GenericDialog(frame, "New Image");
+		GenericDialog gd = new GenericDialog(frame, "Create Image");
 		gd.addTextField("Name: ", baseName);
-        gd.addNumericField("Width: ", sizeX_init, 0);
-		gd.addNumericField("Height: ", sizeY_init, 0);
-		gd.addNumericField("Depth: ", sizeZ_init, 0);
-		gd.addChoice("Image Type: ", Type.getAllLabels(), type_init.toString());
+        gd.addNumericField("Size X: ", sizeX_init, 0);
+		gd.addNumericField("Size Y: ", sizeY_init, 0);
+		gd.addNumericField("Size Z: ", sizeZ_init, 0);
+        gd.addChoice("Image Type: ", Type.getAllLabels(), type_init.toString());
 		gd.addNumericField("Fill Value: ", 0, 0);
 		gd.showDialog();
 		
@@ -253,8 +257,8 @@ public class CreateNewImage implements FramePlugin
 		int[] dims = sizeZ <= 1 ? new int[]{sizeX, sizeY} : new int[]{sizeX, sizeY, sizeZ}; 
 		
 		// Create the array depending on the type
-		Array<?> array = type.createArray(dims, fillValue);
-
+        Array<?> array = type.createArray(dims, fillValue);
+        
 		// Create image
 		Image image = new Image(array);
 		image.setName(imageName);
