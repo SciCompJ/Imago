@@ -20,9 +20,12 @@ import net.sci.image.Image;
 /**
  * Convert a scalar image to UInt8 data using min and max display values
  * 
+ * @deprecated replaced by ConvertImagToUInt8
+ * 
  * @author David Legland
  *
  */
+@Deprecated
 public class ConvertScalarImageToUInt8 implements FramePlugin 
 {
 	public ConvertScalarImageToUInt8() 

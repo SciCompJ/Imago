@@ -20,6 +20,8 @@ import net.sci.image.Image;
  * Create a view to convert a scalar to an UInt8 array, using min and max values
  * for conversion.
  * 
+ * @see ConvertImageToUInt8
+ * 
  * @author David Legland
  *
  */

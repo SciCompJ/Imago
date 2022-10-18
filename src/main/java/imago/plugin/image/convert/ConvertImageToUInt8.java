@@ -12,6 +12,7 @@ import net.sci.array.binary.Binary;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.color.RGB8Array;
 import net.sci.array.process.type.BinaryToUInt8;
+import net.sci.array.process.type.ConvertToUInt8;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.UInt8Array;
 import net.sci.image.Image;
@@ -54,25 +55,22 @@ public class ConvertImageToUInt8 implements FramePlugin
 		Image resultImage;
 		if (array.dataType() == Binary.class)
 		{
-            UInt8Array result = new BinaryToUInt8.View(BinaryArray.wrap(array));
-            resultImage = new Image(result, image);
-		}
-		else if (array instanceof RGB8Array)
-		{
-            // TODO: uses algo
-		    UInt8Array result = ((RGB8Array) array).convertToUInt8();
+		    // Default behavior for binary: create a view
+		    UInt8Array result = new BinaryToUInt8.View(BinaryArray.wrap(array));
 		    resultImage = new Image(result, image);
 		}
-		else if (array instanceof ScalarArray)
+		else 
 		{
-		    // TODO: uses algo
-		    UInt8Array result = UInt8Array.convert((ScalarArray<?>) array);
-		    resultImage = new Image(result, image);
-		}
-		else
-		{
-		    ImagoGui.showErrorDialog(frame, "Requires a scalar or color image", "Data Type Error");
-			return;
+		    if (array instanceof ScalarArray || array instanceof RGB8Array)
+		    {
+		        ConvertToUInt8 op = new ConvertToUInt8();
+		        resultImage = imageFrame.runOperator(op, image);
+		    }
+		    else
+		    {
+		        ImagoGui.showErrorDialog(frame, "Requires a scalar or color image", "Data Type Error");
+		        return;
+		    }
 		}
 		
 		// add the image document to GUI

@@ -80,8 +80,6 @@ import imago.plugin.image.convert.ConvertImageToLabel;
 import imago.plugin.image.convert.ConvertImageToUInt16;
 import imago.plugin.image.convert.ConvertImageToUInt8;
 import imago.plugin.image.convert.ConvertRGB8ImageToRGB16;
-import imago.plugin.image.convert.ConvertRGB8ImageToUInt8;
-import imago.plugin.image.convert.ConvertScalarImageToUInt8;
 import imago.plugin.image.convert.ConvertStackToMovie;
 import imago.plugin.image.convert.ConvertUInt8ImageToRGB;
 import imago.plugin.image.convert.CreateScaledUInt8View;
@@ -446,7 +444,6 @@ public class GuiBuilder
 //        JMenu imageTypeMenu = new JMenu("Image Type");
 //        menu.add(imageTypeMenu);
         
-        addPlugin(menu, new ConvertScalarImageToUInt8(), "Convert to Gray8", hasScalarImage);// TODO: merge with ConvertImageToUInt8
         JMenu convertTypeMenu = new JMenu("Convert Type");
         convertTypeMenu.setEnabled(hasImage);
         addPlugin(convertTypeMenu, new ConvertImageToBinary(), "Binary");
@@ -473,10 +470,9 @@ public class GuiBuilder
         menu.addSeparator();
         JMenu colorMenu = new JMenu("Color");
         // editMenu.add(convertTypeMenu);
-        addPlugin(colorMenu, new ConvertRGB8ImageToUInt8(), "Convert to UInt8", hasColorImage); // TODO: already in "Convert to UInt8"
         addPlugin(colorMenu, new ImageSplitChannels(), "Split Channels", hasVectorImage || hasColorImage);
         addPlugin(colorMenu, new MergeChannelImages(), "Merge Channels");
-        addPlugin(colorMenu, new ColorImageExtractChannel(), "Extract Channel...", hasColorImage);
+        addPlugin(colorMenu, new ColorImageExtractChannel(), "Select Channel...", hasColorImage);
         addPlugin(colorMenu, new ConvertUInt8ImageToRGB(), "UInt8 to RGB8", hasScalarImage);
         addPlugin(colorMenu, new ConvertRGB8ImageToRGB16(), "RGB8 to RGB16", hasRGB8Image);
         addPlugin(colorMenu, new ScalarImagesColorDifference(), "Color difference between two scalar images");

@@ -15,9 +15,12 @@ import net.sci.image.Image;
 
 
 /**
+ * 
+ * @deprecated replaced by ConvertImageToUInt8
  * @author David Legland
  *
  */
+@Deprecated
 public class ConvertRGB8ImageToUInt8 implements FramePlugin 
 {
 	public ConvertRGB8ImageToUInt8() 
