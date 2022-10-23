@@ -163,6 +163,7 @@ import imago.plugin.image.shape.Image3DRotate90;
 import imago.plugin.image.shape.ImageConcatenate;
 import imago.plugin.image.shape.ImageCropDialog;
 import imago.plugin.image.shape.ImageCropSelection;
+import imago.plugin.image.shape.ImageDownsample;
 import imago.plugin.image.shape.ImageFlip;
 import imago.plugin.image.shape.ImagePermuteDims;
 import imago.plugin.image.shape.ImageReshape;
@@ -513,6 +514,7 @@ public class GuiBuilder
         geometryMenu.addSeparator();
         addPlugin(geometryMenu, new ImageConcatenate(), "Concatenate..."); 
         addPlugin(geometryMenu, new ImageSubsample(), "Subsample...", hasImage);
+        addPlugin(geometryMenu, new ImageDownsample(), "Downsample...", hasImage);
         
 		menu.add(geometryMenu);
 
