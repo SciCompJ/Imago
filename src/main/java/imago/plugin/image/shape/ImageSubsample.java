@@ -3,13 +3,12 @@
  */
 package imago.plugin.image.shape;
 
-import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.frames.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
-import net.sci.array.process.shape.SubSampler;
+import net.sci.array.process.shape.SubSample;
 import net.sci.image.Image;
 
 /**
@@ -36,31 +35,44 @@ public class ImageSubsample implements FramePlugin
 		System.out.println("subsample");
 
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-		Image image	= doc.getImage();
+        ImageFrame iFrame = (ImageFrame) frame;
+        Image image = iFrame.getImageHandle().getImage();
 		Array<?> array = image.getData();
 
 		GenericDialog gd = new GenericDialog(frame, "Subsample");
-		gd.addNumericField("Subsampling ratio", 2, 0);
+        gd.addNumericField("Sampling Step", 2, 0);
+        gd.addNumericField("Origin Shift", 0, 0);
 		
 		gd.showDialog();
-		
 		if (gd.getOutput() == GenericDialog.Output.CANCEL) 
 		{
 			return;
 		}
 		
-		int ratio = (int) gd.getNextNumber();
-		
+        int step = (int) gd.getNextNumber();
+        int shift = (int) gd.getNextNumber();
+		int nd = array.dimensionality();
+        int[] steps = repeatValue(step, nd);
+        int[] origins = repeatValue(shift, nd);
+		        
 		// create operator box filtering operator
-		SubSampler resampler = new SubSampler(ratio); 
+		SubSample resampler = new SubSample(steps, origins); 
 		
 		// apply operator on current image
 		Image result = new Image(resampler.process(array), image);
-		result.setName(image.getName() + "-sub" + ratio);
+		result.setName(image.getName() + "-sub" + step);
 		
 		// add the image document to GUI
-		frame.getGui().createImageFrame(result);
+		iFrame.createImageFrame(result);
 	}
 
+    private static final int[] repeatValue(int value, int n)
+    {
+        int[] res = new int[n];
+        for (int i = 0; i < n; i++)
+        {
+            res[i] = value;
+        }
+        return res;
+    }
 }
