@@ -27,10 +27,6 @@ import net.sci.image.Image;
  */
 public class BinaryImageOverlay implements FramePlugin
 {
-	public BinaryImageOverlay()
-	{
-	}
-
 	@Override
     public void run(ImagoFrame frame, String args)
     {
@@ -52,8 +48,9 @@ public class BinaryImageOverlay implements FramePlugin
 		// Creates the dialog
 		GenericDialog gd = new GenericDialog(frame, "Binary Overlay");
 		gd.addChoice("Reference Image: ", imageNameArray, firstImageName);
-		gd.addChoice("Binary Image: ", imageNameArray, secondImageName);
-		gd.addChoice("Overlay Color: ", CommonColors.all(), CommonColors.RED);
+		gd.addChoice("Binary Mask: ", imageNameArray, secondImageName);
+        gd.addChoice("Overlay Color: ", CommonColors.all(), CommonColors.RED);
+        gd.addNumericField("Overlay Opacity:", 50, 0, "The opacity of the binary overlay, between 0 and 100");
         gd.showDialog();
 		
 		if (gd.wasCanceled()) 
@@ -65,30 +62,31 @@ public class BinaryImageOverlay implements FramePlugin
 		Image baseImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
         Image maskImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
         RGB8 color = new RGB8(CommonColors.fromLabel(gd.getNextChoice()).getColor());
-        
+        double opacity = Math.max(Math.min(gd.getNextNumber(), 100.0), 0.0) / 100.0;
+
         // retrieve image data
 		Array<?> baseArray = baseImage.getData();
-		Array<?> overlay = maskImage.getData();
+		Array<?> binaryMask = maskImage.getData();
 		
 		// check validity of input images
-		if (!Arrays.isSameDimensionality(baseArray, overlay))
+		if (!Arrays.isSameDimensionality(baseArray, binaryMask))
 		{
 			frame.showErrorDialog("Both arrays must have same dimensionality", "Dimensionality Error");
 			return;
 		}
-		if (!Arrays.isSameSize(baseArray, overlay))
+		if (!Arrays.isSameSize(baseArray, binaryMask))
 		{
 			frame.showErrorDialog("Both arrays must have same size", "Image Size Error");
 			return;
 		}
-        if (overlay.dataType() != Binary.class)
+        if (binaryMask.dataType() != Binary.class)
 		{
 			frame.showErrorDialog("overlay array must be binary", "Image Type Error");
 			return;
 		}
 		
 		// create RGB8 array as a view
-		RGB8Array result = new BinaryOverlayRGB8Array(baseArray, BinaryArray.wrap(overlay), color);
+		RGB8Array result = new BinaryOverlayRGB8Array(baseArray, BinaryArray.wrap(binaryMask), color, opacity);
 		
 		// Create result image
 		Image resultImage = new Image(result, baseImage);
