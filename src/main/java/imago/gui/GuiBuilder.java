@@ -165,6 +165,7 @@ import imago.plugin.image.shape.ImageCropDialog;
 import imago.plugin.image.shape.ImageCropSelection;
 import imago.plugin.image.shape.ImageDownsample;
 import imago.plugin.image.shape.ImageFlip;
+import imago.plugin.image.shape.ImageOrthogonalProjection;
 import imago.plugin.image.shape.ImagePermuteDims;
 import imago.plugin.image.shape.ImageReshape;
 import imago.plugin.image.shape.ImageRotateAroundCenter;
@@ -520,6 +521,7 @@ public class GuiBuilder
         addPlugin(stackMenu, new Image3DGetSlice(), "Extract Slice...", hasImage3D);
         addPlugin(stackMenu, new Image3DOrthoslicesImage(), "Create OrthoSlices Image...", hasImage3D);
         addPlugin(stackMenu, new Image3DMontage(), "Image 3D Montage...", hasImage3D);
+        addPlugin(stackMenu, new ImageOrthogonalProjection(), "Orthogonal Projection...", hasImage3D && hasScalarImage);
         stackMenu.addSeparator();
         addPlugin(stackMenu, new Image3DSetOrthoSlicesDisplay(), "Set Orthoslices Display", hasImage3D);
         stackMenu.addSeparator();
