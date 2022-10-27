@@ -442,19 +442,17 @@ public class GuiBuilder
         
         // Several options for converting images
         menu.addSeparator();
-//        JMenu imageTypeMenu = new JMenu("Image Type");
-//        menu.add(imageTypeMenu);
         
         JMenu convertTypeMenu = new JMenu("Convert Type");
         convertTypeMenu.setEnabled(hasImage);
         addPlugin(convertTypeMenu, new ConvertImageToBinary(), "Binary");
         addPlugin(convertTypeMenu, new ConvertImageToUInt8(), "UInt8");
+        addPlugin(convertTypeMenu, new CreateScaledUInt8View(), "UInt8 (change dynamic)", hasScalarImage);
         addPlugin(convertTypeMenu, new ConvertImageToUInt16(), "UInt16", hasScalarImage);
         convertTypeMenu.addSeparator();
         addPlugin(convertTypeMenu, new ConvertImageToLabel(), "Label");
         addPlugin(convertTypeMenu, new SetImageTypeToLabel(), "Set to Label Image", hasScalarImage);
         convertTypeMenu.addSeparator();
-        addPlugin(convertTypeMenu, new CreateScaledUInt8View(), "UInt8 View", hasScalarImage); // TODO: merge with ConvertImageToUInt8
         convertTypeMenu.addSeparator();
         addPlugin(convertTypeMenu, new ConvertImageToInt16(), "Int16", hasScalarImage);
         addPlugin(convertTypeMenu, new ConvertImageToInt32(), "Int32", hasScalarImage);
@@ -466,8 +464,7 @@ public class GuiBuilder
         // image type conversion handles
         addPlugin(menu, new ConvertStackToMovie(), "Convert stack to movie", hasImage3D);
 
-
-        // Color conversion handles
+        // Color images operators
         menu.addSeparator();
         JMenu colorMenu = new JMenu("Color");
         // editMenu.add(convertTypeMenu);
@@ -477,12 +474,8 @@ public class GuiBuilder
         addPlugin(colorMenu, new ConvertUInt8ImageToRGB(), "UInt8 to RGB8", hasScalarImage);
         addPlugin(colorMenu, new ConvertRGB8ImageToRGB16(), "RGB8 to RGB16", hasRGB8Image);
         addPlugin(colorMenu, new ScalarImagesColorDifference(), "Color difference between two scalar images");
-        
-        // addMenuItem(editMenu, new MetaImageOperatorAction(frame,
-        // "colorToGray",
-        // new Gray8Converter()), "RGB -> Gray8", hasColorImage);
         menu.add(colorMenu);
-
+        
         JMenu vectorMenu = new JMenu("Vector");
         addPlugin(vectorMenu, new VectorImageChannelView(), "Channel View", hasVectorImage);
         addPlugin(vectorMenu, new CreateVectorImageNorm(), "Vector Image Norm", hasVectorImage);
