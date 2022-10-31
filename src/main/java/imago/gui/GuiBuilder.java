@@ -90,6 +90,7 @@ import imago.plugin.image.convert.VectorImageConvertToRGB;
 import imago.plugin.image.convert.VectorImageToTable;
 import imago.plugin.image.edit.CreateColorCubeImage3D;
 import imago.plugin.image.edit.CreateDistanceToOctahedronImage3D;
+import imago.plugin.image.edit.ImageColorMapDisplay;
 import imago.plugin.image.edit.ImageCopySelectionToWorkspace;
 import imago.plugin.image.edit.ImageFillBox;
 import imago.plugin.image.edit.ImageFillDisk;
@@ -438,6 +439,8 @@ public class GuiBuilder
         addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.BLUE), "Blue");
         addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.FIRE), "Fire");
         addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.GLASBEY), "Glasbey");
+        colormapMenu.addSeparator();
+        addPlugin(colormapMenu, new ImageColorMapDisplay(), "Show Color Map in Table", hasImage && !hasRGB8Image);
         menu.add(colormapMenu);
         
         addPlugin(menu, new ImageSetBackgroundColor(), "Set Background Color...", hasLabelImage);
