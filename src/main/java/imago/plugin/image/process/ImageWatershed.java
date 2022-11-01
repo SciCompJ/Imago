@@ -43,11 +43,11 @@ public class ImageWatershed implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("Watershed");
+		System.out.println("Watershed Segmentation");
 
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-		Image image	= doc.getImage();
+        ImageFrame iFrame = (ImageFrame) frame;
+		Image image	= iFrame.getImageHandle().getImage();
 		
 		// current dimensionality
 		Array<?> array = image.getData();
@@ -57,14 +57,19 @@ public class ImageWatershed implements FramePlugin
 		}
 		int nd = array.dimensionality();
 		
-		// String lists for dialog widgets
-		String[] connectivityNames = new String[]{"Ortho", "Full"};
-
+        // String lists for dialog widgets
+        String[] connectivityNames = switch (nd)
+        {
+            case 2 -> new String[] { "C4", "C8" };
+            case 3 -> new String[] { "C6", "C26" };
+            default -> new String[] { "Ortho", "Full" };
+        };
+        
 		// Computes max possible value for dynamic
 		double maxValue = 255;
 		if (!(array instanceof UInt8Array))
 		{
-			double[] range = ((ScalarArray<?>) array).valueRange();
+			double[] range = ((ScalarArray<?>) array).finiteValueRange();
 			maxValue = range[1] - range[0];
 		}
 
@@ -107,15 +112,14 @@ public class ImageWatershed implements FramePlugin
 		}
 		
 		// apply operator on current image
-		Image resultImage = new Image(result, image);
-		resultImage.setType(Image.Type.LABEL);
+		Image resultImage = new Image(result, Image.Type.LABEL, image);
 		
 		// choose appropriate suffix
 		String suffix = "-wat";
 		resultImage.setName(image.getName() + suffix);
 		
 		// add the image document to GUI
-		frame.getGui().createImageFrame(resultImage);
+		iFrame.createImageFrame(resultImage);
 	}
 
 	/**
