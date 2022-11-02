@@ -16,7 +16,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -33,7 +32,6 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import imago.app.ImagoApp;
-import imago.app.UserPreferences;
 import imago.app.scene.ImageSerialSectionsNode;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
@@ -46,7 +44,6 @@ import imago.gui.frames.ImagoEmptyFrame;
 import imago.gui.tool.SelectPolygonTool;
 import imago.gui.viewer.StackSliceViewer;
 import imago.plugin.image.file.CommonImageFileFilters;
-import net.sci.array.scalar.UInt8Array3D;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.polygon.Polygon2D;
 import net.sci.image.Image;
@@ -98,16 +95,12 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     
     // the widget that displays the names of base polygons
     JList<String> cropItemList;
-    
-    private JFileChooser openWindow = null;
-    private JFileChooser saveWindow = null;
 
     private static FileFilter crop3dFileFilter = new FileNameExtensionFilter("Crop3D files (*.crop3d)", "crop3d");
     private static FileFilter jsonFileFilter = new FileNameExtensionFilter("All JSON files (*.json)", "json");
-
-    String imagePath = null;
-    String lastOpenPath = "D:/images/wheat/perigrain/Psiche_2018/HR/selection";
-
+    private static FileFilter mhdFileFilter = new FileNameExtensionFilter("MetaImage Files (*.mhd)", "mhd");
+    
+    
     // ===================================================================
     // Constructor
     
@@ -327,22 +320,15 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     {
         System.out.println("Load analysis");
         
-        // create file dialog using last open path
-        openWindow = new JFileChooser(this.lastOpenPath);
-        openWindow.setDialogTitle("Read Crop3D analysis");
-        openWindow.addChoosableFileFilter(crop3dFileFilter);
-        openWindow.addChoosableFileFilter(jsonFileFilter);
-        openWindow.setFileFilter(crop3dFileFilter);
-        
-        // Open dialog to choose the file
-        int ret = openWindow.showOpenDialog(parentFrame.getWidget());
-        if (ret != JFileChooser.APPROVE_OPTION) 
+        // open a dialog to read a .crop3d or .json file
+        File file = parentFrame.getGui().chooseFileToOpen(parentFrame,
+                "Read Crop3D analysis", crop3dFileFilter, jsonFileFilter);
+        if (file == null)
         {
             return;
         }
 
         // Check the chosen file is valid
-        File file = openWindow.getSelectedFile();
         if (!file.isFile())
         {
             return;
@@ -366,6 +352,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     {
         System.out.println("Load polygons");
         
+        // check with user if it is fine to replace existing polygons
         if (!crop3d.getPolygonsNode().getSliceIndices().isEmpty())
         {
             int dialogResult = JOptionPane.showConfirmDialog(imageFrame.getWidget(),
@@ -380,21 +367,15 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         // reset current state of the Crop3D plugin
         crop3d.initializeCrop3dNodes();
         
-        // create file dialog using last open path
-        String lastPath = ".";
-        openWindow = new JFileChooser(lastPath);
-        openWindow.setDialogTitle("Read list of input polygons");
-        openWindow.setFileFilter(new FileNameExtensionFilter("JSON files (*.json)", "json"));
-
-        // Open dialog to choose the file
-        int ret = openWindow.showOpenDialog(imageFrame.getWidget());
-        if (ret != JFileChooser.APPROVE_OPTION) 
+        // open a dialog to read a .json file
+        File file = parentFrame.getGui().chooseFileToOpen(parentFrame,
+                "Read list of input polygons", jsonFileFilter);
+        if (file == null)
         {
             return;
         }
 
         // Check the chosen file is state
-        File file = openWindow.getSelectedFile();
         if (!file.exists())
         {
             return;
@@ -429,23 +410,15 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         String imageName = imageFrame.getImage().getName();
         System.out.println("Current Image name: " + imageName);
         
-        saveWindow = new JFileChooser();
-        saveWindow.setDialogTitle("Save Crop3D Analysis");
-        saveWindow.addChoosableFileFilter(crop3dFileFilter);
-        saveWindow.addChoosableFileFilter(jsonFileFilter);
-        saveWindow.setFileFilter(crop3dFileFilter);
-        saveWindow.setCurrentDirectory(new File(lastOpenPath));
-        saveWindow.setSelectedFile(new File(imageName + ".crop3d"));
-        
-        // Open dialog to choose the file
-        int ret = saveWindow.showSaveDialog(imageFrame.getWidget());
-        if (ret != JFileChooser.APPROVE_OPTION) 
+        String defaultFileName = imageName + ".crop3d";
+        File file = parentFrame.getGui().chooseFileToSave(parentFrame, 
+                "Save Crop3D Analysis", defaultFileName, jsonFileFilter, crop3dFileFilter);
+        if (file == null)
         {
             return;
         }
 
         // Check the chosen file is valid
-        File file = saveWindow.getSelectedFile();
         if (!file.getName().endsWith(".crop3d"))
         {
             File parent = file.getParentFile();
@@ -483,20 +456,16 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         
         // create file dialog using last save path
         String imageName = imageFrame.getImage().getName();
-        saveWindow = new JFileChooser(new File(imageName + ".json"));
-        saveWindow.setDialogTitle("Save list of input polygons");
-        saveWindow.setCurrentDirectory(new File(lastOpenPath));
-        saveWindow.setFileFilter(jsonFileFilter);
-
-        // Open dialog to choose the file
-        int ret = saveWindow.showSaveDialog(imageFrame.getWidget());
-        if (ret != JFileChooser.APPROVE_OPTION) 
+        String defaultFileName = imageName + ".json";
+        
+        File file = parentFrame.getGui().chooseFileToSave(parentFrame, 
+                "Save list of input polygons", defaultFileName, jsonFileFilter);
+        if (file == null)
         {
             return;
         }
 
         // Check the chosen file is valid
-        File file = saveWindow.getSelectedFile();
         if (!file.getName().endsWith(".json"))
         {
             File parent = file.getParentFile();
@@ -523,17 +492,14 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     public void onOpenImageButton()
     {
         // Ask for the filename of the image to open
-        File file = parentFrame.getGui().chooseFileToOpen(parentFrame, "Choose Input 3D TIFF Image", CommonImageFileFilters.TIFF);
+        File file = parentFrame.getGui().chooseFileToOpen(parentFrame, 
+                "Choose Input 3D TIFF Image", CommonImageFileFilters.TIFF);
 
         // Check the chosen file is valid
         if (file == null)
         {
             return;
         }
-        
-        // eventually keep path for future opening
-        String path = file.getPath();
-        this.lastOpenPath = path;
         
         // clear current image data
         this.imageFrame = null;
@@ -559,6 +525,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     {
         File imageFile = new File(data.imageInfo.filePath);
         createImageFrame(imageFile);
+        data.image = this.imageFrame.getImage();
         
         // create the associated Crop3D 
         this.crop3d = new Crop3D(data, imageFrame.getImageHandle());
@@ -616,13 +583,6 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         // create viewer for the image
         this.imageFrame = parentFrame.createImageFrame(image);
 
-        // update last open path
-        this.imagePath = imageFileName.getAbsolutePath();
-        this.lastOpenPath = imageFileName.getPath();
-        // update path for future opening
-        UserPreferences prefs = parentFrame.getGui().getAppli().userPreferences;
-        prefs.lastOpenPath = lastOpenPath;
-        
         // update widgets
         imageNameLabel.setText(image.getName());
     }
@@ -893,20 +853,8 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
      */
     public void onPreviewCropImageButton()
     {
-        ImageSerialSectionsNode polyNode = crop3d.getPolygonsNode();
-        if (polyNode == null)
-        {
-            System.err.println("Current image does not contain Crop3D polygon information");
-            return;
-        }
-        
         // Create new cropped image using virtual crop array
-        UInt8Array3D array = (UInt8Array3D) imageFrame.getImage().getData();
-        ImageSerialSectionsNode cropNode = crop3d.getInterpolatedPolygonsNode();
-        UInt8Array3D cropArray = new CroppedUInt8Array3D(array, cropNode);
-        Image refImage = imageFrame.getImage();
-        Image cropImage = new Image(cropArray, refImage);
-        cropImage.setName(refImage.getName() + "-crop");
+        Image cropImage = crop3d.createCropImageView();
         imageFrame.createImageFrame(cropImage);
     }
     
@@ -926,20 +874,15 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         }
         
         // create dialog to save file
-        String imageName = imageFrame.getImage().getName();
-        JFileChooser saveDlg = new JFileChooser(new File(imageName + "_crop.mhd"));
-        saveDlg.setDialogTitle("Select File for crop result");
-        saveDlg.setFileFilter(new FileNameExtensionFilter("MetaImage File (*.mhd)", "mhd"));
-
-        // Open dialog to choose the file
-        int ret = saveDlg.showSaveDialog(imageFrame.getWidget());
-        if (ret != JFileChooser.APPROVE_OPTION) 
+        String defaultFileName = imageFrame.getImage().getName() + ".crop3d";
+        File file = parentFrame.getGui().chooseFileToSave(parentFrame, 
+                "Select File for crop result", defaultFileName, mhdFileFilter);
+        if (file == null)
         {
             return;
         }
 
         // Check the chosen file is valid
-        File file = saveDlg.getSelectedFile();
         if (!file.getName().endsWith(".mhd"))
         {
             File parent = file.getParentFile();
@@ -958,7 +901,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
             {
                 try 
                 {
-                    crop3d.computeCroppedImage(finalFile);
+                    crop3d.saveCropImage(finalFile);
                     progress.setProgressRatio(1.0);
                 }
                 catch (Exception ex)

@@ -3,19 +3,17 @@
  */
 package imago.plugin.plugin.crop;
 
-import java.util.Locale;
-
 import static org.junit.Assert.assertEquals;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Test;
 
-import imago.app.scene.ImageSerialSectionsNode;
-import imago.app.scene.ImageSliceNode;
-import imago.app.scene.ShapeNode;
 import net.sci.array.scalar.UInt8Array2D;
 import net.sci.array.scalar.UInt8Array3D;
 import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.geom2d.polygon.Polygon2D;
+import net.sci.geom.geom2d.polygon.LinearRing2D;
 
 /**
  * @author dlegland
@@ -34,9 +32,9 @@ public class CroppedUInt8Array3DTest
 //        UInt8Array2D slice = refArray.slice(15);
 //        slice.print(System.out);
         
-        ImageSerialSectionsNode cropNode = createCropNode();
+        Map<Integer, LinearRing2D> polygons = createPolygonMap();
         
-        UInt8Array3D cropArray = new CroppedUInt8Array3D(refArray, cropNode);
+        UInt8Array3D cropArray = new CroppedUInt8Array3D(refArray, polygons);
         UInt8Array2D cropSlice = cropArray.slice(15);
         
 //        cropSlice.print(System.out);
@@ -54,9 +52,9 @@ public class CroppedUInt8Array3DTest
 
         assertEquals(refArray.getValue(0,0,0), 0.0, 0.01);
 
-        ImageSerialSectionsNode cropNode = createCropNode();
-
-        UInt8Array3D cropArray = new CroppedUInt8Array3D(refArray, cropNode);
+        Map<Integer, LinearRing2D> polygons = createPolygonMap();
+        
+        UInt8Array3D cropArray = new CroppedUInt8Array3D(refArray, polygons);
         
         assertEquals( 0.0, cropArray.getValue( 0,  0, 15), 0.01);
         assertEquals(60.0, cropArray.getValue(25, 20, 15), 0.01);
@@ -69,21 +67,17 @@ public class CroppedUInt8Array3DTest
         array.fillValues((x, y, z) -> (double) x + y + z);
         return array;
     }
-
-    private ImageSerialSectionsNode createCropNode()
+    
+    private Map<Integer, LinearRing2D> createPolygonMap()
     {
-        ImageSerialSectionsNode node = new ImageSerialSectionsNode("crop");
+        Map<Integer, LinearRing2D> map = new HashMap<>();
         
         int sliceIndex = 15;
-        String sliceName = String.format(Locale.US, "slice%02d", sliceIndex);
-        ImageSliceNode sliceNode = new ImageSliceNode(sliceName, sliceIndex);
-        node.addSliceNode(sliceNode);
         
-        Polygon2D poly = Polygon2D.create(new Point2D(10, 10), new Point2D(40, 10), new Point2D(40, 30), new Point2D(10, 30));
-        ShapeNode shapeNode = new ShapeNode(sliceName, poly.rings().iterator().next());
+        LinearRing2D poly = LinearRing2D.create(new Point2D(10, 10), new Point2D(40, 10), new Point2D(40, 30), new Point2D(10, 30));
         
-        sliceNode.addNode(shapeNode);
+        map.put(sliceIndex, poly);
         
-        return node;
+        return map;
     }
 }

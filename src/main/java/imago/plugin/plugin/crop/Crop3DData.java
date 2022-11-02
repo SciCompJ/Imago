@@ -84,7 +84,7 @@ public class Crop3DData
         TiffImageReader reader = new TiffImageReader(file);
         this.image = reader.readVirtualImage3D();
     }
-
+    
     
     // ===================================================================
     // Management of regions

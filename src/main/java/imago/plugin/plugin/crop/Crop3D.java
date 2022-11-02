@@ -28,10 +28,9 @@ import net.sci.algo.AlgoEvent;
 import net.sci.algo.AlgoListener;
 import net.sci.algo.AlgoStub;
 import net.sci.array.Array;
-import net.sci.array.scalar.ScalarArray;
-import net.sci.array.scalar.ScalarArray2D;
-import net.sci.array.scalar.ScalarArray3D;
 import net.sci.array.scalar.UInt8Array;
+import net.sci.array.scalar.UInt8Array2D;
+import net.sci.array.scalar.UInt8Array3D;
 import net.sci.geom.geom2d.Bounds2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.polygon.LinearRing2D;
@@ -485,33 +484,6 @@ public class Crop3D extends AlgoStub implements AlgoListener
         return String.format(Locale.US, prefix + sliceIndexPattern, sliceIndex);
     }
     
-    /**
-     * Retrieve the LinearRing2D geometry at the specified index from the serial
-     * sections node.
-     * 
-     * ImageSerialSectionsNode -> ImageSliceSection -> ShapeNode -> Geometry.
-     * 
-     * @param node
-     *            the node mapping to ImageSliceSections
-     * @param index
-     *            the index of the slice
-     * @return the LinearRing2D geometry contained in the specified slice.
-     */
-    private LinearRing2D getLinearRing(ImageSerialSectionsNode cropNode, int sliceIndex)
-    {
-        // retrieve shape node
-        ShapeNode shapeNode = (ShapeNode) cropNode.getSliceNode(sliceIndex).children().iterator().next();
-        
-        // check class
-        if (!(shapeNode.getGeometry() instanceof LinearRing2D))
-        {
-            throw new RuntimeException("Expect crop geometry to be a LinearRing2D");
-        }
-        
-        // return with correct class cast
-        return (LinearRing2D) shapeNode.getGeometry();
-    }
-    
     public ImageSerialSectionsNode getInterpolatedPolygonsNode()
     {
         GroupNode cropNode = getCrop3dNode();
@@ -525,11 +497,28 @@ public class Crop3D extends AlgoStub implements AlgoListener
         cropNode.addNode(polyNode);
         return polyNode;
     }
-
+    
 
     // ===================================================================
     // Computation of 3D image crop
     
+    /**
+     * Creates new cropped image using virtual crop array. The current region
+     * must have interpolated polygons initialized.
+     * 
+     * @return a view on the cropped image.
+     */
+    public Image createCropImageView()
+    {
+        // Create new cropped image using virtual crop array
+        Image image = imageHandle.getImage();
+        UInt8Array3D array = (UInt8Array3D) image.getData();
+        UInt8Array3D cropArray = new CroppedUInt8Array3D(array, currentRegion.interpolatedPolygons);
+        Image cropImage = new Image(cropArray, image);
+        cropImage.setName(image.getName() + "-crop");
+        return cropImage;
+    }
+
     /**
      * Computes the result of crop for each slice of the 3D image, and saves the
      * result into a file in MHD file format.
@@ -539,28 +528,26 @@ public class Crop3D extends AlgoStub implements AlgoListener
      * @throws IOException
      *             if a problem occurred.
      */
-    public void computeCroppedImage(File file) throws IOException
+    public void saveCropImage(File file) throws IOException
     {
         // get current image data
         Image image = imageHandle.getImage();
-        ScalarArray<?> array = (ScalarArray<?>) image.getData();
+        if (!(image.getData() instanceof UInt8Array))
+        {
+            throw new RuntimeException("Requires an image containing UInt8 data array");
+        }
+        UInt8Array array = (UInt8Array) image.getData();
         if (array.dimensionality() != 3)
         {
             throw new RuntimeException("Requires an image containing 3D Array");
         }
-        ScalarArray3D<?> array3d = ScalarArray3D.wrap(array);
+        UInt8Array3D array3d = UInt8Array3D.wrap(array);
         
-        // get input node reference
-        ImageSerialSectionsNode interpNode = getInterpolatedPolygonsNode();
-        if (interpNode.getSliceIndices().isEmpty())
-        {
-            throw new RuntimeException("Interpolation node is empty");
-        }
+        Map<Integer, LinearRing2D> polygons = currentRegion.interpolatedPolygons;
         
         // open file for writing
         MetaImageWriter mhdWriter = new MetaImageWriter(file);
         MetaImageInfo info = mhdWriter.computeMetaImageInfo(image);
-        info.dimSize[2] = interpNode.getSliceIndices().size();
         info.elementDataFile = computeElementDataFileName(file.getName());
         
         // print header into header file
@@ -579,48 +566,53 @@ public class Crop3D extends AlgoStub implements AlgoListener
         int sizeY = array.size(1);
         System.out.println("size X: " + sizeX + ", size Y: " + sizeY);
         
-        this.fireStatusChanged(this, "crop 3D image (" + interpNode.getSliceIndices().size() + " slices)");
-    
-        for (int sliceIndex : interpNode.getSliceIndices())
+        // allocate memory for one slice
+        UInt8Array2D resSlice = UInt8Array2D.create(sizeX, sizeY); 
+        
+        this.fireStatusChanged(this, "crop 3D image (" + polygons.size() + " slices)");
+        for (int sliceIndex = 0; sliceIndex < array.size(2); sliceIndex++)
         {
             System.out.println("crop slice: " + sliceIndex);
             
             this.fireProgressChanged(this, sliceIndex, array.size(2));
     
             // get 2D view on array slices
-            ScalarArray2D<?> slice = (ScalarArray2D<?>) array3d.slice(sliceIndex);
+            UInt8Array2D slice = array3d.slice(sliceIndex);
             
-            // create 2D slice for storing crop result
-            ScalarArray2D<?> resSlice = ScalarArray2D.wrapScalar2d(array.newInstance(sizeX, sizeY));
+            // clear result slice
+            resSlice.fillInt(0);
             
             // get crop polygon
-            LinearRing2D ring = getLinearRing(interpNode, sliceIndex);
+            LinearRing2D ring = polygons.get(sliceIndex);
             
-            // compute bounds in Y direction
-            Bounds2D box = ring.bounds();
-            int ymin = (int) Math.max(0, Math.ceil(box.getYMin()));
-            int ymax = (int) Math.min(sizeY, Math.floor(box.getYMax()));
-    
-            // iterate over lines inside bounding box
-            for (int y = ymin; y < ymax; y++)
+            if (ring != null)
             {
-                ArrayList<Double> xCrosses = computeXIntersectionsWithHorizontalLine(ring, y);
-                Collections.sort(xCrosses);
-                
-                if (xCrosses.size() % 2 != 0)
+                // compute bounds in Y direction
+                Bounds2D box = ring.bounds();
+                int ymin = (int) Math.max(0, Math.ceil(box.getYMin()));
+                int ymax = (int) Math.min(sizeY, Math.floor(box.getYMax()));
+
+                // iterate over lines inside bounding box
+                for (int y = ymin; y < ymax; y++)
                 {
-                    System.err.println("can not manage odd number of intersections bewteen linear ring and straight line");
-                    continue;
-                }
-                
-                Iterator<Double> iter = xCrosses.iterator();
-                while (iter.hasNext())
-                {
-                    int x0 = (int) Math.max(0, Math.ceil(iter.next()));
-                    int x1 = (int) Math.min(sizeX, Math.floor(iter.next() + 1));
-                    for (int x = x0; x < x1; x++)
+                    ArrayList<Double> xCrosses = computeXIntersectionsWithHorizontalLine(ring, y);
+                    Collections.sort(xCrosses);
+
+                    if (xCrosses.size() % 2 != 0)
                     {
-                        resSlice.setValue(x, y, slice.getValue(x, y));
+                        System.err.println("can not manage odd number of intersections bewteen linear ring and straight line");
+                        continue;
+                    }
+
+                    Iterator<Double> iter = xCrosses.iterator();
+                    while (iter.hasNext())
+                    {
+                        int x0 = (int) Math.max(0, Math.ceil(iter.next()));
+                        int x1 = (int) Math.min(sizeX, Math.floor(iter.next() + 1));
+                        for (int x = x0; x < x1; x++)
+                        {
+                            resSlice.setInt(x, y, slice.getInt(x, y));
+                        }
                     }
                 }
             }
