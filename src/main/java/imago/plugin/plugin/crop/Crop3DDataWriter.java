@@ -76,7 +76,6 @@ public class Crop3DDataWriter
         writePolygons(region.polygons);
       
         jsonWriter.endObject(); // array item
-
     }
 
     public void writeSurface3D(Surface3D surf3d) throws IOException

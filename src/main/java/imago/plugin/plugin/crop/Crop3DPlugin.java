@@ -506,7 +506,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         try 
         {
             Crop3DDataWriter writer = new Crop3DDataWriter(file);
-            writer.writePolygons(polyNode);
+            writer.writePolygons(crop3d.currentRegion.polygons);
             writer.close();
         }
         catch (IOException ex)
@@ -863,7 +863,6 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
                 try 
                 {
                     crop3d.interpolatePolygons();
-//                    crop3d.smoothAndInterpolatePolygons();
                     progress.setProgressRatio(1.0);
                 }
                 catch (Exception ex)

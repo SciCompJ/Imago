@@ -26,7 +26,7 @@ public class Crop3DDataReaderTest
     @Test
     public final void testReadCrop3DData() throws IOException
     {
-        String fileName = getClass().getResource("/json/H_250_2_MD_crop3.crop3d").getFile();
+        String fileName = getClass().getResource("/json/L_080_1_grain.crop3d").getFile();
         File file = new File(fileName);
         assertTrue(file.exists());
         assertTrue(file.canRead());
