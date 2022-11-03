@@ -5,8 +5,10 @@ package imago.plugin.plugin.crop;
 
 import java.awt.Color;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -15,13 +17,18 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
+
+import com.google.gson.stream.JsonReader;
 
 import imago.app.ImageHandle;
 import imago.app.scene.GroupNode;
 import imago.app.scene.ImageSerialSectionsNode;
 import imago.app.scene.ImageSliceNode;
+import imago.app.scene.Node;
 import imago.app.scene.ShapeNode;
 import imago.app.scene.Style;
+import imago.app.scene.io.JsonSceneReader;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
 import net.sci.algo.AlgoEvent;
@@ -405,6 +412,51 @@ public class Crop3D extends AlgoStub implements AlgoListener
         // read polygons of current region
         currentRegion.readPolygonsFromJson(file);
 
+        // reset current state of the Crop3D plugin
+        initializeCrop3dNodes();
+        populatePolygons(currentRegion);
+        
+        System.out.println("reading polygons terminated.");
+    }
+       
+    public void readPolygonsFromImageSerialSectionsNode(File file) throws IOException
+    {
+        // check current region exists
+        if (this.currentRegion == null)
+        {
+            throw new RuntimeException("Current region is not defined");
+        }
+        
+        // create reader
+        FileReader fileReader = new FileReader(file);
+        JsonSceneReader reader = new JsonSceneReader(new JsonReader(new BufferedReader(fileReader)));
+        
+        Node node = reader.readNode();
+        if (!(node instanceof ImageSerialSectionsNode))
+        {
+            throw new RuntimeException("Expect a JSON file containing a ImageSerialSectionsNode");
+        }
+         
+        ImageSerialSectionsNode node2 = (ImageSerialSectionsNode) node;
+        
+        Map<Integer, LinearRing2D> polygons = new TreeMap<Integer, LinearRing2D>();
+        for (int sliceIndex : node2.getSliceIndices())
+        {
+            ImageSliceNode sliceNode = node2.getSliceNode(sliceIndex);
+            ShapeNode shapeNode = (ShapeNode) sliceNode.children().iterator().next();
+            
+            if (!(shapeNode.getGeometry() instanceof LinearRing2D))
+            {
+                throw new RuntimeException("Geoemtry is expected to be LinearRing2D");
+            }
+            LinearRing2D polygon = (LinearRing2D) shapeNode.getGeometry();
+            
+            polygons.put(sliceIndex, polygon);
+        }
+        
+        currentRegion.polygons = polygons;
+        currentRegion.interpolatedPolygons.clear();
+        
         // reset current state of the Crop3D plugin
         initializeCrop3dNodes();
         populatePolygons(currentRegion);

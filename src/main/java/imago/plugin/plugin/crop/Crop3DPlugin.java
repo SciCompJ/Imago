@@ -70,12 +70,6 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     /** The processing class */
     Crop3D crop3d;
     
-    // menu items
-    JMenuItem loadAnalysisItem;
-    JMenuItem loadPolygonsItem;
-    JMenuItem saveAnalysisItem;
-    JMenuItem savePolygonsItem;
-    
     JLabel imageNameLabel = new JLabel("");
     
     // buttons
@@ -159,12 +153,19 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
         addMenuItem(fileMenu, "Load Crop3D File...", evt -> onLoadAnalysis());
-        addMenuItem(fileMenu, "Load Polygons...", evt -> onLoadPolygons());
         fileMenu.addSeparator();
         addMenuItem(fileMenu, "Save Crop3D File...", evt -> onSaveAnalysis());
-        addMenuItem(fileMenu, "Save Polygons...", evt -> onSavePolygons());
-        
+        fileMenu.addSeparator();
+        addMenuItem(fileMenu, "Close", evt -> onClose());
         menuBar.add(fileMenu);
+
+        JMenu polygonsMenu = new JMenu("Polygons");
+        addMenuItem(polygonsMenu, "Load Polygons...", evt -> onLoadPolygons());
+        addMenuItem(polygonsMenu, "Load Image Serial Section Node...", evt -> onLoadImageSerialSectionNode());
+        polygonsMenu.addSeparator();
+        addMenuItem(polygonsMenu, "Save Polygons...", evt -> onSavePolygons());
+        menuBar.add(polygonsMenu);
+        
         frame.setJMenuBar(menuBar);
     }
     
@@ -346,59 +347,6 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     }
     
     /**
-     * Callback for the "Load Polygons" menu item.
-     */
-    public void onLoadPolygons()
-    {
-        System.out.println("Load polygons");
-        
-        // check with user if it is fine to replace existing polygons
-        if (!crop3d.getPolygonsNode().getSliceIndices().isEmpty())
-        {
-            int dialogResult = JOptionPane.showConfirmDialog(imageFrame.getWidget(),
-                    "This frame contains Crop3D objects that will be removed.\nContinue anyway?",
-                    "Crop3D Warning", JOptionPane.YES_NO_OPTION);
-            if (dialogResult != JOptionPane.YES_OPTION)
-            {
-                return;
-            }
-        }
-
-        // reset current state of the Crop3D plugin
-        crop3d.initializeCrop3dNodes();
-        
-        // open a dialog to read a .json file
-        File file = parentFrame.getGui().chooseFileToOpen(parentFrame,
-                "Read list of input polygons", jsonFileFilter);
-        if (file == null)
-        {
-            return;
-        }
-
-        // Check the chosen file is state
-        if (!file.exists())
-        {
-            return;
-        }
-        
-        try
-        {
-            crop3d.readPolygonsFromJson(file);
-        }
-        catch (IOException ex)
-        {
-            throw new RuntimeException(ex);
-        }
-        
-        updatePolygonListView();
-        
-        // need to call this to update items to display 
-        ImageViewer viewer = imageFrame.getImageView();
-        viewer.refreshDisplay(); 
-        viewer.repaint();
-    }
-    
-    /**
      * Callback for the "Save Analysis" menu item. Saves a ".crop3d" file in
      * JSON format containing name of reference image, and polygon data.
      */
@@ -439,7 +387,129 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         System.out.println("Saving Crop3D terminated.");
     }
 
+    public void onClose()
+    {
+        this.jframe.setVisible(false);
+        
+        // clear inner variables
+        this.crop3d = null;
+        
+        // close frames
+        if (this.imageFrame != null)
+        {
+            this.imageFrame.close();
+        }
+        this.jframe.dispose();
+    }
     
+    /**
+     * Callback for the "Load Polygons" menu item.
+     */
+    public void onLoadPolygons()
+    {
+        System.out.println("Load polygons");
+        
+        // check with user if it is fine to replace existing polygons
+        if (!crop3d.getPolygonsNode().getSliceIndices().isEmpty())
+        {
+            int dialogResult = JOptionPane.showConfirmDialog(imageFrame.getWidget(),
+                    "This frame contains Crop3D objects that will be removed.\nContinue anyway?",
+                    "Crop3D Warning", JOptionPane.YES_NO_OPTION);
+            if (dialogResult != JOptionPane.YES_OPTION)
+            {
+                return;
+            }
+        }
+    
+        // reset current state of the Crop3D plugin
+        crop3d.initializeCrop3dNodes();
+        
+        // open a dialog to read a .json file
+        File file = parentFrame.getGui().chooseFileToOpen(parentFrame,
+                "Read list of input polygons", jsonFileFilter);
+        if (file == null)
+        {
+            return;
+        }
+    
+        // Check the chosen file is state
+        if (!file.exists())
+        {
+            return;
+        }
+        
+        try
+        {
+            crop3d.readPolygonsFromJson(file);
+        }
+        catch (IOException ex)
+        {
+            throw new RuntimeException(ex);
+        }
+        
+        updatePolygonListView();
+        
+        // need to call this to update items to display 
+        ImageViewer viewer = imageFrame.getImageView();
+        viewer.refreshDisplay(); 
+        viewer.repaint();
+    }
+
+
+    /**
+     * Callback for the "Load Image Serial Section Node" menu item.
+     */
+    public void onLoadImageSerialSectionNode()
+    {
+        System.out.println("Load polygons from image serial sections node");
+        
+        // check with user if it is fine to replace existing polygons
+        if (!crop3d.getPolygonsNode().getSliceIndices().isEmpty())
+        {
+            int dialogResult = JOptionPane.showConfirmDialog(imageFrame.getWidget(),
+                    "This frame contains Crop3D objects that will be removed.\nContinue anyway?",
+                    "Crop3D Warning", JOptionPane.YES_NO_OPTION);
+            if (dialogResult != JOptionPane.YES_OPTION)
+            {
+                return;
+            }
+        }
+    
+        // reset current state of the Crop3D plugin
+        crop3d.initializeCrop3dNodes();
+        
+        // open a dialog to read a .json file
+        File file = parentFrame.getGui().chooseFileToOpen(parentFrame,
+                "Read json file containing serial sections node", jsonFileFilter);
+        if (file == null)
+        {
+            return;
+        }
+    
+        // Check the chosen file is state
+        if (!file.exists())
+        {
+            return;
+        }
+        
+        try
+        {
+            crop3d.readPolygonsFromImageSerialSectionsNode(file);
+        }
+        catch (IOException ex)
+        {
+            throw new RuntimeException(ex);
+        }
+        
+        updatePolygonListView();
+        
+        // need to call this to update items to display 
+        ImageViewer viewer = imageFrame.getImageView();
+        viewer.refreshDisplay(); 
+        viewer.repaint();
+    }
+
+
     /**
      * Callback for the "Save Polygons" menu item.
      */
