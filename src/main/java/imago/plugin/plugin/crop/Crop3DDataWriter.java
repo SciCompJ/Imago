@@ -144,7 +144,7 @@ public class Crop3DDataWriter
             jsonWriter.name("geometry");
             
             JsonSceneWriter writer = new JsonSceneWriter(jsonWriter);
-            writer.writeGeometry(ring);
+            writer.writeGeometry(ring, "%.2f");
             jsonWriter.endObject();        
         }
         jsonWriter.endArray();

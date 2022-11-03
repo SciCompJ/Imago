@@ -360,7 +360,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         
         String defaultFileName = imageName + ".crop3d";
         File file = parentFrame.getGui().chooseFileToSave(parentFrame, 
-                "Save Crop3D Analysis", defaultFileName, jsonFileFilter, crop3dFileFilter);
+                "Save Crop3D Analysis", defaultFileName, crop3dFileFilter, jsonFileFilter);
         if (file == null)
         {
             return;

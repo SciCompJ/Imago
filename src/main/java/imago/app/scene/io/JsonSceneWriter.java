@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Locale;
 
 import com.google.gson.stream.JsonWriter;
 
@@ -197,42 +198,96 @@ public class JsonSceneWriter
      * @throws IOException
      *             if a writing problem occurred.
      */
-	public void writeGeometry(Geometry geom) throws IOException
-	{
-		this.writer.beginObject();
-		
-		// switch processing depending on geometry type
-		if (geom instanceof Point2D)
-		{
-			Point2D point = (Point2D) geom;
-	        writeString("type", "Point2D");
-			writer.name("x").value(point.getX());
-			writer.name("y").value(point.getY());
-		}
-		else if (geom instanceof Polyline2D)
-		{
-			Polyline2D poly = (Polyline2D) geom;
-			
-			writeString("type", poly.isClosed() ? "LinearRing2D" : "LineString2D");
-			writer.name("coords");
-			writer.beginArray();
+    public void writeGeometry(Geometry geom) throws IOException
+    {
+        this.writer.beginObject();
+        
+        // switch processing depending on geometry type
+        if (geom instanceof Point2D)
+        {
+            Point2D point = (Point2D) geom;
+            writeString("type", "Point2D");
+            writer.name("x").value(point.getX());
+            writer.name("y").value(point.getY());
+        }
+        else if (geom instanceof Polyline2D)
+        {
+            Polyline2D poly = (Polyline2D) geom;
+            
+            writeString("type", poly.isClosed() ? "LinearRing2D" : "LineString2D");
+            writer.name("coords");
+            writer.beginArray();
 
-			for (Point2D vertex : poly.vertexPositions())
-			{
-				writer.jsonValue("[ " + vertex.getX() + ", " + vertex.getY() + "]");
-			}
-			writer.endArray();
-		}
-		else
-		{
-		    // Default behavior for unknown geometries
-		    String geomType = geom.getClass().getSimpleName();
-		    writeString("type", geomType);
+            for (Point2D vertex : poly.vertexPositions())
+            {
+                writer.jsonValue("[ " + vertex.getX() + ", " + vertex.getY() + "]");
+            }
+            writer.endArray();
+        }
+        else
+        {
+            // Default behavior for unknown geometries
+            String geomType = geom.getClass().getSimpleName();
+            writeString("type", geomType);
             System.err.println("Warning: can not write data for geometry type " + geomType);
-		}
+        }
 
-		this.writer.endObject();
-	}
+        this.writer.endObject();
+    }
+
+    /**
+     * Writes the content of the specified geometry into this writer.
+     * 
+     * @param geom
+     *            the geometry instance to save.
+     * @param numberFormat
+     *            The format used to write coordinates, e.g. "%7.5f" or "%.3f".
+     * @throws IOException
+     *             if a writing problem occurred.
+     */
+    public void writeGeometry(Geometry geom, String numberFormat) throws IOException
+    {
+        this.writer.beginObject();
+        
+        // switch processing depending on geometry type
+        if (geom instanceof Point2D)
+        {
+            Point2D point = (Point2D) geom;
+            writeString("type", "Point2D");
+            writer.name("x").jsonValue(format(numberFormat, point.getX()));
+            writer.name("y").jsonValue(format(numberFormat, point.getY()));
+        }
+        else if (geom instanceof Polyline2D)
+        {
+            Polyline2D poly = (Polyline2D) geom;
+            
+            writeString("type", poly.isClosed() ? "LinearRing2D" : "LineString2D");
+            writer.name("coords");
+            writer.beginArray();
+
+            String pattern = "[ " + numberFormat + ", " + numberFormat + " ]";
+            for (Point2D vertex : poly.vertexPositions())
+            {
+                writer.jsonValue(String.format(Locale.ENGLISH, pattern, vertex.getX(), vertex.getY()));
+//                writer.jsonValue("[ " + vertex.getX() + ", " + vertex.getY() + "]");
+            }
+            writer.endArray();
+        }
+        else
+        {
+            // Default behavior for unknown geometries
+            String geomType = geom.getClass().getSimpleName();
+            writeString("type", geomType);
+            System.err.println("Warning: can not write data for geometry type " + geomType);
+        }
+
+        this.writer.endObject();
+    }
+    
+    private static final String format(String pattern, double value)
+    {
+        return String.format(Locale.ENGLISH, pattern, value);
+    }
 
 
 	// =============================================================
