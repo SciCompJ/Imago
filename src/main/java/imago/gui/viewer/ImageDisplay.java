@@ -25,6 +25,7 @@ import net.sci.geom.geom2d.Curve2D;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
+import net.sci.geom.geom2d.curve.MultiCurve2D;
 import net.sci.geom.geom2d.curve.Ellipse2D;
 import net.sci.geom.geom2d.polygon.PolygonalDomain2D;
 import net.sci.geom.geom2d.polygon.Polyline2D;
@@ -409,6 +410,14 @@ public class ImageDisplay extends JPanel
             Curve2D curve = (Curve2D) geom;
             Polyline2D poly = curve.asPolyline(120);
             drawPolyline(g2, poly);
+        }
+        else if (geom instanceof MultiCurve2D)
+        {
+            for (Curve2D curve : ((MultiCurve2D) geom).curves())
+            {
+                Polyline2D poly = curve.asPolyline(120);
+                drawPolyline(g2, poly);
+            }
         }
         else if (geom instanceof Graph2D)
         {
