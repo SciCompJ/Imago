@@ -4,6 +4,7 @@
 package imago.plugin.image.binary;
 
 import java.util.Locale;
+import java.util.function.Function;
 
 import imago.app.ImageHandle;
 import imago.gui.FramePlugin;
@@ -14,11 +15,15 @@ import net.sci.array.Array;
 import net.sci.image.Image;
 import net.sci.image.morphology.BinaryMorphologicalFilter;
 import net.sci.image.morphology.Strel;
+import net.sci.image.morphology.filter.BinaryBlackTopHat;
 import net.sci.image.morphology.filter.BinaryClosing;
 import net.sci.image.morphology.filter.BinaryDilation;
 import net.sci.image.morphology.filter.BinaryErosion;
 import net.sci.image.morphology.filter.BinaryGradient;
+import net.sci.image.morphology.filter.BinaryInnerGradient;
 import net.sci.image.morphology.filter.BinaryOpening;
+import net.sci.image.morphology.filter.BinaryOuterGradient;
+import net.sci.image.morphology.filter.BinaryWhiteTopHat;
 import net.sci.image.morphology.strel.Strel2D;
 import net.sci.image.morphology.strel.Strel3D;
 
@@ -32,13 +37,121 @@ import net.sci.image.morphology.strel.Strel3D;
  */
 public class BinaryImageMorphologicalFilter implements FramePlugin
 {
+    // =======================================================================
+    // Inner enumeration
+    
+    /**
+     * A pre-defined set of basis morphological operations, that can be easily 
+     * used with a GenericDialog.</p>
+     *  
+     * Example:
+     * <pre>
+     * {@code
+     * // Use a generic dialog to define an operator 
+     * GenericDialog gd = new GenericDialog();
+     * gd.addChoice("Operation", Operation.getAllLabels();
+     * gd.showDialog();
+     * Operation op = Operation.fromLabel(gd.getNextChoice());
+     * // Apply the operation on the current array
+     * Array<?> array = image.getData();
+     * op.apply(array, SquareStrel.fromRadius(2));
+     * }</pre>
+     */
+    public enum Operation
+    {
+        /** Morphological erosion */
+        EROSION("Erosion", "Ero", se -> new BinaryErosion(se)),
+        /** Morphological dilation */
+        DILATION("Dilation", "Dil", se -> new BinaryDilation(se)),
+        /** Morphological opening (erosion followed by dilation) */
+        OPENING("Opening", "Op", se -> new BinaryOpening(se)),
+        /** Morphological closing (dilation followed by erosion) */
+        CLOSING("Closing", "Cl", se -> new BinaryClosing(se)),
+        /** Morphological gradient (difference of dilation with erosion) */
+        GRADIENT("Gradient", "Grad", se -> new BinaryGradient(se)),
+        /** Morphological internal gradient (difference of original image with erosion) */
+        INNER_GRADIENT("Inner Gradient", "InnGrad", se -> new BinaryInnerGradient(se)), 
+        /** Morphological internal gradient (difference of dilation with original image) */
+        OUTER_GRADIENT("Outer Gradient", "OutGrad", se -> new BinaryOuterGradient(se)),
+        /** White Top-Hat */
+        WHITETOPHAT("White Top Hat", "WTH", se -> new BinaryWhiteTopHat(se)),
+        /** Black Top-Hat */
+        BLACKTOPHAT("Black Top Hat", "BTH", se -> new BinaryBlackTopHat(se));
+        
+        /**
+         * A label that can be used for display in graphical widgets.
+         */
+        private final String label;
+        
+        /**
+         * A suffix intended to be used for creating result image names. 
+         */
+        private String suffix;
+        
+        private Function<Strel, BinaryMorphologicalFilter> factory;
+        
+        private Operation(String label, String suffix, Function<Strel, BinaryMorphologicalFilter> factory) 
+        {
+            this.label = label;
+            this.suffix = suffix;
+            this.factory = factory;
+        }
+        
+        public BinaryMorphologicalFilter createOperator(Strel strel)
+        {
+            return this.factory.apply(strel);        
+        }
+        
+        public String suffix()
+        {
+            return suffix;
+        }
+        
+        public String toString() 
+        {
+            return this.label;
+        }
+        
+        public static String[] getAllLabels()
+        {
+            int n = Operation.values().length;
+            String[] result = new String[n];
+            
+            int i = 0;
+            for (Operation op : Operation.values())
+                result[i++] = op.label;
+            
+            return result;
+        }
+        
+        /**
+         * Determines the operation type from its label.
+         * 
+         * @param opLabel
+         *            the label of the operation
+         * @return the parsed Operation
+         * @throws IllegalArgumentException
+         *             if label is not recognized.
+         */
+        public static Operation fromLabel(String opLabel)
+        {
+            if (opLabel != null)
+                opLabel = opLabel.toLowerCase();
+            for (Operation op : Operation.values()) 
+            {
+                String cmp = op.label.toLowerCase();
+                if (cmp.equals(opLabel))
+                    return op;
+            }
+            throw new IllegalArgumentException("Unable to parse Operation with label: " + opLabel);
+        }
+    }
+    
+
     // =============================================================
     // Class variables
-
-//    /**
-//     * The operation to apply to the image.
-//     */
-//    Operation op = Operation.DILATION;
+    
+    Operation op = Operation.DILATION;
 
     /**
      * The shape of the structuring element for 2D images.
@@ -54,14 +167,7 @@ public class BinaryImageMorphologicalFilter implements FramePlugin
      * The radius of the structuring element, in pixels.
      */
     int radius = 2;
-  
-    private String[] operationStrings = new String[] {"Dilation", "Erosion", "Opening", "Closing", "Gradient"};
-    private String[] operationSuffixes = new String[] {"Dil", "Ero", "Op", "Cl", "Gr"};
     
-	public BinaryImageMorphologicalFilter() 
-	{
-	}
-	
 	@Override
 	public void run(ImagoFrame frame, String args) 
 	{
@@ -81,9 +187,7 @@ public class BinaryImageMorphologicalFilter implements FramePlugin
         
         // Create dialog for entering parameters
         GenericDialog gd = new GenericDialog(frame, "Binary Morphological Filter");
-        gd.addChoice("Operation", operationStrings, operationStrings[0]);
-//        gd.addChoice("Operation", Operation.getAllLabels(), 
-//                this.op.toString());
+        gd.addChoice("Operation", Operation.getAllLabels(), this.op.toString());
         if (nd == 2)
         {
             gd.addChoice("Element", Strel2D.Shape.getAllLabels(), 
@@ -105,7 +209,7 @@ public class BinaryImageMorphologicalFilter implements FramePlugin
         
         // parse dialog results
         // extract chosen parameters
-        int opIndex = gd.getNextChoiceIndex();
+        this.op = Operation.fromLabel(gd.getNextChoice());
         Strel strel;
         String shapeSuffix;
         if (nd == 2)
@@ -124,26 +228,16 @@ public class BinaryImageMorphologicalFilter implements FramePlugin
         }
         
         // Create the morphological filter
-        BinaryMorphologicalFilter algo;
-        switch (opIndex)
-        {
-            case 0: algo = new BinaryDilation(strel); break;
-            case 1: algo = new BinaryErosion(strel); break;
-            case 2: algo = new BinaryOpening(strel); break;
-            case 3: algo = new BinaryClosing(strel); break;
-            case 4: algo = new BinaryGradient(strel); break;
-            default:
-                throw new RuntimeException("Unknown Operation index");
-        }
+        BinaryMorphologicalFilter algo = op.createOperator(strel);
         
         // Execute core of the plugin on the array of original image
         Image resultImage = imageFrame.runOperator(algo, image);
         
         // setup name of result image
-        String suffix = String.format(Locale.ENGLISH, "%s%s%02d", operationSuffixes[opIndex], shapeSuffix, radius);
+        String suffix = String.format(Locale.ENGLISH, "%s%s%02d", op.suffix(), shapeSuffix, radius);
         resultImage.setName(image.getName() + "-" + suffix);
         
-		frame.getGui().createImageFrame(resultImage); 
+		imageFrame.createImageFrame(resultImage); 
 	}
 
     /**
