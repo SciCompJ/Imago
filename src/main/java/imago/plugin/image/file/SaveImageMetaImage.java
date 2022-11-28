@@ -55,6 +55,7 @@ public class SaveImageMetaImage implements FramePlugin
 		
 		// Create a writer with specified file
 		MetaImageWriter writer = new MetaImageWriter(file);
+		long t0 = System.nanoTime();
 		writer.addAlgoListener(iframe);
 		try
 		{
@@ -66,8 +67,10 @@ public class SaveImageMetaImage implements FramePlugin
             ImagoGui.showErrorDialog(frame, ex.getLocalizedMessage(), "MHD Image Export Error");
 			return;
 		}
-		
-		iframe.getStatusBar().setProgressBarPercent(0);
-		System.out.println("save done");
+		long t1 = System.nanoTime();
+		double dt = (t1 - t0) / 1_000_000.0;
+
+        iframe.getStatusBar().setProgressBarPercent(0);
+        iframe.showElapsedTime("Save To MHD", dt, image);
 	}
 }
