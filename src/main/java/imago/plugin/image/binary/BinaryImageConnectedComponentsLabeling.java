@@ -14,8 +14,8 @@ import net.sci.array.color.ColorMaps;
 import net.sci.array.color.RGB8;
 import net.sci.image.DisplaySettings;
 import net.sci.image.Image;
-import net.sci.image.binary.FloodFillComponentsLabeling2D;
-import net.sci.image.binary.FloodFillComponentsLabeling3D;
+import net.sci.image.binary.labeling.FloodFillComponentsLabeling2D;
+import net.sci.image.binary.labeling.FloodFillComponentsLabeling3D;
 
 /**
  * Connected component labeling of a binary image.
