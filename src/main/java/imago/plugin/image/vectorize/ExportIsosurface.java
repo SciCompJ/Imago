@@ -5,6 +5,7 @@ package imago.plugin.image.vectorize;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
@@ -20,16 +21,19 @@ import net.sci.image.Image;
 import net.sci.image.vectorize.MorphologicalMarchingCubes;
 
 /**
+ * Computes isosurface of the current image, and saves the mesh into a text file
+ * in OFF format.
+ * 
  * @author dlegland
  *
  */
-public class SaveIsosurface implements FramePlugin
+public class ExportIsosurface implements FramePlugin
 {
 
     @Override
     public void run(ImagoFrame frame, String args)
     {
-        System.out.println("image isosurface");
+        System.out.println("export isosurface");
         
         // get current image data
         ImageFrame iFrame = (ImageFrame) frame;
@@ -65,7 +69,7 @@ public class SaveIsosurface implements FramePlugin
         double value = dlg.getNextNumber();
         
         // create file dialog using last save path
-        String fileName = String.format("%s-iso%f.off", image.getName(), value);
+        String fileName = String.format(Locale.ENGLISH, "%s-iso%.2f.off", image.getName(), value);
         File file = frame.getGui().chooseFileToSave(frame, "Output Mesh File", fileName);
 
         // Check the selected file is valid
