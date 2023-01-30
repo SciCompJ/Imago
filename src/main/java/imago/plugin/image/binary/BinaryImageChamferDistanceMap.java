@@ -14,12 +14,16 @@ import net.sci.array.binary.BinaryArray2D;
 import net.sci.array.binary.BinaryArray3D;
 import net.sci.array.color.ColorMaps;
 import net.sci.array.color.RGB8;
+import net.sci.array.scalar.Int32Array;
+import net.sci.array.scalar.IntArray;
+import net.sci.array.scalar.UInt16Array;
+import net.sci.array.scalar.UInt8Array;
 import net.sci.image.DisplaySettings;
 import net.sci.image.Image;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DFloat32;
-import net.sci.image.binary.distmap.ChamferDistanceTransform2DUInt16;
+import net.sci.image.binary.distmap.ChamferDistanceTransform2DInt;
 import net.sci.image.binary.distmap.ChamferDistanceTransform3DFloat32;
-import net.sci.image.binary.distmap.ChamferDistanceTransform3DUInt16;
+import net.sci.image.binary.distmap.ChamferDistanceTransform3DInt;
 import net.sci.image.binary.distmap.ChamferMask2D;
 import net.sci.image.binary.distmap.ChamferMask3D;
 import net.sci.image.binary.distmap.ChamferMasks2D;
@@ -35,10 +39,6 @@ import net.sci.image.binary.distmap.DistanceTransform3D;
  */
 public class BinaryImageChamferDistanceMap implements FramePlugin
 {
-	public BinaryImageChamferDistanceMap()
-	{
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -50,16 +50,19 @@ public class BinaryImageChamferDistanceMap implements FramePlugin
 	{
 		System.out.println("Chamfer distance map");
 
-		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-		Image image	= doc.getImage();
+		// retrieve current image data
+		ImageFrame imageFrame = (ImageFrame) frame;
+        Image image	= imageFrame.getImageHandle().getImage();
 		Array<?> array = image.getData();
+		
+		// check type of input
 		if (!(array instanceof BinaryArray))
 		{
 			frame.showErrorDialog("Requires a binary image input", "Data Type Error");
 			return;
 		}
 
+        // also check dimensionality
 		int nd = array.dimensionality();
 		if (nd != 2 && nd != 3)
 		{
@@ -67,6 +70,7 @@ public class BinaryImageChamferDistanceMap implements FramePlugin
 			return;
 		}
 		
+		// build dialog for choosing options
 		GenericDialog gd = new GenericDialog(frame, "Distance Map");
 		if (nd == 2)
 		{
@@ -76,7 +80,7 @@ public class BinaryImageChamferDistanceMap implements FramePlugin
 		{
             gd.addChoice("Chamfer Weights: ", ChamferMasks3D.getAllLabels(), ChamferMasks3D.SVENSSON_3_4_5_7.toString());
 		}
-        gd.addChoice("Output Type: ", new String[]{"16-bits", "32-bits float"}, "16-bits");
+        gd.addChoice("Output Type: ", new String[]{"8-bits", "16-bits", "32-bits", "32-bits float"}, "16-bits");
         gd.addCheckBox("Normalize", true);
 		gd.showDialog();
 		
@@ -96,15 +100,17 @@ public class BinaryImageChamferDistanceMap implements FramePlugin
 		{
             ChamferMask2D weights = ChamferMasks2D.fromLabel(weightsName).getMask();
 		    DistanceTransform2D op;
-		    if (bitDepthIndex == 0)
+		    if (bitDepthIndex < 3)
 		    {
-		        op = new ChamferDistanceTransform2DUInt16(weights, normalize); 
+		        op = new ChamferDistanceTransform2DInt(weights, normalize); 
+		        IntArray.Factory<?> factory = chooseIntArrayFactory(bitDepthIndex);
+		        ((ChamferDistanceTransform2DInt) op).setFactory(factory);
 		    }
 		    else
 		    {
                 op = new ChamferDistanceTransform2DFloat32(weights, normalize); 
 		    }
-		    op.addAlgoListener((ImageFrame) frame);
+		    op.addAlgoListener(imageFrame);
 		    result = op.process2d((BinaryArray2D) image.getData());
 		}
 		else
@@ -112,15 +118,17 @@ public class BinaryImageChamferDistanceMap implements FramePlugin
 		    // Process 3D case
             ChamferMask3D weights = ChamferMasks3D.fromLabel(weightsName).getMask();
             DistanceTransform3D op;
-            if (bitDepthIndex == 0)
+            if (bitDepthIndex < 3)
             {
-                op = new ChamferDistanceTransform3DUInt16(weights, normalize); 
+                op = new ChamferDistanceTransform3DInt(weights, normalize); 
+                IntArray.Factory<?> factory = chooseIntArrayFactory(bitDepthIndex);
+                ((ChamferDistanceTransform3DInt) op).setFactory(factory);
             }
             else
             {
                 op = new ChamferDistanceTransform3DFloat32(weights, normalize); 
             }
-            op.addAlgoListener((ImageFrame) frame);
+            op.addAlgoListener(imageFrame);
             result = op.process3d((BinaryArray3D) image.getData());
 		}
 		Image resultImage = new Image(result, image);
@@ -131,7 +139,15 @@ public class BinaryImageChamferDistanceMap implements FramePlugin
 		settings.setBackgroundColor(RGB8.WHITE);
 		
 		// add the image document to GUI
-		frame.createImageFrame(resultImage);
+		imageFrame.createImageFrame(resultImage);
+	}
+	
+	private IntArray.Factory<?> chooseIntArrayFactory(int bitDepthIndex)
+	{
+        if (bitDepthIndex == 0) return UInt8Array.defaultFactory;
+        if (bitDepthIndex == 1) return UInt16Array.defaultFactory;
+        if (bitDepthIndex == 2) return Int32Array.defaultFactory;
+        throw new RuntimeException("Unknown IntArray factory index");
 	}
 
     /**
