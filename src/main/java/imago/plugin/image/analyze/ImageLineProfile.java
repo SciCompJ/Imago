@@ -16,13 +16,17 @@ import imago.gui.ImagoFrame;
 import imago.gui.frames.ImageFrame;
 import imago.gui.frames.ImagoChartFrame;
 import imago.gui.viewer.PlanarImageViewer;
+import imago.gui.viewer.StackSliceViewer;
 import imago.plugin.image.ImagePlugin;
 import net.sci.array.Array;
+import net.sci.array.Array2D;
+import net.sci.array.Array3D;
 import net.sci.array.color.RGB8Array2D;
 import net.sci.array.interp.LinearInterpolator2D;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.ScalarArray2D;
 import net.sci.array.vector.VectorArray2D;
+import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
@@ -52,55 +56,87 @@ public class ImageLineProfile implements ImagePlugin
     {
         // Check type is image frame
         if (!(frame instanceof ImageFrame))
+        {
             return;
+        }
         ImageFrame iframe = (ImageFrame) frame;
+        
+        // retrieve inner data
         Image meta = iframe.getImageHandle().getImage();
         Array<?> array = meta.getData();
         
+        // the data to combine for creating the profile
+        Array2D<?> array2d;
+        Geometry2D selection;
+        
+        // check viewer is planar
         ImageViewer viewer = iframe.getImageView();
-        if (!(viewer instanceof PlanarImageViewer))
+        if (viewer instanceof PlanarImageViewer)
+        {
+            PlanarImageViewer piv = (PlanarImageViewer) viewer;
+            array2d = (Array2D<?>) array;
+            selection = piv.getSelection();
+        }
+        else if (viewer instanceof StackSliceViewer)
+        {
+            int zSlice = ((StackSliceViewer) viewer).getSlicingPosition(2);
+            array2d = Array3D.wrap(array).slice(zSlice);
+            Geometry sel = ((StackSliceViewer) viewer).getSelection();
+            if (!(sel instanceof Geometry2D))
+            {
+                System.out.println("Selection must be an instance of Geometry2D");
+                return;
+            }
+            selection = (Geometry2D) sel;
+        }
+        else
         {
             System.out.println("requires an instance of planar image viewer");
             return;
         }
-        
-        PlanarImageViewer piv = (PlanarImageViewer) viewer;
-        Geometry2D selection = piv.getSelection();
+
+        // retrieve current selection
         if (!(selection instanceof LineSegment2D))
         {
             System.out.println("requires selection to be a line segment");
             return;
         }
-        
-        // retrieve line selection, in pixels coordinates
         LineSegment2D line = (LineSegment2D) selection;
+        
+        processLineProfile_2d(iframe, array2d, line);
+    }
+    
+    private void processLineProfile_2d(ImageFrame iframe, Array2D<?> array, LineSegment2D line)
+    {
+        // get line extremities
         int nPositions = (int) Math.round(line.length());
         Point2D p1 = line.getP1();
         Point2D p2 = line.getP2();
         
+        // dispatch processing according to image type
         DefaultNumericTable table = null;
         if (array instanceof ScalarArray)
         {
-        	ScalarArray2D<?> array2d = ScalarArray2D.wrap((ScalarArray<?>) array);
+            ScalarArray2D<?> array2d = ScalarArray2D.wrap((ScalarArray<?>) array);
             table = intensityProfile(array2d, p1, p2, nPositions);
-            plotIntensityProfile(frame, table);
+            plotIntensityProfile(iframe, table);
         }
         else if (array instanceof RGB8Array2D)
         {
             table = colorProfile((RGB8Array2D) array, p1, p2, nPositions);
-            plotRGB8LineProfile(frame, table);
+            plotRGB8LineProfile(iframe, table);
         }
         else if (array instanceof VectorArray2D)
         {
             ScalarArray2D<?> normImage = ((VectorArray2D<?>) array).norm();
             table = intensityProfile(normImage, p1, p2, nPositions);
-            plotIntensityProfile(frame, table);
+            plotIntensityProfile(iframe, table);
         }
         else
             throw new RuntimeException(
                     "Can not process image from class: " + array.getClass().getName());
-        
     }
+    
     
     private DefaultNumericTable intensityProfile(ScalarArray2D<?> array, Point2D p1, Point2D p2, int n)
     {
