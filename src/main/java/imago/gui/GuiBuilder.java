@@ -20,6 +20,7 @@ import imago.gui.frames.ImagoEmptyFrame;
 import imago.gui.frames.TableFrame;
 import imago.gui.tool.DrawBrushValueTool;
 import imago.gui.tool.DrawValueTool;
+import imago.gui.tool.FloodFillTool;
 import imago.gui.tool.SelectLineSegmentTool;
 import imago.gui.tool.SelectPolygonTool;
 import imago.gui.tool.SelectPolylineTool;
@@ -715,6 +716,9 @@ public class GuiBuilder
                 addPlugin(toolsMenu, 
                         new ChangeCurrentTool(new DrawBrushValueTool(viewer, "drawBrushValue")),
                         "Draw (Brush)", hasScalarImage);
+                addPlugin(toolsMenu, 
+                        new ChangeCurrentTool(new FloodFillTool(viewer, "floodFillValue")),
+                        "Flood-Fill", hasScalarImage);
     //            addPlugin(editMenu, 
     //                    new ChangeCurrentTool(new DrawValueTool(viewer, "drawBlack", 0.0)),
     //                    "Draw Black", hasScalarImage);
