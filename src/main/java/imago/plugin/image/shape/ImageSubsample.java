@@ -63,7 +63,14 @@ public class ImageSubsample implements FramePlugin
 		result.setName(image.getName() + "-sub" + step);
 		
 		// add the image document to GUI
-		iFrame.createImageFrame(result);
+		ImageFrame frame2 = iFrame.createImageFrame(result);
+		
+        // choose z-position approximately the same as original image
+        int zPos = iFrame.getImageView().getSlicingPosition(2);
+        double relPos = ((double) zPos) / ((double) image.getSize(2));
+        zPos = (int) Math.floor(result.getSize(2) * relPos);
+        frame2.getImageView().setSlicingPosition(2, zPos);
+        frame2.getImageView().refreshDisplay();
 	}
 
     private static final int[] repeatValue(int value, int n)
