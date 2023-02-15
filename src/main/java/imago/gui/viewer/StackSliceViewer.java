@@ -133,30 +133,6 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 	// ===================================================================
 	// General methods
 
-//	public int getSliceIndex() 
-//	{
-//        return this.slicingPosition[2];
-//	}
-
-//	// TODO: replace by setSlicingPosition(int)
-//	public void setSliceIndex(int index)
-//	{
-//        this.slicingPosition[2] = index;
-//		
-//		// update widgets
-//		String txt = Integer.toString(index);
-//		this.sliceSlider.setValue(index);
-//		this.sliceEdit.setText(txt);
-//		
-////		// also update document containing the image
-////		ImageFrame viewer = this.getViewer();
-////		if (viewer != null)
-////		{
-////			ImageHandle handle = viewer.getDocument();
-////			handle.setCurrentSliceIndex(index);
-////		}
-//	}
-	
     public void setSlicingPosition(int index, int pos)
     {
         this.slicingPosition[index] = pos;

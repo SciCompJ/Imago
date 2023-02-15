@@ -184,21 +184,6 @@ public abstract class ImageViewer
 	    
 	}
 	
-//	/**
-//	 * Returns the instance of ImageFrame that contains this Image view,
-//	 * or null if no one is found.
-//	 */
-//	public ImageFrame getViewer() 
-//	{
-//		Container container = this.getParent();
-//		while (!(container instanceof ImageFrame) && container != null) 
-//		{
-//			container = container.getParent();
-//		}
-//		
-//		return (ImageFrame) container;
-//	}	
-
 	
 	// ===================================================================
 	// Tool management methods
@@ -277,9 +262,7 @@ public abstract class ImageViewer
      * Returns the reference position for the given dimension. For example, to
      * retrieve the z-slice index:
      * 
-     * <pre>
-     * @{code int index = viewer.getSlicingPosition(2);}
-     * </pre>
+     * <pre>{@code int index = viewer.getSlicingPosition(2);} </pre>
      * 
      * @param dim
      *            the dimension to consider
@@ -351,14 +334,17 @@ public abstract class ImageViewer
     // ===================================================================
     // Display management methods
 
+    /**
+     * Updates the display of the image stored within this viewer. 
+     * 
+     * @see repaint()
+     */
     public abstract void refreshDisplay();
-//	{
-////		System.out.println("refresh display");
-//	}
 
 	/**
-	 * @return the GUI widget associated with this viewer, usually as an instance of JPanel.
-	 */
+     * @return the GUI widget associated with this viewer, usually as an
+     *         instance of JPanel.
+     */
 	public abstract Object getWidget();
 	
 	public void repaint() 
