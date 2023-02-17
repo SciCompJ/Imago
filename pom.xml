@@ -6,7 +6,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<groupId>fr.inra.cepia</groupId>
 	<artifactId>Imago</artifactId>
-	<version>0.1.5</version>
+	<version>0.1.3-version</version>
 
 	<name>Imago.jar</name>
 	<description>Interactive image processing and analysis</description>
