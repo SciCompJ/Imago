@@ -96,10 +96,10 @@ public class CroppedUInt8Array3D extends UInt8Array3D
     }
 
     @Override
-    public byte getByte(int... pos)
+    public byte getByte(int x, int y, int z)
     {
         // get crop polygon
-        int sliceIndex = pos[2];
+        int sliceIndex = z;
         LinearRing2D ring = cropSlices.get(sliceIndex);
         if (ring == null)
         {
@@ -107,9 +107,9 @@ public class CroppedUInt8Array3D extends UInt8Array3D
         }
         
         // check if the query point is within the polygon defined by the ring
-        if (ring.isInside(pos[0], pos[1]))
+        if (ring.isInside(x, y))
         {
-            return this.refArray.getByte(pos);
+            return this.refArray.getByte(x, y, z);
         }
 
         // return background value

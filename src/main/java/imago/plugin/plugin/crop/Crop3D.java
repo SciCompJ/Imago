@@ -730,7 +730,7 @@ public class Crop3D extends AlgoStub implements AlgoListener
             {
                 for (int x = 0; x < sizeX; x++)
                 {
-                    bos.write(array8.getByte(x, y));
+                    bos.write(array8.getByte(new int[] {x, y}));
                 }
             }
         }
