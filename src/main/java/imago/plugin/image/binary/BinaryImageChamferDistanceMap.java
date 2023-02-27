@@ -16,6 +16,7 @@ import net.sci.array.color.ColorMaps;
 import net.sci.array.color.RGB8;
 import net.sci.array.scalar.Int32Array;
 import net.sci.array.scalar.IntArray;
+import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.UInt16Array;
 import net.sci.array.scalar.UInt8Array;
 import net.sci.image.DisplaySettings;
@@ -95,7 +96,7 @@ public class BinaryImageChamferDistanceMap implements FramePlugin
 		boolean normalize = gd.getNextBoolean();
 		
 		// Compute distance map
-		Array<?> result;
+		ScalarArray<?> result;
 		if (nd == 2)
 		{
             ChamferMask2D weights = ChamferMasks2D.fromLabel(weightsName).getMask();
@@ -131,12 +132,13 @@ public class BinaryImageChamferDistanceMap implements FramePlugin
             op.addAlgoListener(imageFrame);
             result = op.process3d((BinaryArray3D) image.getData());
 		}
-		Image resultImage = new Image(result, image);
+		Image resultImage = new Image(result, Image.Type.DISTANCE, image);
 		
 		// compute JET lut by default
 		DisplaySettings settings = resultImage.getDisplaySettings();
 		settings.setColorMap(ColorMaps.JET.createColorMap(255));
 		settings.setBackgroundColor(RGB8.WHITE);
+		settings.setDisplayRange(new double[] {0, result.maxValue()});
 		
 		// add the image document to GUI
 		imageFrame.createImageFrame(resultImage);
