@@ -22,7 +22,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import net.sci.geom.Geometry;
-import net.sci.image.BufferedImageUtils;
 import net.sci.image.Image;
 import net.sci.image.process.shape.ImageSlicer;
 
@@ -194,7 +193,7 @@ public class Image5DXYSliceViewer extends ImageViewer implements ChangeListener,
     {
         Image image = this.getImageToDisplay();
         Image slice = ImageSlicer.slice2d(image, 0, 1, this.slicingPosition);
-        this.awtImage = BufferedImageUtils.createAwtImage(slice);
+        this.awtImage = image.getType().createAwtImage(slice);
     }
     
     

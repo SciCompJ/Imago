@@ -10,7 +10,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.frames.ImageFrame;
 import net.sci.array.Array;
 import net.sci.image.Image;
-import net.sci.image.Image.Type;
+import net.sci.image.ImageType;
 import net.sci.image.process.segment.KMeansSegmentation;
 
 
@@ -56,7 +56,7 @@ public class ImageKMeansSegmentation implements FramePlugin
         Array<?> labelMap = algo.process(image.getData());
         
         // create result image
-		Image resultImage = new Image(labelMap, Type.LABEL);
+		Image resultImage = new Image(labelMap, ImageType.LABEL);
 		resultImage.setCalibration(image.getCalibration());
 				
 		// add the image document to GUI

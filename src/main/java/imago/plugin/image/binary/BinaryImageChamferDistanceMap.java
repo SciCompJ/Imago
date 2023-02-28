@@ -21,6 +21,7 @@ import net.sci.array.scalar.UInt16Array;
 import net.sci.array.scalar.UInt8Array;
 import net.sci.image.DisplaySettings;
 import net.sci.image.Image;
+import net.sci.image.ImageType;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DFloat32;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DInt;
 import net.sci.image.binary.distmap.ChamferDistanceTransform3DFloat32;
@@ -132,7 +133,7 @@ public class BinaryImageChamferDistanceMap implements FramePlugin
             op.addAlgoListener(imageFrame);
             result = op.process3d((BinaryArray3D) image.getData());
 		}
-		Image resultImage = new Image(result, Image.Type.DISTANCE, image);
+		Image resultImage = new Image(result, ImageType.DISTANCE, image);
 		
 		// compute JET lut by default
 		DisplaySettings settings = resultImage.getDisplaySettings();

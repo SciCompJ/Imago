@@ -14,6 +14,7 @@ import net.sci.array.color.ColorMap;
 import net.sci.array.color.ColorMapFactory;
 import net.sci.array.color.DefaultColorMap;
 import net.sci.image.Image;
+import net.sci.image.ImageType;
 
 /**
  * Choose the colormap of the current scalar image.
@@ -50,8 +51,8 @@ public class ImageSetColorMapFactory implements FramePlugin
 		ImageHandle doc = viewer.getImageHandle();
 		Image image	= doc.getImage();
 
-		Image.Type type = image.getType();
-		if (type != Image.Type.LABEL && type != Image.Type.GRAYSCALE && type != Image.Type.INTENSITY)
+		ImageType type = image.getType();
+		if (type != ImageType.LABEL && type != ImageType.GRAYSCALE && type != ImageType.INTENSITY)
 		{
 		    throw new RuntimeException("Requires a scalar image as input");
 		}

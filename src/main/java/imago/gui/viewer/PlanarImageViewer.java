@@ -20,13 +20,8 @@ import imago.app.scene.ShapeNode;
 import imago.app.shape.Shape;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoTool;
-import net.sci.array.color.ColorMap;
-import net.sci.array.color.ColorMaps;
-import net.sci.array.scalar.ScalarArray2D;
-import net.sci.array.vector.VectorArray;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;
-import net.sci.image.BufferedImageUtils;
 import net.sci.image.Image;
 
 
@@ -69,7 +64,7 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 			throw new IllegalArgumentException("Requires a planar image as input");
 		}
 		
-		this.awtImage = BufferedImageUtils.createAwtImage(image);
+		this.awtImage = image.getType().createAwtImage(image);
 		
 		setupLayout();
 	}
@@ -258,28 +253,7 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 	public void updateAwtImage()
 	{
         Image image = this.getImageToDisplay();
-        if (image.isScalarImage() || image.isColorImage())
-        {
-            this.awtImage = BufferedImageUtils.createAwtImage(image);
-        }
-        else if (image.isColorImage())
-        {
-            this.awtImage = BufferedImageUtils.createAwtImage(image);
-        }
-        else
-        {
-            // For vector images, create a new view depending on current settings.
-            ScalarArray2D<?> scalarDisplay = ScalarArray2D.wrap(computeVectorArrayDisplay((VectorArray<?>) image.getData()));
-            // extract LUT from image, or create one otherwise
-            ColorMap lut = image.getDisplaySettings().getColorMap();
-            if (lut == null)
-            {
-                lut = ColorMaps.GRAY.createColorMap(256); 
-            }
-            double[] valueRange = scalarDisplay.finiteValueRange();
-            double[] displayRange = new double[]{0.0, valueRange[1]};
-            this.awtImage = BufferedImageUtils.createAwtImage(scalarDisplay, displayRange, lut);
-        }
+        this.awtImage = image.getType().createAwtImage(image);
 	}
 	
 	public void repaint()

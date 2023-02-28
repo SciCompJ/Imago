@@ -15,6 +15,7 @@ import net.sci.array.scalar.ScalarArray2D;
 import net.sci.array.scalar.ScalarArray3D;
 import net.sci.array.scalar.UInt8Array;
 import net.sci.image.Image;
+import net.sci.image.ImageType;
 import net.sci.image.data.Connectivity2D;
 import net.sci.image.data.Connectivity3D;
 import net.sci.image.morphology.MinimaAndMaxima;
@@ -112,7 +113,7 @@ public class ImageWatershed implements FramePlugin
 		}
 		
 		// apply operator on current image
-		Image resultImage = new Image(result, Image.Type.LABEL, image);
+		Image resultImage = new Image(result, ImageType.LABEL, image);
 		
 		// choose appropriate suffix
 		String suffix = "-wat";

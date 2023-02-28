@@ -14,6 +14,7 @@ import net.sci.array.color.ColorMaps;
 import net.sci.array.color.RGB8;
 import net.sci.image.DisplaySettings;
 import net.sci.image.Image;
+import net.sci.image.ImageType;
 import net.sci.image.binary.labeling.FloodFillComponentsLabeling2D;
 import net.sci.image.binary.labeling.FloodFillComponentsLabeling3D;
 
@@ -95,7 +96,7 @@ public class BinaryImageConnectedComponentsLabeling implements FramePlugin
             algo.addAlgoListener((ImageFrame) frame);
             result = algo.process(image);
 		}
-		result.setType(Image.Type.LABEL);
+		result.setType(ImageType.LABEL);
 		
 		// compute JET lut by default
 		// TODO: update by scaling?

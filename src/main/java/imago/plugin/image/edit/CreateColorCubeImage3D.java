@@ -8,6 +8,7 @@ import imago.gui.FramePlugin;
 import net.sci.array.color.RGB8;
 import net.sci.array.color.RGB8Array3D;
 import net.sci.image.Image;
+import net.sci.image.ImageType;
 
 
 /**
@@ -45,7 +46,7 @@ public class CreateColorCubeImage3D implements FramePlugin
 		}
 
 		// create the image
-		Image image = new Image(rgb3d, Image.Type.COLOR);
+		Image image = new Image(rgb3d, ImageType.COLOR);
 		image.setName("Color Cube Image");
 		
 		// add the image document to GUI

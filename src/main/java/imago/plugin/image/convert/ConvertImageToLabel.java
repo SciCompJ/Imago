@@ -13,6 +13,7 @@ import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.UInt16Array;
 import net.sci.array.scalar.UInt8Array;
 import net.sci.image.Image;
+import net.sci.image.ImageType;
 
 
 /**
@@ -68,7 +69,7 @@ public class ConvertImageToLabel implements FramePlugin
 			return;
 		}
 		
-        Image resultImage = new Image(result, Image.Type.LABEL, image);
+        Image resultImage = new Image(result, ImageType.LABEL, image);
         resultImage.setName(image.getName() + "-lbl");
 
 		// add the image document to GUI

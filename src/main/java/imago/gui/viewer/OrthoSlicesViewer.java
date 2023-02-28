@@ -23,7 +23,7 @@ import imago.app.ImageHandle;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoTool;
 import net.sci.geom.Geometry;
-import net.sci.image.BufferedImageUtils;
+import net.sci.image.ImageType;
 import net.sci.image.process.shape.ImageSlicer;
 
 
@@ -165,9 +165,10 @@ public class OrthoSlicesViewer extends ImageViewer implements ChangeListener, Ac
 	public void updateSliceImage() 
 	{
         // create AWT images corresponding to each slice
-        awtImageXY = BufferedImageUtils.createAwtImage(ImageSlicer.slice2d(image, 0, 1, this.slicesCenter));
-        awtImageZY = BufferedImageUtils.createAwtImage(ImageSlicer.slice2d(image, 2, 1, this.slicesCenter));
-        awtImageXZ = BufferedImageUtils.createAwtImage(ImageSlicer.slice2d(image, 0, 2, this.slicesCenter));
+	    ImageType type = image.getType();
+        awtImageXY = type.createAwtImage(ImageSlicer.slice2d(image, 0, 1, this.slicesCenter));
+        awtImageZY = type.createAwtImage(ImageSlicer.slice2d(image, 2, 1, this.slicesCenter));
+        awtImageXZ = type.createAwtImage(ImageSlicer.slice2d(image, 0, 2, this.slicesCenter));
 	}
 
 

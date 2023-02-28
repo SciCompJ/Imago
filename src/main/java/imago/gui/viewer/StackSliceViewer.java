@@ -29,7 +29,6 @@ import imago.gui.ImageViewer;
 import imago.gui.ImagoTool;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;
-import net.sci.image.BufferedImageUtils;
 import net.sci.image.Image;
 import net.sci.image.process.shape.ImageSlicer;
 
@@ -210,7 +209,7 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
     {
         Image image = this.getImageToDisplay();
         Image slice = ImageSlicer.slice2d(image, this.slicingPosition[2]);
-        this.awtImage = BufferedImageUtils.createAwtImage(slice);
+        this.awtImage = slice.getType().createAwtImage(slice);
     }
 
 	// ===================================================================

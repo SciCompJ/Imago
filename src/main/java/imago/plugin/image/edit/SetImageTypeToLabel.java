@@ -11,6 +11,7 @@ import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.image.Image;
+import net.sci.image.ImageType;
 
 
 /**
@@ -52,7 +53,7 @@ public class SetImageTypeToLabel implements FramePlugin
 		}
 
 		// update type
-		image.setType(Image.Type.LABEL);
+		image.setType(ImageType.LABEL);
 		
 		// recompute display range to ensure labels are displayed with full colormap range
 		double[] minMax = ((ScalarArray<?>) array).valueRange();
