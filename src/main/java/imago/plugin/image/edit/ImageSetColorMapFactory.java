@@ -52,7 +52,7 @@ public class ImageSetColorMapFactory implements FramePlugin
 		Image image	= doc.getImage();
 
 		ImageType type = image.getType();
-		if (type != ImageType.LABEL && type != ImageType.GRAYSCALE && type != ImageType.INTENSITY)
+		if (type != ImageType.LABEL && type != ImageType.GRAYSCALE && type != ImageType.INTENSITY && type != ImageType.DISTANCE)
 		{
 		    throw new RuntimeException("Requires a scalar image as input");
 		}

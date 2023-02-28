@@ -19,6 +19,7 @@ import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.UInt16;
 import net.sci.array.scalar.UInt16Array;
 import net.sci.image.Image;
+import net.sci.image.ImageType;
 import net.sci.image.binary.distmap.ChamferMask2D;
 import net.sci.image.binary.distmap.ChamferMask3D;
 import net.sci.image.binary.distmap.ChamferMasks2D;
@@ -207,7 +208,7 @@ public class ImageGeodesicDistanceMap implements FramePlugin
         }
         
 		// Create result image
-		Image resultImage = new Image(result, markerImage);
+        Image resultImage = new Image(result, ImageType.DISTANCE, markerImage);
 		resultImage.setName(markerImage.getName() + "-geodDist");
 		
 		// compute maximum (finite) distance value within mask image

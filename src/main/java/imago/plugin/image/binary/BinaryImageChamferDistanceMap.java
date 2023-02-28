@@ -4,22 +4,19 @@
 package imago.plugin.image.binary;
 
 import imago.app.ImageHandle;
+import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.frames.ImageFrame;
-import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.binary.BinaryArray2D;
 import net.sci.array.binary.BinaryArray3D;
-import net.sci.array.color.ColorMaps;
-import net.sci.array.color.RGB8;
 import net.sci.array.scalar.Int32Array;
 import net.sci.array.scalar.IntArray;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.UInt16Array;
 import net.sci.array.scalar.UInt8Array;
-import net.sci.image.DisplaySettings;
 import net.sci.image.Image;
 import net.sci.image.ImageType;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DFloat32;
@@ -134,12 +131,6 @@ public class BinaryImageChamferDistanceMap implements FramePlugin
             result = op.process3d((BinaryArray3D) image.getData());
 		}
 		Image resultImage = new Image(result, ImageType.DISTANCE, image);
-		
-		// compute JET lut by default
-		DisplaySettings settings = resultImage.getDisplaySettings();
-		settings.setColorMap(ColorMaps.JET.createColorMap(255));
-		settings.setBackgroundColor(RGB8.WHITE);
-		settings.setDisplayRange(new double[] {0, result.maxValue()});
 		
 		// add the image document to GUI
 		imageFrame.createImageFrame(resultImage);
