@@ -131,7 +131,6 @@ import imago.plugin.image.file.SaveImageMetaImage;
 import imago.plugin.image.process.BinaryImageBoxMedianFilter;
 import imago.plugin.image.process.ColorImageExtractChannel;
 import imago.plugin.image.process.Image3DKymograph;
-import imago.plugin.image.process.Image3DOrthoslicesImage;
 import imago.plugin.image.process.Image3DSetOrthoSlicesDisplay;
 import imago.plugin.image.process.ImageApplyMathFunction;
 import imago.plugin.image.process.ImageArrayBinaryMathOperator;
@@ -160,7 +159,8 @@ import imago.plugin.image.process.MergeChannelImages;
 import imago.plugin.image.process.VectorImageChannelView;
 import imago.plugin.image.shape.Image3DGetCurrentSlice;
 import imago.plugin.image.shape.Image3DGetSlice;
-import imago.plugin.image.shape.Image3DMontage;
+import imago.plugin.image.shape.Image3DSliceMontage;
+import imago.plugin.image.shape.Image3DOrthoslicesMontage;
 import imago.plugin.image.shape.Image3DRotate90;
 import imago.plugin.image.shape.ImageConcatenate;
 import imago.plugin.image.shape.ImageCropDialog;
@@ -500,8 +500,8 @@ public class GuiBuilder
 		addPlugin(geometryMenu, new ImageFlip(1), "Vertical Flip");
 		addPlugin(geometryMenu, new ImageFlip(2), "Z-Flip");
 		geometryMenu.addSeparator();
-        addArrayOperatorPlugin(geometryMenu, new Rotate90(-1), "Rotate Left", hasImage2D);
-        addArrayOperatorPlugin(geometryMenu, new Rotate90(+1), "Rotate Right", hasImage2D);
+        addArrayOperatorPlugin(geometryMenu, new Rotate90(-1), "Rotate Counter-Clockwise", hasImage2D);
+        addArrayOperatorPlugin(geometryMenu, new Rotate90(+1), "Rotate Clockwise", hasImage2D);
 		addPlugin(geometryMenu, new ImageRotateAroundCenter(), "Rotate...", hasImage2D);
         addPlugin(geometryMenu, new Image3DRotate90(), "Rotate 3D by 90 degrees...", hasImage3D);
         addPlugin(geometryMenu, new ImageRotatedCrop(), "Rotated Crop...", hasImage2D || hasImage3D);
@@ -518,19 +518,19 @@ public class GuiBuilder
 		menu.add(geometryMenu);
 
 		// Create the menu for 3D images
-		JMenu stackMenu = new JMenu("Stacks");
+		JMenu stackMenu = new JMenu("3D Images");
 		stackMenu.setEnabled(hasImage3D);
 //		addMenuItem(stackMenu, 
 //				new MiddleSliceImageAction(frame, "middleSlice"), "Middle Slice", hasImage3D);
         addPlugin(stackMenu, new Image3DGetCurrentSlice(), "Extract Current Slice", hasImage3D);
         addPlugin(stackMenu, new Image3DGetSlice(), "Extract Slice...", hasImage3D);
-        addPlugin(stackMenu, new Image3DOrthoslicesImage(), "Create OrthoSlices Image...", hasImage3D);
-        addPlugin(stackMenu, new Image3DMontage(), "Image 3D Montage...", hasImage3D);
+        addPlugin(stackMenu, new Image3DOrthoslicesMontage(), "OrthoSlices Montage...", hasImage3D);
+        addPlugin(stackMenu, new Image3DSliceMontage(), "Image 3D Montage...", hasImage3D);
         addPlugin(stackMenu, new ImageOrthogonalProjection(), "Orthogonal Projection...", hasImage3D && hasScalarImage);
         stackMenu.addSeparator();
         addPlugin(stackMenu, new Image3DSetOrthoSlicesDisplay(), "Set Orthoslices Display", hasImage3D);
         stackMenu.addSeparator();
-		addPlugin(stackMenu, new ConvertImage3DToVectorImage(), "Stack To Vector", hasImage3D);
+		addPlugin(stackMenu, new ConvertImage3DToVectorImage(), "Convert Z-Dim To Vector", hasImage3D);
 		menu.add(stackMenu);
 
         menu.addSeparator();
