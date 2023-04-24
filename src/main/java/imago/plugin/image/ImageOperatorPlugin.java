@@ -20,6 +20,10 @@ import net.sci.image.ImageOperator;
  */
 public class ImageOperatorPlugin implements FramePlugin
 {    
+    /**
+     * The instance of ImageOperator that will transform an image into another
+     * image.
+     */
     ImageOperator operator;
     
     /**
@@ -29,7 +33,15 @@ public class ImageOperatorPlugin implements FramePlugin
     {
         this.operator = operator;
     }
-
+    
+    /**
+     * @return the ImageOperator encapsulated by the plugin.
+     */
+    public ImageOperator operator()
+    {
+        return this.operator;
+    }
+    
     /* (non-Javadoc)
      * @see imago.gui.Plugin#run(imago.gui.ImagoFrame)
      */

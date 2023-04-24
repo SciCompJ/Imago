@@ -6,6 +6,9 @@ package imago.gui.action;
 import imago.gui.ImagoAction;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
+import imago.gui.frames.ImageFrame;
+import imago.plugin.image.ImageOperatorPlugin;
+import net.sci.image.ImageOperator;
 import imago.gui.FramePlugin;
 
 import java.awt.event.ActionEvent;
@@ -23,6 +26,9 @@ public class RunPluginAction extends ImagoAction
      */
     private static final long serialVersionUID = 1L;
     
+    /**
+     * The plugin to run when an action is performed.
+     */
     FramePlugin plugin;
     
     /**
@@ -47,6 +53,34 @@ public class RunPluginAction extends ImagoAction
         {
             public void run()
             {
+                // log plugin start
+                String pluginName = plugin.getClass().getCanonicalName();
+                if (frame instanceof ImageFrame)
+                {
+                    String imageName = ((ImageFrame) frame).getImageHandle().getName();
+                    if (plugin instanceof ImageOperatorPlugin)
+                    {
+                        // specific processing for "ImageOperator" plugins
+                        ImageOperator operator = ((ImageOperatorPlugin) plugin).operator();
+                        String opName = operator.getClass().getCanonicalName();
+                        String pattern = "run Image Operator Plugin \"%s\" on image \"%s\"";
+                        System.out.println(String.format(pattern, opName, imageName));
+                    }
+                    else
+                    {
+                        // process generic frame plugin
+                        String pattern = "run FramePlugin \"%s\" on image \"%s\"";
+                        System.out.println(String.format(pattern, pluginName, imageName));
+                    }
+                }
+                else
+                {
+                    // process generic frame plugin
+                    String pattern = "run FramePlugin \"%s\"";
+                    System.out.println(String.format(pattern, pluginName));
+                }
+                
+                // run the plugin
                 try 
                 {
                     plugin.run(frame, null);
