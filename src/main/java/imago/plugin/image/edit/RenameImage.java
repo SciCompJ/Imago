@@ -10,14 +10,13 @@ import imago.gui.ImagoFrame;
 import imago.gui.frames.ImageFrame;
 
 /**
- * Rename the name of the current image, keeping unicity of its name.
+ * Rename the name of the current image, ensuring unicity of its name.
  * 
  * @author dlegland
  *
  */
 public class RenameImage implements FramePlugin
 {
-
     @Override
     public void run(ImagoFrame frame, String args)
     {
@@ -37,14 +36,21 @@ public class RenameImage implements FramePlugin
             return;
         }
         
+        // retrieve new name of image
         String newName = dlg.getNextString();
+        
+        // if name is same as before, do nothing
         if (name.equals(newName))
         {
             return;
         }
         
+        // ensure the name is unique within the set of open image handles
         newName = frame.getGui().getAppli().createHandleName(newName);
         
+        // setup name for image, handle, and frame.
+        doc.getImage().setName(newName);
+        doc.getImage().setExtension("");
         doc.setName(newName);
         ((ImageFrame) frame).updateTitle();
     }
