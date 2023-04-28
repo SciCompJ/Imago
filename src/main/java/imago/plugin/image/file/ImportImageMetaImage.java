@@ -32,7 +32,7 @@ public class ImportImageMetaImage implements FramePlugin
 	public void run(ImagoFrame frame, String args)
 	{
         // choose the file to open
-	    File file = frame.getGui().chooseFileToOpen(frame, "Open MetaImage File", CommonImageFileFilters.META_IMAGE);
+	    File file = frame.getGui().chooseFileToOpen(frame, "Open MetaImage File", ImageFileFilters.META_IMAGE);
 	    
 		// Check the chosen file is valid
 		if (file == null || !file.isFile())

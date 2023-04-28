@@ -43,7 +43,7 @@ import imago.gui.frames.ImageFrame;
 import imago.gui.frames.ImagoEmptyFrame;
 import imago.gui.tool.SelectPolygonTool;
 import imago.gui.viewer.StackSliceViewer;
-import imago.plugin.image.file.CommonImageFileFilters;
+import imago.plugin.image.file.ImageFileFilters;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.polygon.Polygon2D;
 import net.sci.image.Image;
@@ -562,7 +562,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     {
         // Ask for the filename of the image to open
         File file = parentFrame.getGui().chooseFileToOpen(parentFrame, 
-                "Choose Input 3D TIFF Image", CommonImageFileFilters.TIFF);
+                "Choose Input 3D TIFF Image", ImageFileFilters.TIFF);
 
         // Check the chosen file is valid
         if (file == null)

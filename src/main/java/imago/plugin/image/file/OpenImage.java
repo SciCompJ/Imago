@@ -5,6 +5,8 @@ package imago.plugin.image.file;
 
 import java.io.File;
 
+import javax.swing.filechooser.FileFilter;
+
 import imago.Imago;
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
@@ -34,7 +36,15 @@ public class OpenImage implements FramePlugin
     public void run(ImagoFrame frame, String args)
     {
         // opens a dialog to choose the file
-        File file = frame.getGui().chooseFileToOpen(frame, "Open Image");
+        FileFilter[] filters = new FileFilter[] {
+                ImageFileFilters.COMMON, 
+                ImageFileFilters.BMP, 
+                ImageFileFilters.GIF, 
+                ImageFileFilters.JPEG, 
+                ImageFileFilters.PNG, 
+                ImageFileFilters.TIFF, 
+        };
+        File file = frame.getGui().chooseFileToOpen(frame, "Open Image", filters);
         if (file == null)
         {
             return;

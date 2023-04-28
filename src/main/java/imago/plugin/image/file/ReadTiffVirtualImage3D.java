@@ -30,7 +30,7 @@ public class ReadTiffVirtualImage3D implements FramePlugin
 	public void run(ImagoFrame frame, String args)
 	{
         // opens a dialog to choose the file
-        File file = frame.getGui().chooseFileToOpen(frame, "Open TIFF as Virtual Image", CommonImageFileFilters.TIFF);
+        File file = frame.getGui().chooseFileToOpen(frame, "Open TIFF as Virtual Image", ImageFileFilters.TIFF);
         
         // Check the chosen file is valid
         if (file == null || !file.isFile())

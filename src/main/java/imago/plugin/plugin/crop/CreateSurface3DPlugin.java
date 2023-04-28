@@ -41,7 +41,7 @@ import imago.gui.frames.ImageFrame;
 import imago.gui.frames.ImagoEmptyFrame;
 import imago.gui.tool.SelectPolygonTool;
 import imago.gui.viewer.StackSliceViewer;
-import imago.plugin.image.file.CommonImageFileFilters;
+import imago.plugin.image.file.ImageFileFilters;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.polygon.LineString2D;
 import net.sci.geom.geom2d.polygon.Polyline2D;
@@ -400,7 +400,7 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
     public void onOpenImageButton()
     {
         this.imageFrame = null;
-        File file = parentFrame.getGui().chooseFileToOpen(parentFrame, "Choose 3D TIFF Image", CommonImageFileFilters.TIFF);
+        File file = parentFrame.getGui().chooseFileToOpen(parentFrame, "Choose 3D TIFF Image", ImageFileFilters.TIFF);
         if (file == null)
         {
             return;

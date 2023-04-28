@@ -41,7 +41,7 @@ public class SaveImageMetaImage implements FramePlugin
         Image image = viewer.getImage();
         
         // create file dialog using last save path
-        File file = frame.getGui().chooseFileToSave(frame, "Save As MetaImage", image.getName() + ".mhd", CommonImageFileFilters.META_IMAGE);
+        File file = frame.getGui().chooseFileToSave(frame, "Save As MetaImage", image.getName() + ".mhd", ImageFileFilters.META_IMAGE);
 
 		// Check the selected file is valid
 		if (file == null)
