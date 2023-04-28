@@ -37,8 +37,6 @@ public class ConvertUInt8ImageToRGB implements FramePlugin
     @Override
     public void run(ImagoFrame frame, String args)
     {
-        System.out.println("convert uint8 image to rgb8 image");
-        
         // get current frame
         ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();

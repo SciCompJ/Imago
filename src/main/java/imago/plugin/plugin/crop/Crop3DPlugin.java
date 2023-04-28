@@ -112,7 +112,6 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     @Override
     public void run(ImagoFrame parentFrame, String args)
     {
-        System.out.println("run Crop3D plugin");
         this.parentFrame = parentFrame;
         this.jframe = createFrame(parentFrame.getWidget());
     }

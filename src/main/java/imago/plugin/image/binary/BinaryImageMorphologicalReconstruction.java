@@ -48,8 +48,6 @@ public class BinaryImageMorphologicalReconstruction implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("binary reconstruction");
-
 		ImagoGui gui = frame.getGui();
 		ImagoApp app = gui.getAppli();
         Collection<String> imageNames = app.getImageHandleNames();
@@ -64,7 +62,7 @@ public class BinaryImageMorphologicalReconstruction implements FramePlugin
 		String firstImageName = imageNameArray[0];
 				
 		// Creates the dialog
-		GenericDialog gd = new GenericDialog(frame, "Morpho. Rec.");
+		GenericDialog gd = new GenericDialog(frame, "Morphological Reconstruction");
 		gd.addChoice("Marker: ", imageNameArray, firstImageName);
 		gd.addChoice("Mask: ", imageNameArray, firstImageName);
 		gd.addChoice("Connectivity: ", connNameArray, connNameArray[0]);

@@ -38,8 +38,6 @@ public class ImageMorphologicalReconstruction implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("morphological reconstruction");
-
 		ImagoGui gui = frame.getGui();
 		ImagoApp app = gui.getAppli();
         Collection<String> imageNames = app.getImageHandleNames();
@@ -54,7 +52,7 @@ public class ImageMorphologicalReconstruction implements FramePlugin
 		String firstImageName = imageNameArray[0];
 				
 		// Creates the dialog
-		GenericDialog gd = new GenericDialog(frame, "Morpho. Rec.");
+		GenericDialog gd = new GenericDialog(frame, "Morphological Reconstruction");
 		gd.addChoice("Marker: ", imageNameArray, firstImageName);
 		gd.addChoice("Mask: ", imageNameArray, firstImageName);
 		gd.showDialog();

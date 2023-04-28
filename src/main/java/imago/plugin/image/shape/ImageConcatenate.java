@@ -35,8 +35,6 @@ public class ImageConcatenate implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("Image concatenation");
-
 		ImagoGui gui = frame.getGui();
 		ImagoApp app = gui.getAppli();
 		Collection<String> imageNames = app.getImageHandleNames();

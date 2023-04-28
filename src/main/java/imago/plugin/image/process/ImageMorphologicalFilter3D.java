@@ -42,8 +42,6 @@ public class ImageMorphologicalFilter3D implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("morphological filter (3D)");
-
 		// get current image data
 		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image	= doc.getImage();

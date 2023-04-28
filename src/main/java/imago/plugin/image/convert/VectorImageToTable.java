@@ -35,8 +35,6 @@ public class VectorImageToTable implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("convert a vector image into a data table");
-		
 		// get current frame
 		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image = doc.getImage();

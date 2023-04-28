@@ -26,7 +26,6 @@ public class CloseWithChildren implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("Close frame with children");
 //		frame.getGui().removeFrame(frame);
         frame.closeChildren();
 		frame.close();

@@ -31,8 +31,6 @@ public class Image3DSetOrthoSlicesDisplay implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("set 3D display to orthoslices");
-
 		// get current image data
 		ImageFrame imageFrame = (ImageFrame) frame;
 		ImageHandle handle = imageFrame.getImageHandle();

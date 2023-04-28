@@ -39,9 +39,7 @@ public class BinaryImageConnectedComponentsLabeling implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("connected components labeling");
-
-		// get current image data
+	    // get current image data
 		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image	= doc.getImage();
 		Array<?> array = image.getData();

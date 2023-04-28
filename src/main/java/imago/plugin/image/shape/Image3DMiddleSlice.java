@@ -27,8 +27,6 @@ public class Image3DMiddleSlice implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("middle Slice");
-		
 		// get current frame
 		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image = doc.getImage();

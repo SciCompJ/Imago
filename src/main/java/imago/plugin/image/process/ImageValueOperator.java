@@ -46,8 +46,6 @@ public class ImageValueOperator implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("apply math function");
-
 		String[] imageNames = frame.getGui().getAppli().getImageHandleNames().toArray(new String[]{});
 		int index = 0;
 		if (frame instanceof ImageFrame)

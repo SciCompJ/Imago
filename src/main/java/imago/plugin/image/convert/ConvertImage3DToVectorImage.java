@@ -33,8 +33,6 @@ public class ConvertImage3DToVectorImage implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("stack to vector image");
-		
 		// get current frame
 		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image = doc.getImage();

@@ -27,8 +27,6 @@ public class ImageOrthogonalProjection implements FramePlugin
     @Override
     public void run(ImagoFrame frame, String args)
     {
-        System.out.println("orthogonal projection");
-
         // get current image data
         ImageFrame iFrame = (ImageFrame) frame;
         Image image = iFrame.getImageHandle().getImage();

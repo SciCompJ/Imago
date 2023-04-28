@@ -34,8 +34,6 @@ public class ImageFillBox  implements FramePlugin
 	@Override
     public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("fill box");
-
 		// get current image data
 		ImageFrame iFrame = (ImageFrame) frame;
 		Image image	= iFrame.getImageHandle().getImage();

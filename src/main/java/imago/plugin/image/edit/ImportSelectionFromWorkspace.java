@@ -42,8 +42,6 @@ public class ImportSelectionFromWorkspace implements FramePlugin
 	@Override
     public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("import selection from workspace");
-
 		// Check type is image frame
         if (!(frame instanceof ImageFrame))
             return;

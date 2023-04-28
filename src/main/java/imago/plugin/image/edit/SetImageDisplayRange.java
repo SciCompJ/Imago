@@ -38,8 +38,6 @@ public class SetImageDisplayRange implements FramePlugin
     @Override
     public void run(ImagoFrame frame, String args)
     {
-        System.out.println("set manual display range");
-        
 		// get current frame
 		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image = doc.getImage();

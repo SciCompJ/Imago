@@ -33,7 +33,6 @@ public class CreateVectorImageNorm implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("create vector image norm");
         // get current frame
         ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();

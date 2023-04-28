@@ -35,8 +35,6 @@ public class ImageFindNonZeroPixels implements FramePlugin
     @Override
     public void run(ImagoFrame frame, String args)
     {
-        System.out.println("image find non zero pixels");
-
         // get current image data
         ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();

@@ -35,8 +35,6 @@ public class ConvertImageToBinary implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args) 
 	{
-		System.out.println("convert to binary image");
-		
 		// get current frame
 		ImageFrame imageFrame = (ImageFrame) frame;
 		

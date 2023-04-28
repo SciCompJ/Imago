@@ -30,8 +30,6 @@ public class BinaryImageOverlay implements FramePlugin
 	@Override
     public void run(ImagoFrame frame, String args)
     {
-		System.out.println("binary image overlay");
-
 		ImagoApp app = frame.getGui().getAppli();
 		Collection<String> imageNames = app.getImageHandleNames();
 

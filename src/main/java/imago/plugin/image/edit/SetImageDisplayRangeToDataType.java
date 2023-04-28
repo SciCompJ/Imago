@@ -35,8 +35,6 @@ public class SetImageDisplayRangeToDataType implements FramePlugin
     @Override
     public void run(ImagoFrame frame, String args)
     {
-        System.out.println("set display range to data type");
-		
 		// get current frame
 		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image metaImage = doc.getImage();

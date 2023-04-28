@@ -34,8 +34,6 @@ public class Image3DSliceMontage implements FramePlugin
     @Override
     public void run(ImagoFrame frame, String args)
     {
-        System.out.println("image 3D slice montage");
-
         // get current image data
         ImageFrame iFrame = (ImageFrame) frame;
         Image image = iFrame.getImage();

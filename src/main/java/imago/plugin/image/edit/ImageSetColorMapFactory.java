@@ -44,8 +44,6 @@ public class ImageSetColorMapFactory implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("image set colormap");
-
 		// get current image data
 		ImageFrame viewer = (ImageFrame) frame;
 		ImageHandle doc = viewer.getImageHandle();

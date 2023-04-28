@@ -31,8 +31,6 @@ public class ApplyBinaryMask implements FramePlugin
 	@Override
     public void run(ImagoFrame frame, String args)
     {
-		System.out.println("apply binary mask");
-
 		ImagoApp app = frame.getGui().getAppli();
 		Collection<String> imageNames = app.getImageHandleNames();
 

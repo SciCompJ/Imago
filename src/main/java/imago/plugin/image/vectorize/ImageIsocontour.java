@@ -38,8 +38,6 @@ public class ImageIsocontour implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("image isocontour");
-
 		// get current image data
 		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image	= doc.getImage();

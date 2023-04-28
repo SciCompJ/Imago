@@ -29,8 +29,6 @@ public class ImageDuplicate implements FramePlugin
     @Override
     public void run(ImagoFrame frame, String args)
     {
-        System.out.println("duplicate");
-        
         // retrieve current image
         ImageFrame imageFrame = (ImageFrame) frame;
         Image image = imageFrame.getImageHandle().getImage();

@@ -26,8 +26,6 @@ public class ScalarImagesColorDifference implements FramePlugin
     @Override
     public void run(ImagoFrame frame, String args)
     {
-        System.out.println("Difference between scalar arrays");
-
         String[] imageNames = frame.getGui().getAppli().getImageHandleNames().toArray(new String[]{});
         int index1 = 0;
         if (frame instanceof ImageFrame)

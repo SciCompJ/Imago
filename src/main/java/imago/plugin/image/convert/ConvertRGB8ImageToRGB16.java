@@ -31,8 +31,6 @@ public class ConvertRGB8ImageToRGB16 implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("convert rgb8 image to rgb16 image");
-		
 		// get current frame
 		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image = doc.getImage();

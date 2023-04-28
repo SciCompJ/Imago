@@ -34,8 +34,6 @@ public class ConvertImageToUInt8 implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("convert to UInt8 image");
-		
 		// get current frame
 		ImageFrame imageFrame = (ImageFrame) frame;
 		Image image = imageFrame.getImageHandle().getImage();

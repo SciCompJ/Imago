@@ -34,8 +34,6 @@ public class ConvertChannelsToDimension implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-	    System.out.println("vector image to scalar with one dimension more");
-
         // get current frame
         ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();

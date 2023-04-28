@@ -38,8 +38,6 @@ public class PrintImageTiffTags implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-	    System.out.println("print image tiff tags:");
-	    
 		// get current frame
 		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image = doc.getImage();

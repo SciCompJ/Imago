@@ -34,7 +34,6 @@ public class ImportImageRawData implements FramePlugin
     @Override
     public void run(ImagoFrame frame, String args)
     {
-        System.out.println("import raw data");
         // opens a dialog to choose the file
         File file = frame.getGui().chooseFileToOpen(frame, "Open Image");
         if (file == null)

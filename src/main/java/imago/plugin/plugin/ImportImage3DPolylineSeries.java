@@ -51,7 +51,6 @@ public class ImportImage3DPolylineSeries implements FramePlugin
             return;
         }
         
-        System.out.println("reading coordinates file");
         Table table = readTableFromFile(file);
         
         int nRows = table.rowCount();

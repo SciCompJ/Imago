@@ -31,8 +31,6 @@ public class ConvertStackToMovie implements FramePlugin
     @Override
     public void run(ImagoFrame frame, String args)
     {
-        System.out.println("convert 3D image to movie");
-
         // get current image data
         ImageFrame viewer = (ImageFrame) frame;
         ImageHandle doc = viewer.getImageHandle();

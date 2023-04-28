@@ -40,8 +40,6 @@ public class Image3DOrthoslicesMontage implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("Create orthoslice montage");
-
 		// get current image data
 		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image	= doc.getImage();
@@ -51,8 +49,6 @@ public class Image3DOrthoslicesMontage implements FramePlugin
 		
 		GenericDialog gd = new GenericDialog(frame, "Create orthoslice Image");
         gd.addChoice("Layout", layoutNames, layoutNames[0]);
-//		gd.addNumericField("Columns", 2, 0);
-//		gd.addNumericField("Rows", 2, 0);
         for (int d = 0; d < nd; d++)
 		{
 			gd.addNumericField("Ref. pos. " + (d+1), (int) (array.size(d) / 2), 0);
@@ -66,8 +62,6 @@ public class Image3DOrthoslicesMontage implements FramePlugin
 		
 		// parse dialog results
 		int layoutIndex = gd.getNextChoiceIndex();
-//        int nCols = (int) gd.getNextNumber();
-//        int nRows = (int) gd.getNextNumber();
 		int[] refPos = new int[nd];
 		for (int d = 0; d < nd; d++)
 		{
@@ -78,7 +72,7 @@ public class Image3DOrthoslicesMontage implements FramePlugin
         Array2D<?> res = Montage.create(dims[0], dims[1], orthoSlices(array, refPos));
 		
 		Image result = new Image(res, image);
-		result.setName(image.getName() + "-slices");
+		result.setName(image.getName() + "-orthoSlices");
 		
 		// add the image document to GUI
 		frame.getGui().createImageFrame(result);
@@ -92,5 +86,4 @@ public class Image3DOrthoslicesMontage implements FramePlugin
         slices.add(SimpleSlicer.slice2d(array, 0, 2, refPos));
         return slices;
     }
-
 }

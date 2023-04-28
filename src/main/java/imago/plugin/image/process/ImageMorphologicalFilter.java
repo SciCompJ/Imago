@@ -61,8 +61,6 @@ public class ImageMorphologicalFilter implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("morphological filter");
-
 		// get current image data
 		ImageFrame imageFrame = (ImageFrame) frame;
 		Image image	= imageFrame.getImageHandle().getImage();

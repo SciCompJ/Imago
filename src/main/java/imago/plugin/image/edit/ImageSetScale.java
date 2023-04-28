@@ -33,8 +33,6 @@ public class ImageSetScale implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("image set scale");
-
 		// get current image data
 		ImageFrame viewer = (ImageFrame) frame;
 		ImageHandle doc = viewer.getImageHandle();

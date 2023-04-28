@@ -34,8 +34,6 @@ public class ImageRotateAroundCenter implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("rotate around center");
-
 		// get current image data
 		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image	= doc.getImage();

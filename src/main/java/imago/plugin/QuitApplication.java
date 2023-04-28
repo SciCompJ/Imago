@@ -30,8 +30,6 @@ public class QuitApplication implements FramePlugin
 	@Override
 	public void run(ImagoFrame parentFrame, String args)
 	{
-		System.out.println("Quit application");
-
 		ImagoGui gui = parentFrame.getGui();
 		
 		// save user preferences for next use

@@ -41,8 +41,6 @@ public class ImageBivariateHistogram implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("morphological reconstruction");
-
 		ImagoGui gui = frame.getGui();
 		ImagoApp app = gui.getAppli();
 		Collection<String> imageNames = app.getImageHandleNames();
@@ -59,7 +57,7 @@ public class ImageBivariateHistogram implements FramePlugin
 		String secondImageName = imageNameArray[Math.min(1, imageNameArray.length-1)];
         		
 		// Creates the dialog
-		GenericDialog gd = new GenericDialog(frame, "Morpho. Rec.");
+		GenericDialog gd = new GenericDialog(frame, "Morphological Reconstruction");
 		gd.addChoice("First image: ", imageNameArray, firstImageName);
         gd.addNumericField("Min Bound: ", 0, 2);
         gd.addNumericField("Max Bound: ", 255, 2);
@@ -68,8 +66,8 @@ public class ImageBivariateHistogram implements FramePlugin
         gd.addNumericField("Min Bound: ", 0, 2);
         gd.addNumericField("Max Bound: ", 255, 2);
         gd.addNumericField("Number of bins: ", 256, 0);
-        gd.addCheckBox("Log results", true);
-        gd.addCheckBox("remove first bins", false);
+        gd.addCheckBox("Logarithmic scale", true);
+        gd.addCheckBox("Remove first bins", false);
         gd.showDialog();
 		
 		if (gd.wasCanceled()) 

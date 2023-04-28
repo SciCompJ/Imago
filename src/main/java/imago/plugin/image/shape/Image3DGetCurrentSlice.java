@@ -33,8 +33,6 @@ public class Image3DGetCurrentSlice implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("extract current slice from 3D image");
-
 		// get current image data
 		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		ImageViewer viewer = ((ImageFrame) frame).getImageView();

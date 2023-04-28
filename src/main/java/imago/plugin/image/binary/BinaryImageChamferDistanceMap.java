@@ -47,12 +47,10 @@ public class BinaryImageChamferDistanceMap implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("Chamfer distance map");
-
-		// retrieve current image data
-		ImageFrame imageFrame = (ImageFrame) frame;
-        Image image	= imageFrame.getImageHandle().getImage();
-		Array<?> array = image.getData();
+        // retrieve current image data
+        ImageFrame imageFrame = (ImageFrame) frame;
+        Image image = imageFrame.getImageHandle().getImage();
+        Array<?> array = image.getData();
 		
 		// check type of input
 		if (!(array instanceof BinaryArray))

@@ -31,13 +31,11 @@ public class Image3DRotate90 implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("Apply 3D rotation to 3D image");
-
 		// get current image data
 		ImageFrame imageFrame = (ImageFrame) frame;
 		Image image	= imageFrame.getImageHandle().getImage();
 
-		GenericDialog gd = new GenericDialog(frame, "Rotate 3D by 90°");
+		GenericDialog gd = new GenericDialog(frame, "Rotate 3D by 90 degrees");
         gd.addNumericField("Rotation Axis ",  0, 0);
         gd.addNumericField("Rotation number ", 1, 0);
 		gd.showDialog();

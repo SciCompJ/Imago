@@ -27,8 +27,6 @@ public class ImageBoxVarianceFilter implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("variance box filter (generic)");
-
 		// get current image data
         ImageFrame imageFrame = (ImageFrame) frame;
 		ImageHandle doc = imageFrame.getImageHandle();

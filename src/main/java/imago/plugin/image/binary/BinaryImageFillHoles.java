@@ -33,8 +33,6 @@ public class BinaryImageFillHoles implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args) 
 	{
-		System.out.println("binary fill holes");
-		
 		// get current frame
 		ImageFrame imageFrame = (ImageFrame) frame; 
 		Image image = imageFrame.getImageHandle().getImage();

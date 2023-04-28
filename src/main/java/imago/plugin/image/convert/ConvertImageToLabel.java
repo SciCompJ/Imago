@@ -38,8 +38,6 @@ public class ConvertImageToLabel implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args) 
 	{
-		System.out.println("convert to label image");
-		
 		// get current frame
 		ImageFrame imageFrame = (ImageFrame) frame;
 		

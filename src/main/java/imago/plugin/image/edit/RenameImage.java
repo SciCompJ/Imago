@@ -20,8 +20,6 @@ public class RenameImage implements FramePlugin
     @Override
     public void run(ImagoFrame frame, String args)
     {
-        System.out.println("rename image");
-        
         // get current frame
         ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         String name = doc.getName();

@@ -52,11 +52,9 @@ public class ImageGeodesicDistanceMap implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("geodesic distance map");
-
-		ImagoGui gui = frame.getGui();
-		ImagoApp app = gui.getAppli();
-		Collection<String> imageNames = app.getImageHandleNames();
+        ImagoGui gui = frame.getGui();
+        ImagoApp app = gui.getAppli();
+        Collection<String> imageNames = app.getImageHandleNames();
 
 		// Case of no open document with image
 		if (imageNames.size() == 0)

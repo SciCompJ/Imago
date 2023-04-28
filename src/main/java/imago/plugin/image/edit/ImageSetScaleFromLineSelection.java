@@ -36,8 +36,6 @@ public class ImageSetScaleFromLineSelection implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("image set scale from selection");
-
 		// get current image data
 		ImageFrame imageFrame = (ImageFrame) frame;
 		ImageHandle doc = imageFrame.getImageHandle();

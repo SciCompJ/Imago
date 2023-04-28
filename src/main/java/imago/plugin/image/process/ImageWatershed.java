@@ -44,8 +44,6 @@ public class ImageWatershed implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("Watershed Segmentation");
-
 		// get current image data
         ImageFrame iFrame = (ImageFrame) frame;
 		Image image	= iFrame.getImageHandle().getImage();

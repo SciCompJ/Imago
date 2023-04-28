@@ -34,8 +34,6 @@ public class CreateDistanceToOctahedronImage3D implements FramePlugin
     @Override
     public void run(ImagoFrame frame, String args)
     {
-        System.out.println("Create Octahedron Distance map");
-        
         // Create Octahedron
         DefaultTriMesh3D mesh = new DefaultTriMesh3D();
         // int v1 = mesh.addVertex(new Point3D(90, 50, 50));

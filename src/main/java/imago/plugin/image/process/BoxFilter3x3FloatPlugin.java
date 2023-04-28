@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.plugin;
+package imago.plugin.image.process;
 
 import imago.app.ImageHandle;
 import imago.gui.ImagoFrame;
@@ -32,8 +32,6 @@ public class BoxFilter3x3FloatPlugin implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("box filter 3x3 float");
-		
 		// get current image data
 		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image = doc.getImage();
@@ -57,10 +55,12 @@ public class BoxFilter3x3FloatPlugin implements FramePlugin
         long t0 = System.nanoTime();
 		filter.processScalar((ScalarArray<?>) array, output);
         long t1 = System.nanoTime();
+        ((ImageFrame) frame).showElapsedTime("BoxFilter3x3", (t1 - t0) / 1_000_000.0, image);
         
+        // create output image by combining info from input image and from filter
 		Image result = new Image(output, image);
-		((ImageFrame) frame).showElapsedTime("BoxFilter3x3", (t1 - t0) / 1_000_000.0, image);
-		
+		result.setName(image.getName() + "-boxFilt");
+
 		// add the image document to GUI
 		frame.createImageFrame(result);
 	}

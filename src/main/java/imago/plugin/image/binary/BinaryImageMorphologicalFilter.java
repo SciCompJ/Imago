@@ -171,8 +171,6 @@ public class BinaryImageMorphologicalFilter implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args) 
 	{
-        System.out.println("binary morphological filter");
-
         // get current image data
         ImageFrame imageFrame = (ImageFrame) frame;
         Image image = imageFrame.getImageHandle().getImage();

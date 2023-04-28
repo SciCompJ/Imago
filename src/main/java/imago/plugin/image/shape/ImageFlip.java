@@ -32,8 +32,6 @@ public class ImageFlip implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args) 
 	{
-		System.out.println("flip image");
-		
 		// get current frame
 		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
 		Image image = doc.getImage();

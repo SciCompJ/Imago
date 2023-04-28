@@ -30,8 +30,6 @@ public class SetImageTypeToLabel implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("convert image type to label");
-		
 		// get current frame
 		ImageFrame viewer = (ImageFrame) frame;
         ImageHandle doc = viewer.getImageHandle();

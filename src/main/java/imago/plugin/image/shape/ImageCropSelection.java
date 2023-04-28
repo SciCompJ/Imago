@@ -36,8 +36,6 @@ public class ImageCropSelection implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("crop");
-
         // Check type is image frame
         if (!(frame instanceof ImageFrame))
             return;

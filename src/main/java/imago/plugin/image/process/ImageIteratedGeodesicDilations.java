@@ -43,8 +43,6 @@ public class ImageIteratedGeodesicDilations implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("iterated geodesic dilation");
-
 		ImagoGui gui = frame.getGui();
 		ImagoApp app = gui.getAppli();
         Collection<String> imageNames = app.getImageHandleNames();

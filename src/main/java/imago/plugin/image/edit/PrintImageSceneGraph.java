@@ -28,8 +28,6 @@ public class PrintImageSceneGraph implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("print image scene graph:");
-		
 		// get current frame
 		ImageHandle handle = ((ImageFrame) frame).getImageHandle();
 		Node root = handle.getRootNode(); 

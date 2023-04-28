@@ -29,8 +29,6 @@ public class ToggleSceneGraphDisplay implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("toggle scene graph display");
-
 		// get current image data
 		ImageFrame imageViewer = (ImageFrame) frame;
 		

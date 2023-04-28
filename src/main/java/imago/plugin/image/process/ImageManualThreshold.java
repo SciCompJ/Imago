@@ -33,8 +33,6 @@ public class ImageManualThreshold implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args) 
 	{
-		System.out.println("Manual Threshold");
-		
 		// get current frame
 		ImageFrame imageFrame = (ImageFrame) frame;
 		Image image = imageFrame.getImageHandle().getImage();

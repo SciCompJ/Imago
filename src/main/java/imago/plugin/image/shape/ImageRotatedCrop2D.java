@@ -46,7 +46,9 @@ import net.sci.register.image.TransformedImage2D;
  * 
  * @author dlegland
  *
+ * @deprecated (?) replaced by ImageRotatedCrôp 
  */
+@Deprecated
 public class ImageRotatedCrop2D implements FramePlugin
 {
     public static final ScalarArray2D<?> rotatedCrop(ScalarArray2D<?> image, int[] dims, Point2D refPoint, double angleInDegrees)
@@ -78,8 +80,6 @@ public class ImageRotatedCrop2D implements FramePlugin
     @Override
     public void run(ImagoFrame frame, String args)
     {
-        System.out.println("rotate and resample");
-        
         // get current image data
         ImageFrame imageFrame = (ImageFrame) frame;
         Image image = imageFrame.getImageHandle().getImage();

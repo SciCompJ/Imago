@@ -25,8 +25,6 @@ public class RefreshDisplay implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("refresh display");
-		
 		// get current frame
         ImageViewer viewer = ((ImageFrame) frame).getImageView();
         viewer.refreshDisplay();

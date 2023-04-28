@@ -26,7 +26,6 @@ public class CloseCurrentFrame implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("Close frame");
 //		frame.getGui().removeFrame(frame);
 		frame.close();
 	}

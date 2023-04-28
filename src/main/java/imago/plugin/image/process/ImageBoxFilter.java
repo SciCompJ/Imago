@@ -34,8 +34,6 @@ public class ImageBoxFilter implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("box filter (generic)");
-
 		// get current image data
         ImageFrame imageFrame = (ImageFrame) frame;
         Image image = imageFrame.getImageHandle().getImage();

@@ -45,8 +45,6 @@ public class ImageArrayBinaryMathOperator implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("apply math function");
-
 		String[] imageNames = frame.getGui().getAppli().getImageHandleNames().toArray(new String[]{});
 		int index1 = 0;
 		if (frame instanceof ImageFrame)

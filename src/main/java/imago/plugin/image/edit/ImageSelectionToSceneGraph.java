@@ -39,8 +39,6 @@ public class ImageSelectionToSceneGraph implements FramePlugin
 	@Override
     public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("selection to scene graph");
-
 		// Check type is image frame
         if (!(frame instanceof ImageFrame))
             return;

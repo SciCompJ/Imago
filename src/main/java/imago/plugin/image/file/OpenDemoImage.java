@@ -33,8 +33,6 @@ public class OpenDemoImage implements FramePlugin
     @Override
     public void run(ImagoFrame frame, String args)
     {
-        // System.out.println("Open demo image");
-        
         File file = new File(this.fileName);
         
         Image image;

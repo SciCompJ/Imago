@@ -36,8 +36,6 @@ public class ImageSelectionToDistanceMap implements FramePlugin
 	@Override
     public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("selection to distance map");
-
 		// Check type is image frame
         if (!(frame instanceof ImageFrame))
             return;

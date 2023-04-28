@@ -36,7 +36,6 @@ public class CreateVectorImageRGB8View implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("create vector image RGB View");
         // get current frame
         ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();

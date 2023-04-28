@@ -29,8 +29,6 @@ public class ShowSceneGraphTree implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		System.out.println("display image scene graph:");
-		
 		// get current frame
 		ImageHandle handle = ((ImageFrame) frame).getImageHandle();
 		Node root = handle.getRootNode(); 
