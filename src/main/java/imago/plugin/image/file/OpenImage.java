@@ -41,6 +41,7 @@ public class OpenImage implements FramePlugin
                 ImageFileFilters.BMP, 
                 ImageFileFilters.GIF, 
                 ImageFileFilters.JPEG, 
+                ImageFileFilters.META_IMAGE, 
                 ImageFileFilters.PNG, 
                 ImageFileFilters.TIFF, 
         };
