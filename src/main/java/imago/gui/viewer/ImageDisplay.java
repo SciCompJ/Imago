@@ -12,6 +12,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Stroke;
+import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,6 +28,7 @@ import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.curve.MultiCurve2D;
 import net.sci.geom.geom2d.curve.Ellipse2D;
+import net.sci.geom.geom2d.polygon.LinearRing2D;
 import net.sci.geom.geom2d.polygon.PolygonalDomain2D;
 import net.sci.geom.geom2d.polygon.Polyline2D;
 import net.sci.geom.graph.Graph2D;
@@ -541,36 +543,53 @@ public class ImageDisplay extends JPanel
     }    
 
     /**
-	 * Draws a polygon on the specified graphics. Paint settings are assumed to be
-	 * already defined.
-	 * 
-	 * @param g2 the instance of Graphics2D to paint on
-	 * @param poly the polygon to draw
-	 */
+     * Draws a polygon on the specified graphics. Paint settings are assumed to be
+     * already defined.
+     * 
+     * @param g2 the instance of Graphics2D to paint on
+     * @param poly the polygon to draw
+     */
     private void drawPolygon(Graphics2D g2, PolygonalDomain2D poly)
     {
-    	// check size
-    	int nv = poly.vertexCount();
-    	if (nv < 2)
-    	{
-    		return;
-    	}
+        for (LinearRing2D ring : poly.rings())
+        {
+            drawLinearRing(g2, ring);
+        }
+    }
     
-    	// convert polygon into integer coords in display space
-    	int[] px = new int[nv];
-    	int[] py = new int[nv];
+    /**
+     * Draws a polygon on the specified graphics. Paint settings are assumed to be
+     * already defined.
+     * 
+     * @param g2 the instance of Graphics2D to paint on
+     * @param poly the polygon to draw
+     */
+    private void drawLinearRing(Graphics2D g2, LinearRing2D poly)
+    {
+        // check size
+        int nv = poly.vertexCount();
+        if (nv < 2)
+        {
+            return;
+        }
+    
+        // convert polygon into integer coords in display space
+        Path2D.Float path = new Path2D.Float();
+        Point2D p = imageToDisplay(poly.vertexPosition(0));
+        path.moveTo(p.getX(), p.getY());
+//        int[] px = new int[nv];
+//        int[] py = new int[nv];
 
-    	// iterate over vertex positions
-    	int i = 0;
-    	for (Point2D point : poly.vertexPositions())
-    	{
-    		point = imageToDisplay(point);
-    		px[i] = (int) point.getX();
-    		py[i] = (int) point.getY();
-    		i++;
-    	}
+        // iterate over vertex positions
+//        int i = 0;
+        for (int i = 1; i < nv; i++)
+        {
+            p = imageToDisplay(poly.vertexPosition(i));
+            path.lineTo(p.getX(), p.getY());
+        }
+        path.closePath();
 
-    	// display the polygon
-        g2.drawPolygon(px, py, nv);
+        // display the polygon
+        g2.draw(path);
     }
 }
