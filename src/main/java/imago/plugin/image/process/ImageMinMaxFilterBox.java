@@ -10,17 +10,17 @@ import imago.gui.frames.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.image.Image;
-import net.sci.image.process.filter.BoxMedianFilter;
+import net.sci.image.process.filter.MinMaxFilterBoxNaive;
 
 /**
- * Applies median box filtering on a multidimensional image.
+ * Applies box filtering on a multidimensional image.
  * 
  * @author David Legland
  *
  */
-public class ImageBoxMedianFilter implements FramePlugin
+public class ImageMinMaxFilterBox implements FramePlugin
 {
-	public ImageBoxMedianFilter()
+	public ImageMinMaxFilterBox()
 	{
 	}
 
@@ -41,7 +41,8 @@ public class ImageBoxMedianFilter implements FramePlugin
 		int nd = array.dimensionality();
 		
 		
-		GenericDialog gd = new GenericDialog(frame, "Median Filter");
+		GenericDialog gd = new GenericDialog(frame, "Box Min/Max");
+		gd.addChoice("Operation",  new String[]{"Min.",  "Max."}, "Min.");
 		for (int d = 0; d < nd; d++)
 		{
 			gd.addNumericField("Size dim. " + (d+1), 3, 0);
@@ -54,31 +55,35 @@ public class ImageBoxMedianFilter implements FramePlugin
 		}
 		
 		// parse dialog results
+		boolean minFilter = gd.getNextChoiceIndex() == 0;
 		int[] diameters = new int[nd];
 		for (int d = 0; d < nd; d++)
 		{
 			diameters[d] = (int) gd.getNextNumber();
 		}
-		
-		// create median box operator
-		BoxMedianFilter filter = new BoxMedianFilter(diameters);
+
+		// create operator box filtering operator
+		MinMaxFilterBoxNaive.Type type = minFilter ? MinMaxFilterBoxNaive.Type.MIN : MinMaxFilterBoxNaive.Type.MAX;  
+		MinMaxFilterBoxNaive filter = new MinMaxFilterBoxNaive(type, diameters);
 		
 		// apply operator on current image
 		Image result = ((ImageFrame) frame).runOperator(filter, image);
-        result.setName(image.getName() + "-medFilt");
+        
+		// choose name of result
+		String suffix = minFilter ? "-minFilt" : "-maxFilt";
+		result.setName(image.getName() + suffix);
 		
 		// add the image document to GUI
 		frame.getGui().createImageFrame(result);
 	}
 
-    /**
-     * Returns true if the current frame contains a scalar image or a vector
-     * image.
+	/**
+	 * Returns true if the current frame contains a scalar or vector image.
      * 
      * @param frame
      *            the frame containing reference to this plugin
      * @return true if the frame contains a scalar or vector image.
-     */
+	 */
     @Override
     public boolean isEnabled(ImagoFrame frame)
     {

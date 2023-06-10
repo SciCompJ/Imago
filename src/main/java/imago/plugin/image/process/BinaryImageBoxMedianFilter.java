@@ -10,7 +10,7 @@ import imago.gui.frames.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.image.Image;
-import net.sci.image.process.filter.BinaryBoxMedianFilter;
+import net.sci.image.process.filter.MedianFilterBoxBinary;
 
 /**
  * Applies median box filtering on a multidimensional binary image.
@@ -61,7 +61,7 @@ public class BinaryImageBoxMedianFilter implements FramePlugin
 		}
 		
 		// create median box operator
-		BinaryBoxMedianFilter filter = new BinaryBoxMedianFilter(diameters);
+		MedianFilterBoxBinary filter = new MedianFilterBoxBinary(diameters);
 		
 		// apply operator on current image
 		Image result = ((ImageFrame) frame).runOperator(filter, image);

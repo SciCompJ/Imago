@@ -10,7 +10,7 @@ import imago.gui.frames.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.image.Image;
-import net.sci.image.process.filter.BoxVarianceFilter;
+import net.sci.image.process.filter.VarianceFilterBox;
 
 /**
  * Applies variance box filtering on a multidimensional image.
@@ -18,9 +18,9 @@ import net.sci.image.process.filter.BoxVarianceFilter;
  * @author David Legland
  *
  */
-public class ImageBoxVarianceFilter implements FramePlugin
+public class ImageVarianceFilterBox implements FramePlugin
 {
-	public ImageBoxVarianceFilter()
+	public ImageVarianceFilterBox()
 	{
 	}
 
@@ -56,7 +56,7 @@ public class ImageBoxVarianceFilter implements FramePlugin
 		}
 		
 		// create median box operator
-		BoxVarianceFilter filter = new BoxVarianceFilter(diameters);
+		VarianceFilterBox filter = new VarianceFilterBox(diameters);
 		
 		// apply operator on current image
 		Image result = imageFrame.runOperator(filter, image);
