@@ -55,6 +55,7 @@ import imago.plugin.image.analyze.LabelImageCentroids;
 import imago.plugin.image.analyze.LabelImageConvexHulls;
 import imago.plugin.image.analyze.LabelImageEquivalentDisks;
 import imago.plugin.image.analyze.LabelImageEquivalentEllipses;
+import imago.plugin.image.analyze.LabelImageEquivalentEllipsoids;
 import imago.plugin.image.analyze.LabelImageGeodesicDiameters;
 import imago.plugin.image.analyze.LabelImageIntrinsicVolumes;
 import imago.plugin.image.analyze.LabelImageMaxFeretDiameters;
@@ -95,6 +96,7 @@ import imago.plugin.image.edit.ImageCopySelectionToWorkspace;
 import imago.plugin.image.edit.ImageFillBox;
 import imago.plugin.image.edit.ImageFillDisk;
 import imago.plugin.image.edit.ImageFillEllipse;
+import imago.plugin.image.edit.ImageFillEllipsoid;
 import imago.plugin.image.edit.ImageSelectionToDistanceMap;
 import imago.plugin.image.edit.ImageSelectionToMask;
 import imago.plugin.image.edit.ImageSelectionToSceneGraph;
@@ -544,6 +546,8 @@ public class GuiBuilder
         addPlugin(phantomMenu, new ImageFillDisk(), "Fill Disk...");
         addPlugin(phantomMenu, new ImageFillEllipse(), "Fill Ellipse...");
         addPlugin(phantomMenu, new ImageFillBox(), "Fill Box...");
+        addPlugin(phantomMenu, new ImageFillEllipsoid(), "Fill Ellipsoid...");
+        phantomMenu.addSeparator();
         addPlugin(phantomMenu, new ImageSelectionToMask(), "Selection To Mask");
         addPlugin(phantomMenu, new ImageSelectionToDistanceMap(), "Selection To Distance Map");
         menu.add(phantomMenu);
@@ -681,6 +685,12 @@ public class GuiBuilder
         regions2dMenu.addSeparator();
         addPlugin(regions2dMenu, new LabelImageAdjacencies(), "Regions Adjacencies", hasImage2D && hasLabelImage);
         menu.add(regions2dMenu);
+
+        JMenu regions3dMenu = new JMenu("Regions (3D)");
+        regions3dMenu.setEnabled(hasImage3D && hasLabelImage);
+        addPlugin(regions3dMenu, new LabelImageEquivalentEllipsoids(), "Regions Equivalent Ellipsoids", hasImage3D && hasLabelImage);
+        menu.add(regions3dMenu);
+
         addPlugin(menu, new LabelImageBoundingBoxes(), "Bounding Boxes", (hasImage2D || hasImage3D) && hasLabelImage);
         addPlugin(menu, new LabelImageCentroids(), "Regions Centroids", (hasImage2D || hasImage3D) && hasLabelImage);
 
