@@ -65,27 +65,20 @@ public class LabelImageCentroids implements FramePlugin
                 throw new IllegalArgumentException("Requires an array of int");
             }
     
-            // Extract centroids as an array of points
-//            IntArray2D<?> array2d = (IntArray2D<?>) array;
-//            int[] labels = LabelImages.findAllLabels(array2d); 
-//            Point2D[] centroids = RegionAnalysis2D.centroids(array2d, labels);
-             
+            // Extract centroid of each region
             Centroid2D algo = new Centroid2D();
             Map<Integer, Point2D> centroids = algo.analyzeRegions(image);
+            
             // add to the document
             for (Point2D centroid : centroids.values())
             {
                 doc.addShape(new Shape(centroid));
             }
-
+            frame.repaint();
+            
+            // display results in a new Table
             Table table = algo.createTable(centroids);
-            // add the new frame to the GUI
-            frame.getGui().createTableFrame(table, frame);
-//            // add to the document
-//            for (int i = 0; i < centroids.length; i++)
-//            {
-//                handle.addShape(new ImagoShape(centroids[i]));
-//            }
+            frame.createTableFrame(table);
             frame.repaint();
         }
         else if (nd == 3)
@@ -115,7 +108,7 @@ public class LabelImageCentroids implements FramePlugin
             table.setName(image.getName() + "-Centroids");
 
             // add the new frame to the GUI
-            frame.getGui().createTableFrame(table, frame);
+            frame.createTableFrame(table);
         }
     }
 }

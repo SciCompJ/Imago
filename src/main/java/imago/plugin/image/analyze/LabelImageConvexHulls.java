@@ -60,29 +60,21 @@ public class LabelImageConvexHulls implements FramePlugin
             {
                 throw new IllegalArgumentException("Requires an array of int");
             }
-    
-            // Extract centroids as an array of points
-//            IntArray2D<?> array2d = (IntArray2D<?>) array;
-//            int[] labels = LabelImages.findAllLabels(array2d); 
-//            Point2D[] centroids = RegionAnalysis2D.centroids(array2d, labels);
-             
+            
+            // Extract convex hull of each region
             ConvexHull algo = new ConvexHull();
             Map<Integer, Polygon2D> convexHulls = algo.analyzeRegions(image);
-            // add to the document
+            
+            // overlay convex hulls on original image
             for (Polygon2D hull : convexHulls.values())
             {
                 doc.addShape(new Shape(hull));
             }
-
-            Table table = algo.createTable(convexHulls);
-            // add the new frame to the GUI
-            frame.getGui().createTableFrame(table, frame);
-//            // add to the document
-//            for (int i = 0; i < centroids.length; i++)
-//            {
-//                handle.addShape(new ImagoShape(centroids[i]));
-//            }
             frame.repaint();
+            
+            // display results in a new Table
+            Table table = algo.createTable(convexHulls);
+            frame.createTableFrame(table);
         }
         else
         {

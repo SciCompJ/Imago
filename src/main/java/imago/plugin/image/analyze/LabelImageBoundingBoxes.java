@@ -74,7 +74,7 @@ public class LabelImageBoundingBoxes implements FramePlugin
             
             ImagoGui gui = frame.getGui();
             
-            GenericDialog dlg = new GenericDialog(frame, "Equivalent Disks");
+            GenericDialog dlg = new GenericDialog(frame, "Bounding Boxes");
             dlg.addCheckBox("Display Table ", true);
             dlg.addCheckBox("Overlay Results ", true);
             Collection<String> imageNames = gui.getAppli().getImageHandleNames();
@@ -95,9 +95,6 @@ public class LabelImageBoundingBoxes implements FramePlugin
             RegionBounds2D analyzer = new RegionBounds2D();
             Bounds2D[] boxes = analyzer.analyzeRegions(array2d, labels, calib);
              
-            // number of boxes
-            int nPoints = boxes.length;
-            
             if (showTable)
             {
                 // Convert bounds to table, and display
@@ -113,7 +110,8 @@ public class LabelImageBoundingBoxes implements FramePlugin
                 ImageFrame viewer = gui.getImageFrame(ovrDoc);
                 
                 // add to the document
-                for (int i = 0; i < nPoints; i++)
+                int nBoxes = boxes.length;
+                for (int i = 0; i < nBoxes; i++)
                 {
                     Polygon2D poly = boxes[i].getRectangle();
                     ovrDoc.addShape(new Shape(poly));

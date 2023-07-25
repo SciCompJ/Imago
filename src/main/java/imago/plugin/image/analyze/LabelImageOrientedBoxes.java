@@ -4,28 +4,33 @@
 package imago.plugin.image.analyze;
 
 import java.util.Collection;
-import java.util.Map;
 
 import imago.app.ImageHandle;
 import imago.app.shape.Shape;
-import imago.gui.*;
+import imago.gui.FramePlugin;
+import imago.gui.GenericDialog;
+import imago.gui.ImagoFrame;
+import imago.gui.ImagoGui;
 import imago.gui.frames.ImageFrame;
 import net.sci.array.Array;
 import net.sci.array.scalar.IntArray2D;
-import net.sci.geom.geom2d.polygon.Polyline2D;
+import net.sci.geom.geom2d.polygon.OrientedBox2D;
+import net.sci.image.Calibration;
 import net.sci.image.Image;
-import net.sci.image.analyze.region2d.GeodesicDiameter;
-import net.sci.image.binary.distmap.ChamferMask2D;
-import net.sci.image.binary.distmap.ChamferMasks2D;
+import net.sci.image.analyze.RegionAnalyzer;
+import net.sci.image.analyze.region2d.OrientedBoundingBox2D;
+import net.sci.image.label.LabelImages;
+import net.sci.table.Table;
 
 /**
+ * Computes the oriented bounding box of each region in the current label image.
  * 
  * @author dlegland
  *
  */
-public class LabelImageGeodesicDiameters implements FramePlugin
+public class LabelImageOrientedBoxes implements FramePlugin
 {
-    public LabelImageGeodesicDiameters()
+    public LabelImageOrientedBoxes()
     {
     }
 
@@ -49,7 +54,6 @@ public class LabelImageGeodesicDiameters implements FramePlugin
             System.out.println("Requires label image as input");
             return;
         }
-        
         // check input data type
         Array<?> array = image.getData();
         if (!(array instanceof IntArray2D))
@@ -58,10 +62,18 @@ public class LabelImageGeodesicDiameters implements FramePlugin
             return;
         }
 
+        Calibration calib = image.getCalibration();
+
+        // check input data type
+        if (!(array instanceof IntArray2D))
+        {
+            System.out.println("Requires a planar array of ints");
+            return;
+        }
+
         ImagoGui gui = frame.getGui();
-        
-        GenericDialog dlg = new GenericDialog(frame, "Geodesic Diameters");
-        dlg.addChoice("Chamfer Weights: ", ChamferMasks2D.getAllLabels(), ChamferMasks2D.CHESSKNIGHT.toString());
+
+        GenericDialog dlg = new GenericDialog(frame, "Oriented Boxes");
         dlg.addCheckBox("Display Table ", true);
         dlg.addCheckBox("Overlay Results ", true);
         Collection<String> imageNames = gui.getAppli().getImageHandleNames();
@@ -69,38 +81,42 @@ public class LabelImageGeodesicDiameters implements FramePlugin
         String firstImageName = doc.getName();
         dlg.addChoice("Image to Overlay ", imageNameArray, firstImageName);
         dlg.showDialog();
-        
-        ChamferMask2D mask = ChamferMasks2D.fromLabel(dlg.getNextChoice()).getMask();
+
         boolean showTable = dlg.getNextBoolean();
-        boolean overlayPaths = dlg.getNextBoolean();
+        boolean overlay = dlg.getNextBoolean();
         String imageToOverlay = dlg.getNextChoice();
-        
-        // Extract diameters
-        GeodesicDiameter algo = new GeodesicDiameter(mask);
-        algo.setComputePaths(overlayPaths);
-        Map<Integer, GeodesicDiameter.Result> diams = algo.analyzeRegions(image);
-        
+
+
+        // Extract bounding boxes as an array of OrientedBox2D instances
+        IntArray2D<?> array2d = (IntArray2D<?>) array;
+        int[] labels = LabelImages.findAllLabels(array2d);
+
+        OrientedBoundingBox2D analyzer = new OrientedBoundingBox2D();
+        OrientedBox2D[] boxes = analyzer.analyzeRegions(array2d, labels, calib);
+
         if (showTable)
         {
-            // create result frame and display
-            frame.createTableFrame(algo.createTable(diams));
+            // Convert bounds to table, and display
+            Table table = analyzer.createTable(RegionAnalyzer.createMap(labels, boxes));
+
+            // add the new frame to the GUI
+            frame.createTableFrame(table);
         }
-        
-        if (overlayPaths)
+
+        if (overlay)
         {
             ImageHandle ovrDoc = gui.getAppli().getImageHandleFromName(imageToOverlay);
             ImageFrame viewer = gui.getImageFrame(ovrDoc);
-            
+
             // add to the document
-            for (GeodesicDiameter.Result res : diams.values())
+            int nBoxes = boxes.length;
+            for (int i = 0; i < nBoxes; i++)
             {
-                Polyline2D poly = Polyline2D.create(res.path, false);
-                ovrDoc.addShape(new Shape(poly));
+                ovrDoc.addShape(new Shape(boxes[i]));
             }
-            
+
             // TODO: maybe propagating events would be better
             viewer.repaint(); 
         }
     }
-    
 }

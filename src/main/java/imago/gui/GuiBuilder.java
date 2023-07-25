@@ -59,6 +59,7 @@ import imago.plugin.image.analyze.LabelImageEquivalentEllipsoids;
 import imago.plugin.image.analyze.LabelImageGeodesicDiameters;
 import imago.plugin.image.analyze.LabelImageIntrinsicVolumes;
 import imago.plugin.image.analyze.LabelImageMaxFeretDiameters;
+import imago.plugin.image.analyze.LabelImageOrientedBoxes;
 import imago.plugin.image.binary.ApplyBinaryMask;
 import imago.plugin.image.binary.BinaryImageChamferDistanceMap;
 import imago.plugin.image.binary.BinaryImageConnectedComponentsLabeling;
@@ -679,6 +680,7 @@ public class GuiBuilder
         addPlugin(regions2dMenu, new LabelImageIntrinsicVolumes(), "Regions Intrinsic Volumes", hasImage2D && hasLabelImage);
         addPlugin(regions2dMenu, new LabelImageEquivalentDisks(), "Regions Equivalent Disks", hasImage2D && hasLabelImage);
         addPlugin(regions2dMenu, new LabelImageEquivalentEllipses(), "Regions Equivalent Ellipses", hasImage2D && hasLabelImage);
+        addPlugin(regions2dMenu, new LabelImageOrientedBoxes(), "Regions Oriented Boxes", hasImage2D && hasLabelImage);
         addPlugin(regions2dMenu, new LabelImageConvexHulls(), "Regions Conxex Hulls", hasImage2D && hasLabelImage);
         addPlugin(regions2dMenu, new LabelImageMaxFeretDiameters(), "Regions Max. Feret Diameters", hasImage2D && hasLabelImage);
         addPlugin(regions2dMenu, new LabelImageGeodesicDiameters(), "Regions Geodesic Diameters", hasImage2D && hasLabelImage);
