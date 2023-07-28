@@ -101,9 +101,9 @@ public class LabelImageCentroids implements FramePlugin
             for (int i = 0; i < centroids.length; i++)
             {
                 Point3D centroid = centroids[i];
-                table.setValue(i, 0, centroid.getX());
-                table.setValue(i, 1, centroid.getY());
-                table.setValue(i, 2, centroid.getZ());
+                table.setValue(i, 0, centroid.x());
+                table.setValue(i, 1, centroid.y());
+                table.setValue(i, 2, centroid.z());
             }
             table.setName(image.getName() + "-Centroids");
 

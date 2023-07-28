@@ -68,8 +68,8 @@ public class SelectRectangleTool extends ImagoTool
         ImageDisplay display = (ImageDisplay) evt.getSource();
         Point point = new Point(evt.getX(), evt.getY());
         Point2D pos = display.displayToImage(point);
-        double x = pos.getX();
-        double y = pos.getY();
+        double x = pos.x();
+        double y = pos.y();
         
         System.out.println("[selectRectangle] Mouse pressed at (" + x + " ; " + y);
         
@@ -111,8 +111,8 @@ public class SelectRectangleTool extends ImagoTool
         ImageDisplay display = (ImageDisplay) evt.getSource();
         Point point = new Point(evt.getX(), evt.getY());
         Point2D pos = display.displayToImage(point);
-        double x = pos.getX();
-        double y = pos.getY();
+        double x = pos.x();
+        double y = pos.y();
         
         Bounds2D box = new Bounds2D(x1, x, y1, y);
         display.setSelection(box);

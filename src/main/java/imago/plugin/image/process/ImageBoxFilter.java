@@ -70,7 +70,7 @@ public class ImageBoxFilter implements FramePlugin
 		
 		// apply operator on current image
 		Image result = imageFrame.runOperator(filter, image);
-		result.setName(image.getName() + "-filt");
+		result.setName(image.getName() + "-boxFilt");
 		
 		// add the image document to GUI
 		frame.createImageFrame(result);

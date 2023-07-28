@@ -105,8 +105,8 @@ public class LabelImageEquivalentEllipses implements FramePlugin
             {
                 Ellipse2D elli = ellipses[i];
                 Point2D center = elli.center();
-                table.setValue(i, 0, center.getX());
-                table.setValue(i, 1, center.getY());
+                table.setValue(i, 0, center.x());
+                table.setValue(i, 1, center.y());
                 table.setValue(i, 2, elli.semiMajorAxisLength());
                 table.setValue(i, 3, elli.semiMinorAxisLength());
                 table.setValue(i, 4, elli.orientation());

@@ -72,8 +72,8 @@ public class SelectLineSegmentTool extends ImagoTool
         ImageDisplay display = (ImageDisplay) evt.getSource();
         Point point = new Point(evt.getX(), evt.getY());
         Point2D pos = display.displayToImage(point);
-        double x = pos.getX();
-        double y = pos.getY();
+        double x = pos.x();
+        double y = pos.y();
         
         System.out.println("[selectLineSegment] Mouse pressed at (" + x + " ; " + y);
         
@@ -121,8 +121,8 @@ public class SelectLineSegmentTool extends ImagoTool
         ImageDisplay display = (ImageDisplay) evt.getSource();
         Point point = new Point(evt.getX(), evt.getY());
         Point2D pos = display.displayToImage(point);
-        double x = pos.getX();
-        double y = pos.getY();
+        double x = pos.x();
+        double y = pos.y();
      
         ImageViewer imageView = this.viewer.getImageView(); 
         if (imageView instanceof PlanarImageViewer)

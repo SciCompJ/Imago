@@ -96,8 +96,8 @@ public class Crop3DTest
             Point2D p1 = ring1rs.vertexPosition(iv);
             Point2D p2 = nextPoly.vertexPosition(iv);
             
-            double x = p1.getX() * t1 + p2.getX() * t0;
-            double y = p1.getY() * t1 + p2.getY() * t0;
+            double x = p1.x() * t1 + p2.x() * t0;
+            double y = p1.y() * t1 + p2.y() * t0;
             interpPoly.addVertex(new Point2D(x, y));
         }
 

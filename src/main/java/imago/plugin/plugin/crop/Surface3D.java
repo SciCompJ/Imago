@@ -525,8 +525,8 @@ public class Surface3D extends AlgoStub implements AlgoListener
         {
             // retrieve coordinates of current vertex 
             Point2D point = sourcePoly.vertexPosition(iv);
-            double x = point.getX();
-            double y = point.getY();
+            double x = point.x();
+            double y = point.y();
             
             // the normal associated to the current vertex
             Vector2D normal = vertexNormals.get(iv);
@@ -703,9 +703,9 @@ public class Surface3D extends AlgoStub implements AlgoListener
                     Point3D pos2 = pos.plus(normal.times(d));
                     
                     // retrieve coordinates as double values
-                    double x2 = pos2.getX();
-                    double y2 = pos2.getY();
-                    double z2 = pos2.getZ();
+                    double x2 = pos2.x();
+                    double y2 = pos2.y();
+                    double z2 = pos2.z();
                     
                     // evaluate within 3D array
                     double value = interp.evaluate(x2, y2, z2);
@@ -751,7 +751,7 @@ public class Surface3D extends AlgoStub implements AlgoListener
             ArrayList<Point3D> pts3d = new ArrayList<Point3D>(nv);
             for (Point2D point : poly2d.vertexPositions())
             {
-                pts3d.add(new Point3D(point.getX(), point.getY(), sliceIndex));
+                pts3d.add(new Point3D(point.x(), point.y(), sliceIndex));
             }
             
             // Create 3D polyline
@@ -793,9 +793,9 @@ public class Surface3D extends AlgoStub implements AlgoListener
             for (int iv = 0; iv < width; iv++)
             {
                 Point3D pt = poly2.vertexPosition(iv + 10);
-                xCoords.setValue(iv, iz, pt.getX());
-                yCoords.setValue(iv, iz, pt.getY());
-                zCoords.setValue(iv, iz, pt.getZ());
+                xCoords.setValue(iv, iz, pt.x());
+                yCoords.setValue(iv, iz, pt.y());
+                zCoords.setValue(iv, iz, pt.z());
             }
         }
         this.fireProgressChanged(this, 1, 1);

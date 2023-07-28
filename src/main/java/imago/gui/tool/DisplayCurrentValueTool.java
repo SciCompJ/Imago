@@ -74,8 +74,8 @@ public class DisplayCurrentValueTool extends ImagoTool
 		
 		// convert coordinates to image reference system
 		Point2D pos2d = display.displayToImage(point);
-		double x = pos2d.getX();
-		double y = pos2d.getY();
+		double x = pos2d.x();
+		double y = pos2d.y();
 
 		// convert to integer indices
         int indx = (int) Math.round(x);

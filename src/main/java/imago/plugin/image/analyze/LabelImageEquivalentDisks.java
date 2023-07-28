@@ -98,8 +98,8 @@ public class LabelImageEquivalentDisks implements FramePlugin
             {
                 Ellipse2D elli = ellipses[i];
                 Point2D center = elli.center();
-                table.setValue(i, 0, center.getX());
-                table.setValue(i, 1, center.getY());
+                table.setValue(i, 0, center.x());
+                table.setValue(i, 1, center.y());
                 double radius = Math.sqrt(elli.semiMajorAxisLength() * elli.semiMinorAxisLength());
                 table.setValue(i, 2, radius);
             }

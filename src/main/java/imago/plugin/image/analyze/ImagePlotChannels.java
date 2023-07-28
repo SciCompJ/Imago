@@ -72,7 +72,7 @@ public class ImagePlotChannels implements FramePlugin
         Point2D point = computeReferencePoint(selection);
         
 //        point = piv.getImageDisplay().displayToImage(point);
-        double[] values = vectorArray.getValues(new int[] {(int) point.getX(), (int) point.getY()});
+        double[] values = vectorArray.getValues(new int[] {(int) point.x(), (int) point.y()});
         
         if (vectorArray instanceof RGB8Array)
         {

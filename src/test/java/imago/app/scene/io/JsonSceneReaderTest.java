@@ -190,8 +190,8 @@ public class JsonSceneReaderTest
 		JsonSceneReader sceneReader = new JsonSceneReader(jsonReader);
 		
 		Point2D res = (Point2D) sceneReader.readGeometry();
-		assertEquals(point.getX(), res.getX(), .01);
-		assertEquals(point.getY(), res.getY(), .01);
+		assertEquals(point.x(), res.x(), .01);
+		assertEquals(point.y(), res.y(), .01);
 	}
 
 	/**

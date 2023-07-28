@@ -46,7 +46,7 @@ import net.sci.register.image.TransformedImage2D;
  * 
  * @author dlegland
  *
- * @deprecated (?) replaced by ImageRotatedCrôp 
+ * @deprecated (?) replaced by ImageRotatedCrï¿½p 
  */
 @Deprecated
 public class ImageRotatedCrop2D implements FramePlugin
@@ -160,8 +160,8 @@ public class ImageRotatedCrop2D implements FramePlugin
             // init default values
             boxSizeX = boxSize[0];
             boxSizeY = boxSize[1];
-            boxCenterX = refPoint.getX();
-            boxCenterY = refPoint.getY();
+            boxCenterX = refPoint.x();
+            boxCenterY = refPoint.y();
             boxAngle = rotAngle;
 
             setupWidgets();
@@ -306,9 +306,9 @@ public class ImageRotatedCrop2D implements FramePlugin
             Point p = evt.getPoint();
             Point2D point = imageDisplay.displayToImage(p);
             
-            this.boxCenterX = point.getX();
+            this.boxCenterX = point.x();
             ((SpinnerNumberModel) this.boxCenterXWidget.getModel()).setValue(this.boxCenterX);
-            this.boxCenterY = point.getY();
+            this.boxCenterY = point.y();
             ((SpinnerNumberModel) this.boxCenterYWidget.getModel()).setValue(this.boxCenterY);
             
             if (this.autoUpdateCheckBox.isSelected())

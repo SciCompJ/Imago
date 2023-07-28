@@ -140,10 +140,10 @@ public class ImageLineProfile implements ImagePlugin
     
     private DefaultNumericTable intensityProfile(ScalarArray2D<?> array, Point2D p1, Point2D p2, int n)
     {
-        double x0 = p1.getX();
-        double y0 = p1.getY();
-        double dx = (p2.getX() - x0) / n;
-        double dy = (p2.getY() - y0) / n;
+        double x0 = p1.x();
+        double y0 = p1.y();
+        double dx = (p2.x() - x0) / n;
+        double dy = (p2.y() - y0) / n;
         
         LinearInterpolator2D interp = new LinearInterpolator2D(array);
         DefaultNumericTable table = new DefaultNumericTable(n, 1);
@@ -160,10 +160,10 @@ public class ImageLineProfile implements ImagePlugin
     
     private DefaultNumericTable colorProfile(RGB8Array2D array, Point2D p1, Point2D p2, int n)
     {
-        double x0 = p1.getX();
-        double y0 = p1.getY();
-        double dx = (p2.getX() - x0) / n;
-        double dy = (p2.getY() - y0) / n;
+        double x0 = p1.x();
+        double y0 = p1.y();
+        double dx = (p2.x() - x0) / n;
+        double dy = (p2.y() - y0) / n;
         
         DefaultNumericTable table = new DefaultNumericTable(n, 3);
         table.setColumnNames(new String[] { "Red", "Green", "Blue" });

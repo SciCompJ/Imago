@@ -143,8 +143,8 @@ public class ParallelPolygonsInterpolator
             Point2D v1 = vertices1.get(pair.i1 % nv1);
             Point2D v2 = vertices2.get(pair.i2 % nv2);
             
-            double x = v1.getX() * a1 + v2.getX() * a2;  
-            double y = v1.getY() * a1 + v2.getY() * a2;
+            double x = v1.x() * a1 + v2.x() * a2;  
+            double y = v1.y() * a1 + v2.y() * a2;
             interpolatedVertices.add(new Point2D(x, y));
         }
         
@@ -254,7 +254,7 @@ public class ParallelPolygonsInterpolator
      */
     private Point3D translateZ(Point2D point, double z)
     {
-        return new Point3D(point.getX(), point.getY(), z);
+        return new Point3D(point.x(), point.y(), z);
     }
 
     private Path computePath(int initialV1)

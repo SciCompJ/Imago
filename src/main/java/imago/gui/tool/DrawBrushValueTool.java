@@ -96,8 +96,8 @@ public class DrawBrushValueTool extends ImagoTool
 //        System.out.println("[DrawValue] Mouse pressed at (" + x + " ; " + y);
         
         // convert to array coord
-        int xi = (int) Math.round(pos.getX());
-        int yi = (int) Math.round(pos.getY());
+        int xi = (int) Math.round(pos.x());
+        int yi = (int) Math.round(pos.y());
         
         // check position is within array bounds
         int sizeX = array.size(0);
@@ -152,8 +152,8 @@ public class DrawBrushValueTool extends ImagoTool
         ScalarArray2D<?> array2d = wrapArray(array);
         
         // convert to array coord
-        int xi = (int) Math.round(pos.getX());
-        int yi = (int) Math.round(pos.getY());
+        int xi = (int) Math.round(pos.x());
+        int yi = (int) Math.round(pos.y());
         
         // check case of movement within pixel 
         if (xi == xprev && yi == yprev)

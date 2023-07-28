@@ -351,8 +351,8 @@ public class ImageRotatedCrop implements FramePlugin
             // init default values
             boxSizeX = boxSize[0];
             boxSizeY = boxSize[1];
-            boxCenterX = refPoint.getX();
-            boxCenterY = refPoint.getY();
+            boxCenterX = refPoint.x();
+            boxCenterY = refPoint.y();
             boxAngle = rotAngle;
 
             setupWidgets();
@@ -513,9 +513,9 @@ public class ImageRotatedCrop implements FramePlugin
             Point p = evt.getPoint();
             Point2D point = imageDisplay.displayToImage(p);
             
-            this.boxCenterX = point.getX();
+            this.boxCenterX = point.x();
             ((SpinnerNumberModel) this.boxCenterXWidget.getModel()).setValue(this.boxCenterX);
-            this.boxCenterY = point.getY();
+            this.boxCenterY = point.y();
             ((SpinnerNumberModel) this.boxCenterYWidget.getModel()).setValue(this.boxCenterY);
             
             if (this.autoUpdateCheckBox.isSelected())
@@ -611,9 +611,9 @@ public class ImageRotatedCrop implements FramePlugin
             boxSizeX = boxSize[0];
             boxSizeY = boxSize[1];
             boxSizeZ = boxSize[2];
-            boxCenterX = refPoint.getX();
-            boxCenterY = refPoint.getY();
-            boxCenterZ = refPoint.getZ();
+            boxCenterX = refPoint.x();
+            boxCenterY = refPoint.y();
+            boxCenterZ = refPoint.z();
             boxRotX = rotAngles[0];
             boxRotY = rotAngles[1];
             boxRotZ = rotAngles[2];
@@ -835,9 +835,9 @@ public class ImageRotatedCrop implements FramePlugin
             int zSlice = parentFrame.getImageView().getSlicingPosition(2);
             
             // update position of crop box center
-            this.boxCenterX = point.getX();
+            this.boxCenterX = point.x();
             ((SpinnerNumberModel) this.boxCenterXWidget.getModel()).setValue(this.boxCenterX);
-            this.boxCenterY = point.getY();
+            this.boxCenterY = point.y();
             ((SpinnerNumberModel) this.boxCenterYWidget.getModel()).setValue(this.boxCenterY);
             this.boxCenterZ = zSlice;
             ((SpinnerNumberModel) this.boxCenterZWidget.getModel()).setValue(this.boxCenterZ);

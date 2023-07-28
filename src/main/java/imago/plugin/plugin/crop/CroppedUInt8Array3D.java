@@ -77,7 +77,7 @@ public class CroppedUInt8Array3D extends UInt8Array3D
             java.util.Iterator<Point2D> iter = points.iterator();
             for (int i = 0; i < np; i++)
             {
-                xCoords[i] = iter.next().getX();
+                xCoords[i] = iter.next().x();
             }
             
             Arrays.sort(xCoords);

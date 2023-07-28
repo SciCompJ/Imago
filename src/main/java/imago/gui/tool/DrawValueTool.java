@@ -63,8 +63,8 @@ public class DrawValueTool extends ImagoTool
         ImageDisplay display = (ImageDisplay) evt.getSource();
         Point point = new Point(evt.getX(), evt.getY());
         Point2D pos = display.displayToImage(point);
-        double x = pos.getX();
-        double y = pos.getY();
+        double x = pos.x();
+        double y = pos.y();
         
         Image image = this.viewer.getImageView().getImage();
         Array<?> array = image.getData();

@@ -207,8 +207,8 @@ public class JsonSceneWriter
         {
             Point2D point = (Point2D) geom;
             writeString("type", "Point2D");
-            writer.name("x").value(point.getX());
-            writer.name("y").value(point.getY());
+            writer.name("x").value(point.x());
+            writer.name("y").value(point.y());
         }
         else if (geom instanceof Polyline2D)
         {
@@ -220,7 +220,7 @@ public class JsonSceneWriter
 
             for (Point2D vertex : poly.vertexPositions())
             {
-                writer.jsonValue("[ " + vertex.getX() + ", " + vertex.getY() + "]");
+                writer.jsonValue("[ " + vertex.x() + ", " + vertex.y() + "]");
             }
             writer.endArray();
         }
@@ -254,8 +254,8 @@ public class JsonSceneWriter
         {
             Point2D point = (Point2D) geom;
             writeString("type", "Point2D");
-            writer.name("x").jsonValue(format(numberFormat, point.getX()));
-            writer.name("y").jsonValue(format(numberFormat, point.getY()));
+            writer.name("x").jsonValue(format(numberFormat, point.x()));
+            writer.name("y").jsonValue(format(numberFormat, point.y()));
         }
         else if (geom instanceof Polyline2D)
         {
@@ -268,7 +268,7 @@ public class JsonSceneWriter
             String pattern = "[ " + numberFormat + ", " + numberFormat + " ]";
             for (Point2D vertex : poly.vertexPositions())
             {
-                writer.jsonValue(String.format(Locale.ENGLISH, pattern, vertex.getX(), vertex.getY()));
+                writer.jsonValue(String.format(Locale.ENGLISH, pattern, vertex.x(), vertex.y()));
 //                writer.jsonValue("[ " + vertex.getX() + ", " + vertex.getY() + "]");
             }
             writer.endArray();

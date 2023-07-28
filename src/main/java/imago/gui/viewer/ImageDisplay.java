@@ -234,8 +234,8 @@ public class ImageDisplay extends JPanel
      */
     public Point2D imageToDisplay(Point2D point) 
     {
-        double x = (point.getX() + .5) * zoom + this.offsetX;
-        double y = (point.getY() + .5) * zoom + this.offsetY;
+        double x = (point.x() + .5) * zoom + this.offsetX;
+        double y = (point.y() + .5) * zoom + this.offsetY;
         return new Point2D(x, y);
     }
 
@@ -481,8 +481,8 @@ public class ImageDisplay extends JPanel
     private void drawPoint(Graphics2D g2, Point2D point)
     {
         point = imageToDisplay(point);
-        int x = (int) point.getX();
-        int y = (int) point.getY();
+        int x = (int) point.x();
+        int y = (int) point.y();
         g2.drawLine(x-2, y, x+2, y);
         g2.drawLine(x, y-2, x, y+2);
     	
@@ -498,11 +498,11 @@ public class ImageDisplay extends JPanel
     private void drawLineSegment(Graphics2D g2, LineSegment2D line)
     {
     	Point2D p1 = imageToDisplay(line.getP1());
-        int x1 = (int) p1.getX();
-        int y1 = (int) p1.getY();
+        int x1 = (int) p1.x();
+        int y1 = (int) p1.y();
         Point2D p2 = imageToDisplay(line.getP2());
-        int x2 = (int) p2.getX();
-        int y2 = (int) p2.getY();
+        int x2 = (int) p2.x();
+        int y2 = (int) p2.y();
         g2.drawLine(x1, y1, x2, y2);
     }
     
@@ -531,8 +531,8 @@ public class ImageDisplay extends JPanel
         {
             Point2D point = iter.next();
             point = imageToDisplay(point);
-            px[i] = (int) point.getX();
-            py[i] = (int) point.getY();
+            px[i] = (int) point.x();
+            py[i] = (int) point.y();
         }
 
         // display the polygon
@@ -576,7 +576,7 @@ public class ImageDisplay extends JPanel
         // convert polygon into integer coords in display space
         Path2D.Float path = new Path2D.Float();
         Point2D p = imageToDisplay(poly.vertexPosition(0));
-        path.moveTo(p.getX(), p.getY());
+        path.moveTo(p.x(), p.y());
 //        int[] px = new int[nv];
 //        int[] py = new int[nv];
 
@@ -585,7 +585,7 @@ public class ImageDisplay extends JPanel
         for (int i = 1; i < nv; i++)
         {
             p = imageToDisplay(poly.vertexPosition(i));
-            path.lineTo(p.getX(), p.getY());
+            path.lineTo(p.x(), p.y());
         }
         path.closePath();
 
