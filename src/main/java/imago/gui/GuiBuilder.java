@@ -61,6 +61,7 @@ import imago.plugin.image.analyze.LabelImageIntrinsicVolumes;
 import imago.plugin.image.analyze.LabelImageMaxFeretDiameters;
 import imago.plugin.image.analyze.LabelImageOrientedBoxes;
 import imago.plugin.image.binary.ApplyBinaryMask;
+import imago.plugin.image.binary.BinaryImage3DDepthMap;
 import imago.plugin.image.binary.BinaryImageChamferDistanceMap;
 import imago.plugin.image.binary.BinaryImageConnectedComponentsLabeling;
 import imago.plugin.image.binary.BinaryImageFillHoles;
@@ -640,6 +641,7 @@ public class GuiBuilder
 		JMenu binaryMenu = new JMenu("Binary Images");
 		addPlugin(binaryMenu, new BinaryImageConnectedComponentsLabeling(), "Connected Components Labeling");
 		addPlugin(binaryMenu, new BinaryImageChamferDistanceMap(), "Distance Map", hasBinaryImage);
+        addPlugin(binaryMenu, new BinaryImage3DDepthMap(), "3D Binary Image Depth Map");
 		addPlugin(binaryMenu, new ImageGeodesicDistanceMap(), "Geodesic Distance Map...");
         addPlugin(binaryMenu, new BinaryImageSkeleton(), "IJ Skeleton");
         addPlugin(binaryMenu, new BinaryImageOverlay(), "Binary Overlay...");
