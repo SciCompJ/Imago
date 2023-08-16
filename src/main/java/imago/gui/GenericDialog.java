@@ -84,19 +84,25 @@ public class GenericDialog
 	
 	GridBagLayout gridLayout;
 	GridBagConstraints c;
-	private boolean firstNumericField = true;
 		
 	private int currentRow = 0;
 
-	private int numericFieldIndex;
-	private int textFieldIndex;
-	private int checkBoxIndex;
-	private int comboBoxIndex;
-
     ArrayList<JTextField> stringFields;
+    private int textFieldIndex;
+
     ArrayList<JTextField> numericFields;
+    private int numericFieldIndex;
+    private boolean firstNumericField = true; // for layout
+
     ArrayList<JCheckBox> checkBoxes;
+    private int checkBoxIndex;
+	
+    
     ArrayList<JComboBox<String>> choices;
+    ArrayList<Object[]> choiceData;
+    private int comboBoxIndex;
+    private boolean firstComboBox = true;
+
     ArrayList<JScrollBar> scrollBars;
     int[] sliderIndexes;
     double[] sliderScales;
@@ -387,37 +393,58 @@ public class GenericDialog
 	}
 
 	/**
-	 * Adds a popup menu that contains different choices.
-	 */
+     * Adds a Combo Box that contains different choices.
+     * 
+     * @param label
+     *            the label associated to the combo box
+     * @param items
+     *            the array of item names
+     * @param defaultItem
+     *            the name of the default item
+     *            
+     * @see #addChoice(String, EnumSet, Enum)
+     * @see #addEnumChoice(String, Class, Enum)           
+     */
 	public void addChoice(String label, String[] items, String defaultItem) 
 	{
+	    // create widget for label
 	    String label2 = formatLabel(label);
 	    JLabel theLabel = new JLabel(label2);
 	    
+	    // creates the combo widget
+        JComboBox<String> combo = new JComboBox<String>(items);
+        combo.addKeyListener(this.controller);
+        //      thisChoice.addItemListener(this);
+//        for (String item : items)
+//            combo.addItem(item);
+        combo.setSelectedItem(defaultItem);
+        
+        // also update array of data associated to the combo
+        if (choices == null)
+        {
+            choices = new ArrayList<JComboBox<String>>(4);
+            choiceData = new ArrayList<Object[]>(4);
+        }
+        choices.add(combo);
+        choiceData.add(items);
+        
 	    c.gridx = 0;
 	    c.gridy = currentRow;
 	    c.anchor = GridBagConstraints.EAST;
 	    c.gridwidth = 1;
 	    
-	    if (choices == null)
+	    if (firstComboBox)
 	    {
-	        choices = new ArrayList<JComboBox<String>>(4);
 	        c.insets = getInsets(5, 5, 5, 5);
 	    } 
 	    else
 	    {
 	        c.insets = getInsets(0, 5, 5, 5);
 	    }
+	    firstComboBox = false;
 	    
 	    gridLayout.setConstraints(theLabel, c);
 	    this.dialog.add(theLabel);
-	    
-	    JComboBox<String> combo = new JComboBox<String>();
-	    combo.addKeyListener(this.controller);
-	    //		thisChoice.addItemListener(this);
-	    for (String item : items)
-	        combo.addItem(item);
-	    combo.setSelectedItem(defaultItem);
 	    
 	    c.gridx = 1;
 	    c.gridy = currentRow;
@@ -425,14 +452,13 @@ public class GenericDialog
 	    gridLayout.setConstraints(combo, c);
 	    this.dialog.add(combo);
 	    
-	    choices.add(combo);
 	    //		if (Recorder.record || macro)
 	    //			saveLabel(thisChoice, label);
 	    currentRow++;
 	}
 
 	/**
-     * Adds a popup menu that contains different choices, using a list of
+     * Adds a combo box that contains different choices, using a list of
      * enums.
      * 
      * Code example:
@@ -453,50 +479,54 @@ public class GenericDialog
      * @param defaultItem
      *            the default choice for this option
      */
-    public <T extends Enum<T>> void addChoice(String label, EnumSet<T> items, T defaultItem) 
+    public <E extends Enum<E>> void addChoice(String label, EnumSet<E> items, E defaultItem) 
     {
-        String label2 = formatLabel(label);
-        JLabel theLabel = new JLabel(label2);
-        
-        c.gridx = 0;
-        c.gridy = currentRow;
-        c.anchor = GridBagConstraints.EAST;
-        c.gridwidth = 1;
-        
-        if (choices == null)
+        addChoice(label, createStringArray(items), defaultItem.toString());
+    }
+    
+    private static final <E extends Enum<E>> String[] createStringArray(EnumSet<E> items)
+    {
+        String[] array = new String[items.size()];
+        int i = 0;
+        for (E item : items)
         {
-            choices = new ArrayList<JComboBox<String>>(4);
-            c.insets = getInsets(5, 5, 5, 5);
-        } 
-        else
-        {
-            c.insets = getInsets(0, 5, 5, 5);
+            array[i++] = item.toString();
         }
-        
-        gridLayout.setConstraints(theLabel, c);
-        this.dialog.add(theLabel);
-        
-        JComboBox<String> combo = new JComboBox<String>();
-        combo.addKeyListener(this.controller);
-        //      thisChoice.addItemListener(this);
-        for (T item : items)
-        {
-            combo.addItem(item.toString());
-        }
-        combo.setSelectedItem(defaultItem.toString());
-        
-        c.gridx = 1;
-        c.gridy = currentRow;
-        c.anchor = GridBagConstraints.WEST;
-        gridLayout.setConstraints(combo, c);
-        this.dialog.add(combo);
-        
-        choices.add(combo);
-        //      if (Recorder.record || macro)
-        //          saveLabel(thisChoice, label);
-        currentRow++;
+        return array;
     }
 
+    /**
+     * Adds a combo box that contains different choices, using the enumeration
+     * class to populate the widget.
+     * 
+     * Code example:
+     * <pre>
+     * {@code
+     * GenericDialog gd = new GenericDialog("Demo");
+     * gd.addChoice("Color: ", CommonColors.class, CommonColors.RED);
+     * gd.showDialog();
+     * RGB8 color = ((CommonColors) gd.getNextEnum()).getColor();
+     * }
+     * </pre>
+     * 
+     * @param label
+     *            the label for the option
+     * @param handles
+     *            the list of enum handles
+     * @param defaultItem
+     *            the default choice for this option
+     */
+    public <E extends Enum<E>> void addEnumChoice(String label, Class<E> enumClass, E defaultItem) 
+    {
+        // create the combo box using strings
+        EnumSet<E> enumSet = EnumSet.allOf(enumClass);
+        addChoice(label, enumSet, defaultItem);
+        
+        // update the field containing data associated to choices
+        int index = choiceData.size() - 1;
+        choiceData.set(index, enumSet.toArray());
+    }
+    
 	/**
      * Adds a slider (scroll bar) to the dialog box. Floating point values will
      * be used if (maxValue-minValue) lower than or equal to 5.0 and either
@@ -902,8 +932,31 @@ public class GenericDialog
 		return item;
     }
     
+    /** 
+     * Returns the selected item in the next drop-down menu. 
+     */
+    public Object getNextEnumChoice()
+    {
+        if (choices == null)
+            return null;
+        JComboBox<String> thisChoice = choices.get(comboBoxIndex);
+        int index = thisChoice.getSelectedIndex();
+        Object item = this.choiceData.get(comboBoxIndex)[index];
+//      if (macro) {
+//          String label = (String)labels.get((Object)thisChoice);
+//          item = Macro.getValue(macroOptions, label, item);
+//          if (item!=null && item.startsWith("&")) // state is macro variable
+//              item = getChoiceVariable(item);
+//      }   
+        
+//      if (recorderOn)
+//          recordOption(thisChoice, item);
+        comboBoxIndex++;
+        return item;
+    }
+    
   	/**
-  	 *  Returns the index of the selected item in the next popup menu. 
+  	 *  Returns the index of the selected item in the next drop-down menu. 
   	 */
     public int getNextChoiceIndex() 
     {
