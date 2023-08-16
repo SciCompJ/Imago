@@ -75,17 +75,15 @@ public class ImageMorphologicalFilter implements FramePlugin
 		
 		// Create dialog for entering parameters
 		GenericDialog gd = new GenericDialog(frame, "Morphological Filter");
-        gd.addChoice("Operation", Operation.getAllLabels(), this.op.toString());
-		if (nd == 2)
+		gd.addEnumChoice("Operation", Operation.class, this.op);
+        if (nd == 2)
 		{
-	        gd.addChoice("Element", Strel2D.Shape.getAllLabels(), 
-	                this.shape2d.toString());
+            gd.addEnumChoice("Element", Strel2D.Shape.class, this.shape2d);
 	        gd.addNumericField("Radius (in pixels)", this.radius, 0);
 		}
 		else
 		{
-		    gd.addChoice("Element", Strel3D.Shape.getAllLabels(), 
-                    this.shape3d.toString());
+            gd.addEnumChoice("Element", Strel3D.Shape.class, this.shape3d);
 	        gd.addNumericField("Radius (in voxels)", this.radius, 0);
         }
 		gd.showDialog();
@@ -97,19 +95,19 @@ public class ImageMorphologicalFilter implements FramePlugin
 		
 		// parse dialog results
 		// extract chosen parameters
-		this.op = Operation.fromLabel(gd.getNextChoice());
+        this.op = (Operation) gd.getNextEnumChoice();
 		String shapeSuffix = "";
 		Strel strel;
 		if (nd == 2)
 		{
-		    this.shape2d = Strel2D.Shape.fromLabel(gd.getNextChoice());
+            this.shape2d = (Strel2D.Shape) gd.getNextEnumChoice();
             shapeSuffix = this.shape2d.suffix();
 	        this.radius  = (int) gd.getNextNumber();
 		    strel = shape2d.fromRadius(radius);
 		}
 		else
 		{
-		    this.shape3d = Strel3D.Shape.fromLabel(gd.getNextChoice());
+            this.shape3d = (Strel3D.Shape) gd.getNextEnumChoice();
             shapeSuffix = this.shape3d.suffix();
 	        this.radius  = (int) gd.getNextNumber();
 		    strel = shape3d.fromRadius(radius);

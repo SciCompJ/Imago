@@ -47,7 +47,7 @@ public class BinaryImageOverlay implements FramePlugin
 		GenericDialog gd = new GenericDialog(frame, "Binary Overlay");
 		gd.addChoice("Reference Image: ", imageNameArray, firstImageName);
 		gd.addChoice("Binary Mask: ", imageNameArray, secondImageName);
-        gd.addChoice("Overlay Color: ", CommonColors.all(), CommonColors.RED);
+        gd.addEnumChoice("Overlay Color: ", CommonColors.class, CommonColors.RED);
         gd.addNumericField("Overlay Opacity:", 50, 0, "The opacity of the binary overlay, between 0 and 100");
         gd.showDialog();
 		
@@ -59,7 +59,7 @@ public class BinaryImageOverlay implements FramePlugin
 		// parse dialog results
 		Image baseImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
         Image maskImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
-        RGB8 color = new RGB8(CommonColors.fromLabel(gd.getNextChoice()).getColor());
+        RGB8 color = (RGB8) ((CommonColors) gd.getNextEnumChoice()).getColor();
         double opacity = Math.max(Math.min(gd.getNextNumber(), 100.0), 0.0) / 100.0;
 
         // retrieve image data

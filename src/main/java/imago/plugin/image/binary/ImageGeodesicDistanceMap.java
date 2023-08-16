@@ -39,11 +39,7 @@ import net.sci.image.binary.geoddist.GeodesicDistanceTransform3DUInt16Hybrid;
  */
 public class ImageGeodesicDistanceMap implements FramePlugin
 {
-	public ImageGeodesicDistanceMap()
-	{
-	}
-
-	/*
+    /*
 	 * (non-Javadoc)
 	 * 
 	 * @see
@@ -66,6 +62,10 @@ public class ImageGeodesicDistanceMap implements FramePlugin
         String[] imageNameArray = imageNames.toArray(new String[]{});
         String firstImageName = imageNameArray[0];
                 
+        // default values for chamfer masks in 2D and 3D
+        ChamferMasks2D mask2d = ChamferMasks2D.CHESSKNIGHT;
+        ChamferMasks3D mask3d = ChamferMasks3D.SVENSSON_3_4_5_7;
+        
 		// choose dimensionality: either the one from current image, or a default one
 		int nd = 2;
 		ImageFrame iFrame = null;
@@ -81,11 +81,11 @@ public class ImageGeodesicDistanceMap implements FramePlugin
 		gd.addChoice("Mask: ", imageNameArray, firstImageName);
         if (nd == 2)
         {
-            gd.addChoice("Chamfer Mask: ", ChamferMasks2D.getAllLabels(), ChamferMasks2D.CHESSKNIGHT.toString());
+            gd.addEnumChoice("Chamfer Mask: ", ChamferMasks2D.class, mask2d);
         }
         else if (nd == 3)
         {
-            gd.addChoice("Chamfer Mask: ", ChamferMasks3D.getAllLabels(), ChamferMasks3D.SVENSSON_3_4_5_7.toString());
+            gd.addEnumChoice("Chamfer Mask: ", ChamferMasks3D.class, mask3d);
         }
         gd.addChoice("Output Type: ", new String[]{"16-bits integer", "32-bits float"}, "16-bits integer");
         gd.addCheckBox("Normalize ", true);
@@ -99,7 +99,11 @@ public class ImageGeodesicDistanceMap implements FramePlugin
 		// parse user choices
 		Image markerImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
 		Image maskImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
-		String weightsName = gd.getNextChoice();
+        switch (nd)
+        {
+            case 2 -> mask2d = (ChamferMasks2D) gd.getNextEnumChoice();
+            case 3 -> mask3d = (ChamferMasks3D) gd.getNextEnumChoice();
+        };
 		int bitDepthIndex = gd.getNextChoiceIndex();
 		boolean normalize = gd.getNextBoolean();
 
@@ -110,16 +114,16 @@ public class ImageGeodesicDistanceMap implements FramePlugin
 			return;
 		}
         BinaryArray marker = BinaryArray.wrap(markerImage.getData());
-        BinaryArray mask = BinaryArray.wrap(maskImage.getData());
+        BinaryArray maskArray = BinaryArray.wrap(maskImage.getData());
         
 		// check inputs dimensionality and size 
-		if (!Arrays.isSameDimensionality(marker, mask))
+		if (!Arrays.isSameDimensionality(marker, maskArray))
 		{
 			frame.showErrorDialog("Both arrays must have same dimensionality", "Dimensionality Error");
 			return;
 		}
 		
-		if (!Arrays.isSameSize(marker, mask))
+		if (!Arrays.isSameSize(marker, maskArray))
 		{
 			frame.showErrorDialog("Both arrays must have same size", "Image Size Error");
 			return;
@@ -139,8 +143,8 @@ public class ImageGeodesicDistanceMap implements FramePlugin
 		{
 		    // cast dimensions
             BinaryArray2D marker2d = BinaryArray2D.wrap(marker);
-            BinaryArray2D mask2d = BinaryArray2D.wrap(mask);
-            ChamferMask2D chamferMask = ChamferMasks2D.fromLabel(weightsName).getMask();
+            BinaryArray2D maskArray2d = BinaryArray2D.wrap(maskArray);
+            ChamferMask2D chamferMask = mask2d.getMask();
             
             // create algorithm depending on output data type
             GeodesicDistanceTransform2D algo;
@@ -161,15 +165,15 @@ public class ImageGeodesicDistanceMap implements FramePlugin
                 algo.addAlgoListener(iFrame);
             }
             long t0 = System.nanoTime();
-            result = algo.process2d(marker2d, mask2d);
+            result = algo.process2d(marker2d, maskArray2d);
             timeInMillis = (System.nanoTime() - t0) / 1_000_000.0;
 		}
 		else if (nd == 3)
 		{
             // cast dimensions
             BinaryArray3D marker3d = BinaryArray3D.wrap(marker);
-            BinaryArray3D mask3d = BinaryArray3D.wrap(mask);
-            ChamferMask3D chamferMask = ChamferMasks3D.fromLabel(weightsName).getMask();
+            BinaryArray3D maskArray3d = BinaryArray3D.wrap(maskArray);
+            ChamferMask3D chamferMask = mask3d.getMask();
             
             // create algorithm depending on output data type
             GeodesicDistanceTransform3D algo;
@@ -190,7 +194,7 @@ public class ImageGeodesicDistanceMap implements FramePlugin
                 algo.addAlgoListener(iFrame);
             }
             long t0 = System.nanoTime();
-            result = algo.process3d(marker3d, mask3d);
+            result = algo.process3d(marker3d, maskArray3d);
             timeInMillis = (System.nanoTime() - t0) / 1_000_000.0;
 		}
 		else
@@ -213,7 +217,7 @@ public class ImageGeodesicDistanceMap implements FramePlugin
 		double maxDist = 0;
 		if (bitDepthIndex == 0)
 		{
-		    for (int dist : mask.selectInts((UInt16Array) result))
+		    for (int dist : maskArray.selectInts((UInt16Array) result))
 		    {
                 if (dist < UInt16.MAX_VALUE)
                 {
@@ -223,7 +227,7 @@ public class ImageGeodesicDistanceMap implements FramePlugin
 		}
 		else
 		{
-		    for (double dist : mask.selectValues(result))
+		    for (double dist : maskArray.selectValues(result))
 		    {
                 if (Double.isFinite(dist))
                 {

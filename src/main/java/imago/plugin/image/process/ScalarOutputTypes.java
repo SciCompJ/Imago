@@ -14,6 +14,19 @@ import net.sci.array.scalar.UInt16Array;
 import net.sci.array.scalar.UInt8Array;
 
 /**
+ * An enumeration of scalar output types that can be used to populate a GenericDialog.
+ * 
+ * Example:
+ * <pre>{@code
+    GenericDialog gd = new GenericDialog(frame, "Choose Type");
+    gd.addEnumChoice("Output Type", ScalarOutputTypes.class, ScalarOutputTypes.SAME_AS_INPUT);
+    gd.showDialog();
+    if (gd.getOutput() == GenericDialog.Output.CANCEL) return;
+    ScalarArray.Factory<?> factory = ((ScalarOutputTypes) gd.getNextEnumChoice()).getFactory();
+    ScalarArray<?> output = factory.create(new int[]{300, 200});
+ * }
+ * </pre>
+ * 
  * @author dlegland
  *
  */
@@ -36,7 +49,7 @@ public enum ScalarOutputTypes
         this.factory = factory;
     }
 
-    public ScalarArray.Factory<?> getFactory()
+    public ScalarArray.Factory<?> factory()
     {
         return factory;
     }

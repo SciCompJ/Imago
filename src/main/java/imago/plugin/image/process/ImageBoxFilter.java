@@ -47,7 +47,7 @@ public class ImageBoxFilter implements FramePlugin
 		{
 			gd.addNumericField("Size dim. " + (d+1), 3, 0);
 		}
-        gd.addChoice("Output Type", ScalarOutputTypes.all(), ScalarOutputTypes.SAME_AS_INPUT);
+        gd.addEnumChoice("Output Type", ScalarOutputTypes.class, ScalarOutputTypes.SAME_AS_INPUT);
 		
 		// wait the user to choose
 		gd.showDialog();
@@ -62,7 +62,7 @@ public class ImageBoxFilter implements FramePlugin
 		{
 			diameters[d] = (int) gd.getNextNumber();
 		}
-		ScalarArray.Factory<?> factory = ScalarOutputTypes.fromLabel(gd.getNextChoice()).getFactory();
+		ScalarArray.Factory<?> factory = ((ScalarOutputTypes) gd.getNextEnumChoice()).factory();
 
 		// create box filtering operator from user settings
 		BoxFilter filter = new BoxFilter(diameters);

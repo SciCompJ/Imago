@@ -12,11 +12,8 @@ import net.sci.array.Array;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.binary.BinaryArray2D;
 import net.sci.array.binary.BinaryArray3D;
-import net.sci.array.scalar.Int32Array;
 import net.sci.array.scalar.IntArray;
 import net.sci.array.scalar.ScalarArray;
-import net.sci.array.scalar.UInt16Array;
-import net.sci.array.scalar.UInt8Array;
 import net.sci.image.Image;
 import net.sci.image.ImageType;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DFloat32;
@@ -67,17 +64,21 @@ public class BinaryImageChamferDistanceMap implements FramePlugin
 			return;
 		}
 		
+		// default values for chamfer masks in 2D and 3D
+        ChamferMasks2D mask2d = ChamferMasks2D.CHESSKNIGHT;
+        ChamferMasks3D mask3d = ChamferMasks3D.SVENSSON_3_4_5_7;
+		
 		// build dialog for choosing options
 		GenericDialog gd = new GenericDialog(frame, "Distance Map");
 		if (nd == 2)
 		{
-            gd.addChoice("Chamfer Weights: ", ChamferMasks2D.getAllLabels(), ChamferMasks2D.CHESSKNIGHT.toString());
+            gd.addEnumChoice("Chamfer Mask: ", ChamferMasks2D.class, mask2d);
 		}
 		else if (nd == 3)
 		{
-            gd.addChoice("Chamfer Weights: ", ChamferMasks3D.getAllLabels(), ChamferMasks3D.SVENSSON_3_4_5_7.toString());
+            gd.addEnumChoice("Chamfer Mask: ", ChamferMasks3D.class, mask3d);
 		}
-        gd.addChoice("Output Type: ", new String[]{"8-bits", "16-bits", "32-bits", "32-bits float"}, "16-bits");
+        gd.addEnumChoice("Output Type: ", DistanceMapDataType.class, DistanceMapDataType.UINT16);
         gd.addCheckBox("Normalize", true);
 		gd.showDialog();
 		
@@ -87,61 +88,59 @@ public class BinaryImageChamferDistanceMap implements FramePlugin
 		}
 		
 		// parse dialog results
-		String weightsName = gd.getNextChoice();
-		int bitDepthIndex = gd.getNextChoiceIndex();
+		switch (nd)
+		{
+		    case 2 -> mask2d = (ChamferMasks2D) gd.getNextEnumChoice();
+		    case 3 -> mask3d = (ChamferMasks3D) gd.getNextEnumChoice();
+		};
+		DistanceMapDataType outputType = (DistanceMapDataType) gd.getNextEnumChoice();
 		boolean normalize = gd.getNextBoolean();
 		
 		// Compute distance map
 		ScalarArray<?> result;
 		if (nd == 2)
 		{
-            ChamferMask2D weights = ChamferMasks2D.fromLabel(weightsName).getMask();
-		    DistanceTransform2D op;
-		    if (bitDepthIndex < 3)
-		    {
-		        op = new ChamferDistanceTransform2DInt(weights, normalize); 
-		        IntArray.Factory<?> factory = chooseIntArrayFactory(bitDepthIndex);
-		        ((ChamferDistanceTransform2DInt) op).setFactory(factory);
-		    }
-		    else
-		    {
-                op = new ChamferDistanceTransform2DFloat32(weights, normalize); 
-		    }
+            // Process 3D case
+            DistanceTransform2D op = createAlgorithm(mask2d.getMask(), outputType, normalize);
 		    op.addAlgoListener(imageFrame);
 		    result = op.process2d((BinaryArray2D) image.getData());
 		}
 		else
 		{
 		    // Process 3D case
-            ChamferMask3D weights = ChamferMasks3D.fromLabel(weightsName).getMask();
-            DistanceTransform3D op;
-            if (bitDepthIndex < 3)
-            {
-                op = new ChamferDistanceTransform3DInt(weights, normalize); 
-                IntArray.Factory<?> factory = chooseIntArrayFactory(bitDepthIndex);
-                ((ChamferDistanceTransform3DInt) op).setFactory(factory);
-            }
-            else
-            {
-                op = new ChamferDistanceTransform3DFloat32(weights, normalize); 
-            }
+            DistanceTransform3D op = createAlgorithm(mask3d.getMask(), outputType, normalize);
             op.addAlgoListener(imageFrame);
             result = op.process3d((BinaryArray3D) image.getData());
 		}
 		Image resultImage = new Image(result, ImageType.DISTANCE, image);
+		resultImage.setName(image.getName() + "-dist");
 		
 		// add the image document to GUI
 		imageFrame.createImageFrame(resultImage);
 	}
 	
-	private IntArray.Factory<?> chooseIntArrayFactory(int bitDepthIndex)
+    private static final DistanceTransform2D createAlgorithm(ChamferMask2D mask, DistanceMapDataType outputType, boolean normalize)
+    {
+        if (!outputType.isIntType())
+        {
+            return new ChamferDistanceTransform2DFloat32(mask, normalize);
+        }
+        ChamferDistanceTransform2DInt op = new ChamferDistanceTransform2DInt(mask, normalize); 
+        op.setFactory((IntArray.Factory<?>) outputType.factory());
+        return op;
+    }
+    
+	private static final DistanceTransform3D createAlgorithm(ChamferMask3D mask, DistanceMapDataType outputType, boolean normalize)
 	{
-        if (bitDepthIndex == 0) return UInt8Array.defaultFactory;
-        if (bitDepthIndex == 1) return UInt16Array.defaultFactory;
-        if (bitDepthIndex == 2) return Int32Array.defaultFactory;
-        throw new RuntimeException("Unknown IntArray factory index");
+	    if (!outputType.isIntType())
+	    {
+	        return new ChamferDistanceTransform3DFloat32(mask, normalize);
+	    }
+	    ChamferDistanceTransform3DInt op = new ChamferDistanceTransform3DInt(mask, normalize); 
+        op.setFactory((IntArray.Factory<?>) outputType.factory());
+        return op;
 	}
-
+	
     /**
      * Returns true if the current frame contains a binary image.
      * 
