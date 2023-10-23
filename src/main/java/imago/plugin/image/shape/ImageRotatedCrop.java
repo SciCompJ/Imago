@@ -95,7 +95,7 @@ public class ImageRotatedCrop implements FramePlugin
         AffineTransform2D trRefPoint = AffineTransform2D.createTranslation(refPoint);
 
         // concatenate into global display-image-to-source-image transform
-        return trRefPoint.concatenate(rot).concatenate(trBoxCenter);
+        return trRefPoint.compose(rot).compose(trBoxCenter);
     }
     
     private static final UInt8Array2D rotatedCropUInt8(ScalarArray2D<?> array, int[] dims, AffineTransform2D transfo)

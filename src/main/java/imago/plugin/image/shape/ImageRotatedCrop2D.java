@@ -63,7 +63,7 @@ public class ImageRotatedCrop2D implements FramePlugin
         AffineTransform2D trRefPoint = AffineTransform2D.createTranslation(refPoint);
 
         // concatenate into global display-image-to-source-image transform
-        AffineTransform2D transfo = trRefPoint.concatenate(rot).concatenate(trBoxCenter);
+        AffineTransform2D transfo = trRefPoint.compose(rot).compose(trBoxCenter);
 
         // Create interpolation class, that encapsulates both the image and the
         // transform
