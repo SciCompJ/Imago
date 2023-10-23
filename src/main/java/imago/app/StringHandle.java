@@ -31,7 +31,7 @@ public class StringHandle extends ObjectHandle
         this.string= string ;
     }
     
-    public Object getObject()
+    public String getObject()
     {
         return this.string;
     }

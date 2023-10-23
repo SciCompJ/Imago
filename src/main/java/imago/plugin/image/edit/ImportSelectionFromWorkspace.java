@@ -3,19 +3,18 @@
  */
 package imago.plugin.image.edit;
 
+import java.util.Collection;
+
 import imago.app.GeometryHandle;
 import imago.app.ImageHandle;
+import imago.app.ImagoApp;
 import imago.app.ObjectHandle;
-import imago.app.Workspace;
+import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
 import imago.gui.frames.ImageFrame;
-import imago.gui.FramePlugin;
 import imago.gui.viewer.PlanarImageViewer;
-
-import java.util.Collection;
-
 import net.sci.array.Array;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;
@@ -29,10 +28,6 @@ import net.sci.image.Image;
  */
 public class ImportSelectionFromWorkspace implements FramePlugin
 {
-	public ImportSelectionFromWorkspace()
-	{
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -65,12 +60,12 @@ public class ImportSelectionFromWorkspace implements FramePlugin
 		    throw new RuntimeException("Requires an image containing 2D Array");
 		}
 
-		
-        Workspace ws = frame.getGui().getAppli().getWorkspace();
-        Collection<ObjectHandle> handles = ws.getHandles(Geometry.class);
-        Collection<String> names = ObjectHandle.getNames(handles);
+		ImagoApp app = frame.getGui().getAppli();
+		Collection<GeometryHandle> handles = app.getGeometryHandles();
         ObjectHandle[] handleArray = handles.toArray(new ObjectHandle[]{});
         
+        // retrieve handle names
+        Collection<String> names = ObjectHandle.getNames(handles);
         String[] nameArray = names.toArray(new String[]{});
         String firstName = nameArray[0];
 

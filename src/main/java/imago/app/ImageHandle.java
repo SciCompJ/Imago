@@ -123,7 +123,7 @@ public class ImageHandle extends ObjectHandle
 		}	
 	}
 	
-    public Object getObject()
+    public Image getObject()
     {
         return this.image;
     }

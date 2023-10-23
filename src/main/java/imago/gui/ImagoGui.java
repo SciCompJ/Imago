@@ -38,6 +38,7 @@ import imago.app.ImageHandle;
 import imago.app.TableHandle;
 import imago.gui.frames.ImageFrame;
 import imago.gui.frames.ImagoEmptyFrame;
+import imago.gui.frames.ShapeManager;
 import imago.gui.frames.TableFrame;
 import net.sci.image.Image;
 import net.sci.table.Table;
@@ -131,6 +132,12 @@ public class ImagoGui
 	 * An empty frame without document, displayed at startup.
 	 */
 	ImagoFrame emptyFrame = null;
+	
+	/**
+	 * An instance of shape manager (only one instance per GUI).
+	 */
+	ShapeManager shapeManager = null;    
+    
 		
     ArrayList<PluginHandler> pluginHandlers = new ArrayList<PluginHandler>();
 

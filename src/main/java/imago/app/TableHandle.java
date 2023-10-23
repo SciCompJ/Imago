@@ -25,7 +25,7 @@ public class TableHandle extends ObjectHandle
         return table;
     }
     
-    public Object getObject()
+    public Table getObject()
     {
         return this.table;
     }

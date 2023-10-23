@@ -9,8 +9,9 @@ import java.util.Collection;
 
 /**
  * Superclass for all the entities manipulated by the Imago application.
+ * Derived classes refer to images, tables, geometries...
  *
- * Manages a name, a tag.
+ * Manages a name, a tag, and a flag for modification.
  * 
  * @author dlegland
  *
@@ -20,7 +21,7 @@ public abstract class ObjectHandle
     // =============================================================
     // Static methods
     
-    public static final Collection<String> getNames(Collection<ObjectHandle> handles)
+    public static final Collection<String> getNames(Collection<? extends ObjectHandle> handles)
     {
         ArrayList<String> names = new ArrayList<String>(handles.size());
         for (ObjectHandle handle : handles)

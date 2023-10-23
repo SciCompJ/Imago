@@ -3,9 +3,9 @@
  */
 package imago.app;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.TreeMap;
+import java.util.function.Predicate;
 
 /**
  * Contains a set of <code>ObjectHandle</code> instances, indexed by their tag.
@@ -28,40 +28,19 @@ public class Workspace
     // =============================================================
     // Query handles from name or class
     
-    /**
-     * Returns all the instances of ObjectHandle stored in this workspace whose
-     * object match the specified class.
-     * 
-     * @param objectClass
-     *            the class to match.
-     * @return the list of handles that contains an object of the specified
-     *         class.
-     */
-    public Collection<ObjectHandle> getHandles(Class<?> objectClass)
+    public Collection<ObjectHandle> getHandles(Predicate<ObjectHandle> filter)
     {
-        ArrayList<ObjectHandle> res = new ArrayList<ObjectHandle>();
-        for (ObjectHandle handle : handles.values())
-        {
-            if (objectClass.isInstance(handle.getObject()))
-            {
-                res.add(handle);
-            }
-        }
-        return res;
+        return handles.values().stream()
+                .filter(filter)
+                .toList();
     }
     
-    /**
-     * Returns a list of names corresponding to the instances of ObjectHandle
-     * stored in this workspace whose object match the specified class.
-     * 
-     * @param objectClass
-     *            the class to match.
-     * @return the list of names of the handles that contain an object of the
-     *         specified class.
-     */
-    public Collection<String> getHandleNames(Class<?> objectClass)
+    public Collection<String> getHandleNames(Predicate<ObjectHandle> filter)
     {
-        return ObjectHandle.getNames(getHandles(objectClass));
+        return handles.values().stream()
+                .filter(filter)
+                .map(h -> h.getName())
+                .toList();
     }
     
     /**
@@ -127,7 +106,7 @@ public class Workspace
 
 
     // =============================================================
-    // Managment of tags
+    // Management of tags
 
     public Collection<String> getTags()
     {

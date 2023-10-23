@@ -133,7 +133,15 @@ public class ImagoApp
 	 */
 	public Collection<String> getImageHandleNames()
 	{
-	    return ObjectHandle.getNames(workspace.getHandles(Image.class));
+        ArrayList<String> res = new ArrayList<String>();
+        for (ObjectHandle handle : workspace.getHandles())
+        {
+            if (handle instanceof ImageHandle)
+            {
+                res.add(handle.getName());
+            }
+        }
+        return res;
 	}
 	
 	public ImageHandle getImageHandleFromName(String handleName)
@@ -179,10 +187,6 @@ public class ImagoApp
         String tag = workspace.findNextFreeTag("tab");
         String name = createHandleName(table.getName());
         TableHandle handle = new TableHandle(table, name, tag);
-        if (parent != null)
-        {
-//        	handle.copyDisplaySettings(parent);
-        }
         workspace.addHandle(handle);
         return handle;
     }
@@ -200,6 +204,41 @@ public class ImagoApp
 	    return res;
 	}
 	
+	
+    // =============================================================
+    // Management of geometry handles
+
+    /**
+     * Creates a new handle for a geometry, adds it to the workspace, and returns
+     * the created handle.
+     * 
+     * @param geom
+     *            the geometry instance.
+     * @return the handle to manage the table.
+     */
+    public GeometryHandle createGeometryHandle(Geometry geom)
+    {
+        String baseTag = GeometryHandle.createTag(geom);
+        String name = baseTag;
+        String tag = workspace.findNextFreeTag(baseTag);
+        GeometryHandle handle = new GeometryHandle(geom, name, tag);
+        workspace.addHandle(handle);
+        return handle;
+    }
+    
+    public Collection<GeometryHandle> getGeometryHandles()
+    {
+        ArrayList<GeometryHandle> res = new ArrayList<GeometryHandle>();
+        for (ObjectHandle handle : workspace.getHandles())
+        {
+            if (handle instanceof GeometryHandle)
+            {
+                res.add((GeometryHandle) handle);
+            }
+        }
+        return res;
+    }
+    
 	
     // =============================================================
     // Global management of handles
