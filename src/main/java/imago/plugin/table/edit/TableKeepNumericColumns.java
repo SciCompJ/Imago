@@ -39,7 +39,7 @@ public class TableKeepNumericColumns implements TablePlugin
 	    table2.setName(table.getName() + "-num");
         
         // add the new frame to the GUI
-        frame.getGui().createTableFrame(table2, frame);
+	    TableFrame.create(table2, frame);
 	}
 	
 }

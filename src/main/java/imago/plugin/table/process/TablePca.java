@@ -27,8 +27,8 @@ public class TablePca implements TablePlugin
         PCA pca = new PCA().fit(table);
         
         // add new frames to the GUI
-        frame.getGui().createTableFrame(pca.eigenValues(), frame);
-        frame.getGui().createTableFrame(pca.loadings(), frame);
-        frame.getGui().createTableFrame(pca.scores(), frame);
+        TableFrame.create(pca.eigenValues(), frame);
+        TableFrame.create(pca.loadings(), frame);
+        TableFrame.create(pca.scores(), frame);
     }
 }

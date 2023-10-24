@@ -10,6 +10,7 @@ import imago.app.shape.Shape;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.image.ImageFrame;
+import imago.gui.table.TableFrame;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import net.sci.array.Array;
@@ -101,7 +102,7 @@ public class LabelImageBoundingBoxes implements FramePlugin
                 Table table = analyzer.createTable(RegionAnalyzer.createMap(labels, boxes));
                 
                 // add the new frame to the GUI
-                gui.createTableFrame(table, frame);
+                TableFrame.create(table, frame);
             }
 
             if (overlay)
@@ -136,22 +137,22 @@ public class LabelImageBoundingBoxes implements FramePlugin
             Bounds3D[] boxes = RegionAnalysis3D.boundingBoxes(array3d, labels);
             
             // Convert centroid array to table, and display
-            Table tab = Table.create(boxes.length, 6);
-            tab.setColumnNames(new String[]{"XMin", "XMax", "YMin", "YMax", "ZMin", "ZMax"});
+            Table table = Table.create(boxes.length, 6);
+            table.setColumnNames(new String[]{"XMin", "XMax", "YMin", "YMax", "ZMin", "ZMax"});
             for (int i = 0; i < boxes.length; i++)
             {
                 Bounds3D box = boxes[i];
-                tab.setValue(i, 0, box.getXMin());
-                tab.setValue(i, 1, box.getXMax());
-                tab.setValue(i, 2, box.getYMin());
-                tab.setValue(i, 3, box.getYMax());
-                tab.setValue(i, 4, box.getZMin());
-                tab.setValue(i, 5, box.getZMax());
+                table.setValue(i, 0, box.getXMin());
+                table.setValue(i, 1, box.getXMax());
+                table.setValue(i, 2, box.getYMin());
+                table.setValue(i, 3, box.getYMax());
+                table.setValue(i, 4, box.getZMin());
+                table.setValue(i, 5, box.getZMax());
             }
-            tab.setName(image.getName() + "-BBoxes");
+            table.setName(image.getName() + "-BBoxes");
 
             // add the new frame to the GUI
-            frame.getGui().createTableFrame(tab, frame);
+            TableFrame.create(table, frame);
         }
     }
 }

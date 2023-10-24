@@ -7,6 +7,7 @@ import imago.app.ImageHandle;
 import imago.app.shape.Shape;
 import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
+import imago.gui.table.TableFrame;
 import imago.gui.FramePlugin;
 
 import java.util.Map;
@@ -74,7 +75,7 @@ public class LabelImageConvexHulls implements FramePlugin
             
             // display results in a new Table
             Table table = algo.createTable(convexHulls);
-            frame.createTableFrame(table);
+            TableFrame.create(table, frame);
         }
         else
         {

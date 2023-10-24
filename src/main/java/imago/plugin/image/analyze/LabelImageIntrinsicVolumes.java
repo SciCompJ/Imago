@@ -9,6 +9,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.image.ImageFrame;
+import imago.gui.table.TableFrame;
 import net.sci.array.Array;
 import net.sci.array.scalar.IntArray2D;
 import net.sci.image.Image;
@@ -59,8 +60,6 @@ public class LabelImageIntrinsicVolumes implements FramePlugin
             return;
         }
 
-        ImagoGui gui = frame.getGui();
-        
         // Display dialog to choose parameters
         GenericDialog dlg = new GenericDialog(frame, "Intrinsic Volumes");
         dlg.addChoice("Direction number: ", new String[] {"2", "4"}, "4");
@@ -86,7 +85,7 @@ public class LabelImageIntrinsicVolumes implements FramePlugin
         //  Table table = algo.createTable(results);
         
         // add the new frame to the GUI
-        gui.createTableFrame(table, frame);
+        TableFrame.create(table, frame);
     }
     
     @Override

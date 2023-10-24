@@ -7,6 +7,7 @@ import imago.app.ImageHandle;
 import imago.app.shape.Shape;
 import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
+import imago.gui.table.TableFrame;
 import imago.gui.FramePlugin;
 
 import java.util.Map;
@@ -78,7 +79,7 @@ public class LabelImageCentroids implements FramePlugin
             
             // display results in a new Table
             Table table = algo.createTable(centroids);
-            frame.createTableFrame(table);
+            TableFrame.create(table, frame);
             frame.repaint();
         }
         else if (nd == 3)
@@ -108,7 +109,7 @@ public class LabelImageCentroids implements FramePlugin
             table.setName(image.getName() + "-Centroids");
 
             // add the new frame to the GUI
-            frame.createTableFrame(table);
+            TableFrame.create(table, frame);
         }
     }
 }

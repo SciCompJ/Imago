@@ -9,6 +9,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.image.ImageFrame;
+import imago.gui.table.TableFrame;
 import imago.gui.FramePlugin;
 
 import java.util.Collection;
@@ -105,7 +106,7 @@ public class LabelImageEquivalentDisks implements FramePlugin
             }
             
             // add the new frame to the GUI
-            gui.createTableFrame(table, frame);
+            TableFrame.create(table, frame);
         }
         
         if (overlay)

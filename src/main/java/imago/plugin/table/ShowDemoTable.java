@@ -4,6 +4,7 @@
 package imago.plugin.table;
 
 import imago.gui.ImagoFrame;
+import imago.gui.table.TableFrame;
 import imago.gui.FramePlugin;
 
 import java.io.File;
@@ -44,7 +45,7 @@ public class ShowDemoTable implements FramePlugin
         table.setName("fisherIris");
         
         // add the new frame to the GUI
-        frame.getGui().createTableFrame(table, frame);
+        TableFrame.create(table, frame);
 	}
 
 }

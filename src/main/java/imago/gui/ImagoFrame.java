@@ -137,9 +137,10 @@ public abstract class ImagoFrame implements AlgoListener
      *            the image to display.
      * @return a new instance of ImageFrame.
      */
+	//TODO: deprecated me!
 	public ImageFrame createImageFrame(Image image)
 	{
-	    return this.gui.createImageFrame(image, this);
+	    return ImageFrame.create(image, this);
 	}
 	
 	/**
@@ -150,6 +151,7 @@ public abstract class ImagoFrame implements AlgoListener
      *            the table to display.
      * @return a new instance of ImageFrame.
      */
+	@Deprecated
 	public TableFrame createTableFrame(Table table)
 	{
 		return this.gui.createTableFrame(table, this);

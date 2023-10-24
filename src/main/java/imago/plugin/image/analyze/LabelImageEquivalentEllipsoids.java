@@ -10,6 +10,7 @@ import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.image.ImageFrame;
+import imago.gui.table.TableFrame;
 import net.sci.array.Array;
 import net.sci.array.scalar.IntArray3D;
 import net.sci.geom.geom3d.surface.Ellipsoid3D;
@@ -74,6 +75,6 @@ public class LabelImageEquivalentEllipsoids implements FramePlugin
         table.setName(image.getName() + "-ellipsoids");
 
         // display table as a new frame
-        frame.createTableFrame(table);
+        TableFrame.create(table, frame);
     }
 }

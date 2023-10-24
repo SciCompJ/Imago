@@ -53,11 +53,9 @@ public class TableSelectColumns implements TablePlugin
         }
         
         // Parse dialog contents
-//        boolean[] showColumnFlags = new boolean[nCols2];
         ArrayList<Integer> indices = new ArrayList<Integer>();
         for (int i = 0; i < nCols2; i++)
         {
-//            showColumnFlags[i] = dlg.getNextBoolean();
             if (dlg.getNextBoolean())
             {
                 indices.add(i);
@@ -80,6 +78,6 @@ public class TableSelectColumns implements TablePlugin
         res.setName(tableName + "-colSel");
         
         // add the new frame to the GUI
-        frame.getGui().createTableFrame(res, frame);
+        TableFrame.create(res, frame);
     }
 }

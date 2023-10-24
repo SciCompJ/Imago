@@ -10,6 +10,7 @@ import imago.app.ImageHandle;
 import imago.app.shape.Shape;
 import imago.gui.*;
 import imago.gui.image.ImageFrame;
+import imago.gui.table.TableFrame;
 import net.sci.array.Array;
 import net.sci.array.scalar.IntArray2D;
 import net.sci.geom.geom2d.LineSegment2D;
@@ -83,7 +84,7 @@ public class LabelImageMaxFeretDiameters implements FramePlugin
             Table table = algo.createTable(diams);
             
             // add the new frame to the GUI
-            gui.createTableFrame(table, frame);
+            TableFrame.create(table, frame);
         }
         
         if (overlay)

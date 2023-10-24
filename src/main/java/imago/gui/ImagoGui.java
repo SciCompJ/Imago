@@ -565,13 +565,14 @@ public class ImagoGui
 	// ===================================================================
     // Creation and management of new frames for specific objects
 	
+    @Deprecated
     public TableFrame createTableFrame(Table table, ImagoFrame parentFrame)
 	{
 	    // Create the new handle, keeping the maximum of settings
         TableHandle handle = this.app.createTableHandle(table);
         
         // create the frame
-        TableFrame frame = new TableFrame(parentFrame, handle);
+        TableFrame frame = new TableFrame(this, handle);
         updateFrameLocation(frame, parentFrame);
         
         // add to frame manager
@@ -583,6 +584,7 @@ public class ImagoGui
 	 * Creates a new document from an image, adds it to the application, 
 	 * and returns a new frame associated to this document. 
 	 */
+    @Deprecated
 	public ImageFrame createImageFrame(Image image)
 	{
 		return createImageFrame(image, null);
@@ -590,8 +592,11 @@ public class ImagoGui
 
     /** 
      * Creates a new document from an image, adds it to the application, 
-     * and returns a new frame associated to this document. 
+     * and returns a new frame associated to this document.
+     * 
+     * @deprecated use ImageFrame.
      */
+    @Deprecated
     public ImageFrame createImageFrame(Image image, ImagoFrame parentFrame)
     {
     	// First create a handle for the image
@@ -698,6 +703,25 @@ public class ImagoGui
 
     public boolean addFrame(ImagoFrame frame)
     {
+        // specific processing for image frames
+        if (frame instanceof ImageFrame)
+        {
+            // add the frame to the list of frames associated to the document
+            String key = ((ImageFrame) frame).getImageHandle().getTag();
+            if (imageFrames.containsKey(key))
+            {
+                imageFrames.get(key).add((ImageFrame) frame);
+            }
+            else
+            {
+                ArrayList<ImageFrame> frameList = new ArrayList<>(1);
+                frameList.add((ImageFrame) frame);
+                imageFrames.put(key, frameList);
+            }
+
+        }
+        
+        // add to the general list of frames
     	return this.frames.add(frame);
     }
 

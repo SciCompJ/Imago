@@ -10,6 +10,7 @@ import imago.app.ImageHandle;
 import imago.app.shape.Shape;
 import imago.gui.*;
 import imago.gui.image.ImageFrame;
+import imago.gui.table.TableFrame;
 import net.sci.array.Array;
 import net.sci.array.scalar.IntArray2D;
 import net.sci.geom.geom2d.polygon.Polyline2D;
@@ -83,7 +84,7 @@ public class LabelImageGeodesicDiameters implements FramePlugin
         if (showTable)
         {
             // create result frame and display
-            frame.createTableFrame(algo.createTable(diams));
+            TableFrame.create(algo.createTable(diams), frame);
         }
         
         if (overlayPaths)

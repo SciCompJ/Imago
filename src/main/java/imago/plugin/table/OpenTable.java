@@ -9,6 +9,7 @@ import java.io.IOException;
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
+import imago.gui.table.TableFrame;
 import net.sci.table.Table;
 import net.sci.table.io.DelimitedTableReader;
 
@@ -70,6 +71,6 @@ public class OpenTable implements FramePlugin
 		table.setName(file.getName());
 		
         // add the new frame to the GUI
-        frame.createTableFrame(table);
+		TableFrame.create(table, frame);
 	}
 }

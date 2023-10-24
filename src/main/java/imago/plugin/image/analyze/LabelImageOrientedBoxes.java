@@ -12,6 +12,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.image.ImageFrame;
+import imago.gui.table.TableFrame;
 import net.sci.array.Array;
 import net.sci.array.scalar.IntArray2D;
 import net.sci.geom.geom2d.polygon.OrientedBox2D;
@@ -100,7 +101,7 @@ public class LabelImageOrientedBoxes implements FramePlugin
             Table table = analyzer.createTable(RegionAnalyzer.createMap(labels, boxes));
 
             // add the new frame to the GUI
-            frame.createTableFrame(table);
+            TableFrame.create(table, frame);
         }
 
         if (overlay)

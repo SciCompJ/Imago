@@ -8,6 +8,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.image.ImageFrame;
+import imago.gui.table.TableFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.vector.VectorArray;
@@ -147,6 +148,6 @@ public class VectorImageToTable implements FramePlugin
         table.setName(image.getName() + "-values");
 
         // add the new frame to the GUI
-        frame.getGui().createTableFrame(table, frame);
+        TableFrame.create(table, frame);
 	}
 }

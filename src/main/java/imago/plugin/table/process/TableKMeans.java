@@ -51,7 +51,7 @@ public class TableKMeans implements TablePlugin
         Table classes = km.predict(table);
         
         // add the new frame to the GUI
-        frame.getGui().createTableFrame(classes, frame);
+        TableFrame.create(classes, frame);
         
         if (createCentroids)
         {
@@ -59,7 +59,7 @@ public class TableKMeans implements TablePlugin
             Table centroids = km.centroids();
 
             // add the new frame to the GUI
-            frame.getGui().createTableFrame(centroids, frame);
+            TableFrame.create(centroids, frame);
         }
     }
 

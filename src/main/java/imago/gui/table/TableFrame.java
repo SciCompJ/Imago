@@ -3,11 +3,6 @@
  */
 package imago.gui.table;
 
-import imago.app.TableHandle;
-import imago.gui.GuiBuilder;
-import imago.gui.ImagoFrame;
-import imago.gui.ImagoGui;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -22,6 +17,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import imago.app.ImagoApp;
+import imago.app.TableHandle;
+import imago.gui.GuiBuilder;
+import imago.gui.ImagoFrame;
+import imago.gui.ImagoGui;
 import net.sci.table.Table;
 
 /**
@@ -34,6 +34,50 @@ public class TableFrame extends ImagoFrame
 {
     // ===================================================================
     // Static methods
+    
+    /**
+     * Creates a new frame for displaying a table, located with respect to the
+     * specified frame.
+     * 
+     * Creates a new handle from a table, adds it to the application, and
+     * returns a new frame associated to this document.
+     * 
+     * @param table
+     *            the image to display
+     * @param parentFrame
+     *            (optional) an existing frame used to locate the new frame. If
+     *            null, a new ImagoGui is created.
+     * @return a new frame displaying the input table
+     */
+    public static final TableFrame create(Table table, ImagoFrame parentFrame)
+    {
+        // retrieve gui, or create one if necessary
+        ImagoGui gui = parentFrame != null ? parentFrame.getGui() : new ImagoGui(new ImagoApp());
+        ImagoApp app = gui.getAppli();
+        
+        // create a handle for the image
+        TableHandle parentHandle = null;
+        if (parentFrame != null && parentFrame instanceof TableFrame)
+        {
+            parentHandle = ((TableFrame) parentFrame).handle;
+        }
+        TableHandle handle = app.createTableHandle(table, parentHandle);
+
+        // Create the frame
+        TableFrame frame = new TableFrame(gui, handle);
+        gui.updateFrameLocation(frame, parentFrame);
+
+        // link the frames
+        gui.addFrame(frame);
+        if (parentFrame != null)
+        {
+            parentFrame.addChild(frame);
+        }
+        
+        frame.setVisible(true);
+        return frame;
+    }
+    
     
     public static final Collection<TableFrame> getTableFrames(ImagoGui gui)
     {
@@ -92,21 +136,15 @@ public class TableFrame extends ImagoFrame
     /**
      * @param parent 
      */
-    public TableFrame(ImagoFrame parent, TableHandle handle)
+    public TableFrame(ImagoGui gui, TableHandle handle)
     {
-        super(parent, "Table Frame");
+        super(gui, "Table Frame");
         this.handle = handle;
         this.table = handle.getTable();
 
         // create menu
         GuiBuilder builder = new GuiBuilder(this);
         builder.createMenuBar();
-        
-//        // Create a status bar
-//        this.statusBar = new StatusBar();
-//
-//        // create default viewer for image
-//        createDefaultImageViewer();
         
         // layout the frame
         setupLayout();

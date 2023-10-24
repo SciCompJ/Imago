@@ -53,7 +53,7 @@ public class TransposeTable implements TablePlugin
 
 
         // add the new frame to the GUI
-        frame.createTableFrame(res);
+        TableFrame.create(res, frame);
     }
 
 }

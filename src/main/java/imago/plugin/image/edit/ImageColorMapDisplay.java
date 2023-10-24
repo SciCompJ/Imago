@@ -6,6 +6,7 @@ package imago.plugin.image.edit;
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
+import imago.gui.table.TableFrame;
 import net.sci.array.color.Color;
 import net.sci.array.color.ColorMap;
 import net.sci.image.Image;
@@ -52,7 +53,7 @@ public class ImageColorMapDisplay implements FramePlugin
         table.setName(image.getName() + "-colormap");
         
         // add the new frame to the GUI
-        frame.getGui().createTableFrame(table, frame);
+        TableFrame.create(table, frame);
 	}
 
 }
