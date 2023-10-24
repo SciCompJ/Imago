@@ -33,12 +33,11 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
-import imago.app.ImagoApp;
 import imago.app.ImageHandle;
+import imago.app.ImagoApp;
 import imago.app.TableHandle;
 import imago.gui.frames.ImageFrame;
 import imago.gui.frames.ImagoEmptyFrame;
-import imago.gui.frames.ShapeManager;
 import imago.gui.frames.TableFrame;
 import net.sci.image.Image;
 import net.sci.table.Table;
@@ -128,19 +127,12 @@ public class ImagoGui
      */
 	private Map<String, ArrayList<ImageFrame>> imageFrames = new HashMap<>(); 
 	
-	/**
-	 * An empty frame without document, displayed at startup.
-	 */
-	ImagoFrame emptyFrame = null;
-	
-	/**
-	 * An instance of shape manager (only one instance per GUI).
-	 */
-	ShapeManager shapeManager = null;    
-    
-		
-    ArrayList<PluginHandler> pluginHandlers = new ArrayList<PluginHandler>();
+    /**
+     * An empty frame without document, displayed at startup.
+     */
+    ImagoFrame emptyFrame = null;
 
+    ArrayList<PluginHandler> pluginHandlers = new ArrayList<PluginHandler>();
     
 	// ===================================================================
     // Private constants
