@@ -3,11 +3,11 @@
  */
 package imago.plugin.image.analyze;
 
-import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImageFrame;
+import imago.gui.image.ImageFrame;
+import imago.gui.image.ImageViewer;
+import imago.gui.image.PlanarImageViewer;
 import imago.gui.FramePlugin;
-import imago.gui.viewer.PlanarImageViewer;
 import net.sci.array.Array;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.ScalarArray2D;

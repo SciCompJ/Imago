@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.gui;
+package imago.gui.image;
 
 
 import imago.app.ImageHandle;
@@ -15,8 +15,8 @@ import net.sci.image.Image;
  * Displays a 2D or 3D image together with some widgets for modifying the view.
  * The type of image representation is left to the sub-classes.
  * 
- * @see imago.gui.viewer.PlanarImageViewer
- * @see imago.gui.viewer.StackSliceViewer
+ * @see imago.gui.image.PlanarImageViewer
+ * @see imago.gui.image.StackSliceViewer
  * 
  * @author David Legland
  *

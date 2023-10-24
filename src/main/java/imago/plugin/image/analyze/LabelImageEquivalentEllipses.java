@@ -8,7 +8,7 @@ import imago.app.shape.Shape;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.frames.ImageFrame;
+import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 
 import java.util.Collection;

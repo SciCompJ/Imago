@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.gui.viewer;
+package imago.gui.image;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -20,8 +20,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import imago.app.ImageHandle;
-import imago.gui.ImageViewer;
-import imago.gui.ImagoTool;
 import net.sci.geom.Geometry;
 import net.sci.image.ImageType;
 import net.sci.image.process.shape.ImageSlicer;

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImageFrame;
+import imago.gui.image.ImageFrame;
 import net.sci.array.Array2D;
 import net.sci.array.Array3D;
 import net.sci.image.Image;

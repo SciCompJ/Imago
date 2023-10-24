@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.gui.viewer;
+package imago.gui.image;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -18,8 +18,6 @@ import imago.app.scene.GroupNode;
 import imago.app.scene.Node;
 import imago.app.scene.ShapeNode;
 import imago.app.shape.Shape;
-import imago.gui.ImageViewer;
-import imago.gui.ImagoTool;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.image.Image;

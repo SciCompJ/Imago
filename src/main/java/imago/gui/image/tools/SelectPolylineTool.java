@@ -1,27 +1,26 @@
 /**
  * 
  */
-package imago.gui.tool;
+package imago.gui.image.tools;
 
-import imago.gui.ImagoTool;
-import imago.gui.frames.ImageFrame;
-import imago.gui.viewer.ImageDisplay;
+import imago.gui.image.ImageDisplay;
+import imago.gui.image.ImageFrame;
+import imago.gui.image.ImagoTool;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.geom2d.polygon.Polygon2D;
-import net.sci.geom.geom2d.polygon.DefaultPolygon2D;
+import net.sci.geom.geom2d.polygon.Polyline2D;
 
 /**
- * Select a polygon region of interest on a planar viewer.
+ * Select a polyline region of interest on a planar viewer.
  * 
- * @author David Legland
+ * @author dlegland
  *
  */
-public class SelectPolygonTool extends ImagoTool
+public class SelectPolylineTool extends ImagoTool
 {
     ArrayList<Point2D> selectedPoints = new ArrayList<Point2D>();
     
@@ -33,12 +32,12 @@ public class SelectPolygonTool extends ImagoTool
     /**
      * The current state of the algorithm.
      *  
-     * When true, points are added to the polygon. 
-     * When false, a new point will start a new polygon.
+     * When true, points are added to the polyline. 
+     * When false, a new point will start a new polyline.
      */
-    boolean polygonStarted = false;
+    boolean polylineStarted = false;
     
-    public SelectPolygonTool(ImageFrame viewer, String name)
+    public SelectPolylineTool(ImageFrame viewer, String name)
     {
         super(viewer, name);
     }
@@ -51,11 +50,11 @@ public class SelectPolygonTool extends ImagoTool
     @Override
     public void select()
     {
-        System.out.println("selected the 'selectPolygon' tool");
+        System.out.println("selected the 'selectPolyline' tool");
         
         this.selectedPoints.clear();
         this.lastClickedPoint = null;
-        this.polygonStarted = false;
+        this.polylineStarted = false;
     }
     
     /*
@@ -66,7 +65,7 @@ public class SelectPolygonTool extends ImagoTool
     @Override
     public void deselect()
     {
-        System.out.println("deselected the 'selectPolygon' tool");
+        System.out.println("deselected the 'selectPolyline' tool");
         this.selectedPoints.clear();
     }
     
@@ -91,9 +90,9 @@ public class SelectPolygonTool extends ImagoTool
         if (doubleClick)
         {
             // if clicked twice on the same point, close the polygon and add it to selection
-            this.polygonStarted = false;
+            this.polylineStarted = false;
         }
-        else if (this.polygonStarted)
+        else if (this.polylineStarted)
         {
             // if polygon was created, update it
             this.selectedPoints.add(pos);
@@ -103,17 +102,11 @@ public class SelectPolygonTool extends ImagoTool
             // create a new polygon
             this.selectedPoints.clear();
             this.selectedPoints.add(pos);
-            this.polygonStarted = true;
+            this.polylineStarted = true;
         }
         
-        // creates a new polygon for selection
-        Polygon2D poly = Polygon2D.create(selectedPoints);
-        
-        // if new polygon is created, ensures signed area > 0
-        if (doubleClick)
-        {
-           if (poly.signedArea() < 0) poly = poly.complement();
-        }
+        // creates a new polyline for selection
+        Polyline2D poly = Polyline2D.create(selectedPoints, false);
 
         display.setSelection(poly);
         this.viewer.getImageView().setSelection(poly);
@@ -124,7 +117,7 @@ public class SelectPolygonTool extends ImagoTool
     @Override
     public void mouseMoved(MouseEvent evt)
     {
-        if (!this.polygonStarted)
+        if (!this.polylineStarted)
         {
             return;
         }
@@ -139,7 +132,7 @@ public class SelectPolygonTool extends ImagoTool
         // update vertices, add corresponding polygon, and remove last vertex
         int nv = this.selectedPoints.size();
         this.selectedPoints.add(pos);
-        display.setSelection(new DefaultPolygon2D(selectedPoints));
+        display.setSelection(Polyline2D.create(selectedPoints, false));
         this.selectedPoints.remove(nv);
         
         this.viewer.repaint();

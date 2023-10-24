@@ -1,14 +1,14 @@
 /**
  * 
  */
-package imago.gui.tool;
+package imago.gui.image.tools;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 
-import imago.gui.ImagoTool;
-import imago.gui.frames.ImageFrame;
-import imago.gui.viewer.ImageDisplay;
+import imago.gui.image.ImageDisplay;
+import imago.gui.image.ImageFrame;
+import imago.gui.image.ImagoTool;
 import net.sci.geom.geom2d.Bounds2D;
 import net.sci.geom.geom2d.Point2D;
 

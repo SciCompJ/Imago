@@ -1,9 +1,9 @@
 /**
  * 
  */
-package imago.gui.panel;
+package imago.gui.image;
 
-import imago.gui.ImageViewer;
+import imago.gui.panels.CollapsiblePanel;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ import net.sci.image.Image;
  * 
  * Layout: contained within an ImageFrame. 
  *
- * @see imago.gui.ImageViewer
+ * @see imago.gui.image.ImageViewer
  * @see imago.gui.ImageDocViewer
  * 
  * @author dlegland

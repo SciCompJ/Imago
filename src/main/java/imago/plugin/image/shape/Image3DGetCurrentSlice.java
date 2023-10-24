@@ -4,11 +4,11 @@
 package imago.plugin.image.shape;
 
 import imago.app.ImageHandle;
-import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImageFrame;
+import imago.gui.image.ImageFrame;
+import imago.gui.image.ImageViewer;
+import imago.gui.image.StackSliceViewer;
 import imago.gui.FramePlugin;
-import imago.gui.viewer.StackSliceViewer;
 import net.sci.image.Image;
 import net.sci.image.process.shape.ImageSlicer;
 

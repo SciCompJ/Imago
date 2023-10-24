@@ -1,11 +1,11 @@
 /**
  * 
  */
-package imago.gui.tool;
+package imago.gui.image.tools;
 
-import imago.gui.ImagoTool;
-import imago.gui.frames.ImageFrame;
-import imago.gui.viewer.ImageDisplay;
+import imago.gui.image.ImageDisplay;
+import imago.gui.image.ImageFrame;
+import imago.gui.image.ImagoTool;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;

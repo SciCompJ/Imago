@@ -1,11 +1,7 @@
 /**
  * 
  */
-package imago.gui.viewer;
-
-import imago.app.ImageHandle;
-import imago.gui.ImageViewer;
-import imago.gui.ImagoTool;
+package imago.gui.image;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -16,23 +12,32 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import imago.app.ImageHandle;
+import imago.app.scene.ImageSliceNode;
+import imago.app.scene.Node;
+import imago.app.scene.ShapeNode;
+import imago.app.shape.Shape;
 import net.sci.geom.Geometry;
+import net.sci.geom.geom2d.Geometry2D;
 import net.sci.image.Image;
 import net.sci.image.process.shape.ImageSlicer;
 
 
 /**
- * A Panel that displays a single (XY)-slice of a multi-dimensional image.
+ * A Panel that displays a single slice of the current 3D image.
  * 
  * @author David Legland
  *
  */
-public class Image5DXYSliceViewer extends ImageViewer implements ChangeListener, ActionListener, ComponentListener 
+public class StackSliceViewer extends ImageViewer implements ChangeListener, ActionListener, ComponentListener 
 {	
 	// ===================================================================
 	// Class variables
@@ -42,14 +47,14 @@ public class Image5DXYSliceViewer extends ImageViewer implements ChangeListener,
 	BufferedImage awtImage;
 
 	ZoomMode zoomMode = ZoomMode.FILL;
-	
+		
+//	int sliceIndex = 0;
+
 	// GUI handles
 	JScrollPane scroll;
-	
-	/**
-	 * The panel used to display the image.
-	 */
 	ImageDisplay imageDisplay;
+	JSlider sliceSlider;
+	JTextField sliceEdit;
 	
 	/**
      * The shape of the current selection, usually a polyline or a rectangle, in pixels coordinates.
@@ -62,12 +67,21 @@ public class Image5DXYSliceViewer extends ImageViewer implements ChangeListener,
 	// ===================================================================
 	// Constructors
 
-	public Image5DXYSliceViewer(ImageHandle handle) 
+	public StackSliceViewer(ImageHandle handle) 
 	{
 		super(handle);
 		
 		recomputeAwtImage();
-        setupLayout();
+		setupLayout();
+	}
+	
+	public StackSliceViewer(ImageHandle handle, int sliceIndex) 
+	{
+		super(handle);
+        this.slicingPosition[2] = sliceIndex;
+		
+        recomputeAwtImage();
+		setupLayout();
 	}
 	
 	private void setupLayout() 
@@ -82,16 +96,49 @@ public class Image5DXYSliceViewer extends ImageViewer implements ChangeListener,
 		scroll = new JScrollPane(this.imageDisplay);
 		scroll.setBackground(Color.WHITE);
 
+		// create a slider for changing slice state
+		int nz = image.getSize(2);
+		int z0 = (int) Math.round(nz / 2.0);
+		sliceSlider = new JSlider(JSlider.VERTICAL, 0, nz-1, z0);
+		sliceSlider.setInverted(true);
+//		sliceSlider.setMinorTickSpacing(10);
+//		sliceSlider.setMajorTickSpacing(nz-1);
+		sliceSlider.setPaintTicks(true);
+		sliceSlider.addChangeListener(this);
+
+		// create a text field for changing slice state
+		sliceEdit = new JTextField(Integer.toString(z0), 4);
+		sliceEdit.setHorizontalAlignment(JTextField.CENTER);
+		sliceEdit.addActionListener(this);
+		
 		// Setup the general layout
 		this.panel.setLayout(new BorderLayout());
 		this.panel.add(scroll, BorderLayout.CENTER);
+		JPanel sliderPanel = new JPanel(new BorderLayout());
+		JLabel label = new JLabel("Slice");
+		label.setHorizontalAlignment(JTextField.CENTER);
+		sliderPanel.add(label, BorderLayout.NORTH);
+		sliderPanel.add(sliceSlider, BorderLayout.CENTER);
+		sliderPanel.add(sliceEdit, BorderLayout.SOUTH);
+		this.panel.add(sliderPanel, BorderLayout.WEST);
 		
 		// Add listeners
 		this.panel.addComponentListener(this);
 	}
 	
+
 	// ===================================================================
 	// General methods
+
+    public void setSlicingPosition(int index, int pos)
+    {
+        this.slicingPosition[index] = pos;
+        
+        // update widgets
+        String txt = Integer.toString(pos);
+        this.sliceSlider.setValue(pos);
+        this.sliceEdit.setText(txt);
+    }
 
 	public ImageDisplay getImageDisplay() 
 	{
@@ -110,8 +157,13 @@ public class Image5DXYSliceViewer extends ImageViewer implements ChangeListener,
     public void setSelection(Geometry selection)
     {
         this.selection = selection;
+        if (selection == null || selection instanceof Geometry2D)
+        {
+        	this.imageDisplay.selection = (Geometry2D) selection;
+        }
     }
-	    
+
+    
 	// ===================================================================
 	// Display methods
 
@@ -148,8 +200,15 @@ public class Image5DXYSliceViewer extends ImageViewer implements ChangeListener,
 	{
 //	    System.out.println("update slice image");
 	    recomputeAwtImage();
-        imageDisplay.setBufferedImage(awtImage);
+		imageDisplay.setBufferedImage(this.awtImage);
 	}
+
+    private void recomputeAwtImage()
+    {
+        Image image = this.getImageToDisplay();
+        Image slice = ImageSlicer.slice2d(image, this.slicingPosition[2]);
+        this.awtImage = slice.getType().createAwtImage(slice);
+    }
 
 	// ===================================================================
 	// tool management
@@ -180,31 +239,88 @@ public class Image5DXYSliceViewer extends ImageViewer implements ChangeListener,
     public void refreshDisplay()
     {
         imageDisplay.updateOffset();
-//        Image image = this.getImageToDisplay();
-////        System.out.println("refresh StackSLiceViewer display");
-//        
-//        this.awtImage = BufferedImageUtils.createAwtImage(image, this.zSliceIndex);
-        recomputeAwtImage();
-        this.imageDisplay.setBufferedImage(this.awtImage);
+        updateSliceImage();
         this.imageDisplay.repaint();
+		
+		refreshSceneGraph();
     }
+    
+	private void refreshSceneGraph()
+	{
+		if (this.imageHandle == null)
+		{
+			return;
+		}
+		
+		this.imageDisplay.clearSceneGraphItems();
+		if (!this.displaySceneGraph)
+		{
+			return;
+		}
+		
+		Node rootNode = this.imageHandle.getRootNode();
+		if (rootNode == null)
+		{
+			return;
+		}
+		
+		displaySceneGraphNode(rootNode);
+	}
+	
+	private void displaySceneGraphNode(Node node)
+	{
+		if (!node.isVisible())
+		{
+			return;
+		}
+		
+		if (node instanceof ImageSliceNode)
+		{
+			// check slice index to display only items of current slice 
+			int index = ((ImageSliceNode) node).getSliceIndex();
+			if (index != this.getSlicingPosition(2))
+			{
+				return;
+			}
+			for (Node child : node.children())
+			{
+				displaySceneGraphNode(child);
+			}
+		}
+		else if (!node.isLeaf())
+		{
+			for (Node child : node.children())
+			{
+				displaySceneGraphNode(child);
+			}
+		}
+		else if (node instanceof ShapeNode)
+		{
+			Geometry geom = ((ShapeNode) node).getGeometry();
+			if (geom instanceof Geometry2D)
+			{
+				Shape shape = new Shape(geom, ((ShapeNode) node).getStyle());
+				this.imageDisplay.addSceneGraphItem(shape);
+			}
+		}
+		else
+		{
+			return;
+		}
+	}
+	
 
-    private void recomputeAwtImage()
-    {
-        Image image = this.getImageToDisplay();
-        Image slice = ImageSlicer.slice2d(image, 0, 1, this.slicingPosition);
-        this.awtImage = image.getType().createAwtImage(slice);
-    }
-    
-    
     // ===================================================================
 	// Implementation of StateListener interface
 
 	@Override
 	public void stateChanged(ChangeEvent evt)
 	{
+		int index = sliceSlider.getValue();
+		this.setSlicingPosition(2, index);
 		updateSliceImage();
 		this.panel.repaint();
+		refreshSceneGraph();//TODO: split refresh graph and draw graph
 	}
 
 	// ===================================================================
@@ -212,6 +328,14 @@ public class Image5DXYSliceViewer extends ImageViewer implements ChangeListener,
 
 	public void actionPerformed(ActionEvent evt) 
 	{
+	    String text = sliceEdit.getText();
+	    int index = Integer.parseInt(text);
+	    if (index < 0 || index >= this.image.getSize(2)) 
+	    {
+			return;
+	    }
+	    
+		this.setSlicingPosition(2, index);
 		updateSliceImage();
 		this.panel.repaint();
 	}

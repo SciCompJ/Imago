@@ -5,10 +5,10 @@ package imago.plugin.image.edit;
 
 import imago.app.ImageHandle;
 import imago.gui.FramePlugin;
-import imago.gui.frames.ImageFrame;
-import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
-import imago.gui.viewer.PlanarImageViewer;
+import imago.gui.image.ImageFrame;
+import imago.gui.image.ImageViewer;
+import imago.gui.image.PlanarImageViewer;
 import net.sci.array.Array;
 import net.sci.array.binary.BinaryArray2D;
 import net.sci.geom.geom2d.Geometry2D;

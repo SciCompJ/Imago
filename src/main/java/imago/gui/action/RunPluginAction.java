@@ -6,7 +6,7 @@ package imago.gui.action;
 import imago.gui.ImagoAction;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.frames.ImageFrame;
+import imago.gui.image.ImageFrame;
 import imago.plugin.image.ImageOperatorPlugin;
 import net.sci.image.ImageOperator;
 import imago.gui.FramePlugin;

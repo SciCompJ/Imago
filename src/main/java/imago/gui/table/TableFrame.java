@@ -1,13 +1,12 @@
 /**
  * 
  */
-package imago.gui.frames;
+package imago.gui.table;
 
 import imago.app.TableHandle;
 import imago.gui.GuiBuilder;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.util.RowNumberTable;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

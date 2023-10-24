@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.gui.panel;
+package imago.gui.panels;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;

@@ -1,13 +1,11 @@
 /**
  * 
  */
-package imago.gui;
+package imago.gui.image;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-
-import imago.gui.frames.ImageFrame;
 
 /**
  * Abstract class for processing mouse event on an ImageFrame.

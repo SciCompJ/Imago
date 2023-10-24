@@ -5,9 +5,9 @@ package imago.plugin.image.process;
 
 import imago.app.ImageHandle;
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImageFrame;
+import imago.gui.image.ImageFrame;
+import imago.gui.image.OrthoSlicesViewer;
 import imago.gui.FramePlugin;
-import imago.gui.viewer.OrthoSlicesViewer;
 import net.sci.image.Image;
 
 /**

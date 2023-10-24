@@ -8,7 +8,7 @@ import java.io.IOException;
 
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.frames.TableFrame;
+import imago.gui.table.TableFrame;
 import net.sci.table.Table;
 import net.sci.table.io.DelimitedTableWriter;
 

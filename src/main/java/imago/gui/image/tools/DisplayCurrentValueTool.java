@@ -1,17 +1,17 @@
 /**
  * 
  */
-package imago.gui.tool;
+package imago.gui.image.tools;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.Locale;
 
-import imago.gui.ImageViewer;
-import imago.gui.ImagoTool;
-import imago.gui.frames.ImageFrame;
-import imago.gui.panel.StatusBar;
-import imago.gui.viewer.ImageDisplay;
+import imago.gui.image.ImageDisplay;
+import imago.gui.image.ImageFrame;
+import imago.gui.image.ImageViewer;
+import imago.gui.image.ImagoTool;
+import imago.gui.panels.StatusBar;
 import net.sci.array.Array;
 import net.sci.array.color.RGB16Array;
 import net.sci.array.color.RGB8Array;

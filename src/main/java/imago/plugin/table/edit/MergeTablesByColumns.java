@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.frames.TableFrame;
+import imago.gui.table.TableFrame;
 import imago.gui.FramePlugin;
 
 /**

@@ -6,7 +6,7 @@ package imago.plugin.image.shape;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImageFrame;
+import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
 import net.sci.array.process.numeric.MaxProjection;
 import net.sci.array.process.numeric.MeanIntensityProjection;

@@ -4,7 +4,7 @@
 package imago.plugin.image.process;
 
 import imago.gui.*;
-import imago.gui.frames.ImageFrame;
+import imago.gui.image.ImageFrame;
 import net.sci.array.Arrays;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.process.binary.LogicalBinaryOperator;

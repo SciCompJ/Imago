@@ -16,12 +16,12 @@ import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
 import org.knowm.xchart.style.Styler.LegendPosition;
 import org.knowm.xchart.style.markers.SeriesMarkers;
 
-import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImageFrame;
 import imago.gui.frames.ImagoChartFrame;
+import imago.gui.image.ImageFrame;
+import imago.gui.image.ImageViewer;
+import imago.gui.image.PlanarImageViewer;
 import imago.gui.FramePlugin;
-import imago.gui.viewer.PlanarImageViewer;
 import net.sci.array.Array;
 import net.sci.array.color.RGB8Array;
 import net.sci.array.vector.VectorArray;

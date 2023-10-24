@@ -1,32 +1,31 @@
 /**
  * 
  */
-package imago.gui.tool;
+package imago.gui.image.tools;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 
 import imago.app.UserPreferences;
-import imago.gui.ImagoTool;
-import imago.gui.frames.ImageFrame;
-import imago.gui.viewer.ImageDisplay;
+import imago.gui.image.ImageDisplay;
+import imago.gui.image.ImageFrame;
+import imago.gui.image.ImagoTool;
 import net.sci.array.Array;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.ScalarArray2D;
 import net.sci.array.scalar.ScalarArray3D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.image.Image;
-import net.sci.image.morphology.FloodFill;
 
 /**
- * Flood-fills the current value within the image from the clicked point.
+ * Draw current value on current position when user clicks.
  * 
  * Requires scalar image.
  * 
  * @author dlegland
  *
  */
-public class FloodFillTool extends ImagoTool
+public class DrawValueTool extends ImagoTool
 {
     /**
      * Basic constructor.
@@ -36,7 +35,7 @@ public class FloodFillTool extends ImagoTool
      * @param name
      *            the name of this tool
      */
-    public FloodFillTool(ImageFrame viewer, String name)
+    public DrawValueTool(ImageFrame viewer, String name)
     {
         super(viewer, name);
     }
@@ -60,8 +59,6 @@ public class FloodFillTool extends ImagoTool
     @Override
     public void mousePressed(MouseEvent evt)
     {
-        System.out.println("flood-fill");
-        
         // Coordinate of mouse cursor
         ImageDisplay display = (ImageDisplay) evt.getSource();
         Point point = new Point(evt.getX(), evt.getY());
@@ -94,13 +91,13 @@ public class FloodFillTool extends ImagoTool
         if (array.dimensionality() == 2)
         {
             ScalarArray2D<?> array2d = ScalarArray2D.wrap((ScalarArray<?>) array);
-            FloodFill.floodFill(array2d, xi, yi, value, 4);
+            array2d.setValue(xi, yi, value);
         }
         else if (array.dimensionality() == 3)
         {
             ScalarArray3D<?> array3d = ScalarArray3D.wrap((ScalarArray<?>) array);
             int zi = this.viewer.getImageView().getSlicingPosition(2);
-            FloodFill.floodFill(array3d, xi, yi, zi, value, 6);
+            array3d.setValue(xi, yi, zi, value);
         }
         
         this.viewer.getImageView().refreshDisplay();

@@ -19,12 +19,12 @@ import org.jfree.data.statistics.SimpleHistogramDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImageFrame;
 import imago.gui.frames.ImagoChartFrame;
+import imago.gui.image.ImageFrame;
+import imago.gui.image.ImageViewer;
+import imago.gui.image.PlanarImageViewer;
 import imago.gui.FramePlugin;
-import imago.gui.viewer.PlanarImageViewer;
 import net.sci.array.Array;
 import net.sci.array.color.RGB8Array2D;
 import net.sci.array.scalar.ScalarArray2D;

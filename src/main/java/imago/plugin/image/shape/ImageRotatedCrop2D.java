@@ -24,10 +24,10 @@ import javax.swing.border.EmptyBorder;
 
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImageFrame;
+import imago.gui.image.ImageDisplay;
+import imago.gui.image.ImageFrame;
+import imago.gui.image.PlanarImageViewer;
 import imago.gui.util.GuiHelper;
-import imago.gui.viewer.PlanarImageViewer;
-import imago.gui.viewer.ImageDisplay;
 import net.sci.array.Array;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.ScalarArray2D;

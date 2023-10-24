@@ -1,14 +1,14 @@
 /**
  * 
  */
-package imago.gui.tool;
+package imago.gui.image.tools;
 
-import imago.gui.ImageViewer;
-import imago.gui.ImagoTool;
-import imago.gui.frames.ImageFrame;
-import imago.gui.viewer.ImageDisplay;
-import imago.gui.viewer.PlanarImageViewer;
-import imago.gui.viewer.StackSliceViewer;
+import imago.gui.image.ImageDisplay;
+import imago.gui.image.ImageFrame;
+import imago.gui.image.ImageViewer;
+import imago.gui.image.ImagoTool;
+import imago.gui.image.PlanarImageViewer;
+import imago.gui.image.StackSliceViewer;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;

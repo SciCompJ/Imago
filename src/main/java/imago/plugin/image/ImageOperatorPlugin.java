@@ -4,7 +4,7 @@
 package imago.plugin.image;
 
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImageFrame;
+import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.image.Image;
 import net.sci.image.ImageOperator;

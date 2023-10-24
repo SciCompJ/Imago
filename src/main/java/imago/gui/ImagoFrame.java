@@ -8,8 +8,8 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
-import imago.gui.frames.ImageFrame;
-import imago.gui.frames.TableFrame;
+import imago.gui.image.ImageFrame;
+import imago.gui.table.TableFrame;
 import net.sci.algo.AlgoEvent;
 import net.sci.algo.AlgoListener;
 import net.sci.image.Image;
@@ -21,8 +21,8 @@ import net.sci.table.Table;
  * 
  * Most frames implementations are located in the {@link imago.gui.frames} package.
 
- * @see imago.gui.frames.ImageFrame
- * @see imago.gui.frames.TableFrame
+ * @see imago.gui.image.ImageFrame
+ * @see imago.gui.table.TableFrame
  * @see imago.gui.frames.ImagoTextFrame
  * 
  * @author David Legland

@@ -5,7 +5,7 @@ package imago.plugin.edit;
 
 import imago.app.ImageHandle;
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImageFrame;
+import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 
 /**

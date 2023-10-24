@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.gui.panel;
+package imago.gui.panels;
 
 import java.awt.*;
 import java.awt.event.*;

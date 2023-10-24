@@ -4,7 +4,7 @@
 package imago.plugin.image.process;
 
 import imago.gui.*;
-import imago.gui.frames.ImageFrame;
+import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
 import net.sci.array.process.Math;
 import net.sci.array.scalar.Float32Array;

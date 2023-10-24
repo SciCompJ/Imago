@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.gui.viewer;
+package imago.gui.image;
 
 import imago.app.shape.Shape;
 
@@ -252,7 +252,7 @@ public class ImageDisplay extends JPanel
 	 * Compute new offset such that image is either in center position, or at
 	 * left-most or top most position.
 	 */
-	protected void updateOffset() 
+	public void updateOffset() 
 	{
 		Dimension dim0 = this.getSize();
 		Dimension dim = this.getDisplaySize();

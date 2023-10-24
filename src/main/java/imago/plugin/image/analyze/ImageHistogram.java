@@ -27,7 +27,7 @@ import org.knowm.xchart.style.markers.SeriesMarkers;
 
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImageFrame;
+import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
 import net.sci.array.color.RGB16Array;
 import net.sci.array.color.RGB8Array;

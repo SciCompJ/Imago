@@ -3,10 +3,10 @@
  */
 package imago.plugin.edit;
 
-import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
-import imago.gui.ImagoTool;
-import imago.gui.frames.ImageFrame;
+import imago.gui.image.ImageFrame;
+import imago.gui.image.ImageViewer;
+import imago.gui.image.ImagoTool;
 import imago.gui.FramePlugin;
 
 /**

@@ -3,10 +3,10 @@
  */
 package imago.gui.action;
 
-import imago.gui.ImageViewer;
 import imago.gui.ImagoAction;
-import imago.gui.ImagoTool;
-import imago.gui.frames.ImageFrame;
+import imago.gui.image.ImageFrame;
+import imago.gui.image.ImageViewer;
+import imago.gui.image.ImagoTool;
 
 import java.awt.event.ActionEvent;
 

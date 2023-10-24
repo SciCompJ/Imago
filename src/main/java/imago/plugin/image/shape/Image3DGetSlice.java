@@ -6,7 +6,7 @@ package imago.plugin.image.shape;
 import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImageFrame;
+import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.image.Image;
 import net.sci.image.process.shape.ImageSlicer;

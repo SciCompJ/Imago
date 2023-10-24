@@ -5,7 +5,7 @@ package imago.plugin.image.edit;
 
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImageFrame;
+import imago.gui.image.ImageFrame;
 import net.sci.array.color.Color;
 import net.sci.array.color.ColorMap;
 import net.sci.image.Image;

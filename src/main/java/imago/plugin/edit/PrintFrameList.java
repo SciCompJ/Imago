@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImageFrame;
 import imago.gui.frames.ImagoTextFrame;
+import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 
 /**

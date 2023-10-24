@@ -5,7 +5,7 @@ package imago.plugin.image.process;
 
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImageFrame;
+import imago.gui.image.ImageFrame;
 import net.sci.array.process.shape.Duplicate;
 import net.sci.image.Image;
 

@@ -10,7 +10,7 @@ import java.util.Locale;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImageFrame;
+import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
 import net.sci.array.scalar.Scalar;
 import net.sci.array.scalar.ScalarArray;

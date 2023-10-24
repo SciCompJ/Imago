@@ -1,4 +1,4 @@
-package imago.gui.util;
+package imago.gui.table;
 
 import java.awt.Component;
 import java.awt.Font;

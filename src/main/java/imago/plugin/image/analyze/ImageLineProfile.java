@@ -11,12 +11,12 @@ import org.knowm.xchart.style.Styler.LegendPosition;
 import org.knowm.xchart.style.colors.XChartSeriesColors;
 import org.knowm.xchart.style.markers.SeriesMarkers;
 
-import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImageFrame;
 import imago.gui.frames.ImagoChartFrame;
-import imago.gui.viewer.PlanarImageViewer;
-import imago.gui.viewer.StackSliceViewer;
+import imago.gui.image.ImageFrame;
+import imago.gui.image.ImageViewer;
+import imago.gui.image.PlanarImageViewer;
+import imago.gui.image.StackSliceViewer;
 import imago.plugin.image.ImagePlugin;
 import net.sci.array.Array;
 import net.sci.array.Array2D;

@@ -7,7 +7,7 @@ import imago.app.ImageHandle;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImageFrame;
+import imago.gui.image.ImageFrame;
 
 /**
  * Rename the name of the current image, ensuring unicity of its name.

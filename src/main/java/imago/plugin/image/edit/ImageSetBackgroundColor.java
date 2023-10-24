@@ -5,9 +5,9 @@ package imago.plugin.image.edit;
 
 import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
-import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImageFrame;
+import imago.gui.image.ImageFrame;
+import imago.gui.image.ImageViewer;
 import imago.gui.FramePlugin;
 import net.sci.array.color.Color;
 import net.sci.array.color.CommonColors;

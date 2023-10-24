@@ -4,11 +4,11 @@
 package imago.plugin.image.shape;
 
 import imago.app.ImageHandle;
-import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImageFrame;
+import imago.gui.image.ImageFrame;
+import imago.gui.image.ImageViewer;
+import imago.gui.image.PlanarImageViewer;
 import imago.gui.FramePlugin;
-import imago.gui.viewer.PlanarImageViewer;
 import net.sci.array.Array;
 import net.sci.array.process.shape.Crop;
 import net.sci.geom.geom2d.Bounds2D;

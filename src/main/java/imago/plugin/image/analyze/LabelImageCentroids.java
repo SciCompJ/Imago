@@ -6,7 +6,7 @@ package imago.plugin.image.analyze;
 import imago.app.ImageHandle;
 import imago.app.shape.Shape;
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImageFrame;
+import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 
 import java.util.Map;

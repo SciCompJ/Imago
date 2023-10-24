@@ -5,8 +5,8 @@ package imago.plugin.image.process;
 
 import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
-import imago.gui.frames.ImageFrame;
 import imago.gui.ImagoFrame;
+import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.scalar.ScalarArray;

@@ -6,10 +6,10 @@ package imago.plugin.image.file;
 import java.io.File;
 
 import imago.gui.FramePlugin;
-import imago.gui.ImageViewer;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.frames.ImageFrame;
+import imago.gui.image.ImageFrame;
+import imago.gui.image.ImageViewer;
 import net.sci.image.Image;
 import net.sci.image.io.MetaImageWriter;
 

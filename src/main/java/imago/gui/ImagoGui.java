@@ -36,9 +36,9 @@ import javax.swing.filechooser.FileFilter;
 import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.app.TableHandle;
-import imago.gui.frames.ImageFrame;
 import imago.gui.frames.ImagoEmptyFrame;
-import imago.gui.frames.TableFrame;
+import imago.gui.image.ImageFrame;
+import imago.gui.table.TableFrame;
 import net.sci.image.Image;
 import net.sci.table.Table;
 
