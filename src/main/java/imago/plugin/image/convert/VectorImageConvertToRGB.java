@@ -117,7 +117,7 @@ public class VectorImageConvertToRGB implements FramePlugin
 		rgbImage.setName(image.getName() + "-RGB");
 
 		// add the image document to GUI
-		frame.getGui().createImageFrame(rgbImage);
+		ImageFrame.create(rgbImage, frame);
 	}
 	
 }

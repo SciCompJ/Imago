@@ -4,10 +4,9 @@
 package imago.plugin.image.analyze;
 
 import imago.app.ImageHandle;
-import imago.gui.ImagoFrame;
-import imago.gui.ImagoGui;
-import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
+import imago.gui.ImagoFrame;
+import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
 import net.sci.array.color.RGB8Array;
 import net.sci.array.scalar.Int32Array2D;
@@ -71,10 +70,9 @@ public class ColorImageBivariateHistograms implements FramePlugin
 		gbImage.setName(name + "-GB");
 		
 		// add the image documents to GUI
-		ImagoGui gui = frame.getGui();
-		gui.createImageFrame(rgImage);
-		gui.createImageFrame(rbImage);
-		gui.createImageFrame(gbImage);
+        ImageFrame.create(rgImage, frame);
+        ImageFrame.create(rbImage, frame);
+        ImageFrame.create(gbImage, frame);
 	}
 
 }

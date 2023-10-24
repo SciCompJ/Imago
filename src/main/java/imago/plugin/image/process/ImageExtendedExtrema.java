@@ -101,7 +101,7 @@ public class ImageExtendedExtrema implements FramePlugin
 		resultImage.setName(image.getName() + suffix);
 		
 		// add the image document to GUI
-		frame.getGui().createImageFrame(resultImage, frame);
+		ImageFrame.create(resultImage, frame);
 	}
 
 	/**

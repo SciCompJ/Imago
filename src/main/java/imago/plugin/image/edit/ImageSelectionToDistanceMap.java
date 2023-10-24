@@ -58,7 +58,6 @@ public class ImageSelectionToDistanceMap implements FramePlugin
 		{
 		    throw new RuntimeException("Requires an image containing 2D Array");
 		}
-
 		
         PlanarImageViewer piv = (PlanarImageViewer) viewer;
         Geometry2D selection = (Geometry2D) piv.getSelection();
@@ -73,9 +72,8 @@ public class ImageSelectionToDistanceMap implements FramePlugin
         
         // create result image
         Image resultImage = new Image(distMap, image);
-        
-        // add the image document to GUI
-        frame.getGui().createImageFrame(resultImage); 
 
-	}
+        // add the image document to GUI
+        ImageFrame.create(resultImage, frame);
+    }
 }

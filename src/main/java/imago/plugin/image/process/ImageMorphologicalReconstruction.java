@@ -9,6 +9,7 @@ import imago.app.ImagoApp;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
+import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.Arrays;
@@ -80,6 +81,6 @@ public class ImageMorphologicalReconstruction implements FramePlugin
 		resultImage.setName(markerImage.getName() + "-morphoRec");
 		
 		// add the image document to GUI
-		gui.createImageFrame(resultImage);
+		ImageFrame.create(resultImage, frame);
 	}
 }

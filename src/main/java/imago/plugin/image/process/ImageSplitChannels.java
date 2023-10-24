@@ -67,7 +67,7 @@ public class ImageSplitChannels implements FramePlugin
 				channelImage.setName(image.getName() + "(" + channelNames[c++] + ")");
 				
 				// add the image document to GUI
-				frame.getGui().createImageFrame(channelImage);
+				ImageFrame.create(channelImage, frame);
 			}
 		} 
 		else
@@ -86,7 +86,7 @@ public class ImageSplitChannels implements FramePlugin
 				channelImage.setName(image.getName() + "(" + channelNames[c++] + ")");
 				
 				// add the image document to GUI
-				frame.getGui().createImageFrame(channelImage);
+				ImageFrame.create(channelImage, frame);
 			}
 		}
 	}

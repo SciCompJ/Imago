@@ -124,6 +124,6 @@ public class BinaryImageMorphologicalReconstruction implements FramePlugin
 		resultImage.setName(markerImage.getName() + "-morphoRec");
 		
 		// add the image document to GUI
-		gui.createImageFrame(resultImage);
+        ImageFrame.create(resultImage, frame);
 	}
 }

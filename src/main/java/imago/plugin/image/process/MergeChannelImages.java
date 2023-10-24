@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import imago.app.ImagoApp;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
+import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.color.RGB8Array;
 import net.sci.array.scalar.UInt8Array;
@@ -79,7 +80,7 @@ public class MergeChannelImages implements FramePlugin
 		rgbImage.setName(redChannelImage.getName() + "-mergeChannels");
 
 		// add the image document to GUI
-		frame.getGui().createImageFrame(rgbImage);
+		ImageFrame.create(rgbImage, frame);
 	}
 	
 	private ArrayList<String> findUInt8ArrayNameList(ImagoApp app)

@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
 import imago.app.ImageHandle;
+import imago.app.ImagoApp;
 import imago.gui.GuiBuilder;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
@@ -46,6 +47,49 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
 {
     // ===================================================================
     // Static methods
+    
+    /**
+     * Creates a new frame for displaying an image, located with respect to the
+     * specified frame.
+     * 
+     * Creates a new document from an image, adds it to the application, and
+     * returns a new frame associated to this document.
+     * 
+     * @param image
+     *            the image to display
+     * @param parentFrame
+     *            (optional) an existing frame used to locate the new frame. If
+     *            null, a new ImagoGui is created.
+     * @return a new frame representing the input image
+     */
+    public static final ImageFrame create(Image image, ImagoFrame parentFrame)
+    {
+        // retrieve gui, or create one if necessary
+        ImagoGui gui = parentFrame != null ? parentFrame.getGui() : new ImagoGui(new ImagoApp());
+        ImagoApp app = gui.getAppli();
+        
+        // create a handle for the image
+        ImageHandle parentHandle = null;
+        if (parentFrame != null && parentFrame instanceof ImageFrame)
+        {
+            parentHandle = ((ImageFrame) parentFrame).getImageHandle();
+        }
+        ImageHandle handle = app.createImageHandle(image, parentHandle);
+
+        // Create the frame
+        ImageFrame frame = new ImageFrame(gui, handle);
+        gui.updateFrameLocation(frame, parentFrame);
+            
+        // link the frames
+        gui.addFrame(frame);
+        if (parentFrame != null)
+        {
+            parentFrame.addChild(frame);
+        }
+        
+        frame.setVisible(true);
+        return frame;
+    }
     
     public static final Collection<ImageFrame> getImageFrames(ImagoGui gui)
     {

@@ -23,58 +23,56 @@ import net.sci.image.Image;
  */
 public class ImagePermuteDims implements FramePlugin
 {
-	public ImagePermuteDims()
-	{
-	}
+    public ImagePermuteDims()
+    {
+    }
 
-	@Override
-	public void run(ImagoFrame frame, String args)
-	{
-		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-		Image image	= doc.getImage();
-		Array<?> array = image.getData();
+    @Override
+    public void run(ImagoFrame frame, String args)
+    {
+        // get current image data
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
+        Image image = doc.getImage();
+        Array<?> array = image.getData();
 
-		int nd = array.dimensionality();
-		
-		// create initial text
-		String text = "0";
-		for (int d = 1; d < nd; d++)
-		{
-		    text = text + "," + d;
-		}
-		
-		int[] newDims;
-		while(true)
-		{
-		    GenericDialog gd = new GenericDialog(frame, "Flip Dims");
-		    gd.addTextField("dims order", text);
-		    gd.showDialog();
-		    
-		    if (gd.getOutput() == GenericDialog.Output.CANCEL) 
-		    {
-		        return;
-		    }
-		    
-		    newDims = parseLabelList(gd.getNextString());
-		    
-		    // If compatibility of dimensions is met, break loop 
-		    if (checkLabelList(newDims))
-		    {
-		        break;
-		    }
-		    
-            ImagoGui.showErrorDialog(frame, 
-                    "Not a valid permutation of integers between 0 and " + (nd-1));
-		};
-		
-		// create reshape operator
-		PermuteDimensions op = new PermuteDimensions(newDims);
-		
-		// apply operator on current image
+        int nd = array.dimensionality();
+
+        // create initial text
+        String text = "0";
+        for (int d = 1; d < nd; d++)
+        {
+            text = text + "," + d;
+        }
+
+        int[] newDims;
+        while (true)
+        {
+            GenericDialog gd = new GenericDialog(frame, "Flip Dims");
+            gd.addTextField("dims order", text);
+            gd.showDialog();
+
+            if (gd.getOutput() == GenericDialog.Output.CANCEL)
+            { return; }
+
+            newDims = parseLabelList(gd.getNextString());
+
+            // If compatibility of dimensions is met, break loop
+            if (checkLabelList(newDims))
+            {
+                break;
+            }
+
+            ImagoGui.showErrorDialog(frame, "Not a valid permutation of integers between 0 and " + (nd - 1));
+        }
+        ;
+
+        // create reshape operator
+        PermuteDimensions op = new PermuteDimensions(newDims);
+
+        // apply operator on current image
         Array<?> result = op.process(array);
         Image resultImage = new Image(result, image);
-        
+
         // also permute axis information
         Calibration calib0 = image.getCalibration();
         Calibration calib = resultImage.getCalibration();
@@ -82,11 +80,11 @@ public class ImagePermuteDims implements FramePlugin
         {
             calib.setAxis(d, calib0.getAxis(newDims[d]).duplicate());
         }
-		resultImage.setName(image.getName() + "-permDims");
-		
-		// add the image document to GUI
-		frame.getGui().createImageFrame(resultImage);
-	}
+        resultImage.setName(image.getName() + "-permDims");
+
+        // add the image document to GUI
+        ImageFrame.create(resultImage, frame);
+    }
 
     /**
      * Extracts a list of integer labels from a string representation.
@@ -95,11 +93,11 @@ public class ImagePermuteDims implements FramePlugin
      *            the String containing labels, separated by commas or spaces.
      * @return the list of integer labels identified within the string
      */
-    private static final int[] parseLabelList(String string) 
+    private static final int[] parseLabelList(String string)
     {
         String[] tokens = string.split("[, ]+");
         int n = tokens.length;
-        
+
         int[] labels = new int[n];
         for (int i = 0; i < n; i++)
         {
@@ -107,7 +105,7 @@ public class ImagePermuteDims implements FramePlugin
         }
         return labels;
     }
-    
+
     /**
      * Each integer between 0 and n-1 should be present once in the array, no
      * matter the position.
@@ -131,13 +129,10 @@ public class ImagePermuteDims implements FramePlugin
                     break;
                 }
             }
-            
-            if (!found)
-            {
-                return false;
-            }
+
+            if (!found) return false; 
         }
-        
+
         return true;
     }
 }

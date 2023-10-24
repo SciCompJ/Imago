@@ -46,7 +46,7 @@ public class BinaryImageSkeleton implements FramePlugin
         Image resultImage = new Image(res, image);
         
 		// add the image document to GUI
-		frame.getGui().createImageFrame(resultImage); 
+        ImageFrame.create(resultImage, frame);
 	}
 
     /**

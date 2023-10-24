@@ -4,6 +4,7 @@
 package imago.plugin.image.edit;
 
 import imago.gui.ImagoFrame;
+import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.scalar.BufferedUInt8Array3D;
 import net.sci.array.scalar.UInt8Array3D;
@@ -92,7 +93,7 @@ public class CreateDistanceToOctahedronImage3D implements FramePlugin
         image.setName("OctahedronDistMap");
         
         // add the image document to GUI
-        frame.getGui().createImageFrame(image);
+        ImageFrame.create(image, frame);
     }
     
 }

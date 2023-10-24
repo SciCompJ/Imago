@@ -75,7 +75,7 @@ public class Image3DOrthoslicesMontage implements FramePlugin
 		result.setName(image.getName() + "-orthoSlices");
 		
 		// add the image document to GUI
-		frame.getGui().createImageFrame(result);
+		ImageFrame.create(result, frame);
 	}
 
     private <T> ArrayList<Array2D<T>> orthoSlices(Array<T> array, int[] refPos)

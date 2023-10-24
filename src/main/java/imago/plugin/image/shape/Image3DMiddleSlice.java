@@ -46,7 +46,7 @@ public class Image3DMiddleSlice implements FramePlugin
 		Image result = image.apply(filter);
 				
 		// add the image document to GUI
-		frame.getGui().createImageFrame(result); 
+		ImageFrame.create(result, frame);
 	}
 
 }

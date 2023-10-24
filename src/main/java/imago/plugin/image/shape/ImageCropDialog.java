@@ -73,7 +73,7 @@ public class ImageCropDialog implements FramePlugin
 		resultImage.setName(image.getName() + "-crop");
 		
 		// add the image document to GUI
-		frame.addChild(frame.getGui().createImageFrame(resultImage));
+		ImageFrame.create(resultImage, frame);
 	}
 	
     /**

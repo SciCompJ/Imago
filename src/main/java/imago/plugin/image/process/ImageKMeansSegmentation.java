@@ -58,7 +58,7 @@ public class ImageKMeansSegmentation implements FramePlugin
 		resultImage.setCalibration(image.getCalibration());
 				
 		// add the image document to GUI
-		frame.getGui().createImageFrame(resultImage); 
+		ImageFrame.create(resultImage, frame);
 	}
 
 }

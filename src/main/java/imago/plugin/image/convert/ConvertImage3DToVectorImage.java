@@ -56,7 +56,7 @@ public class ConvertImage3DToVectorImage implements FramePlugin
 		Image result = new Image(vectArray, image);
 				
 		// add the image document to GUI
-		frame.getGui().createImageFrame(result); 
+        ImageFrame.create(result, frame);
 	}
 
 }

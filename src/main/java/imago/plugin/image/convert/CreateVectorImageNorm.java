@@ -61,7 +61,7 @@ public class CreateVectorImageNorm implements FramePlugin
         normImage.setName(image.getName() + "-norm");
 
         // add the image document to GUI
-        frame.getGui().createImageFrame(normImage);
+        ImageFrame.create(normImage, frame);
 	}
 
 }

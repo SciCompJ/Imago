@@ -53,7 +53,7 @@ public class ConvertImageToUInt16 implements FramePlugin
 		Image resultImage = new Image(result, image);
 				
 		// add the image document to GUI
-		frame.getGui().createImageFrame(resultImage); 
+		ImageFrame.create(resultImage, frame);
 	}
 
 }

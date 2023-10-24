@@ -81,7 +81,7 @@ public class VectorImageChannelView implements FramePlugin
 		resultImage.setName(name + "-channel" + String.format("%d", channelIndex));
 				
 		// add the image document to GUI
-		frame.getGui().createImageFrame(resultImage); 
+		ImageFrame.create(resultImage, frame);
 	}
 
 }

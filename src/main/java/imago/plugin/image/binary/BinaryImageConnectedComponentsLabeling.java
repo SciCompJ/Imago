@@ -104,7 +104,7 @@ public class BinaryImageConnectedComponentsLabeling implements FramePlugin
 		settings.setBackgroundColor(RGB8.WHITE);
 		
 		// add the image document to GUI
-		frame.getGui().createImageFrame(result);
+		ImageFrame.create(result, frame);
 	}
 
     /**

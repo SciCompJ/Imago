@@ -9,6 +9,7 @@ import imago.app.ImagoApp;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
+import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.process.shape.Concatenate;
@@ -84,6 +85,6 @@ public class ImageConcatenate implements FramePlugin
         Image resultImage = new Image(result, image1);
 		
 		// add the image document to GUI
-		gui.createImageFrame(resultImage);
+        ImageFrame.create(resultImage, frame);
 	}
 }

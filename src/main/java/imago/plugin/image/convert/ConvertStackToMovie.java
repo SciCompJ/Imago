@@ -49,7 +49,7 @@ public class ConvertStackToMovie implements FramePlugin
         calib.setAxis(nd-1, new ImageAxis.T());
         
         // add the image document to GUI
-        frame.getGui().createImageFrame(resultImage); 
+        ImageFrame.create(resultImage, frame);
     }
     
 }

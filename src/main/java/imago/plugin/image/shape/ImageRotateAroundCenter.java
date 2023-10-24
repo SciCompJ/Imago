@@ -65,7 +65,7 @@ public class ImageRotateAroundCenter implements FramePlugin
 		result.setName(image.getName() + "-rot");
 		
 		// add the image document to GUI
-		frame.getGui().createImageFrame(result);
+		ImageFrame.create(result, frame);
 	}
 	
     @Override

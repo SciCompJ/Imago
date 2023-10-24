@@ -9,6 +9,7 @@ import imago.app.ImagoApp;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
+import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.Arrays;
@@ -78,7 +79,7 @@ public class ImageIteratedGeodesicDilations implements FramePlugin
 		Array<?> mask = maskImage.getData();
         if (!Arrays.isSameSize(marker, mask))
         {
-            ImagoGui.showErrorDialog(frame, "Both arrays should have same dimensions", "Dimension Error");
+            ImagoGui.showErrorDialog(frame, "Both arrays must have same dimensions", "Dimension Error");
             return;
         }
 		
@@ -132,6 +133,6 @@ public class ImageIteratedGeodesicDilations implements FramePlugin
         resultImage.setName(markerImage.getName() + "-geodDil");
 		
 		// add the image document to GUI
-		gui.createImageFrame(resultImage);
+        ImageFrame.create(resultImage, frame);
 	}
 }

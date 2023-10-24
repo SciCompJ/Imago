@@ -51,7 +51,7 @@ public class ArrayOperatorAction extends ImagoAction
 		Image result = new Image(data2, image);
 
 		// add the image document to GUI
-		this.gui.createImageFrame(result, this.frame);
+		ImageFrame.create(result, this.frame);
 	}
 
 }

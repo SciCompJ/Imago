@@ -76,7 +76,7 @@ public class ImageReshape implements FramePlugin
 		resultImage.setName(image.getName() + "-reshape");
 		
 		// add the image document to GUI
-		frame.getGui().createImageFrame(resultImage);
+		ImageFrame.create(resultImage, frame);
 	}
 
     private static final int cumProd(int[] dims)

@@ -73,6 +73,6 @@ public class ConvertUInt8ImageToRGB implements FramePlugin
         Image rgbImage = new Image(rgb, image);
                 
         // add the image document to GUI
-        frame.getGui().createImageFrame(rgbImage); 
+        ImageFrame.create(rgbImage, frame);
     }
 }

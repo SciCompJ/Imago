@@ -3,11 +3,10 @@
  */
 package imago.plugin.image.analyze;
 
+import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
-import imago.gui.ImagoGui;
 import imago.gui.image.ImageFrame;
-import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.scalar.IntArray2D;
 import net.sci.array.scalar.ScalarArray2D;
@@ -70,8 +69,6 @@ public class GrayLevelImageCooccurenceMatrix implements FramePlugin
         Image resultImage = new Image(result);
         
         // add the image documents to GUI
-        ImagoGui gui = frame.getGui();
-        gui.createImageFrame(resultImage);
+        ImageFrame.create(resultImage, frame);
     }
-    
 }

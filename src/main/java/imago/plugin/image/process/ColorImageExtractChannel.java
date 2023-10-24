@@ -135,7 +135,7 @@ public class ColorImageExtractChannel implements FramePlugin
 		resultImage.setName(name + "-" + channelNames[channelIndex]);
 				
 		// add the image document to GUI
-		frame.getGui().createImageFrame(resultImage); 
+		ImageFrame.create(resultImage, frame);
 	}
 
 }

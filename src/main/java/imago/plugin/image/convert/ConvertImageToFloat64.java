@@ -46,12 +46,12 @@ public class ConvertImageToFloat64 implements FramePlugin
         {
             return;
         }
-		
-		Float64Array result = Float64Array.convert((ScalarArray<?>) array);
-		Image resultImage = new Image(result, image);
-				
-		// add the image document to GUI
-		frame.getGui().createImageFrame(resultImage); 
+
+        Float64Array result = Float64Array.convert((ScalarArray<?>) array);
+        Image resultImage = new Image(result, image);
+
+        // add the image document to GUI
+        ImageFrame.create(resultImage, frame);
 	}
 
 }

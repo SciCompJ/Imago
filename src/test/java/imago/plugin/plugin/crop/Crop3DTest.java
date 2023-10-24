@@ -16,13 +16,11 @@ import org.junit.Test;
 import com.google.gson.stream.JsonReader;
 
 import imago.app.ImageHandle;
-import imago.app.ImagoApp;
 import imago.app.scene.GroupNode;
 import imago.app.scene.ImageSerialSectionsNode;
 import imago.app.scene.Node;
 import imago.app.scene.ShapeNode;
 import imago.app.scene.io.JsonSceneReader;
-import imago.gui.ImagoGui;
 import imago.gui.image.ImageFrame;
 import net.sci.array.scalar.UInt8Array2D;
 import net.sci.geom.geom2d.Point2D;
@@ -42,13 +40,10 @@ public class Crop3DTest
     @Test
     public final void testAddPolygon()
     {
-        ImagoApp app = new ImagoApp();
-        ImagoGui gui = new ImagoGui(app);
-        
         UInt8Array2D array = UInt8Array2D.create(400, 400);
         Image image = new Image(array);
         
-        ImageFrame frame = gui.createImageFrame(image);
+        ImageFrame frame = ImageFrame.create(image, null);
         ImageHandle handle = frame.getImageHandle();
         
         // create node for polygons

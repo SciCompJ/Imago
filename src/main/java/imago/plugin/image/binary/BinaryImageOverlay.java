@@ -9,6 +9,7 @@ import imago.app.ImagoApp;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
+import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
 import net.sci.array.Arrays;
 import net.sci.array.binary.Binary;
@@ -91,6 +92,6 @@ public class BinaryImageOverlay implements FramePlugin
 		resultImage.setName(baseImage.getName() + "-ovr");
 		
 		// add the image document to GUI
-		frame.getGui().createImageFrame(resultImage);
+        ImageFrame.create(resultImage, frame);
 	}
 }

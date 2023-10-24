@@ -72,14 +72,13 @@ public class ConvertDimensionToChannels implements FramePlugin
                 res.setValue(pos2, c, ((ScalarArray<?>) array).getValue(pos));
             }
         }
-        
+
         // create the image corresponding to channels concatenation
-        Image resImage = new Image(res);
-        resImage.setName(image.getName() + "-convert");
-        
-				
-		// add the image document to GUI
-		frame.getGui().createImageFrame(resImage); 
-	}
+        Image resultImage = new Image(res);
+        resultImage.setName(image.getName() + "-convert");
+
+        // add the image document to GUI
+        ImageFrame.create(resultImage, frame);
+    }
 
 }

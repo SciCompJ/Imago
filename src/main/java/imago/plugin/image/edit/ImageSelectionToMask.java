@@ -78,12 +78,11 @@ public class ImageSelectionToMask implements FramePlugin
         int sizeY = array.size(1);
         BinaryArray2D mask = BinaryArray2D.create(sizeX, sizeY);
         mask.fillBooleans(pos -> poly.contains(pos[0], pos[1]) ^ clockWise);
-                
+
         // create result image
         Image resultImage = new Image(mask, image);
-        
-        // add the image document to GUI
-        frame.getGui().createImageFrame(resultImage); 
 
+        // add the image document to GUI
+        ImageFrame.create(resultImage, frame);
 	}
 }

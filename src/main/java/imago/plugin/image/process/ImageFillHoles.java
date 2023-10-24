@@ -41,7 +41,7 @@ public class ImageFillHoles implements FramePlugin
 		Image resultImage = MorphologicalReconstruction.fillHoles(image);
 		
 		// add the image document to GUI
-		frame.getGui().createImageFrame(resultImage); 
+		ImageFrame.create(resultImage, frame);
 	}
 
     /**

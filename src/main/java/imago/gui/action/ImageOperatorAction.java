@@ -46,7 +46,7 @@ public class ImageOperatorAction extends ImagoAction
 		Image result = operator.process(image);
 
 		// add the image document to GUI
-		this.gui.createImageFrame(result, this.frame);
+        ImageFrame.create(result, this.frame);
 	}
 
 }

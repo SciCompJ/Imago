@@ -127,7 +127,7 @@ public class ImageArrayLogicalBinaryOperator implements FramePlugin
 		resultImage.setName(String.format("%s(%s, %s)", functionName, image1.getName(), image2.getName()));
         
 		// add the image document to GUI
-		frame.getGui().createImageFrame(resultImage);
+		ImageFrame.create(resultImage, frame);
 	}
 	
 	private int findStringIndex(String string, String[] array)

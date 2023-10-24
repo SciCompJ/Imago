@@ -57,6 +57,6 @@ public class Image3DGetCurrentSlice implements FramePlugin
 		result.setName(image.getName() + "-z" + String.format("%0" + nDigits + "d", sliceIndex));
 		
 		// add the image document to GUI
-		frame.getGui().createImageFrame(result);
+		ImageFrame.create(result, frame);
 	}
 }

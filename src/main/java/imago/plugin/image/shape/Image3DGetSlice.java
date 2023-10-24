@@ -58,6 +58,6 @@ public class Image3DGetSlice implements FramePlugin
 		result.setName(image.getName() + "-slices");
 		
 		// add the image document to GUI
-		frame.getGui().createImageFrame(result);
+		ImageFrame.create(result, frame);
 	}
 }

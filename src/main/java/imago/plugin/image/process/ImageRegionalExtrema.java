@@ -25,61 +25,57 @@ import net.sci.image.morphology.MinimaAndMaxima;
  */
 public class ImageRegionalExtrema implements FramePlugin
 {
-	public ImageRegionalExtrema()
-	{
-	}
+    public ImageRegionalExtrema()
+    {
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
-	public void run(ImagoFrame frame, String args)
-	{
-		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-		Image image	= doc.getImage();
-		
-		// current dimensionality
-		Array<?> array = image.getData();
-		if (!(array instanceof ScalarArray))
-		{
-			throw new IllegalArgumentException("Requires a scalar array");
-		}
-		int nd = array.dimensionality();
-		
-		// String lists for dialog widgets
-		String[] operationNames = new String[]{"Regional Minima", "Regional Maxima"};
-		String[] connectivityNames = new String[]{"Ortho", "Full"};
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void run(ImagoFrame frame, String args)
+    {
+        // get current image data
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
+        Image image = doc.getImage();
 
-		// Creates generic dialog
-		GenericDialog gd = new GenericDialog(frame, "Regional Min./Max.");
-		gd.addChoice("Operation", operationNames, operationNames[0]);
-		gd.addChoice("Connectivity: ", connectivityNames, connectivityNames[0]);
-		gd.showDialog();
-		
-		if (gd.wasCanceled()) 
-		{
-			return;
-		}
-		
-		// parse dialog results
-		int opIndex = gd.getNextChoiceIndex();
-		int connIndex = gd.getNextChoiceIndex();
+        // current dimensionality
+        Array<?> array = image.getData();
+        if (!(array instanceof ScalarArray))
+        { throw new IllegalArgumentException("Requires a scalar array"); }
+        int nd = array.dimensionality();
 
-		// Compute the result, depending on connectivity and extrema type
-		Array<?> result;
-		if (nd == 2)
-		{
-			Connectivity2D conn = connIndex == 0 ? Connectivity2D.C4 : Connectivity2D.C8;
-			if (opIndex == 0)
-				result = MinimaAndMaxima.regionalMinima((ScalarArray2D<?>) array, conn);
-			else
-				result = MinimaAndMaxima.regionalMaxima((ScalarArray2D<?>) array, conn);
-		}
-		else if (nd == 3)
+        // String lists for dialog widgets
+        String[] operationNames = new String[] { "Regional Minima", "Regional Maxima" };
+        String[] connectivityNames = new String[] { "Ortho", "Full" };
+
+        // Creates generic dialog
+        GenericDialog gd = new GenericDialog(frame, "Regional Min./Max.");
+        gd.addChoice("Operation", operationNames, operationNames[0]);
+        gd.addChoice("Connectivity: ", connectivityNames, connectivityNames[0]);
+        gd.showDialog();
+
+        if (gd.wasCanceled())
+        { return; }
+
+        // parse dialog results
+        int opIndex = gd.getNextChoiceIndex();
+        int connIndex = gd.getNextChoiceIndex();
+
+        // Compute the result, depending on connectivity and extrema type
+        Array<?> result;
+        if (nd == 2)
+        {
+            Connectivity2D conn = connIndex == 0 ? Connectivity2D.C4 : Connectivity2D.C8;
+            if (opIndex == 0)
+                result = MinimaAndMaxima.regionalMinima((ScalarArray2D<?>) array, conn);
+            else
+                result = MinimaAndMaxima.regionalMaxima((ScalarArray2D<?>) array, conn);
+        }
+        else if (nd == 3)
         {
             Connectivity3D conn = connIndex == 0 ? Connectivity3D.C6 : Connectivity3D.C26;
             if (opIndex == 0)
@@ -87,24 +83,24 @@ public class ImageRegionalExtrema implements FramePlugin
             else
                 result = MinimaAndMaxima.regionalMinima((ScalarArray3D<?>) array, conn);
         }
-		else
-		{
-			System.err.println("Unable to process array with dimensionality " + nd);
-			return;
-		}
-		
-		// apply operator on current image
-		Image resultImage = new Image(result, image);
-		
-		// choose appropriate suffix
-		String suffix = opIndex == 0 ? "-rMin" : "-rMax";
-		resultImage.setName(image.getName() + suffix);
-		
-		// add the image document to GUI
-		frame.getGui().createImageFrame(resultImage);
-	}
+        else
+        {
+            System.err.println("Unable to process array with dimensionality " + nd);
+            return;
+        }
 
-	/**
+        // apply operator on current image
+        Image resultImage = new Image(result, image);
+
+        // choose appropriate suffix
+        String suffix = opIndex == 0 ? "-rMin" : "-rMax";
+        resultImage.setName(image.getName() + suffix);
+
+        // add the image document to GUI
+        ImageFrame.create(resultImage, frame);
+    }
+
+    /**
      * Returns true if the current frame contains a scalar image.
      * 
      * @param frame
@@ -115,14 +111,12 @@ public class ImageRegionalExtrema implements FramePlugin
     public boolean isEnabled(ImagoFrame frame)
     {
         // check frame class
-        if (!(frame instanceof ImageFrame))
-            return false;
-        
+        if (!(frame instanceof ImageFrame)) return false;
+
         // check image
         ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();
-        if (image == null)
-            return false;
+        if (image == null) return false;
 
         return image.getData() instanceof ScalarArray;
     }

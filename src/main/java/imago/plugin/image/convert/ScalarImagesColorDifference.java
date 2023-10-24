@@ -82,7 +82,7 @@ public class ScalarImagesColorDifference implements FramePlugin
         resultImage.setName(image1.getName() + "-diff");
         
         // add the image document to GUI
-        frame.getGui().createImageFrame(resultImage);
+        ImageFrame.create(resultImage, frame);
     }
 
     private int findStringIndex(String string, String[] array)

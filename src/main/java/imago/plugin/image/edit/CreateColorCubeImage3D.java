@@ -4,6 +4,7 @@
 package imago.plugin.image.edit;
 
 import imago.gui.ImagoFrame;
+import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.color.RGB8;
 import net.sci.array.color.RGB8Array3D;
@@ -45,11 +46,11 @@ public class CreateColorCubeImage3D implements FramePlugin
 			}
 		}
 
-		// create the image
-		Image image = new Image(rgb3d, ImageType.COLOR);
-		image.setName("Color Cube Image");
-		
-		// add the image document to GUI
-		frame.getGui().createImageFrame(image); 
+        // create the image
+        Image image = new Image(rgb3d, ImageType.COLOR);
+        image.setName("Color Cube Image");
+
+        // add the image document to GUI
+        ImageFrame.create(image, frame);
 	}
 }

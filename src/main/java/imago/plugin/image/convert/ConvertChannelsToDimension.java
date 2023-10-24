@@ -79,13 +79,12 @@ public class ConvertChannelsToDimension implements FramePlugin
 		    }
 		}
 		
-		// create the image corresponding to channels concatenation
-		Image resImage = new Image(res);
-		resImage.setName(image.getName() + "-convert");
-		
+        // create the image corresponding to channels concatenation
+        Image resultImage = new Image(res);
+        resultImage.setName(image.getName() + "-convert");
 
-		// add the image document to GUI
-		frame.getGui().createImageFrame(resImage);
+        // add the image document to GUI
+        ImageFrame.create(resultImage, frame);
 	}
 	
 }

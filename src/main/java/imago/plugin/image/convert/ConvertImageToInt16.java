@@ -48,12 +48,11 @@ public class ConvertImageToInt16 implements FramePlugin
             ImagoGui.showErrorDialog(frame, "Requires a scalar image", "Data Type Error");
 			return;
 		}
-
 		
-		Int16Array result = Int16Array.convert((ScalarArray<?>) array);
-		Image resultImage = new Image(result, image);
-				
-		// add the image document to GUI
-		frame.getGui().createImageFrame(resultImage); 
+        Int16Array result = Int16Array.convert((ScalarArray<?>) array);
+        Image resultImage = new Image(result, image);
+
+        // add the image document to GUI
+        ImageFrame.create(resultImage, frame);
 	}
 }

@@ -44,7 +44,7 @@ public class ImageKillBorders implements FramePlugin
 		Image resultImage = MorphologicalReconstruction.killBorders(image);
 		
 		// add the image document to GUI
-		frame.getGui().createImageFrame(resultImage); 
+		ImageFrame.create(resultImage, frame);
 	}
 	
     /**
