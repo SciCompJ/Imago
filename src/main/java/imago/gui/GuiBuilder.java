@@ -93,6 +93,7 @@ import imago.plugin.image.convert.VectorImageConvertToRGB;
 import imago.plugin.image.convert.VectorImageToTable;
 import imago.plugin.image.edit.CreateColorCubeImage3D;
 import imago.plugin.image.edit.CreateDistanceToOctahedronImage3D;
+import imago.plugin.image.edit.DisplayImagePair;
 import imago.plugin.image.edit.ImageColorMapDisplay;
 import imago.plugin.image.edit.ImageCopySelectionToWorkspace;
 import imago.plugin.image.edit.ImageFillBox;
@@ -451,7 +452,8 @@ public class GuiBuilder
         menu.add(colormapMenu);
         
         addPlugin(menu, new ImageSetBackgroundColor(), "Set Background Color...", hasLabelImage);
-        
+        addPlugin(menu, new DisplayImagePair(), "Display Image Pair", hasImage);
+
         // Several options for converting images
         menu.addSeparator();
         
