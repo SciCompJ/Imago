@@ -119,7 +119,7 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
     {
         for (ImageFrame frame : getImageFrames(gui))
         {
-            if (name.equals(frame.getImage().getName()))
+            if (name.equals(frame.getImageHandle().getImage().getName()))
             {
                 return frame;
             }
@@ -128,18 +128,11 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         return null;
     }
     
-
     
 	// ===================================================================
 	// Class variables
     
-    /** The handle to the image displayed in this frame.*/
-    ImageHandle imageHandle;
-
-    /** The image to display.*/
-    Image image;
-    
-    /** The image viewer panel. */
+    /** The image viewer. */
     ImageViewer imageViewer;
     
     /** The panel containing display options: Z,T slice index...*/ 
@@ -158,15 +151,13 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
     public ImageFrame(ImagoGui gui, ImageHandle handle) 
 	{
 		super(gui, "Image Frame");
-		this.imageHandle = handle;
-		this.image = handle.getImage();
 		
 		// create menu
 		GuiBuilder builder = new GuiBuilder(this);
 		builder.createMenuBar();
 		
 		// Create the different panels
-		createImageViewer();
+		createImageViewer(handle);
         this.imageDisplayOptionsPanel = new ImageDisplayOptionsPanel(this.imageViewer);
         this.statusBar = new StatusBar();
 
@@ -191,9 +182,10 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
 		putFrameMiddleScreen();
 	}
     
-    private void createImageViewer()
+    private void createImageViewer(ImageHandle imageHandle)
     {
-        // create the image viewer
+        // create the image viewer depending on image type
+        Image image = imageHandle.getImage();
         if (image.getDimension() == 2)
         {
             PlanarImageViewer viewer = new PlanarImageViewer(imageHandle);
@@ -209,7 +201,7 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         else if (image.getDimension() == 3) 
         {
             StackSliceViewer sliceViewer = new StackSliceViewer(imageHandle);
-            sliceViewer.setSlicingPosition(2, this.imageHandle.getCurrentSliceIndex());
+            sliceViewer.setSlicingPosition(2, imageHandle.getCurrentSliceIndex());
             
             ImageTool cursorDisplay = new DisplayCurrentValueTool(this, "showValue");
             sliceViewer.getImageDisplay().addMouseListener(cursorDisplay);
@@ -220,7 +212,7 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         else 
         {
             Image5DXYSliceViewer sliceViewer = new Image5DXYSliceViewer(imageHandle);
-            sliceViewer.setSlicingPosition(2, this.imageHandle.getCurrentSliceIndex());
+            sliceViewer.setSlicingPosition(2, imageHandle.getCurrentSliceIndex());
             
             ImageTool cursorDisplay = new DisplayCurrentValueTool(this, "showValue");
             sliceViewer.getImageDisplay().addMouseListener(cursorDisplay);
@@ -243,7 +235,7 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
 		// setup the layout for the option panel:
 		// uses JSplitPanel, initial visibility depends on image dimensionality
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, imageDisplayOptionsPanel, mainPanel);
-        splitPane.setResizeWeight(image.getDimension() < 4 ? 0.0 : 0.25);
+        splitPane.setResizeWeight(imageViewer.imageHandle.getImage().getDimension() < 4 ? 0.0 : 0.25);
         splitPane.setOneTouchExpandable(true);
         splitPane.setContinuousLayout(true);
 
@@ -442,15 +434,16 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
 	public void updateTitle()
 	{
 		// use document name for base title
-        String name = this.imageHandle.getName();
-        if (!this.image.getExtension().isEmpty())
+        String name = this.imageViewer.imageHandle.getName();
+        Image image = getImageHandle().getImage();
+        if (!image.getExtension().isEmpty())
         {
-        	name = name + "." + this.image.getExtension(); 
+        	name = name + "." + image.getExtension(); 
         }
 
         // string containing image dimensions
 		String dimString = "(unknown size)";
-		int dims[] = this.image.getSize();
+		int dims[] = image.getSize();
 		if (dims.length > 0)
 		{
 		    dimString = "" + dims[0];
@@ -461,21 +454,26 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
 		}
 		
 		// image type
-		String typeString = this.image.getType().toString();
+		String typeString = image.getType().toString();
 		
 		// setup title
 		String titleString = name + " - " + dimString + " - " + typeString;
 		this.setTitle(titleString);
 	}
 	
-	public ImageHandle getImageHandle() 
+	public ImageHandle getImageHandle()
 	{
-		return this.imageHandle;
+		return this.imageViewer.imageHandle;
 	}
 	
+    /**
+     * @deprecated use getImageHandle().getImage() instead
+     * @return the image referenced by the viewer
+     */
+	@Deprecated
 	public Image getImage() 
 	{
-		return this.image;
+		return getImageHandle().getImage();
 	}
 	
 	public ImageViewer getImageView()
