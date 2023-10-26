@@ -8,7 +8,7 @@ import java.awt.event.MouseEvent;
 
 import imago.gui.image.ImageDisplay;
 import imago.gui.image.ImageFrame;
-import imago.gui.image.ImagoTool;
+import imago.gui.image.ImageTool;
 import net.sci.geom.geom2d.Bounds2D;
 import net.sci.geom.geom2d.Point2D;
 
@@ -18,7 +18,7 @@ import net.sci.geom.geom2d.Point2D;
  * 
  * @author David Legland
  */
-public class SelectRectangleTool extends ImagoTool
+public class SelectRectangleTool extends ImageTool
 {
     // Starting point 
     double x1, y1;

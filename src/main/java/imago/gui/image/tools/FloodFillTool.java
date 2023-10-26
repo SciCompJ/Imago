@@ -9,7 +9,7 @@ import java.awt.event.MouseEvent;
 import imago.app.UserPreferences;
 import imago.gui.image.ImageDisplay;
 import imago.gui.image.ImageFrame;
-import imago.gui.image.ImagoTool;
+import imago.gui.image.ImageTool;
 import net.sci.array.Array;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.ScalarArray2D;
@@ -26,7 +26,7 @@ import net.sci.image.morphology.FloodFill;
  * @author dlegland
  *
  */
-public class FloodFillTool extends ImagoTool
+public class FloodFillTool extends ImageTool
 {
     /**
      * Basic constructor.

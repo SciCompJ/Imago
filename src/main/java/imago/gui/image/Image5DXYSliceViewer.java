@@ -54,7 +54,7 @@ public class Image5DXYSliceViewer extends ImageViewer implements ChangeListener,
      */
     protected Geometry selection = null;
 
-	protected ImagoTool currentTool = null;
+	protected ImageTool currentTool = null;
 
 	
 	// ===================================================================
@@ -153,13 +153,13 @@ public class Image5DXYSliceViewer extends ImageViewer implements ChangeListener,
 	// tool management
 
 	@Override
-	public ImagoTool getCurrentTool() 
+	public ImageTool getCurrentTool() 
 	{
 		return currentTool;
 	}
 
 	@Override
-	public void setCurrentTool(ImagoTool tool) 
+	public void setCurrentTool(ImageTool tool) 
 	{
 		if (currentTool != null)
 		{

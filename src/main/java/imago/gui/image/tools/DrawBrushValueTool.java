@@ -9,7 +9,7 @@ import java.awt.event.MouseEvent;
 import imago.app.UserPreferences;
 import imago.gui.image.ImageDisplay;
 import imago.gui.image.ImageFrame;
-import imago.gui.image.ImagoTool;
+import imago.gui.image.ImageTool;
 import net.sci.array.Array;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.ScalarArray2D;
@@ -25,7 +25,7 @@ import net.sci.image.Image;
  * @author dlegland
  *
  */
-public class DrawBrushValueTool extends ImagoTool
+public class DrawBrushValueTool extends ImageTool
 {
     // =============================================================
     // Class fields

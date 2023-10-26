@@ -13,7 +13,7 @@ import java.awt.event.MouseMotionListener;
  * @author David Legland
  *
  */
-public abstract class ImagoTool implements MouseListener, MouseMotionListener
+public abstract class ImageTool implements MouseListener, MouseMotionListener
 {
 	// ===================================================================
 	// Class variables
@@ -26,7 +26,7 @@ public abstract class ImagoTool implements MouseListener, MouseMotionListener
 	// ===================================================================
 	// Constructor
 
-	protected ImagoTool(ImageFrame viewer, String name)
+	protected ImageTool(ImageFrame viewer, String name)
 	{
 		this.viewer = viewer;
 		this.name = name;

@@ -200,7 +200,7 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
 
             viewer.getImageDisplay().setShapes(imageHandle.getShapes());
             
-            ImagoTool cursorDisplay = new DisplayCurrentValueTool(this, "showValue");
+            ImageTool cursorDisplay = new DisplayCurrentValueTool(this, "showValue");
             viewer.getImageDisplay().addMouseListener(cursorDisplay);
             viewer.getImageDisplay().addMouseMotionListener(cursorDisplay);
 
@@ -211,7 +211,7 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
             StackSliceViewer sliceViewer = new StackSliceViewer(imageHandle);
             sliceViewer.setSlicingPosition(2, this.imageHandle.getCurrentSliceIndex());
             
-            ImagoTool cursorDisplay = new DisplayCurrentValueTool(this, "showValue");
+            ImageTool cursorDisplay = new DisplayCurrentValueTool(this, "showValue");
             sliceViewer.getImageDisplay().addMouseListener(cursorDisplay);
             sliceViewer.getImageDisplay().addMouseMotionListener(cursorDisplay);
 
@@ -222,7 +222,7 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
             Image5DXYSliceViewer sliceViewer = new Image5DXYSliceViewer(imageHandle);
             sliceViewer.setSlicingPosition(2, this.imageHandle.getCurrentSliceIndex());
             
-            ImagoTool cursorDisplay = new DisplayCurrentValueTool(this, "showValue");
+            ImageTool cursorDisplay = new DisplayCurrentValueTool(this, "showValue");
             sliceViewer.getImageDisplay().addMouseListener(cursorDisplay);
             sliceViewer.getImageDisplay().addMouseMotionListener(cursorDisplay);
 
@@ -490,7 +490,7 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
     public void setImageView(ImageViewer view)
     {
         System.out.println("update image view");
-        ImagoTool currentTool = null;
+        ImageTool currentTool = null;
         
         if (this.imageViewer != null)
         {

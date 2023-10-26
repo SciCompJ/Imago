@@ -5,7 +5,7 @@ package imago.gui.image.tools;
 
 import imago.gui.image.ImageDisplay;
 import imago.gui.image.ImageFrame;
-import imago.gui.image.ImagoTool;
+import imago.gui.image.ImageTool;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -21,7 +21,7 @@ import net.sci.geom.geom2d.polygon.DefaultPolygon2D;
  * @author David Legland
  *
  */
-public class SelectPolygonTool extends ImagoTool
+public class SelectPolygonTool extends ImageTool
 {
     ArrayList<Point2D> selectedPoints = new ArrayList<Point2D>();
     

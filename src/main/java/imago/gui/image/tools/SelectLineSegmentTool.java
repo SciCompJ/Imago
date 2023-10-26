@@ -6,7 +6,7 @@ package imago.gui.image.tools;
 import imago.gui.image.ImageDisplay;
 import imago.gui.image.ImageFrame;
 import imago.gui.image.ImageViewer;
-import imago.gui.image.ImagoTool;
+import imago.gui.image.ImageTool;
 import imago.gui.image.PlanarImageViewer;
 import imago.gui.image.StackSliceViewer;
 
@@ -22,7 +22,7 @@ import net.sci.geom.geom2d.Point2D;
  * @author David Legland
  *
  */
-public class SelectLineSegmentTool extends ImagoTool
+public class SelectLineSegmentTool extends ImageTool
 {
     // Starting point 
     double x1, y1;

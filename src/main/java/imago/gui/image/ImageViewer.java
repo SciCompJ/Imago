@@ -188,9 +188,9 @@ public abstract class ImageViewer
 	// ===================================================================
 	// Tool management methods
 	
-	public abstract void setCurrentTool(ImagoTool tool);
+	public abstract void setCurrentTool(ImageTool tool);
 
-	public abstract ImagoTool getCurrentTool();
+	public abstract ImageTool getCurrentTool();
 	
 	
 	// ===================================================================

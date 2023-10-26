@@ -6,7 +6,7 @@ package imago.plugin.edit;
 import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
 import imago.gui.image.ImageViewer;
-import imago.gui.image.ImagoTool;
+import imago.gui.image.ImageTool;
 import imago.gui.FramePlugin;
 
 /**
@@ -17,9 +17,9 @@ import imago.gui.FramePlugin;
  */
 public class ChangeCurrentTool implements FramePlugin
 {
-    ImagoTool tool;
+    ImageTool tool;
     
-    public ChangeCurrentTool(ImagoTool tool)
+    public ChangeCurrentTool(ImageTool tool)
     {
         this.tool = tool;
     }

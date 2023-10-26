@@ -54,7 +54,7 @@ public class OrthoSlicesViewer extends ImageViewer implements ChangeListener, Ac
     ImageDisplay imageDisplayZY;
     ImageDisplay imageDisplayXZ;
     
-	protected ImagoTool currentTool = null;
+	protected ImageTool currentTool = null;
 
 	/**
      * The shape of the current selection, usually a polyline or a rectangle, in pixels coordinates.
@@ -187,13 +187,13 @@ public class OrthoSlicesViewer extends ImageViewer implements ChangeListener, Ac
 	// tool management
 
 	@Override
-	public ImagoTool getCurrentTool() 
+	public ImageTool getCurrentTool() 
 	{
 		return currentTool;
 	}
 
 	@Override
-	public void setCurrentTool(ImagoTool tool) 
+	public void setCurrentTool(ImageTool tool) 
 	{
 		if (currentTool != null)
 		{

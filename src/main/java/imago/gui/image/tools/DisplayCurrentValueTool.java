@@ -10,7 +10,7 @@ import java.util.Locale;
 import imago.gui.image.ImageDisplay;
 import imago.gui.image.ImageFrame;
 import imago.gui.image.ImageViewer;
-import imago.gui.image.ImagoTool;
+import imago.gui.image.ImageTool;
 import imago.gui.panels.StatusBar;
 import net.sci.array.Array;
 import net.sci.array.color.RGB16Array;
@@ -26,7 +26,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class DisplayCurrentValueTool extends ImagoTool
+public class DisplayCurrentValueTool extends ImageTool
 {
 
 	public DisplayCurrentValueTool(ImageFrame viewer, String name)

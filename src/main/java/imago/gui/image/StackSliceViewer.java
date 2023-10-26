@@ -61,7 +61,7 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
      */
     protected Geometry selection = null;
 
-	protected ImagoTool currentTool = null;
+	protected ImageTool currentTool = null;
 
 	
 	// ===================================================================
@@ -214,13 +214,13 @@ public class StackSliceViewer extends ImageViewer implements ChangeListener, Act
 	// tool management
 
 	@Override
-	public ImagoTool getCurrentTool() 
+	public ImageTool getCurrentTool() 
 	{
 		return currentTool;
 	}
 
 	@Override
-	public void setCurrentTool(ImagoTool tool) 
+	public void setCurrentTool(ImageTool tool) 
 	{
 		if (currentTool != null)
 		{

@@ -5,7 +5,7 @@ package imago.gui.image.tools;
 
 import imago.gui.image.ImageDisplay;
 import imago.gui.image.ImageFrame;
-import imago.gui.image.ImagoTool;
+import imago.gui.image.ImageTool;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -17,7 +17,7 @@ import net.sci.geom.geom2d.Point2D;
  * @author David Legland
  *
  */
-public class SelectionTool extends ImagoTool {
+public class SelectionTool extends ImageTool {
 
 	double x1, y1;
 	double x2, y2;

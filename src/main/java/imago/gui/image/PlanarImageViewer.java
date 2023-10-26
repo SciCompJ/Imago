@@ -43,7 +43,7 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 
 	ZoomMode zoomMode = ZoomMode.FILL;
 	
-	protected ImagoTool currentTool = null;
+	protected ImageTool currentTool = null;
 	
 	/**
 	 * The shape of the current selection, usually a polyline or a rectangle, in pixels coordinates.
@@ -154,13 +154,13 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 	// tool management
 
 	@Override
-	public ImagoTool getCurrentTool() 
+	public ImageTool getCurrentTool() 
 	{
 		return currentTool;
 	}
 
 	@Override
-	public void setCurrentTool(ImagoTool tool) 
+	public void setCurrentTool(ImageTool tool) 
 	{
 		// remove previous tool
 		if (currentTool != null) 

@@ -6,7 +6,7 @@ package imago.gui.action;
 import imago.gui.ImagoAction;
 import imago.gui.image.ImageFrame;
 import imago.gui.image.ImageViewer;
-import imago.gui.image.ImagoTool;
+import imago.gui.image.ImageTool;
 
 import java.awt.event.ActionEvent;
 
@@ -21,9 +21,9 @@ public class SelectToolAction extends ImagoAction {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	ImagoTool tool;
+	ImageTool tool;
 	
-	public SelectToolAction(ImageFrame viewer, ImagoTool tool) {
+	public SelectToolAction(ImageFrame viewer, ImageTool tool) {
 		super(viewer, "select-" + tool.getName());
 		this.tool = tool;
 	}
