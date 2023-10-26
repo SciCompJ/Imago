@@ -345,7 +345,7 @@ public class ImageRotatedCrop implements FramePlugin
             super("Crop Oriented Box");
             
             this.parentFrame = parentFrame;
-            this.image = parentFrame.getImage();
+            this.image = parentFrame.getImageHandle().getImage();
             this.array = Array2D.wrap(image.getData());
             
             // init default values
@@ -604,7 +604,7 @@ public class ImageRotatedCrop implements FramePlugin
             super("Crop Oriented Box");
             
             this.parentFrame = parentFrame;
-            this.image = parentFrame.getImage();
+            this.image = parentFrame.getImageHandle().getImage();
             this.array = ScalarArray3D.wrapScalar3d((ScalarArray<?>) image.getData());
             
             // init default values

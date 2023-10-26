@@ -41,7 +41,7 @@ public class ImageOperatorAction extends ImagoAction
 	public void actionPerformed(ActionEvent evt)
 	{
 		// get current frame
-		Image image  = ((ImageFrame) this.frame).getImage();
+		Image image  = ((ImageFrame) this.frame).getImageHandle().getImage();
 
 		Image result = operator.process(image);
 

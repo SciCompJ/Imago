@@ -151,7 +151,7 @@ public class ImportImage3DPolylineSeries implements FramePlugin
             return false;
         }
         
-        Image image = ((ImageFrame) frame).getImage();
+        Image image = ((ImageFrame) frame).getImageHandle().getImage();
         return image.getDimension() == 3;
     }
 }

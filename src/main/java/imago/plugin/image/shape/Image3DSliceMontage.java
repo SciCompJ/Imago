@@ -36,7 +36,7 @@ public class Image3DSliceMontage implements FramePlugin
     {
         // get current image data
         ImageFrame iFrame = (ImageFrame) frame;
-        Image image = iFrame.getImage();
+        Image image = iFrame.getImageHandle().getImage();
         
         // check 3D
         if (image.getDimension() != 3)

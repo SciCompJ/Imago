@@ -44,7 +44,7 @@ public class ArrayOperatorAction extends ImagoAction
 	public void actionPerformed(ActionEvent arg0)
 	{
 		// get current frame
-		Image image = ((ImageFrame) this.frame).getImage();
+		Image image = ((ImageFrame) this.frame).getImageHandle().getImage();
 		
 		Array<?> data = image.getData();
 		Array<?> data2 = operator.process(data);

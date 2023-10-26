@@ -49,7 +49,7 @@ public class ImageOperatorPlugin implements FramePlugin
     public void run(ImagoFrame frame, String args)
     {
         // get current frame
-    	Image image = ((ImageFrame) frame).getImage();
+    	Image image = ((ImageFrame) frame).getImageHandle().getImage();
 
     	// initialize listener and timer
 //        operator.addAlgoListener(frame);
@@ -87,7 +87,7 @@ public class ImageOperatorPlugin implements FramePlugin
             return false;
         
         // check image
-        Image image = ((ImageFrame) frame).getImage();
+        Image image = ((ImageFrame) frame).getImageHandle().getImage();
         if (image == null)
             return false;
 

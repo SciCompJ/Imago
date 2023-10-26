@@ -354,7 +354,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         System.out.println("Save Analysis");
         
         // create file dialog using last save path
-        String imageName = imageFrame.getImage().getName();
+        String imageName = imageFrame.getImageHandle().getImage().getName();
         System.out.println("Current Image name: " + imageName);
         
         String defaultFileName = imageName + ".crop3d";
@@ -524,7 +524,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         }
         
         // create file dialog using last save path
-        String imageName = imageFrame.getImage().getName();
+        String imageName = imageFrame.getImageHandle().getImage().getName();
         String defaultFileName = imageName + ".json";
         
         File file = parentFrame.getGui().chooseFileToSave(parentFrame, 
@@ -594,7 +594,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     {
         File imageFile = new File(data.imageInfo.filePath);
         createImageFrame(imageFile);
-        data.image = this.imageFrame.getImage();
+        data.image = this.imageFrame.getImageHandle().getImage();
         
         // create the associated Crop3D 
         this.crop3d = new Crop3D(data, imageFrame.getImageHandle());
@@ -943,7 +943,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         }
         
         // create dialog to save file
-        String defaultFileName = imageFrame.getImage().getName() + ".crop3d";
+        String defaultFileName = imageFrame.getImageHandle().getImage().getName() + ".crop3d";
         File file = parentFrame.getGui().chooseFileToSave(parentFrame, 
                 "Select File for crop result", defaultFileName, mhdFileFilter);
         if (file == null)

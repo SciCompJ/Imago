@@ -315,7 +315,7 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         System.out.println("Save Analysis");
         
         // create file dialog using last save path
-        String imageName = imageFrame.getImage().getName();
+        String imageName = imageFrame.getImageHandle().getImage().getName();
         saveWindow = new JFileChooser(new File(imageName + ".json"));
         saveWindow.setDialogTitle("Save Surface3D Analysis");
         saveWindow.setFileFilter(new FileNameExtensionFilter("JSON files (*.json)", "json"));
@@ -362,7 +362,7 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         }
         
         // create file dialog using last save path
-        String imageName = imageFrame.getImage().getName();
+        String imageName = imageFrame.getImageHandle().getImage().getName();
         saveWindow = new JFileChooser(new File(imageName + ".json"));
         saveWindow.setDialogTitle("Save list of input polygons");
         saveWindow.setFileFilter(new FileNameExtensionFilter("JSON files (*.json)", "json"));
@@ -621,7 +621,7 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         
                 
         // create dialog to save file
-        String imageName = imageFrame.getImage().getName();
+        String imageName = imageFrame.getImageHandle().getImage().getName();
         JFileChooser saveDlg = new JFileChooser(new File(imageName + "_surfFlat.mhd"));
         saveDlg.setDialogTitle("Select File for saving result");
         saveDlg.setFileFilter(new FileNameExtensionFilter("MetaImage File (*.mhd)", "mhd"));

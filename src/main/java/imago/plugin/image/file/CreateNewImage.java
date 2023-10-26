@@ -220,7 +220,7 @@ public class CreateNewImage implements FramePlugin
         // corresponding to the image
         if (frame instanceof ImageFrame)
         {
-            Image image = ((ImageFrame) frame).getImage();
+            Image image = ((ImageFrame) frame).getImageHandle().getImage();
             sizeX_init = image.getSize(0);
             sizeY_init = image.getSize(1);
             if (image.getDimension() > 2)

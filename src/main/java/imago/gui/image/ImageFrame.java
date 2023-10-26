@@ -152,12 +152,14 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
 	{
 		super(gui, "Image Frame");
 		
+		// First, create the viewer (used to build option panel and initialize menu bar) 
+		createImageViewer(handle);
+        
 		// create menu
 		GuiBuilder builder = new GuiBuilder(this);
 		builder.createMenuBar();
 		
 		// Create the different panels
-		createImageViewer(handle);
         this.imageDisplayOptionsPanel = new ImageDisplayOptionsPanel(this.imageViewer);
         this.statusBar = new StatusBar();
 

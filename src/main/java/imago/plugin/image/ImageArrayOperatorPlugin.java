@@ -61,7 +61,7 @@ public class ImageArrayOperatorPlugin implements FramePlugin
     {
         // get current frame
         ImageFrame imageFrame = (ImageFrame) frame;
-        Image image = imageFrame.getImage();
+        Image image = imageFrame.getImageHandle().getImage();
         
         // run the operator on current image, using the dedicated method in ImageFrame instance
         Image result; 
@@ -96,7 +96,7 @@ public class ImageArrayOperatorPlugin implements FramePlugin
             return false;
         
         // check image
-        Image image = ((ImageFrame) frame).getImage();
+        Image image = ((ImageFrame) frame).getImageHandle().getImage();
         if (image == null)
             return false;
 
