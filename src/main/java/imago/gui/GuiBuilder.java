@@ -156,6 +156,7 @@ import imago.plugin.image.process.ImageManualThreshold;
 import imago.plugin.image.process.ImageMorphologicalFilter;
 import imago.plugin.image.process.ImageMorphologicalReconstruction;
 import imago.plugin.image.process.ImageOtsuThreshold;
+import imago.plugin.image.process.ImagePair2DRegister;
 import imago.plugin.image.process.ImageRegionalExtrema;
 import imago.plugin.image.process.ImageSplitChannels;
 import imago.plugin.image.process.ImageValueOperator;
@@ -618,6 +619,9 @@ public class GuiBuilder
         addPlugin(morphologyMenu, new BinaryImageKillBorders(), "Binary Kill Borders");
         menu.add(morphologyMenu);
 		
+        menu.addSeparator();
+        addPlugin(menu, new ImagePair2DRegister(), "Simple Image Registration", hasScalarImage);
+        
         menu.addSeparator();
         addPlugin(menu, new ImageFindNonZeroPixels(),
                 "Find Non-Zeros Elements", hasImage2D && hasScalarImage);

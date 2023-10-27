@@ -168,4 +168,14 @@ public class ImagePairFrame extends ImagoFrame
         int posY = (screenSize.height - height) / 4;
         this.jFrame.setLocation(posX, posY);
     }
+    
+    
+    // ===================================================================
+    // Getter / Setter
+    
+    public ImagePairViewer getViewer()
+    {
+        return this.imagePairViewer;
+    }
+
 }

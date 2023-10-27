@@ -260,6 +260,7 @@ public class CompositeImagePairViewer extends ImagePairViewer implements Compone
 
 	public void refreshDisplay()
 	{
+	    updateCompositeImage();
 	    updateAwtImage();
 	    
 		this.imageDisplay.setBufferedImage(this.awtImage);

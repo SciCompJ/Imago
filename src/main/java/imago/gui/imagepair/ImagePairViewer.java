@@ -183,19 +183,15 @@ public abstract class ImagePairViewer
      *         instance of JPanel.
      */
 	public abstract Object getWidget();
-	
-	public void repaint() 
-	{
-		System.out.println("repaint Image Viewer");
-	}
 
-	public void invalidate() 
+	
+    public void setReferenceImage(Image image)
     {
-        System.out.println("invalidate Image Viewer");
+        this.refImage = image;
     }
 
-	public void validate() 
+    public void setMovingImage(Image image)
     {
-        System.out.println("validate Image Viewer");
+        this.otherImage = image;
     }
 }
