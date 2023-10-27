@@ -414,13 +414,12 @@ public class ImageRotatedCrop implements FramePlugin
 
         private void setupLayout()
         {
-            GuiHelper gh = new GuiHelper();
             // encapsulate into a main panel
             JPanel mainPanel = new JPanel();
             mainPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
             mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 
-            JPanel sizePanel = gh.createOptionsPanel("Result Size");
+            JPanel sizePanel = GuiHelper.createOptionsPanel("Result Size");
             sizePanel.setLayout(new GridLayout(2, 2));
             sizePanel.add(new JLabel("Size X:"));
             sizePanel.add(sizeXWidget);
@@ -428,7 +427,7 @@ public class ImageRotatedCrop implements FramePlugin
             sizePanel.add(sizeYWidget);
             mainPanel.add(sizePanel);
             
-            JPanel boxPanel = gh.createOptionsPanel("Rotated Box");
+            JPanel boxPanel = GuiHelper.createOptionsPanel("Rotated Box");
             boxPanel.setLayout(new GridLayout(3, 2));
             boxPanel.add(new JLabel("Center X:"));
             boxPanel.add(boxCenterXWidget);
@@ -439,8 +438,8 @@ public class ImageRotatedCrop implements FramePlugin
             mainPanel.add(boxPanel);
             
             // also add buttons
-            gh.addInLine(mainPanel, FlowLayout.CENTER, autoUpdateCheckBox, previewButton);
-            gh.addInLine(mainPanel, FlowLayout.CENTER, runButton);
+            GuiHelper.addInLine(mainPanel, FlowLayout.CENTER, autoUpdateCheckBox, previewButton);
+            GuiHelper.addInLine(mainPanel, FlowLayout.CENTER, runButton);
             
             // put main panel in the middle of frame
             this.setLayout(new BorderLayout());
@@ -705,14 +704,12 @@ public class ImageRotatedCrop implements FramePlugin
         
         private void setupLayout()
         {
-            GuiHelper gh = new GuiHelper();
-            
             // encapsulate into a main panel
             JPanel mainPanel = new JPanel();
             mainPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
             mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 
-            JPanel sizePanel = gh.createOptionsPanel("Result Size");
+            JPanel sizePanel = GuiHelper.createOptionsPanel("Result Size");
             sizePanel.setLayout(new GridLayout(3, 2));
             sizePanel.add(new JLabel("Size X:"));
             sizePanel.add(sizeXWidget);
@@ -722,7 +719,7 @@ public class ImageRotatedCrop implements FramePlugin
             sizePanel.add(sizeZWidget);
             mainPanel.add(sizePanel);
             
-            JPanel boxPanel = gh.createOptionsPanel("Box Center");
+            JPanel boxPanel = GuiHelper.createOptionsPanel("Box Center");
             boxPanel.setLayout(new GridLayout(3, 2));
             boxPanel.add(new JLabel("Center X:"));
             boxPanel.add(boxCenterXWidget);
@@ -732,7 +729,7 @@ public class ImageRotatedCrop implements FramePlugin
             boxPanel.add(boxCenterZWidget);
             mainPanel.add(boxPanel);
             
-            JPanel rotationPanel = gh.createOptionsPanel("Box Rotation");
+            JPanel rotationPanel = GuiHelper.createOptionsPanel("Box Rotation");
             rotationPanel.setLayout(new GridLayout(3, 2));
             rotationPanel.add(new JLabel("Rotation X:"));
             rotationPanel.add(boxRotXWidget);
@@ -743,8 +740,8 @@ public class ImageRotatedCrop implements FramePlugin
             mainPanel.add(rotationPanel);
             
             // also add buttons
-            gh.addInLine(mainPanel, FlowLayout.CENTER, autoPreviewCheckBox, previewButton);
-            gh.addInLine(mainPanel, FlowLayout.CENTER, runButton);
+            GuiHelper.addInLine(mainPanel, FlowLayout.CENTER, autoPreviewCheckBox, previewButton);
+            GuiHelper.addInLine(mainPanel, FlowLayout.CENTER, runButton);
             
             // put main panel in the middle of frame
             this.setLayout(new BorderLayout());

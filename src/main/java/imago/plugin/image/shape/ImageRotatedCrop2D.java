@@ -220,13 +220,12 @@ public class ImageRotatedCrop2D implements FramePlugin
 
         private void setupLayout()
         {
-            GuiHelper gh = new GuiHelper();
             // encapsulate into a main panel
             JPanel mainPanel = new JPanel();
             mainPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
             mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 
-            JPanel sizePanel = gh.createOptionsPanel("Result Size");
+            JPanel sizePanel = GuiHelper.createOptionsPanel("Result Size");
             sizePanel.setLayout(new GridLayout(2, 2));
             sizePanel.add(new JLabel("Size X:"));
             sizePanel.add(sizeXWidget);
@@ -234,7 +233,7 @@ public class ImageRotatedCrop2D implements FramePlugin
             sizePanel.add(sizeYWidget);
             mainPanel.add(sizePanel);
             
-            JPanel boxPanel = gh.createOptionsPanel("Rotated Box");
+            JPanel boxPanel = GuiHelper.createOptionsPanel("Rotated Box");
             boxPanel.setLayout(new GridLayout(3, 2));
             boxPanel.add(new JLabel("Center X:"));
             boxPanel.add(boxCenterXWidget);
@@ -245,7 +244,7 @@ public class ImageRotatedCrop2D implements FramePlugin
             mainPanel.add(boxPanel);
             
             // also add buttons
-            gh.addInLine(mainPanel, FlowLayout.CENTER, autoUpdateCheckBox, runButton);
+            GuiHelper.addInLine(mainPanel, FlowLayout.CENTER, autoUpdateCheckBox, runButton);
             
             // put main panel in the middle of frame
             this.setLayout(new BorderLayout());

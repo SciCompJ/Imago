@@ -62,7 +62,7 @@ public class GuiHelper
 
     
     
-    public JPanel createOptionsPanel(String title)
+    public static final JPanel createOptionsPanel(String title)
     {
         JPanel panel = new JPanel();
         panel.setBorder(new CompoundBorder(new EmptyBorder(5, 5, 5, 5), BorderFactory.createTitledBorder(title)));
@@ -71,12 +71,12 @@ public class GuiHelper
         return panel;
     }
     
-    public void addInLine(JPanel panel, Component... comps)
+    public static final void addInLine(JPanel panel, Component... comps)
     {
         addInLine(panel, FlowLayout.LEFT, comps);
     }
     
-    public void addInLine(JPanel panel, int alignment, Component... comps)
+    public static final void addInLine(JPanel panel, int alignment, Component... comps)
     {
         JPanel rowPanel = new JPanel(new FlowLayout(alignment));
         rowPanel.setAlignmentX(0.0f);
