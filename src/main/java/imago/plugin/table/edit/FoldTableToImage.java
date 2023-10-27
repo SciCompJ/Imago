@@ -6,6 +6,7 @@ package imago.plugin.table.edit;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
+import imago.gui.image.ImageFrame;
 import imago.gui.table.TableFrame;
 import imago.plugin.table.TablePlugin;
 import net.sci.array.scalar.Float32Array;
@@ -92,7 +93,7 @@ public class FoldTableToImage implements TablePlugin
         image.setName(table.getName() + "-fold");
         
         // add the image document to GUI
-        frame.createImageFrame(image);
+        ImageFrame.create(image, frame);
     }
 
 }

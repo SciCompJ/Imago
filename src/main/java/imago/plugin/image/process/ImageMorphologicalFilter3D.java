@@ -17,7 +17,7 @@ import net.sci.image.morphology.strel.Strel3D;
 /**
  * Applies various types of morphological filtering on a multidimensional image.
  * 
- * @deprecated: superseeded by ImageMorphologicalFilter class
+ * @deprecated: superseded by ImageMorphologicalFilter class
  * @author David Legland
  * 
  */
@@ -60,8 +60,6 @@ public class ImageMorphologicalFilter3D implements FramePlugin
 		gd.addChoice("Element", Strel3D.Shape.getAllLabels(), 
 				this.shape.toString());
 		gd.addNumericField("Radius (in pixels)", this.radius, 0);
-//		gd.addCheckbox("Show Element", false);
-//		gd.addPreviewCheckbox(pfr);
 		gd.showDialog();
 		
 		if (gd.getOutput() == GenericDialog.Output.CANCEL) 
@@ -74,8 +72,6 @@ public class ImageMorphologicalFilter3D implements FramePlugin
 		this.op 		= Operation.fromLabel(gd.getNextChoice());
 		this.shape 		= Strel3D.Shape.fromLabel(gd.getNextChoice());
 		this.radius 	= (int) gd.getNextNumber();		
-//		this.showStrel 	= gd.getNextBoolean();
-//		this.previewing = gd.getPreviewCheckbox().getState();
 
 		// Create structuring element of the given shape and size
 		Strel3D strel = shape.fromRadius(radius);
@@ -83,31 +79,14 @@ public class ImageMorphologicalFilter3D implements FramePlugin
 		// add some listeners
 		strel.addAlgoListener((ImageFrame) frame); 
 		
-//		// Eventually display the structuring element used for processing 
-//		if (showStrel) 
-//		{
-//			showStrelImage(strel);
-//		}
-		
 		// Execute core of the plugin on the original image
 		Array<?> result = op.process((ScalarArray3D<?>) array, strel);
-
-//    	if (previewing) 
-//    	{
-//    		// Fill up the values of original image with values of the result
-//    		for (int i = 0; i < image.getPixelCount(); i++)
-//    		{
-//    			image.setf(i, result.getf(i));
-//    		}
-//    		image.resetMinAndMax();
-//        }
 		
 		// create new image with filter result
 		Image resultImage = new Image(result, image);
 		resultImage.setName(image.getName() + "-filt");
 		
 		// add the image document to GUI
-		frame.getGui().createImageFrame(resultImage);
+        ImageFrame.create(resultImage, frame);
 	}
-
 }

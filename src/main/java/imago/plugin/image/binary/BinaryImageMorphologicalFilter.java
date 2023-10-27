@@ -233,7 +233,7 @@ public class BinaryImageMorphologicalFilter implements FramePlugin
         String suffix = String.format(Locale.ENGLISH, "%s%s%02d", op.suffix(), shapeSuffix, radius);
         resultImage.setName(image.getName() + "-" + suffix);
         
-		imageFrame.createImageFrame(resultImage); 
+        ImageFrame.create(resultImage, frame);
 	}
 
     /**

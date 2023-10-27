@@ -11,6 +11,7 @@ import javax.swing.ProgressMonitor;
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
+import imago.gui.image.ImageFrame;
 import net.sci.algo.AlgoEvent;
 import net.sci.algo.AlgoListener;
 import net.sci.image.Image;
@@ -90,7 +91,7 @@ public class ReadImageTiff implements FramePlugin, AlgoListener
 		}
 		
 		// add the image document to GUI
-		frame.createImageFrame(image);
+        ImageFrame.create(image, frame);
 	}
 
     @Override

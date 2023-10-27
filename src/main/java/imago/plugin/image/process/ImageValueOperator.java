@@ -139,7 +139,7 @@ public class ImageValueOperator implements FramePlugin
 		resultImage.setName(image.getName() + "-" + functionName);
 		
 		// add the image document to GUI
-		frame.createImageFrame(resultImage);
+        ImageFrame.create(resultImage, frame);
 	}
 	
 	private static void processScalar(ScalarArray<?> source, ScalarArray<?> target, String functionName, double value)

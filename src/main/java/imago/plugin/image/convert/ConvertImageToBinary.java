@@ -35,36 +35,31 @@ public class ConvertImageToBinary implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args) 
 	{
-		// get current frame
-		ImageFrame imageFrame = (ImageFrame) frame;
+        // get current frame
+        ImageFrame imageFrame = (ImageFrame) frame;
+
+        // retrieve image
+        ImageHandle doc = imageFrame.getImageHandle();
+        Image image = doc.getImage();
+        if (image == null) return;
 		
-		// retrieve image
-		ImageHandle doc = imageFrame.getImageHandle();
-		Image image = doc.getImage();
-		if (image == null)
-		{
-			return;
-		}
-		
-		// check array type
-		Array<?> array = image.getData();
-		if (array == null)
-		{
-			return;
-		}
-		if (!(array instanceof ScalarArray))
-		{
+        // check array type
+        Array<?> array = image.getData();
+        if (array == null) return;
+        
+        if (!(array instanceof ScalarArray))
+        {
             ImagoGui.showErrorDialog(frame, "Requires a scalar image", "Data Type Error");
-			return;
-		}
-		
-		// create and run algo
-		ConvertToBinary algo = new ConvertToBinary();
-		Image resultImage = imageFrame.runOperator(algo, image);
-		resultImage.setName(image.getName() + "-bin");
-		
-		// add the image document to GUI
-		frame.createImageFrame(resultImage); 
+            return;
+        }
+
+        // create and run algo
+        ConvertToBinary algo = new ConvertToBinary();
+        Image resultImage = imageFrame.runOperator(algo, image);
+        resultImage.setName(image.getName() + "-bin");
+
+        // add the image document to GUI
+        ImageFrame.create(resultImage, frame);
 	}
 	
 	@Override

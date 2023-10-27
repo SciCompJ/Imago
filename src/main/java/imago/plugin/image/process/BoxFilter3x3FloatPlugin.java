@@ -62,7 +62,7 @@ public class BoxFilter3x3FloatPlugin implements FramePlugin
 		result.setName(image.getName() + "-boxFilt");
 
 		// add the image document to GUI
-		frame.createImageFrame(result);
+        ImageFrame.create(result, frame);
 	}
 
 }

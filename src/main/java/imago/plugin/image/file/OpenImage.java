@@ -11,6 +11,7 @@ import imago.Imago;
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
+import imago.gui.image.ImageFrame;
 import net.sci.image.Image;
 
 /**
@@ -68,6 +69,6 @@ public class OpenImage implements FramePlugin
         }
         
         // add the image document to GUI
-        frame.createImageFrame(image);
+        ImageFrame.create(image, frame);
     }    
 }

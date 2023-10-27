@@ -441,8 +441,8 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
     private void initializeImage(Image image)
     {
         // add the image document to GUI
-        this.imageFrame = parentFrame.createImageFrame(image);
-        
+        this.imageFrame = ImageFrame.create(image, parentFrame);
+
         // initialize other fields
         this.surf3d = new Surface3D(imageFrame.getImageHandle());
         this.surf3d.addAlgoListener(imageFrame);

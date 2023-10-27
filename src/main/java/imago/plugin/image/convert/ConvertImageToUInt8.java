@@ -76,7 +76,7 @@ public class ConvertImageToUInt8 implements FramePlugin
 		
 		// add the image document to GUI
         resultImage.setName(image.getName() + "-uint8");
-		imageFrame.createImageFrame(resultImage);
+        ImageFrame.create(resultImage, frame);
 	}
 	
 	@Override

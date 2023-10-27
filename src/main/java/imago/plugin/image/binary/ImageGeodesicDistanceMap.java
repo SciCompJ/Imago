@@ -238,6 +238,6 @@ public class ImageGeodesicDistanceMap implements FramePlugin
 		resultImage.getDisplaySettings().setDisplayRange(new double[] {0, maxDist});
 		
         // add the image document to GUI
-        frame.createImageFrame(resultImage);
+        ImageFrame.create(resultImage, frame);
 	}
 }

@@ -11,6 +11,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
+import imago.gui.image.ImageFrame;
 import net.sci.image.Image;
 import net.sci.image.io.VgiImageReader;
 
@@ -74,6 +75,6 @@ public class ImportImageVgi implements FramePlugin
 		}
 		
 		// add the image document to GUI
-        frame.createImageFrame(image);
+        ImageFrame.create(image, frame);
 	}
 }

@@ -124,6 +124,6 @@ public class ImageMorphologicalFilter implements FramePlugin
 		resultImage.setName(image.getName() + "-" + suffix);
 		
 		// add the image document to GUI
-		frame.createImageFrame(resultImage);
+        ImageFrame.create(resultImage, frame);
 	}
 }

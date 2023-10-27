@@ -38,6 +38,6 @@ public class ImageDuplicate implements FramePlugin
         Image result = imageFrame.runOperator(op, image);
         
         // add the image document to GUI
-        frame.createImageFrame(result);
+        ImageFrame.create(result, frame);
     }
 }

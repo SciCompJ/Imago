@@ -62,7 +62,7 @@ public class BinaryImageFillHoles implements FramePlugin
         resultImage.setName(image.getName() + "-FillHoles");
         
 		// add the image document to GUI
-        imageFrame.createImageFrame(resultImage); 
+        ImageFrame.create(resultImage, frame);
 	}
 
     /**

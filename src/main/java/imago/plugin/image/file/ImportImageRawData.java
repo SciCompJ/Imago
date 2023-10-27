@@ -12,6 +12,7 @@ import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
+import imago.gui.image.ImageFrame;
 import net.sci.image.Image;
 import net.sci.image.io.RawImageReader;
 import net.sci.image.io.RawImageReader.DataType;
@@ -98,7 +99,6 @@ public class ImportImageRawData implements FramePlugin
         }
         
         // add the image document to GUI
-        frame.createImageFrame(image);
+        ImageFrame.create(image, frame);
     }
-    
 }

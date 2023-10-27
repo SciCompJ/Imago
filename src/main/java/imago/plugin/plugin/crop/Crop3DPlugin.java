@@ -650,7 +650,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         }
         
         // create viewer for the image
-        this.imageFrame = parentFrame.createImageFrame(image);
+        this.imageFrame = ImageFrame.create(image, parentFrame);
 
         // update widgets
         imageNameLabel.setText(image.getName());
@@ -924,7 +924,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     {
         // Create new cropped image using virtual crop array
         Image cropImage = crop3d.createCropImageView();
-        imageFrame.createImageFrame(cropImage);
+        ImageFrame.create(cropImage, imageFrame);
     }
     
     /**

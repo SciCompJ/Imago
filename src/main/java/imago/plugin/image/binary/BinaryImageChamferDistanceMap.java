@@ -116,7 +116,7 @@ public class BinaryImageChamferDistanceMap implements FramePlugin
 		resultImage.setName(image.getName() + "-dist");
 		
 		// add the image document to GUI
-		imageFrame.createImageFrame(resultImage);
+        ImageFrame.create(resultImage, frame);
 	}
 	
     private static final DistanceTransform2D createAlgorithm(ChamferMask2D mask, DistanceMapDataType outputType, boolean normalize)

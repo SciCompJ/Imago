@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import imago.gui.ImagoFrame;
+import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.image.Image;
 
@@ -54,7 +55,7 @@ public class OpenDemoImage implements FramePlugin
         }
         
         // add the image document to GUI
-        frame.createImageFrame(image);
+        ImageFrame.create(image, frame);
     }
     
 }

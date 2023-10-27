@@ -68,7 +68,7 @@ public class BinaryImageBoxMedianFilter implements FramePlugin
         result.setName(image.getName() + "-medFilt");
 		
 		// add the image document to GUI
-		frame.createImageFrame(result);
+        ImageFrame.create(result, frame);
 	}
 
     /**

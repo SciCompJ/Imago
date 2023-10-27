@@ -69,7 +69,7 @@ public class ImageOperatorPlugin implements FramePlugin
         }
         
         // add the image document to GUI
-        frame.createImageFrame(result);
+        ImageFrame.create(result, frame);
     }
 
     /**

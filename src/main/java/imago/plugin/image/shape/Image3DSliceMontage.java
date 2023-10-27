@@ -83,6 +83,6 @@ public class Image3DSliceMontage implements FramePlugin
         Image resultImage = new Image(res, image);
         resultImage.setName(image.getName() + "-sliceMontage");
         
-        iFrame.createImageFrame(resultImage);
+        ImageFrame.create(resultImage, frame);
     }
 }

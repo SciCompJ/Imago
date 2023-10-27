@@ -11,6 +11,7 @@ import net.sci.image.Image;
 import imago.Imago;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
+import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 
 /**
@@ -127,7 +128,7 @@ public class ImportImageSeries implements FramePlugin
         Image image = new Image(array, firstImage);
         
         // add the image document to GUI
-        frame.createImageFrame(image);
+        ImageFrame.create(image, frame);
     }
 
     private String findExtension(String fileName)

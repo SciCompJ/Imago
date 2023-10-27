@@ -78,7 +78,7 @@ public class ImageArrayOperatorPlugin implements FramePlugin
         }
         
         // display result image in a new frame
-        imageFrame.createImageFrame(result);
+        ImageFrame.create(result, frame);
     }
 
     /**

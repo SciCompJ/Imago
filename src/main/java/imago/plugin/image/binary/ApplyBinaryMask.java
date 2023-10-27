@@ -24,81 +24,77 @@ import net.sci.image.Image;
  */
 public class ApplyBinaryMask implements FramePlugin
 {
-	public ApplyBinaryMask()
-	{
-	}
+    public ApplyBinaryMask()
+    {
+    }
 
-	@Override
+    @Override
     public void run(ImagoFrame frame, String args)
     {
-		ImagoApp app = frame.getGui().getAppli();
-		Collection<String> imageNames = app.getImageHandleNames();
+        ImagoApp app = frame.getGui().getAppli();
+        Collection<String> imageNames = app.getImageHandleNames();
 
-		// Case of no open document with image
-		if (imageNames.size() == 0)
-		{
-			return;
-		}
-		
-		// retrieve necessary information
-		String[] imageNameArray = imageNames.toArray(new String[]{});
-		String firstImageName = imageNameArray[0];
-		String secondImageName = imageNameArray[Math.min(1, imageNameArray.length-1)];
-	
-		// Creates the dialog
-		GenericDialog gd = new GenericDialog(frame, "Binary Mask");
-		gd.addChoice("Reference Image: ", imageNameArray, firstImageName);
-		gd.addChoice("Binary Image: ", imageNameArray, secondImageName);
+        // Case of no open document with image
+        if (imageNames.size() == 0)
+        { return; }
+
+        // retrieve necessary information
+        String[] imageNameArray = imageNames.toArray(new String[] {});
+        String firstImageName = imageNameArray[0];
+        String secondImageName = imageNameArray[Math.min(1, imageNameArray.length - 1)];
+
+        // Creates the dialog
+        GenericDialog gd = new GenericDialog(frame, "Binary Mask");
+        gd.addChoice("Reference Image: ", imageNameArray, firstImageName);
+        gd.addChoice("Binary Image: ", imageNameArray, secondImageName);
         gd.showDialog();
-		
-		if (gd.wasCanceled()) 
-		{
-			return;
-		}
-		
-		// parse dialog results
-		Image baseImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
+
+        if (gd.wasCanceled())
+        { return; }
+
+        // parse dialog results
+        Image baseImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
         Image maskImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
 
         // retrieve arrays
-		Array<?> array = baseImage.getData();
-		Array<?> mask = maskImage.getData();
-		
-		// check input validity
-		if (!Arrays.isSameDimensionality(array, mask))
-		{
-			frame.showErrorDialog("Both images must have same dimensionality", "Dimensionality Error");
-			return;
-		}
-		if (!Arrays.isSameSize(array, mask))
-		{
-			frame.showErrorDialog("Both images must have same size", "Image Size Error");
-			return;
-		}
-		if ( !(mask instanceof BinaryArray) )
-		{
-			frame.showErrorDialog("Mask image must be binary", "Image Type Error");
-			return;
-		}
-		
-		// Create operator
-		BinaryMask op = new BinaryMask();
-		op.addAlgoListener(frame);
-		
-		// run operator
-		long t0 = System.nanoTime();
-		Array<?> result = op.process(array, BinaryArray.wrap(mask));
+        Array<?> array = baseImage.getData();
+        Array<?> mask = maskImage.getData();
+
+        // check input validity
+        if (!Arrays.isSameDimensionality(array, mask))
+        {
+            frame.showErrorDialog("Both images must have same dimensionality", "Dimensionality Error");
+            return;
+        }
+        if (!Arrays.isSameSize(array, mask))
+        {
+            frame.showErrorDialog("Both images must have same size", "Image Size Error");
+            return;
+        }
+        if (!(mask instanceof BinaryArray))
+        {
+            frame.showErrorDialog("Mask image must be binary", "Image Type Error");
+            return;
+        }
+
+        // Create operator
+        BinaryMask op = new BinaryMask();
+        op.addAlgoListener(frame);
+
+        // run operator
+        long t0 = System.nanoTime();
+        Array<?> result = op.process(array, BinaryArray.wrap(mask));
         long t1 = System.nanoTime();
-		
+
         // show elapsed time
         double dt = (t1 - t0) / 1_000_000.0;
-		((ImageFrame) frame).showElapsedTime("Binary Mask", dt, baseImage);
-		
-		// Create result image
-		Image resultImage = new Image(result, baseImage);
-		resultImage.setName(baseImage.getName() + "-mask");
-		
-		// add the image document to GUI
-		frame.createImageFrame(resultImage);
-	}
+        ((ImageFrame) frame).showElapsedTime("Binary Mask", dt, baseImage);
+
+        // Create result image
+        Image resultImage = new Image(result, baseImage);
+        resultImage.setName(baseImage.getName() + "-mask");
+
+        // add the image document to GUI
+        ImageFrame.create(resultImage, frame);
+    }
 }

@@ -133,11 +133,13 @@ public abstract class ImagoFrame implements AlgoListener
      * Creates a new frame for displaying image, using this frame as basis for
      * placement.
      * 
+     * @deprecated replaced by {@link imago.gui.image.ImageFrame#create(Image, ImagoFrame)}
+     * 
      * @param image
      *            the image to display.
      * @return a new instance of ImageFrame.
      */
-	//TODO: deprecated me!
+    @Deprecated
 	public ImageFrame createImageFrame(Image image)
 	{
 	    return ImageFrame.create(image, this);
@@ -147,6 +149,8 @@ public abstract class ImagoFrame implements AlgoListener
      * Creates a new frame for displaying table, using this frame as basis for
      * placement.
      * 
+     * @deprecated replaced by {@link imago.gui.table.TableFrame#create(Table, ImagoFrame)}
+     * 
      * @param table
      *            the table to display.
      * @return a new instance of ImageFrame.
@@ -154,7 +158,7 @@ public abstract class ImagoFrame implements AlgoListener
 	@Deprecated
 	public TableFrame createTableFrame(Table table)
 	{
-		return this.gui.createTableFrame(table, this);
+        return TableFrame.create(table, this);
 	}
 	
 

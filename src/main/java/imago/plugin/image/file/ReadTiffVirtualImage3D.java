@@ -9,6 +9,7 @@ import java.io.IOException;
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
+import imago.gui.image.ImageFrame;
 import net.sci.image.Image;
 import net.sci.image.io.TiffImageReader;
 
@@ -46,13 +47,10 @@ public class ReadTiffVirtualImage3D implements FramePlugin
 		}
 		catch (Exception ex) 
 		{
-		    System.err.println(ex);
+		    ex.printStackTrace();
             ImagoGui.showErrorDialog(frame, ex.getLocalizedMessage(), "TIFF Image Reading Error");
 			return;
 		}
-		
-//		TiffVirtualUInt8Array3D array3d = new TiffVirtualUInt8Array3D(path, reader.getImageFileDirectories());
-		        
 		
 		Image image;
         try
@@ -67,6 +65,6 @@ public class ReadTiffVirtualImage3D implements FramePlugin
         }
 		
 		// add the image document to GUI
-		frame.createImageFrame(image);
+        ImageFrame.create(image, frame);
 	}
 }

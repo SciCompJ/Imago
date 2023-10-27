@@ -63,7 +63,7 @@ public class ImageDownsample implements FramePlugin
 		result.setName(image.getName() + "-down" + factor);
 		
 		// add the image document to GUI
-		ImageFrame frame2 = iFrame.createImageFrame(result);
+        ImageFrame frame2 = ImageFrame.create(result, frame);
 		if (image.getDimension() > 2)
 		{
 		    int currentSlice = iFrame.getImageView().getSlicingPosition(2);

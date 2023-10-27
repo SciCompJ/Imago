@@ -44,7 +44,7 @@ public class BinaryImageKillBorders implements FramePlugin
         resultImage.setName(image.getName() + "-killBorders");
         
 		// add the image document to GUI
-        imageFrame.createImageFrame(resultImage); 
+        ImageFrame.create(resultImage, frame);
 	}
 
     /**

@@ -54,6 +54,6 @@ public class Image3DRotate90 implements FramePlugin
 		result.setName(image.getName() + "-rot90");
 		
 		// add the image document to GUI
-		imageFrame.createImageFrame(result);
+        ImageFrame.create(result, frame);
 	}
 }

@@ -72,6 +72,6 @@ public class ImageOrthogonalProjection implements FramePlugin
         Image resultImage = new Image(result, image);
         resultImage.setName(image.getName() + "-proj");
         
-        iFrame.createImageFrame(resultImage);
+        ImageFrame.create(resultImage, frame);
     }
 }

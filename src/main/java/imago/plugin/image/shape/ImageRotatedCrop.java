@@ -471,7 +471,7 @@ public class ImageRotatedCrop implements FramePlugin
             // retrieve frame for displaying result
             if (this.previewFrame == null)
             {
-                this.previewFrame = this.parentFrame.createImageFrame(previewImage);
+                this.previewFrame = ImageFrame.create(previewImage, this.parentFrame);
             }
             
             // update display frame
@@ -489,7 +489,7 @@ public class ImageRotatedCrop implements FramePlugin
             Image resultImage = new Image(res, image);
             resultImage.setName(image.getName() + "-crop");
             
-            this.parentFrame.createImageFrame(resultImage);
+            ImageFrame.create(resultImage, this.parentFrame);
         }
 
         private void updatePreviewIfNeeded()
@@ -781,7 +781,7 @@ public class ImageRotatedCrop implements FramePlugin
             // retrieve frame for displaying result
             if (this.previewFrame == null)
             {
-                this.previewFrame = parentFrame.createImageFrame(previewImage);
+                this.previewFrame = ImageFrame.create(previewImage, this.parentFrame);
             }
             
             // update display frame
@@ -807,7 +807,7 @@ public class ImageRotatedCrop implements FramePlugin
             resultImage.setName(this.image.getName() + "-crop");
             
             // display in a new frame
-            parentFrame.createImageFrame(resultImage);
+            ImageFrame.create(resultImage, this.parentFrame);
         }
 
         private void updatePreviewIfNeeded()

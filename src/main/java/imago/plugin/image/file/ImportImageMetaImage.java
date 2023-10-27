@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
+import imago.gui.image.ImageFrame;
 import net.sci.image.Image;
 import net.sci.image.io.MetaImageReader;
 
@@ -71,7 +72,7 @@ public class ImportImageMetaImage implements FramePlugin
         }
 
 		// add the image document to GUI
-		frame.createImageFrame(image);
+        ImageFrame.create(image, frame);
 	}
 
 }

@@ -71,7 +71,7 @@ public class ConvertImageToLabel implements FramePlugin
         resultImage.setName(image.getName() + "-lbl");
 
 		// add the image document to GUI
-		frame.createImageFrame(resultImage); 
+        ImageFrame.create(resultImage, frame);
 	}
 	
 	@Override

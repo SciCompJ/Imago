@@ -77,7 +77,7 @@ public class BinaryImage3DDepthMap implements FramePlugin
 		Image resultImage = new Image(result, ImageType.DISTANCE, image);
 		
 		// add the image document to GUI
-		imageFrame.createImageFrame(resultImage);
+        ImageFrame.create(resultImage, frame);
 	}
 	
     /**

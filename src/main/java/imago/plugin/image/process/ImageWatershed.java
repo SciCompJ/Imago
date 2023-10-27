@@ -118,7 +118,7 @@ public class ImageWatershed implements FramePlugin
 		resultImage.setName(image.getName() + suffix);
 		
 		// add the image document to GUI
-		iFrame.createImageFrame(resultImage);
+        ImageFrame.create(resultImage, frame);
 	}
 
 	/**

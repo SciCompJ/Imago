@@ -264,6 +264,6 @@ public class CreateNewImage implements FramePlugin
 		image.setName(imageName);
 		
 		// add the image document to GUI
-		frame.createImageFrame(image);
+        ImageFrame.create(image, frame);
 	}
 }

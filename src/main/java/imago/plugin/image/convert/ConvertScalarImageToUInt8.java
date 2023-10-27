@@ -60,10 +60,8 @@ public class ConvertScalarImageToUInt8 implements FramePlugin
 		Image resultImage;
 		if (array.dataType() == Binary.class)
 		{
-//		    BinaryToUInt8 algo = new BinaryToUInt8();
 		    UInt8Array res = new BinaryToUInt8.View(BinaryArray.wrap(array));
 		    resultImage = new Image(res, image);
-//		    resultImage = ((ImageFrame) frame).runOperator(algo, image);
 		}
 		else
 		{
@@ -77,16 +75,6 @@ public class ConvertScalarImageToUInt8 implements FramePlugin
 		resultImage.setName(image.getName() + "-uint8");
 		
 		// add the image document to GUI
-		frame.getGui().createImageFrame(resultImage); 
+        ImageFrame.create(resultImage, frame);
 	}
-	
-//	public UInt8Array processScalar(ScalarArray<?> array, double[] range)
-//	{
-//        // compute ratio 
-////	    double ratio = 255 / (range[1] - range[0]);
-//	    
-//	    // remove min, rescale and convert type
-////        return UInt8Array.convert(array.minus(range[0]).times(ratio));
-//        return UInt8Array.convert(array, range[0], range[1]);
-//	}
 }

@@ -61,8 +61,8 @@ public class ImageSubsample implements FramePlugin
 		result.setName(image.getName() + "-sub" + step);
 		
 		// add the image document to GUI
-		ImageFrame frame2 = iFrame.createImageFrame(result);
-		
+		ImageFrame frame2 = ImageFrame.create(result, frame);
+
         // choose z-position approximately the same as original image
         int zPos = iFrame.getImageView().getSlicingPosition(2);
         double relPos = ((double) zPos) / ((double) image.getSize(2));
