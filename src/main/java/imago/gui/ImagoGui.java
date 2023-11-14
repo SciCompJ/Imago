@@ -50,21 +50,84 @@ public class ImagoGui
     // ===================================================================
     // Static methods
 
+    /**
+     * Opens a dialog to display a message.
+     * 
+     * @param frame
+     *            an instance of ImagoFrame to align the dialog with
+     * @param message
+     *            the message to display in the dialog
+     * @param title
+     *            the title of the dialog frame
+     */
     public static final void showMessage(ImagoFrame frame, String message, String title)
     {
         JOptionPane.showMessageDialog(frame.getWidget(), message, title, JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**
+     * Opens a dialog to enter a text string.
+     * 
+     * @param frame
+     *            an instance of ImagoFrame to align the dialog with
+     * @param message
+     *            the message to display in the dialog
+     * @param title
+     *            the title of the dialog frame
+     * @param defaultAnswer
+     *            the initial content of the text field to populate
+     * @String return the content of the text field after edition
+     */
+    public static final String showInputDialog(ImagoFrame frame, String message, String title, String defaultAnswer)
+    {
+        return (String) JOptionPane.showInputDialog(
+                frame.getWidget(),
+                message,
+                title,
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                defaultAnswer);
+    }
+
+    /**
+     * Opens a dialog to display an error message.
+     * 
+     * @param frame
+     *            an instance of ImagoFrame to align the dialog with
+     * @param message
+     *            the message to display in the dialog
+     */
     public static final void showErrorDialog(ImagoFrame frame, String message)
     {
         JOptionPane.showMessageDialog(frame.getWidget(), message, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Opens a dialog to display an error message.
+     * 
+     * @param frame
+     *            an instance of ImagoFrame to align the dialog with
+     * @param message
+     *            the message to display in the dialog
+     * @param title
+     *            the title of the dialog frame
+     */
     public static final void showErrorDialog(ImagoFrame frame, String message, String title)
     {
         JOptionPane.showMessageDialog(frame.getWidget(), message, title, JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Opens a dialog to display an exception message together with its stack trace.
+     * 
+     * @param frame
+     *            an instance of ImagoFrame to align the dialog with
+     * @param ex
+     *            the exception to display (both error message and stack trace)
+     * @param title
+     *            the title of the dialog frame
+     */
     public static final void showExceptionDialog(ImagoFrame frame, Exception ex, String title)
     {
         // create error frame

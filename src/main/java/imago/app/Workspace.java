@@ -50,7 +50,7 @@ public class Workspace
      *            the name of the handle.
      * @return the first handle whose name matches the specified name.
      */
-    public ObjectHandle getHandleWithName(String name)
+    public ObjectHandle findHandleWithName(String name)
     {
         for (ObjectHandle handle : handles.values())
         {
@@ -158,6 +158,24 @@ public class Workspace
         this.handles.put(tag, handle);
     }
 
+    /**
+     * Removes the specified handle from the workspace, or throws an exception.
+     * 
+     * @param handle
+     *            the handle to remove
+     */
+    public void removeHandle(ObjectHandle handle)
+    {
+        removeHandle(handle.tag);
+    }
+    
+    /**
+     * Removes the handle identified by its tag from the workspace, or throws an
+     * exception if there is no handle with the specified tag.
+     * 
+     * @param tag
+     *            the tag of the handle to remove
+     */
     public void removeHandle(String tag)
     {
         if (this.handles.containsKey(tag))
