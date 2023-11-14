@@ -61,7 +61,7 @@ public class TableFrame extends ImagoFrame
         {
             parentHandle = ((TableFrame) parentFrame).handle;
         }
-        TableHandle handle = app.createTableHandle(table, parentHandle);
+        TableHandle handle = TableHandle.create(app, table, parentHandle);
 
         // Create the frame
         TableFrame frame = new TableFrame(gui, handle);

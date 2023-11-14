@@ -61,7 +61,7 @@ public class ImportSelectionFromWorkspace implements FramePlugin
 		}
 
 		ImagoApp app = frame.getGui().getAppli();
-		Collection<GeometryHandle> handles = app.getGeometryHandles();
+		Collection<GeometryHandle> handles = GeometryHandle.getAll(app);
         ObjectHandle[] handleArray = handles.toArray(new ObjectHandle[]{});
         
         // retrieve handle names

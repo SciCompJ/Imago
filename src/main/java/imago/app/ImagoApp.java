@@ -185,6 +185,7 @@ public class ImagoApp
      *            the table instance.
      * @return the handle to manage the table.
      */
+    @Deprecated
     public TableHandle createTableHandle(Table table)
     {
         return createTableHandle(table, null);
@@ -200,6 +201,7 @@ public class ImagoApp
      *            a parent handle, used to initialize handles fields.
      * @return the handle to manage the image.
      */
+    @Deprecated
     public TableHandle createTableHandle(Table table, TableHandle parent)
     {
         String tag = workspace.findNextFreeTag("tab");
@@ -209,6 +211,7 @@ public class ImagoApp
         return handle;
     }
 
+    @Deprecated
 	public Collection<TableHandle> getTableHandles()
 	{
 	    ArrayList<TableHandle> res = new ArrayList<TableHandle>();
@@ -230,10 +233,12 @@ public class ImagoApp
      * Creates a new handle for a geometry, adds it to the workspace, and returns
      * the created handle.
      * 
+     * @deprecated replaced by GeometryHandle.create(ImagoApp, Geometry)
      * @param geom
      *            the geometry instance.
      * @return the handle to manage the table.
      */
+    @Deprecated
     public GeometryHandle createGeometryHandle(Geometry geom)
     {
         String baseTag = GeometryHandle.createTag(geom);
@@ -244,6 +249,12 @@ public class ImagoApp
         return handle;
     }
     
+    /**
+     * @deprecated replaced by GeometryHandle.getAll(ImagoApp)
+     * 
+     * @return
+     */
+    @Deprecated
     public Collection<GeometryHandle> getGeometryHandles()
     {
         ArrayList<GeometryHandle> res = new ArrayList<GeometryHandle>();
