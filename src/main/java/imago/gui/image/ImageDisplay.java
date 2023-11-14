@@ -3,35 +3,23 @@
  */
 package imago.gui.image;
 
-import imago.app.shape.Shape;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Stroke;
-import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 import javax.swing.JPanel;
 
+import imago.app.shape.Shape;
+import imago.gui.shape.ShapeDrawer;
 import net.sci.geom.Geometry;
-import net.sci.geom.geom2d.Bounds2D;
-import net.sci.geom.geom2d.Curve2D;
 import net.sci.geom.geom2d.Geometry2D;
-import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.geom2d.curve.MultiCurve2D;
-import net.sci.geom.geom2d.curve.Ellipse2D;
-import net.sci.geom.geom2d.polygon.LinearRing2D;
-import net.sci.geom.geom2d.polygon.PolygonalDomain2D;
-import net.sci.geom.geom2d.polygon.Polyline2D;
-import net.sci.geom.graph.Graph2D;
 
 
 /**
@@ -277,14 +265,9 @@ public class ImageDisplay extends JPanel
 	{
 		System.out.println("ImageDisplay.drawShape");
 		
-        // convert to Graphics2D to have more drawing possibilities
-        Graphics2D g2 = (Graphics2D) this.getGraphics();
-        
-        g2.setColor(shape.getColor());
-        Stroke stroke = new BasicStroke((float) shape.getLineWidth());
-        g2.setStroke(stroke);
-        
-        drawGeometry(g2, (Geometry2D) shape.getGeometry());
+        // create drawer
+        ShapeDrawer drawer = createDrawer();
+        drawer.drawShape((Graphics2D) this.getGraphics(), shape);
 	}
 	
 	
@@ -304,18 +287,21 @@ public class ImageDisplay extends JPanel
 
 	private void paintImage(Graphics g)
 	{
+//        System.out.println("paint image");
         Dimension dim = this.getDisplaySize();
         g.drawImage(this.image, offsetX, offsetY, dim.width, dim.height, null);
 	}
 	
     private void paintAnnotations(Graphics g)
     {
+//        System.out.println("paint annotations");
         // convert to Graphics2D to have more drawing possibilities
         Graphics2D g2 = (Graphics2D) g;
+        ShapeDrawer drawer = createDrawer();
         
         for(Shape shape : this.shapes)
         {
-            drawShape(g2, shape);
+            drawer.drawShape(g2, shape);
         }
     }
     
@@ -332,15 +318,8 @@ public class ImageDisplay extends JPanel
     
     private void drawShape(Graphics2D g2, Shape shape)
     {
-        g2.setColor(shape.getColor());
-        Stroke stroke = new BasicStroke((float) shape.getLineWidth());
-        g2.setColor(shape.getColor());
-        g2.setStroke(stroke);
-        Geometry geom = shape.getGeometry();
-        if (geom instanceof Geometry2D)
-        {
-        	drawGeometry(g2, (Geometry2D) geom);
-        }
+        ShapeDrawer drawer = createDrawer();
+        drawer.drawShape(g2, shape);
         g2.setStroke(new BasicStroke());
     }
     
@@ -357,239 +336,15 @@ public class ImageDisplay extends JPanel
         // convert to Graphics2D to have more drawing possibilities
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.YELLOW);
-        
-        drawGeometry(g2, this.selection);
-    }
-    
-    /**
-	 * Draws a geometry on the specified graphics. Paint settings are assumed to be
-	 * already defined.
-	 * 
-	 * @param g2 the instance of Graphics2D to paint on
-	 * @param geom the geometry to draw
-	 */
-    private void drawGeometry(Graphics2D g2, Geometry2D geom)
-    {
-        // basic checkups
-        if (geom == null)
-        {
-            throw new RuntimeException("Geometry should not be null");
-        }
-
-        // Process various geometry cases
-        if (geom instanceof Point2D)
-        {
-            Point2D point = (Point2D) geom;
-            drawPoint(g2, point);
-        }
-        else if (geom instanceof LineSegment2D)
-        {
-            LineSegment2D line = (LineSegment2D) geom;
-            drawLineSegment(g2, line);
-        }
-        else if (geom instanceof Bounds2D)
-        {
-            Bounds2D box = (Bounds2D) geom;
-            drawPolygon(g2, box.getRectangle());
-        }
-        else if (geom instanceof PolygonalDomain2D)
-        {
-        	PolygonalDomain2D poly = (PolygonalDomain2D) geom;
-            drawPolygon(g2, poly);
-        }
-        else if (geom instanceof Ellipse2D)
-        {
-            Polyline2D poly = ((Ellipse2D) geom).asPolyline(120);
-            drawPolyline(g2, poly);
-        }
-        else if (geom instanceof Polyline2D)
-        {
-            Polyline2D poly = (Polyline2D) geom;
-            drawPolyline(g2, poly);
-        }
-        else if (geom instanceof Curve2D)
-        {
-            Curve2D curve = (Curve2D) geom;
-            Polyline2D poly = curve.asPolyline(120);
-            drawPolyline(g2, poly);
-        }
-        else if (geom instanceof MultiCurve2D)
-        {
-            for (Curve2D curve : ((MultiCurve2D) geom).curves())
-            {
-                Polyline2D poly = curve.asPolyline(120);
-                drawPolyline(g2, poly);
-            }
-        }
-        else if (geom instanceof Graph2D)
-        {
-            drawGraphEdges(g2, (Graph2D) geom);
-            drawGraphVertices(g2, (Graph2D) geom);
-        }
-        else
-        {
-            // basic check to avoid errors
-            System.out.println("[Image Display] can not handle geometry of class: " + geom.getClass());
-        }
+        ShapeDrawer drawer = createDrawer();
+        drawer.drawGeometry(g2, this.selection);
     }
 
-    
-    // ===================================================================
-    // Specific geometry paint methods
-
-    /**
-     * Draws edges of a graph on the specified graphics. Paint settings are
-     * assumed to be already defined.
-     * 
-     * @param g2
-     *            the instance of Graphics2D to paint on
-     * @param graph
-     *            the graph whose edge need to be paint
-     */
-    private void drawGraphVertices(Graphics2D g2, Graph2D graph)
+    private ShapeDrawer createDrawer()
     {
-        for (Graph2D.Vertex v : graph.vertices())
-        {
-            drawPoint(g2, v.position());
-        }
-    }
-    
-    /**
-     * Draws edges of a graph on the specified graphics. Paint settings are
-     * assumed to be already defined.
-     * 
-     * @param g2
-     *            the instance of Graphics2D to paint on
-     * @param graph
-     *            the graph whose edge need to be paint
-     */
-    private void drawGraphEdges(Graphics2D g2, Graph2D graph)
-    {
-        for (Graph2D.Edge edge : graph.edges())
-        {
-            drawLineSegment(g2, edge.curve());
-        }
-    }
-
-    /**
-	 * Draws a point on the specified graphics. Paint settings are assumed to be
-	 * already defined.
-	 * 
-	 * @param g2 the instance of Graphics2D to paint on
-	 * @param point the point to draw
-	 */
-    private void drawPoint(Graphics2D g2, Point2D point)
-    {
-        point = imageToDisplay(point);
-        int x = (int) point.x();
-        int y = (int) point.y();
-        g2.drawLine(x-2, y, x+2, y);
-        g2.drawLine(x, y-2, x, y+2);
-    	
-    }
-    
-    /**
-	 * Draws a line segment on the specified graphics. Paint settings are assumed to be
-	 * already defined.
-	 * 
-	 * @param g2 the instance of Graphics2D to paint on
-	 * @param line the line segment to draw
-	 */
-    private void drawLineSegment(Graphics2D g2, LineSegment2D line)
-    {
-    	Point2D p1 = imageToDisplay(line.getP1());
-        int x1 = (int) p1.x();
-        int y1 = (int) p1.y();
-        Point2D p2 = imageToDisplay(line.getP2());
-        int x2 = (int) p2.x();
-        int y2 = (int) p2.y();
-        g2.drawLine(x1, y1, x2, y2);
-    }
-    
-    /**
-     * Draws a polygon on the specified graphics. Paint settings are assumed to be
-     * already defined.
-     * 
-     * @param g2 the instance of Graphics2D to paint on
-     * @param poly the polygon to draw
-     */
-    private void drawPolyline(Graphics2D g2, Polyline2D poly)
-    {
-        // check size
-        int nv = poly.vertexCount();
-        if (nv < 2)
-        {
-            return;
-        }
-    
-        // convert polygon into integer coords in display space
-        int[] px = new int[nv];
-        int[] py = new int[nv];
-
-        Iterator<Point2D> iter = poly.vertexPositions().iterator();
-        for (int i = 0; i < nv; i++)
-        {
-            Point2D point = iter.next();
-            point = imageToDisplay(point);
-            px[i] = (int) point.x();
-            py[i] = (int) point.y();
-        }
-
-        // display the polygon
-        if (poly.isClosed())
-            g2.drawPolygon(px, py, nv);
-        else
-            g2.drawPolyline(px, py, nv);
-    }    
-
-    /**
-     * Draws a polygon on the specified graphics. Paint settings are assumed to be
-     * already defined.
-     * 
-     * @param g2 the instance of Graphics2D to paint on
-     * @param poly the polygon to draw
-     */
-    private void drawPolygon(Graphics2D g2, PolygonalDomain2D poly)
-    {
-        for (LinearRing2D ring : poly.rings())
-        {
-            drawLinearRing(g2, ring);
-        }
-    }
-    
-    /**
-     * Draws a polygon on the specified graphics. Paint settings are assumed to be
-     * already defined.
-     * 
-     * @param g2 the instance of Graphics2D to paint on
-     * @param poly the polygon to draw
-     */
-    private void drawLinearRing(Graphics2D g2, LinearRing2D poly)
-    {
-        // check size
-        int nv = poly.vertexCount();
-        if (nv < 2)
-        {
-            return;
-        }
-    
-        // convert polygon into integer coords in display space
-        Path2D.Float path = new Path2D.Float();
-        Point2D p = imageToDisplay(poly.vertexPosition(0));
-        path.moveTo(p.x(), p.y());
-//        int[] px = new int[nv];
-//        int[] py = new int[nv];
-
-        // iterate over vertex positions
-//        int i = 0;
-        for (int i = 1; i < nv; i++)
-        {
-            p = imageToDisplay(poly.vertexPosition(i));
-            path.lineTo(p.x(), p.y());
-        }
-        path.closePath();
-
-        // display the polygon
-        g2.draw(path);
+        ShapeDrawer drawer = new ShapeDrawer();
+        drawer.setScaling(zoom);
+        drawer.setShift(offsetX, offsetY);
+        return drawer;
     }
 }
