@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.util.Collection;
 
 import imago.app.ImageHandle;
+import imago.app.ImagoApp;
 import imago.app.scene.GroupNode;
 import imago.app.scene.ImageSerialSectionsNode;
 import imago.app.scene.ImageSliceNode;
@@ -70,7 +71,8 @@ public class IsosurfaceSlices implements FramePlugin
         GenericDialog dlg = new GenericDialog(frame, "Isosurface");
         double[] extent = image.getDisplaySettings().getDisplayRange(); 
         dlg.addSlider("Isosurface Value", extent[0], extent[1], (extent[0] + extent[1]) / 2);
-        Collection<String> imageNames = gui.getAppli().getImageHandleNames();
+        ImagoApp app = frame.getGui().getAppli();
+        Collection<String> imageNames = ImageHandle.getAllNames(app);
         String[] imageNameArray = imageNames.toArray(new String[]{});
         String firstImageName = iFrame.getImageHandle().getName();
         dlg.addChoice("Image to Overlay ", imageNameArray, firstImageName);
@@ -99,7 +101,7 @@ public class IsosurfaceSlices implements FramePlugin
         
         
         iFrame.getStatusBar().setCurrentStepLabel("Add isosurface to image shape tree");
-        ImageHandle targetHandle = gui.getAppli().getImageHandleFromName(imageToOverlayName);
+        ImageHandle targetHandle = ImageHandle.findFromName(app, imageToOverlayName);
         ImageFrame viewer = gui.getImageFrame(targetHandle);
         
         // get serial sections node

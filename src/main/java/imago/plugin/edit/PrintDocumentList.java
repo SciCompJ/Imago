@@ -7,6 +7,7 @@ import imago.app.ImagoApp;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import imago.app.ImageHandle;
 import imago.gui.ImagoFrame;
@@ -32,9 +33,10 @@ public class PrintDocumentList implements FramePlugin
 		
 		ArrayList<String> textLines = new ArrayList<String>();
 
-		int nDocs = app.imageHandleNumber();
+		Collection<ImageHandle> handles = ImageHandle.getAll(app);
+		int nDocs = handles.size();
 		textLines.add(String.format("Current application contains %d documents: ", nDocs));
-		for (ImageHandle doc : app.getImageHandles())
+		for (ImageHandle doc : handles)
 		{
 		    textLines.add("  " + doc.getName());
 		}

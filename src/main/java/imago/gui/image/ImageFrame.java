@@ -74,7 +74,7 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         {
             parentHandle = ((ImageFrame) parentFrame).getImageHandle();
         }
-        ImageHandle handle = app.createImageHandle(image, parentHandle);
+        ImageHandle handle = ImageHandle.create(app, image, parentHandle);
 
         // Create the frame
         ImageFrame frame = new ImageFrame(gui, handle);

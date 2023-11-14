@@ -78,7 +78,7 @@ public class LabelImageBoundingBoxes implements FramePlugin
             GenericDialog dlg = new GenericDialog(frame, "Bounding Boxes");
             dlg.addCheckBox("Display Table ", true);
             dlg.addCheckBox("Overlay Results ", true);
-            Collection<String> imageNames = gui.getAppli().getImageHandleNames();
+            Collection<String> imageNames = ImageHandle.getAllNames(gui.getAppli());
             String[] imageNameArray = imageNames.toArray(new String[]{});
             String firstImageName = doc.getName();
             dlg.addChoice("Image to Overlay ", imageNameArray, firstImageName);
@@ -107,15 +107,16 @@ public class LabelImageBoundingBoxes implements FramePlugin
 
             if (overlay)
             {
-                ImageHandle ovrDoc = gui.getAppli().getImageHandleFromName(imageToOverlay);
-                ImageFrame viewer = gui.getImageFrame(ovrDoc);
+                // retrieve handle of image to display result in
+                ImageHandle handle = ImageHandle.findFromName(gui.getAppli(), imageToOverlay);
+                ImageFrame viewer = gui.getImageFrame(handle);
                 
                 // add to the document
                 int nBoxes = boxes.length;
                 for (int i = 0; i < nBoxes; i++)
                 {
                     Polygon2D poly = boxes[i].getRectangle();
-                    ovrDoc.addShape(new Shape(poly));
+                    handle.addShape(new Shape(poly));
                 }
                 
                 // TODO: maybe propagating events would be better

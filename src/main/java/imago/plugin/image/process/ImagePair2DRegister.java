@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
@@ -172,8 +173,8 @@ public class ImagePair2DRegister implements FramePlugin, KeyListener
         
         // retrieve image data
         ImagoApp app = this.parentFrame.getGui().getAppli();
-        this.refImage = app.getImageHandleFromName(imageName1).getImage();
-        this.movingImage = app.getImageHandleFromName(imageName2).getImage();
+        this.refImage = ImageHandle.findFromName(app, imageName1).getImage();
+        this.movingImage = ImageHandle.findFromName(app, imageName2).getImage();
     }
     
     public void updateTransform()
@@ -298,7 +299,8 @@ public class ImagePair2DRegister implements FramePlugin, KeyListener
 
     private void initWidgets()
     {
-        String[] imageNames = this.parentFrame.getGui().getAppli().getImageHandleNames().toArray(new String[] {});
+        ImagoApp app = this.parentFrame.getGui().getAppli();
+        String[] imageNames = ImageHandle.getAllNames(app).toArray(new String[]{});
         this.imageNames1Combo = new JComboBox<String>(imageNames);
         this.imageNames1Combo.addItemListener(evt -> {
             if (evt.getStateChange() == ItemEvent.SELECTED)

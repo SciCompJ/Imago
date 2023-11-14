@@ -3,6 +3,8 @@
  */
 package imago.plugin.image.process;
 
+import imago.app.ImageHandle;
+import imago.app.ImagoApp;
 import imago.gui.*;
 import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
@@ -46,7 +48,8 @@ public class ImageValueOperator implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		String[] imageNames = frame.getGui().getAppli().getImageHandleNames().toArray(new String[]{});
+	    ImagoApp app = frame.getGui().getAppli();
+        String[] imageNames = ImageHandle.getAllNames(app).toArray(new String[]{});
 		int index = 0;
 		if (frame instanceof ImageFrame)
 		{
@@ -73,7 +76,7 @@ public class ImageValueOperator implements FramePlugin
 		int outputTypeIndex = gd.getNextChoiceIndex();
         
 		// identify source image
-        Image image = frame.getGui().getAppli().getImageHandleFromName(imageName).getImage();
+        Image image = ImageHandle.findFromName(frame.getGui().getAppli(), imageName).getImage();
         
         Array<?> result = null;
         if (image.isScalarImage())

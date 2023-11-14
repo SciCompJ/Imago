@@ -5,6 +5,8 @@ package imago.plugin.image.process;
 
 import java.util.function.BiFunction;
 
+import imago.app.ImageHandle;
+import imago.app.ImagoApp;
 import imago.gui.*;
 import imago.gui.image.ImageFrame;
 import net.sci.array.Arrays;
@@ -45,7 +47,8 @@ public class ImageArrayBinaryMathOperator implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		String[] imageNames = frame.getGui().getAppli().getImageHandleNames().toArray(new String[]{});
+        ImagoApp app = frame.getGui().getAppli();
+        String[] imageNames = ImageHandle.getAllNames(app).toArray(new String[]{});
 		int index1 = 0;
 		if (frame instanceof ImageFrame)
 		{
@@ -73,13 +76,13 @@ public class ImageArrayBinaryMathOperator implements FramePlugin
 		int outputTypeIndex = gd.getNextChoiceIndex();
         
         // retrieve images from names
-        Image image1 = frame.getGui().getAppli().getImageHandleFromName(image1Name).getImage();
+        Image image1 = ImageHandle.findFromName(frame.getGui().getAppli(), image1Name).getImage();
         if (!image1.isScalarImage())
         {
             ImagoGui.showErrorDialog(frame, "Requires an image containing a scalar array");
             return;
         }
-        Image image2 = frame.getGui().getAppli().getImageHandleFromName(image2Name).getImage();
+        Image image2 = ImageHandle.findFromName(frame.getGui().getAppli(), image2Name).getImage();
         if (!image2.isScalarImage())
         {
             ImagoGui.showErrorDialog(frame, "Requires an image containing a scalar array");

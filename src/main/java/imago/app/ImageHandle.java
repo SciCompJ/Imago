@@ -20,6 +20,91 @@ import net.sci.image.Image;
  */
 public class ImageHandle extends ObjectHandle
 {
+    // =============================================================
+    // Static utility methods
+    
+    /**
+     * Creates a new handle for an image, adds it to the workspace, and returns
+     * the created handle.
+     * 
+     * @param image
+     *            the image instance.
+     * @return the handle to manage the image.
+     */
+    public static final ImageHandle create(ImagoApp app, Image image)
+    {
+        return create(app, image, null);
+    }
+
+    /**
+     * Creates a new handle for an image, adds it to the workspace, and returns
+     * the created handle.
+     * 
+     * @param image
+     *            the image instance.
+     * @param parent
+     *            a parent handle, used to initialize handles fields.
+     * @return the handle to manage the image.
+     */
+    public static final ImageHandle create(ImagoApp app, Image image, ImageHandle parent)
+    {
+        Workspace workspace = app.getWorkspace();
+        String tag = workspace.findNextFreeTag("img");
+        String name = app.createHandleName(image.getName());
+        ImageHandle handle = new ImageHandle(image, name, tag);
+        if (parent != null)
+        {
+            handle.copyDisplaySettings(parent);
+        }
+        workspace.addHandle(handle);
+        return handle;
+    }
+
+    public static final Collection<ImageHandle> getAll(ImagoApp app)
+    {
+        ArrayList<ImageHandle> res = new ArrayList<ImageHandle>();
+        for (ObjectHandle handle : app.getWorkspace().getHandles())
+        {
+            if (handle instanceof ImageHandle)
+            {
+                res.add((ImageHandle) handle);
+            }
+        }
+        return res;
+    }
+    
+    /**
+     * Get the name of all image handles.
+     * 
+     * @return the list of names of handles containing images.
+     */
+    public static final Collection<String> getAllNames(ImagoApp app)
+    {
+        ArrayList<String> res = new ArrayList<String>();
+        for (ObjectHandle handle : app.getWorkspace().getHandles())
+        {
+            if (handle instanceof ImageHandle)
+            {
+                res.add(handle.getName());
+            }
+        }
+        return res;
+    }
+    
+    public static final ImageHandle findFromName(ImagoApp app, String handleName)
+    {
+        for (ObjectHandle handle : app.getWorkspace().getHandles())
+        {
+            if (handle instanceof ImageHandle)
+            {
+                if (handle.getName().equals(handleName))
+                    return (ImageHandle) handle;
+            }
+        }
+        
+        throw new IllegalArgumentException("App does not contain any image handle with name: " + handleName);
+    }
+
 
 	// =============================================================
 	// Class variables

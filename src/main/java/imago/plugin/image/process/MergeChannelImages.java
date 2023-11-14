@@ -5,6 +5,7 @@ package imago.plugin.image.process;
 
 import java.util.ArrayList;
 
+import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
@@ -63,9 +64,9 @@ public class MergeChannelImages implements FramePlugin
 		}
 		
 		// Retrieve images from document names
-		Image redChannelImage 	= app.getImageHandleFromName(dialog.getNextChoice()).getImage();
-		Image greenChannelImage = app.getImageHandleFromName(dialog.getNextChoice()).getImage();
-		Image blueChannelImage 	= app.getImageHandleFromName(dialog.getNextChoice()).getImage();
+		Image redChannelImage 	= ImageHandle.findFromName(app, dialog.getNextChoice()).getImage();
+		Image greenChannelImage = ImageHandle.findFromName(app, dialog.getNextChoice()).getImage();
+		Image blueChannelImage 	= ImageHandle.findFromName(app, dialog.getNextChoice()).getImage();
 		
 		// extract arrays containing image data
 		UInt8Array redChannel 	= (UInt8Array) redChannelImage.getData();
@@ -86,7 +87,7 @@ public class MergeChannelImages implements FramePlugin
 	private ArrayList<String> findUInt8ArrayNameList(ImagoApp app)
 	{
 	    ArrayList<String> imageNames = new ArrayList<>();
-        app.getImageHandles().stream()
+	    ImageHandle.getAll(app).stream()
             .filter(doc -> {
                 Image img = doc.getImage();
                 if (img == null) return false;

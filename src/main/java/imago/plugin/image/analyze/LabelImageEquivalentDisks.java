@@ -75,7 +75,7 @@ public class LabelImageEquivalentDisks implements FramePlugin
         GenericDialog dlg = new GenericDialog(frame, "Equivalent Disks");
         dlg.addCheckBox("Display Table ", true);
         dlg.addCheckBox("Overlay Results ", true);
-        Collection<String> imageNames = gui.getAppli().getImageHandleNames();
+        Collection<String> imageNames = ImageHandle.getAllNames(gui.getAppli());
         String[] imageNameArray = imageNames.toArray(new String[]{});
         String firstImageName = doc.getName();
         dlg.addChoice("Image to Overlay ", imageNameArray, firstImageName);
@@ -111,7 +111,7 @@ public class LabelImageEquivalentDisks implements FramePlugin
         
         if (overlay)
         {
-            ImageHandle ovrDoc = gui.getAppli().getImageHandleFromName(imageToOverlay);
+            ImageHandle ovrDoc = ImageHandle.findFromName(gui.getAppli(), imageToOverlay);
             ImageFrame viewer = gui.getImageFrame(ovrDoc);
             
             // add to the document

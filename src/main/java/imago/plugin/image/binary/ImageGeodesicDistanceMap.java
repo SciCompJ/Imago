@@ -5,6 +5,7 @@ package imago.plugin.image.binary;
 
 import java.util.Collection;
 
+import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
@@ -50,7 +51,7 @@ public class ImageGeodesicDistanceMap implements FramePlugin
 	{
         ImagoGui gui = frame.getGui();
         ImagoApp app = gui.getAppli();
-        Collection<String> imageNames = app.getImageHandleNames();
+        Collection<String> imageNames = ImageHandle.getAllNames(app);
 
 		// Case of no open document with image
 		if (imageNames.size() == 0)
@@ -97,8 +98,8 @@ public class ImageGeodesicDistanceMap implements FramePlugin
 		}
 		
 		// parse user choices
-		Image markerImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
-		Image maskImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
+		Image markerImage = ImageHandle.findFromName(app, gd.getNextChoice()).getImage();
+		Image maskImage = ImageHandle.findFromName(app, gd.getNextChoice()).getImage();
         switch (nd)
         {
             case 2 -> mask2d = (ChamferMasks2D) gd.getNextEnumChoice();

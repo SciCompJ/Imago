@@ -5,6 +5,7 @@ package imago.plugin.image.binary;
 
 import java.util.Collection;
 
+import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
@@ -32,7 +33,7 @@ public class ApplyBinaryMask implements FramePlugin
     public void run(ImagoFrame frame, String args)
     {
         ImagoApp app = frame.getGui().getAppli();
-        Collection<String> imageNames = app.getImageHandleNames();
+        Collection<String> imageNames = ImageHandle.getAllNames(app);
 
         // Case of no open document with image
         if (imageNames.size() == 0)
@@ -53,8 +54,8 @@ public class ApplyBinaryMask implements FramePlugin
         { return; }
 
         // parse dialog results
-        Image baseImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
-        Image maskImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
+        Image baseImage = ImageHandle.findFromName(app, gd.getNextChoice()).getImage();
+        Image maskImage = ImageHandle.findFromName(app, gd.getNextChoice()).getImage();
 
         // retrieve arrays
         Array<?> array = baseImage.getData();

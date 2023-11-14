@@ -5,6 +5,7 @@ package imago.plugin.image.shape;
 
 import java.util.Collection;
 
+import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
@@ -38,7 +39,7 @@ public class ImageConcatenate implements FramePlugin
 	{
 		ImagoGui gui = frame.getGui();
 		ImagoApp app = gui.getAppli();
-		Collection<String> imageNames = app.getImageHandleNames();
+        Collection<String> imageNames = ImageHandle.getAllNames(app);
 
 		// Case of no open document with image
 		if (imageNames.size() == 0)
@@ -63,8 +64,8 @@ public class ImageConcatenate implements FramePlugin
         }
 		
 		// parse dialog results
-		Image image1 = app.getImageHandleFromName(gd.getNextChoice()).getImage();
-		Image image2 = app.getImageHandleFromName(gd.getNextChoice()).getImage();
+		Image image1 = ImageHandle.findFromName(app, gd.getNextChoice()).getImage();
+		Image image2 = ImageHandle.findFromName(app, gd.getNextChoice()).getImage();
 		int concatDim = (int) gd.getNextNumber();
         if (concatDim < 1)
         {

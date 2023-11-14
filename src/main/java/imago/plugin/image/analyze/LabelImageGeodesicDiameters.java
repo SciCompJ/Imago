@@ -65,7 +65,7 @@ public class LabelImageGeodesicDiameters implements FramePlugin
         dlg.addChoice("Chamfer Weights: ", ChamferMasks2D.getAllLabels(), ChamferMasks2D.CHESSKNIGHT.toString());
         dlg.addCheckBox("Display Table ", true);
         dlg.addCheckBox("Overlay Results ", true);
-        Collection<String> imageNames = gui.getAppli().getImageHandleNames();
+        Collection<String> imageNames = ImageHandle.getAllNames(gui.getAppli());
         String[] imageNameArray = imageNames.toArray(new String[]{});
         String firstImageName = doc.getName();
         dlg.addChoice("Image to Overlay ", imageNameArray, firstImageName);
@@ -89,7 +89,7 @@ public class LabelImageGeodesicDiameters implements FramePlugin
         
         if (overlayPaths)
         {
-            ImageHandle ovrDoc = gui.getAppli().getImageHandleFromName(imageToOverlay);
+            ImageHandle ovrDoc = ImageHandle.findFromName(gui.getAppli(), imageToOverlay);
             ImageFrame viewer = gui.getImageFrame(ovrDoc);
             
             // add to the document

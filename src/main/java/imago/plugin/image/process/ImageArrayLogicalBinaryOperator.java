@@ -3,7 +3,11 @@
  */
 package imago.plugin.image.process;
 
-import imago.gui.*;
+import imago.app.ImageHandle;
+import imago.gui.FramePlugin;
+import imago.gui.GenericDialog;
+import imago.gui.ImagoFrame;
+import imago.gui.ImagoGui;
 import imago.gui.image.ImageFrame;
 import net.sci.array.Arrays;
 import net.sci.array.binary.BinaryArray;
@@ -37,7 +41,7 @@ public class ImageArrayLogicalBinaryOperator implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		String[] imageNames = frame.getGui().getAppli().getImageHandleNames().toArray(new String[]{});
+	    String[] imageNames = ImageHandle.getAllNames(frame.getGui().getAppli()).toArray(new String[]{});
 		int index1 = 0;
 		if (frame instanceof ImageFrame)
 		{
@@ -63,13 +67,13 @@ public class ImageArrayLogicalBinaryOperator implements FramePlugin
         String image2Name = gd.getNextChoice();
         
         // retrieve images from names
-        Image image1 = frame.getGui().getAppli().getImageHandleFromName(image1Name).getImage();
+        Image image1 = ImageHandle.findFromName(frame.getGui().getAppli(), image1Name).getImage();
         if (!image1.isBinaryImage())
         {
             ImagoGui.showErrorDialog(frame, "Requires an image containing a binary array");
             return;
         }
-        Image image2 = frame.getGui().getAppli().getImageHandleFromName(image2Name).getImage();
+        Image image2 = ImageHandle.findFromName(frame.getGui().getAppli(), image2Name).getImage();
         if (!image2.isBinaryImage())
         {
             ImagoGui.showErrorDialog(frame, "Requires an image containing a binary array");

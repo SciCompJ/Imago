@@ -5,6 +5,7 @@ package imago.plugin.image.process;
 
 import java.util.Collection;
 
+import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
@@ -44,7 +45,7 @@ public class ImageBivariateHistogram implements FramePlugin
 	{
 		ImagoGui gui = frame.getGui();
 		ImagoApp app = gui.getAppli();
-		Collection<String> imageNames = app.getImageHandleNames();
+        Collection<String> imageNames = ImageHandle.getAllNames(app);
 
 		// Case of no open document with image
 		if (imageNames.size() < 2)
@@ -77,11 +78,11 @@ public class ImageBivariateHistogram implements FramePlugin
 		}
 		
 		// parse dialog results
-		Image image1 = app.getImageHandleFromName(gd.getNextChoice()).getImage();
+		Image image1 = ImageHandle.findFromName(app, gd.getNextChoice()).getImage();
         double minBound1 = gd.getNextNumber();
         double maxBound1 = gd.getNextNumber();
         int nBins1 = (int) gd.getNextNumber();
-		Image image2 = app.getImageHandleFromName(gd.getNextChoice()).getImage();
+		Image image2 = ImageHandle.findFromName(app, gd.getNextChoice()).getImage();
         double minBound2 = gd.getNextNumber();
         double maxBound2 = gd.getNextNumber();
         int nBins2 = (int) gd.getNextNumber();

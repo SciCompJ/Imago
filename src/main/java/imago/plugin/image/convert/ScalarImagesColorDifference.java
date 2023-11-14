@@ -3,6 +3,7 @@
  */
 package imago.plugin.image.convert;
 
+import imago.app.ImageHandle;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
@@ -26,7 +27,7 @@ public class ScalarImagesColorDifference implements FramePlugin
     @Override
     public void run(ImagoFrame frame, String args)
     {
-        String[] imageNames = frame.getGui().getAppli().getImageHandleNames().toArray(new String[]{});
+        String[] imageNames = ImageHandle.getAllNames(frame.getGui().getAppli()).toArray(new String[]{});
         int index1 = 0;
         if (frame instanceof ImageFrame)
         {
@@ -58,13 +59,14 @@ public class ScalarImagesColorDifference implements FramePlugin
         double maxValue2 = gd.getNextNumber();
         
         // retrieve images from names
-        Image image1 = frame.getGui().getAppli().getImageHandleFromName(image1Name).getImage();
+        Image image1 = ImageHandle.findFromName(frame.getGui().getAppli(), image1Name).getImage();
         if (!image1.isScalarImage())
         {
             ImagoGui.showErrorDialog(frame, "Requires an image containing a scalar array");
             return;
         }
-        Image image2 = frame.getGui().getAppli().getImageHandleFromName(image2Name).getImage();
+
+        Image image2 = ImageHandle.findFromName(frame.getGui().getAppli(), image2Name).getImage();
         if (!image2.isScalarImage())
         {
             ImagoGui.showErrorDialog(frame, "Requires an image containing a scalar array");

@@ -17,8 +17,8 @@ public class ImagoAppTest {
 		Array2D<?> array = UInt8Array2D.create(320, 200);
 		Image image = new Image(array);
 		
-		app.createImageHandle(image);
+		ImageHandle.create(app, image);
 		
-		assertEquals(1, app.imageHandleNumber());
+        assertEquals(1, ImageHandle.getAll(app).size());
 	}
 }

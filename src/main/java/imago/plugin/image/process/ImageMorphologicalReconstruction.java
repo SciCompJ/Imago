@@ -5,6 +5,7 @@ package imago.plugin.image.process;
 
 import java.util.Collection;
 
+import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
@@ -41,7 +42,7 @@ public class ImageMorphologicalReconstruction implements FramePlugin
 	{
 		ImagoGui gui = frame.getGui();
 		ImagoApp app = gui.getAppli();
-        Collection<String> imageNames = app.getImageHandleNames();
+        Collection<String> imageNames = ImageHandle.getAllNames(app);
 
 		// Case of no open document with image
 		if (imageNames.size() == 0)
@@ -64,8 +65,8 @@ public class ImageMorphologicalReconstruction implements FramePlugin
 		}
 		
 		// parse dialog results
-		Image markerImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
-		Image maskImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
+		Image markerImage = ImageHandle.findFromName(app, gd.getNextChoice()).getImage();
+		Image maskImage = ImageHandle.findFromName(app, gd.getNextChoice()).getImage();
 
 		// extract arrays and check dimensions
 		Array<?> marker = markerImage.getData();

@@ -74,7 +74,7 @@ public class LabelImageEquivalentEllipses implements FramePlugin
         GenericDialog dlg = new GenericDialog(frame, "Equivalent Ellipses");
         dlg.addCheckBox("Display Table ", true);
         dlg.addCheckBox("Overlay Results ", true);
-        Collection<String> imageNames = gui.getAppli().getImageHandleNames();
+        Collection<String> imageNames = ImageHandle.getAllNames(gui.getAppli());
         String[] imageNameArray = imageNames.toArray(new String[]{});
         String firstImageName = doc.getName();
         dlg.addChoice("Image to Overlay ", imageNameArray, firstImageName);
@@ -120,7 +120,7 @@ public class LabelImageEquivalentEllipses implements FramePlugin
         // Overlay results on an image
         if (overlay)
         {
-            ImageHandle ovrDoc = gui.getAppli().getImageHandleFromName(imageToOverlay);
+            ImageHandle ovrDoc = ImageHandle.findFromName(gui.getAppli(), imageToOverlay);
             ImageFrame viewer = gui.getImageFrame(ovrDoc);
             
             // add to the document

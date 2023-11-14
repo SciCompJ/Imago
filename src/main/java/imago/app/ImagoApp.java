@@ -75,10 +75,13 @@ public class ImagoApp
      * Creates a new handle for an image, adds it to the workspace, and returns
      * the created handle.
      * 
+     * @deprecated replaced by ImageHandle.create(ImagoApp, Image)
+     * 
      * @param image
      *            the image instance.
      * @return the handle to manage the image.
      */
+	@Deprecated
     public ImageHandle createImageHandle(Image image)
     {
         return createImageHandle(image, null);
@@ -88,12 +91,15 @@ public class ImagoApp
      * Creates a new handle for an image, adds it to the workspace, and returns
      * the created handle.
      * 
+     * @deprecated replaced by ImageHandle.create(ImagoApp, Image, ImageHandle)
+     * 
      * @param image
      *            the image instance.
      * @param parent
      *            a parent handle, used to initialize handles fields.
      * @return the handle to manage the image.
      */
+    @Deprecated
     public ImageHandle createImageHandle(Image image, ImageHandle parent)
     {
         String tag = workspace.findNextFreeTag("img");
@@ -107,11 +113,16 @@ public class ImagoApp
         return handle;
     }
 
+    @Deprecated
 	public int imageHandleNumber()
 	{
 		return getImageHandles().size();
 	}
 	
+    /**
+     * @deprecated replaced by ImageHandle.getAll(ImagoApp)
+     */
+    @Deprecated
 	public Collection<ImageHandle> getImageHandles()
 	{
 	    ArrayList<ImageHandle> res = new ArrayList<ImageHandle>();
@@ -129,8 +140,11 @@ public class ImagoApp
 	/**
 	 * Get the names of all open image documents.
 	 * 
+     * @deprecated replaced by ImageHandle.getAllNames(ImagoApp)
+     * 
 	 * @return the list of names of documents containing images.
 	 */
+    @Deprecated
 	public Collection<String> getImageHandleNames()
 	{
         ArrayList<String> res = new ArrayList<String>();
@@ -144,6 +158,10 @@ public class ImagoApp
         return res;
 	}
 	
+    /**
+     * @deprecated replaced by ImageHandle.findFromName(ImagoApp, String)
+     */
+    @Deprecated
 	public ImageHandle getImageHandleFromName(String handleName)
 	{
 		for (ImageHandle handle : getImageHandles())

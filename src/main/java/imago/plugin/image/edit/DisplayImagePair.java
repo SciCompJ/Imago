@@ -5,6 +5,7 @@ package imago.plugin.image.edit;
 
 import java.util.Collection;
 
+import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
@@ -24,7 +25,7 @@ public class DisplayImagePair implements FramePlugin
     public void run(ImagoFrame frame, String args)
     {
         ImagoApp app = frame.getGui().getAppli();
-        Collection<String> imageNames = app.getImageHandleNames();
+        Collection<String> imageNames = ImageHandle.getAllNames(app);
 
         // Case of no open document with image
         if (imageNames.size() == 0)
@@ -48,8 +49,8 @@ public class DisplayImagePair implements FramePlugin
         }
 
         // parse dialog results
-        Image refImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
-        Image otherImage = app.getImageHandleFromName(gd.getNextChoice()).getImage();
+        Image refImage = ImageHandle.findFromName(app, gd.getNextChoice()).getImage();
+        Image otherImage = ImageHandle.findFromName(app, gd.getNextChoice()).getImage();
 
         // check validity of input images
         if (refImage.getDimension() != 2 || otherImage.getDimension() != 2)
