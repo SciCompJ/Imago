@@ -48,8 +48,8 @@ public class LabelImageCentroids implements FramePlugin
         }
         
         // retrieve image data
-        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-        Image image = doc.getImage();
+        ImageHandle handle = ((ImageFrame) frame).getImageHandle();
+        Image image = handle.getImage();
         if (!image.isLabelImage())
         {
             throw new IllegalArgumentException("Requires label image as input");
@@ -73,14 +73,13 @@ public class LabelImageCentroids implements FramePlugin
             // add to the document
             for (Point2D centroid : centroids.values())
             {
-                doc.addShape(new Shape(centroid));
+                handle.addShape(new Shape(centroid));
             }
-            frame.repaint();
+            handle.notifyImageHandleChange();
             
             // display results in a new Table
             Table table = algo.createTable(centroids);
             TableFrame.create(table, frame);
-            frame.repaint();
         }
         else if (nd == 3)
         {

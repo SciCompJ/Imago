@@ -109,7 +109,6 @@ public class LabelImageBoundingBoxes implements FramePlugin
             {
                 // retrieve handle of image to display result in
                 ImageHandle handle = ImageHandle.findFromName(gui.getAppli(), imageToOverlay);
-                ImageFrame viewer = gui.getImageFrame(handle);
                 
                 // add to the document
                 int nBoxes = boxes.length;
@@ -119,8 +118,8 @@ public class LabelImageBoundingBoxes implements FramePlugin
                     handle.addShape(new Shape(poly));
                 }
                 
-                // TODO: maybe propagating events would be better
-                viewer.repaint(); 
+                // update viewers
+                handle.notifyImageHandleChange();
             }
         }
         else if (nd == 3)

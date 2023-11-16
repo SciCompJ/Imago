@@ -89,19 +89,17 @@ public class LabelImageMaxFeretDiameters implements FramePlugin
         
         if (overlay)
         {
-            ImageHandle ovrDoc = ImageHandle.findFromName(gui.getAppli(), imageToOverlay);
-            ImageFrame viewer = gui.getImageFrame(ovrDoc);
+            ImageHandle handle = ImageHandle.findFromName(gui.getAppli(), imageToOverlay);
             
             // add to the document
             for (PointPair2D pair : diams.values())
             {
                 LineSegment2D line = new LineSegment2D(pair.p1, pair.p2);
-                ovrDoc.addShape(new Shape(line));
+                handle.addShape(new Shape(line));
             }
             
-            // TODO: maybe propagating events would be better
-            viewer.repaint(); 
+            // update viewers
+            handle.notifyImageHandleChange();
         }
     }
-    
 }

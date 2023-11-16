@@ -120,16 +120,14 @@ public class LabelImageEquivalentEllipses implements FramePlugin
         // Overlay results on an image
         if (overlay)
         {
-            ImageHandle ovrDoc = ImageHandle.findFromName(gui.getAppli(), imageToOverlay);
-            ImageFrame viewer = gui.getImageFrame(ovrDoc);
+            ImageHandle handle = ImageHandle.findFromName(gui.getAppli(), imageToOverlay);
             
             // add to the document
             for (int i = 0; i < ellipses.length; i++)
             {
-                ovrDoc.addShape(new Shape(ellipses[i]));
+                handle.addShape(new Shape(ellipses[i]));
             }
-            // TODO: maybe propagating events would be better
-            viewer.repaint();
+            handle.notifyImageHandleChange();
         }
     }
     

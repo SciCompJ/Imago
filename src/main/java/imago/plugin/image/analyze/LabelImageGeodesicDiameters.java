@@ -89,19 +89,17 @@ public class LabelImageGeodesicDiameters implements FramePlugin
         
         if (overlayPaths)
         {
-            ImageHandle ovrDoc = ImageHandle.findFromName(gui.getAppli(), imageToOverlay);
-            ImageFrame viewer = gui.getImageFrame(ovrDoc);
+            ImageHandle handle = ImageHandle.findFromName(gui.getAppli(), imageToOverlay);
             
             // add to the document
             for (GeodesicDiameter.Result res : diams.values())
             {
                 Polyline2D poly = Polyline2D.create(res.path, false);
-                ovrDoc.addShape(new Shape(poly));
+                handle.addShape(new Shape(poly));
             }
             
-            // TODO: maybe propagating events would be better
-            viewer.repaint(); 
+            // update viewers
+            handle.notifyImageHandleChange();
         }
-    }
-    
+    }   
 }

@@ -106,18 +106,17 @@ public class LabelImageOrientedBoxes implements FramePlugin
 
         if (overlay)
         {
-            ImageHandle ovrDoc = ImageHandle.findFromName(gui.getAppli(), imageToOverlay);
-            ImageFrame viewer = gui.getImageFrame(ovrDoc);
+            ImageHandle handle = ImageHandle.findFromName(gui.getAppli(), imageToOverlay);
 
             // add to the document
             int nBoxes = boxes.length;
             for (int i = 0; i < nBoxes; i++)
             {
-                ovrDoc.addShape(new Shape(boxes[i]));
+                handle.addShape(new Shape(boxes[i]));
             }
-
-            // TODO: maybe propagating events would be better
-            viewer.repaint(); 
+            
+            // update viewers
+            handle.notifyImageHandleChange();
         }
     }
 }

@@ -5,6 +5,7 @@ package imago.gui.image;
 
 
 import imago.app.ImageHandle;
+import imago.app.ImageHandle.Event;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.vector.VectorArray;
 import net.sci.geom.Geometry;
@@ -21,7 +22,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public abstract class ImageViewer 
+public abstract class ImageViewer implements ImageHandle.Listener
 {
 	// ===================================================================
 	// Public constants
@@ -349,16 +350,26 @@ public abstract class ImageViewer
 	
 	public void repaint() 
 	{
-		System.out.println("repaint Image Viewer");
+		System.out.println("ImageViewer.repaint()");
 	}
 
 	public void invalidate() 
     {
-        System.out.println("invalidate Image Viewer");
+        System.out.println("ImageViewer.repaint()");
     }
 
 	public void validate() 
     {
-        System.out.println("validate Image Viewer");
+        System.out.println("ImageViewer.repaint()");
+    }
+	
+	
+    // ===================================================================
+    // Implementation of the ImageHandle.Listener interface
+
+    @Override
+    public void imageHandleModified(Event evt)
+    {
+        repaint();
     }
 }

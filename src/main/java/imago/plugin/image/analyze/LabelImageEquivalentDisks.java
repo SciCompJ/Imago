@@ -111,8 +111,7 @@ public class LabelImageEquivalentDisks implements FramePlugin
         
         if (overlay)
         {
-            ImageHandle ovrDoc = ImageHandle.findFromName(gui.getAppli(), imageToOverlay);
-            ImageFrame viewer = gui.getImageFrame(ovrDoc);
+            ImageHandle handle = ImageHandle.findFromName(gui.getAppli(), imageToOverlay);
             
             // add to the document
             for (int i = 0; i < ellipses.length; i++)
@@ -120,12 +119,11 @@ public class LabelImageEquivalentDisks implements FramePlugin
                 Ellipse2D elli = ellipses[i];
                 Point2D center = elli.center();
                 double radius = Math.sqrt(elli.semiMajorAxisLength() * elli.semiMinorAxisLength());
-                ovrDoc.addShape(new Shape(new Circle2D(center, radius)));
+                handle.addShape(new Shape(new Circle2D(center, radius)));
             }
             
-            // TODO: maybe propagating events would be better
-            viewer.repaint(); 
+            // update viewers
+            handle.notifyImageHandleChange();
         }
     }
-    
 }
