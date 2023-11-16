@@ -28,6 +28,7 @@ import net.sci.algo.AlgoListener;
 import net.sci.array.ArrayOperator;
 import net.sci.image.Image;
 import net.sci.image.ImageArrayOperator;
+import net.sci.util.MathUtils;
 
 
 /**
@@ -391,7 +392,7 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
     public String showElapsedTime(String opName, double timeInMillis, Image refImage) 
     {
         // compute number of elements within image (using double to avoid int overflow)
-        double nItems = elementCount(refImage);
+        double nItems = MathUtils.prod(refImage.getSize());
         
         // adapt output display to image dimensionality
         String elementName = refImage.getDimension() == 3 ? "voxels" : "pixels";
@@ -407,30 +408,11 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         // display message
         System.out.println(status);
         this.statusBar.setCurrentStepLabel(status);
-        // also reset porogress bar
+        // also reset progress bar
         this.statusBar.setProgressBarPercent(0);
         return status;
     }
     
-    /**
-     * Computes the number of elements within an image, using double to avoid
-     * int overflow.
-     * 
-     * @param image
-     *            the image to count elements.
-     * @return the number of elements within image.
-     */
-    private static final double elementCount(Image image)
-    {
-        int[] dims = image.getSize();
-        double nItems = 1;
-        for (int d = 0; d < dims.length; d++)
-        {
-            nItems *= dims[d];
-        }
-        return nItems;
-    }
-        
 	/**
      * Updates the title of the frame with a sting containing document name,
      * image dimensions and type.

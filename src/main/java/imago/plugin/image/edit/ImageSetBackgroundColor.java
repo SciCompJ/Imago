@@ -7,7 +7,6 @@ import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
-import imago.gui.image.ImageViewer;
 import imago.gui.FramePlugin;
 import net.sci.array.color.Color;
 import net.sci.array.color.CommonColors;
@@ -34,27 +33,24 @@ public class ImageSetBackgroundColor implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-		// get current image data
-		ImageFrame viewer = (ImageFrame) frame;
-		ImageHandle doc = viewer.getImageHandle();
-		Image image	= doc.getImage();
+        // get current image data
+        ImageFrame viewer = (ImageFrame) frame;
+        ImageHandle handle = viewer.getImageHandle();
+        Image image = handle.getImage();
 
-		GenericDialog gd = new GenericDialog(frame, "Set Image Scale");
+        GenericDialog gd = new GenericDialog(frame, "Choose Background Color");
         gd.addChoice("Background Color:", CommonColors.all(), CommonColors.BLACK);
-		gd.showDialog();
-		
-		if (gd.getOutput() == GenericDialog.Output.CANCEL) 
-		{
-			return;
-		}
-		
+        gd.showDialog();
+
+        if (gd.getOutput() == GenericDialog.Output.CANCEL) return;
+
         // parse dialog results
-		Color bgColor = CommonColors.fromLabel(gd.getNextChoice()).getColor();
-		image.getDisplaySettings().setBackgroundColor(bgColor);
+        Color bgColor = CommonColors.fromLabel(gd.getNextChoice()).getColor();
 
-		ImageViewer imageViewer = viewer.getImageView();
-		imageViewer.refreshDisplay();
-		viewer.repaint();
+        // update image
+        image.getDisplaySettings().setBackgroundColor(bgColor);
+        
+        // notify associated viewers
+		handle.notifyImageHandleChange(ImageHandle.Event.LUT_MASK | ImageHandle.Event.CHANGE_MASK);
 	}
-
 }

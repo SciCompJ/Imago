@@ -3,6 +3,7 @@
  */
 package imago.plugin.image.edit;
 
+import imago.app.ImageHandle;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
@@ -36,8 +37,8 @@ public class ImageFillEllipsoid implements FramePlugin
     public void run(ImagoFrame frame, String args)
 	{
 		// get current image data
-	    ImageFrame iFrame = (ImageFrame) frame;
-		Image image	= iFrame.getImageHandle().getImage();
+        ImageHandle handle = ((ImageFrame) frame).getImageHandle();
+        Image image = handle.getImage();
 		
 		Array<?> array = image.getData();
 		if (!(array instanceof ScalarArray3D))
@@ -88,9 +89,8 @@ public class ImageFillEllipsoid implements FramePlugin
         Ellipsoid3D elli = new Ellipsoid3D(center, r1, r2, r3, orient);
         fillEllipsoid((ScalarArray3D<?>) array, elli, value);
 		
-		// apply operator on current image
-        iFrame.getImageView().refreshDisplay();
-		frame.repaint();
+        // notify changes
+        handle.notifyImageHandleChange(ImageHandle.Event.IMAGE_MASK | ImageHandle.Event.CHANGE_MASK);
 	}
 	
     public static final void fillEllipsoid(ScalarArray3D<?> array, Ellipsoid3D elli, double value)

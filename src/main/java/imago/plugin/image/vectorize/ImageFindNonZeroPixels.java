@@ -36,8 +36,8 @@ public class ImageFindNonZeroPixels implements FramePlugin
     public void run(ImagoFrame frame, String args)
     {
         // get current image data
-        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-        Image image = doc.getImage();
+        ImageHandle handle = ((ImageFrame) frame).getImageHandle();
+        Image image = handle.getImage();
         Array<?> array = image.getData();
 
         int nd = array.dimensionality();
@@ -58,10 +58,10 @@ public class ImageFindNonZeroPixels implements FramePlugin
         for (Point2D point : points)
         {
             Shape shape = new Shape(point);
-            doc.addShape(shape);
+            handle.addShape(shape);
         }
         
-        frame.repaint();
+        // notify changes
+        handle.notifyImageHandleChange(ImageHandle.Event.SHAPES_MASK | ImageHandle.Event.CHANGE_MASK);
     }
-    
 }

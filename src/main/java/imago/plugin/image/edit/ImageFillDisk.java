@@ -36,8 +36,8 @@ public class ImageFillDisk  implements FramePlugin
     public void run(ImagoFrame frame, String args)
 	{
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-		Image image	= doc.getImage();
+		ImageHandle handle = ((ImageFrame) frame).getImageHandle();
+		Image image	= handle.getImage();
 		Array<?> array = image.getData();
 
 		if (!(array instanceof ScalarArray2D))
@@ -61,6 +61,7 @@ public class ImageFillDisk  implements FramePlugin
 			return;
 		}
 		
+		// retrieve disk data from dialog
         double centerX = gd.getNextNumber();
         double centerY = gd.getNextNumber();
         double radius = gd.getNextNumber();
@@ -69,8 +70,7 @@ public class ImageFillDisk  implements FramePlugin
 		// create disk
         Phantoms2D.fillDisk((ScalarArray2D<?>) array, new Point2D(centerX, centerY), radius, value);
 		
-		// apply operator on current image
-        ((ImageFrame) frame).getImageView().refreshDisplay();
-		frame.repaint();
+        // notify changes
+        handle.notifyImageHandleChange(ImageHandle.Event.IMAGE_MASK | ImageHandle.Event.CHANGE_MASK);
 	}
 }

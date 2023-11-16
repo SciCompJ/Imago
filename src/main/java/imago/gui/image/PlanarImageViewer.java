@@ -280,12 +280,11 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 	@Override
 	public void componentResized(ComponentEvent evt) 
 	{
-//		System.out.println("Planar Image View resized");
-		if (zoomMode == ZoomMode.FILL) {
+		if (zoomMode == ZoomMode.FILL) 
+		{
 			setBestZoom();
 			refreshDisplay();
 		}
-//		this.scroll.setSize(this.getSize());
 	}
 
 	@Override

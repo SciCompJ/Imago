@@ -18,17 +18,13 @@ import net.sci.image.Image;
 import net.sci.image.vectorize.Isocontour;
 
 /**
- * Compute boundary graph of a binary image.
+ * Compute iso-value contours within a scalar image.
  * 
  * @author David Legland
  *
  */
 public class ImageIsocontour implements FramePlugin
 {
-	public ImageIsocontour()
-	{
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -39,8 +35,8 @@ public class ImageIsocontour implements FramePlugin
 	public void run(ImagoFrame frame, String args)
 	{
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-		Image image	= doc.getImage();
+		ImageHandle handle = ((ImageFrame) frame).getImageHandle();
+		Image image	= handle.getImage();
 		Array<?> array = image.getData();
 		if (!(array instanceof ScalarArray))
 		{
@@ -55,29 +51,23 @@ public class ImageIsocontour implements FramePlugin
 			return;
 		}
 
-		// wrap array into a 2D scalar array
+        // wrap array into a 2D scalar array
         ScalarArray2D<? extends Scalar> scalar = ScalarArray2D.wrap((ScalarArray<?>) array);
-        
 
-		// Choose the iso contour value
-		GenericDialog dlg = new GenericDialog(frame, "Isocontour");
-		double[] extent = scalar.finiteValueRange(); 
-		dlg.addSlider("Isocontour Value", extent[0], extent[1], (extent[0] + extent[1]) / 2);
-		dlg.showDialog();
-		
-		if (dlg.wasCanceled())
-		    return;
-		double value = dlg.getNextNumber();
+        // Choose the iso contour value
+        GenericDialog dlg = new GenericDialog(frame, "Isocontour");
+        double[] extent = scalar.finiteValueRange();
+        dlg.addSlider("Isocontour Value", extent[0], extent[1], (extent[0] + extent[1]) / 2);
+        dlg.showDialog();
 
-		// create median box operator
-		Geometry2D graph = new Isocontour(value).processScalar2d(scalar);
+        if (dlg.wasCanceled()) return;
+        double value = dlg.getNextNumber();
 
-		// add to the document
-        doc.addShape(new Shape(graph));
-                
-        // TODO: maybe propagating events would be better
-        ImageFrame viewer = (ImageFrame) frame;
-        viewer.repaint(); 
+        // create median box operator
+        Geometry2D graph = new Isocontour(value).processScalar2d(scalar);
+
+        // add to the document
+        handle.addShape(new Shape(graph));
+        handle.notifyImageHandleChange();
 	}
-
 }

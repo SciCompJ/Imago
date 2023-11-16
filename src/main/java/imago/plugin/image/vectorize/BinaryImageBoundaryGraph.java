@@ -37,8 +37,8 @@ public class BinaryImageBoundaryGraph implements FramePlugin
 	public void run(ImagoFrame frame, String args)
 	{
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-		Image image	= doc.getImage();
+		ImageHandle handle = ((ImageFrame) frame).getImageHandle();
+		Image image	= handle.getImage();
 		Array<?> array = image.getData();
 		if (!(array instanceof BinaryArray))
 		{
@@ -60,11 +60,7 @@ public class BinaryImageBoundaryGraph implements FramePlugin
 		Graph2D graph = new BinaryImage2DBoundaryGraph().process(binary);
 
 		// add to the document
-        doc.addShape(new Shape(graph));
-                
-        // TODO: maybe propagating events would be better
-        ImageFrame viewer = (ImageFrame) frame;
-        viewer.repaint(); 
+        handle.addShape(new Shape(graph));
+        handle.notifyImageHandleChange();
 	}
-
 }

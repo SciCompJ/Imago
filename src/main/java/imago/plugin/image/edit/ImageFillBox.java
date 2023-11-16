@@ -3,6 +3,7 @@
  */
 package imago.plugin.image.edit;
 
+import imago.app.ImageHandle;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
@@ -21,10 +22,6 @@ import net.sci.image.Image;
  */
 public class ImageFillBox  implements FramePlugin
 {
-	public ImageFillBox()
-	{
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -35,8 +32,8 @@ public class ImageFillBox  implements FramePlugin
     public void run(ImagoFrame frame, String args)
 	{
 		// get current image data
-		ImageFrame iFrame = (ImageFrame) frame;
-		Image image	= iFrame.getImageHandle().getImage();
+	    ImageHandle handle = ((ImageFrame) frame).getImageHandle();
+		Image image	= handle.getImage();
 		Array<?> array = image.getData();
 
 		if (!(array instanceof ScalarArray))
@@ -44,11 +41,13 @@ public class ImageFillBox  implements FramePlugin
 		    throw new RuntimeException("Requires an image containing a ScalarArray");
 		}
 		
+		// retrieve image dimensions
         int sizeX = array.size(0);
         int sizeY = array.size(1);
         boolean is3d = array.dimensionality() == 3;
         int sizeZ = is3d ? array.size(2) : 1;
         
+        // setup a dialog to choose box extent
 		GenericDialog gd = new GenericDialog(frame, "Fill Box");
         gd.addNumericField("X Min", sizeX * 0.25, 0);
         gd.addNumericField("X Max", sizeX * 0.75, 0);
@@ -68,6 +67,7 @@ public class ImageFillBox  implements FramePlugin
 			return;
 		}
 		
+		// retrieve bounds from dialog
         int xMin = (int) gd.getNextNumber();
         int xMax = (int) gd.getNextNumber();
         int yMin = (int) gd.getNextNumber();
@@ -90,9 +90,8 @@ public class ImageFillBox  implements FramePlugin
             fillBox3d(ScalarArray3D.wrap((ScalarArray<?>) array), xMin, xMax, yMin, yMax, zMin, zMax, value);
         }
 		
-		// apply operator on current image
-        iFrame.getImageView().refreshDisplay();
-		frame.repaint();
+        // notify changes
+        handle.notifyImageHandleChange(ImageHandle.Event.IMAGE_MASK | ImageHandle.Event.CHANGE_MASK);
 	}
 	
     private void fillBox2d(ScalarArray2D<?> array, int xmin, int xmax, int ymin, int ymax, double value)

@@ -58,7 +58,6 @@ public class ImageSelectionToMask implements FramePlugin
 		{
 		    throw new RuntimeException("Requires an image containing 2D Array");
 		}
-
 		
         PlanarImageViewer piv = (PlanarImageViewer) viewer;
         Geometry2D selection = piv.getSelection();

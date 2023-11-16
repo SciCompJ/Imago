@@ -46,8 +46,8 @@ public class ImageSetColorMapFactory implements FramePlugin
 	{
 		// get current image data
 		ImageFrame viewer = (ImageFrame) frame;
-		ImageHandle doc = viewer.getImageHandle();
-		Image image	= doc.getImage();
+		ImageHandle handle = viewer.getImageHandle();
+		Image image	= handle.getImage();
 
 		ImageType type = image.getType();
 		if (type != ImageType.LABEL && type != ImageType.GRAYSCALE && type != ImageType.INTENSITY && type != ImageType.DISTANCE)
@@ -61,9 +61,6 @@ public class ImageSetColorMapFactory implements FramePlugin
             nColors = (int) image.getDisplaySettings().getDisplayRange()[1];
 		}
 		
-		System.out.println("number of colors for colormap: " + nColors);
-		
-		// TODO: factory should be stored within Image instance
 		// Then, when display range  is changed, map can be recomputed
 		ColorMap colorMap = factory.createColorMap(nColors);
 		
@@ -81,10 +78,8 @@ public class ImageSetColorMapFactory implements FramePlugin
         }
 		
 		image.getDisplaySettings().setColorMap(colorMap);
-		//TODO: notify change ?
 		
-		viewer.getImageView().refreshDisplay();
-		
-		viewer.repaint();
+		// notify changes
+        handle.notifyImageHandleChange(ImageHandle.Event.LUT_MASK | ImageHandle.Event.CHANGE_MASK);
 	}
 }

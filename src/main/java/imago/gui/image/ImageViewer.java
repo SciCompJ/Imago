@@ -336,7 +336,10 @@ public abstract class ImageViewer implements ImageHandle.Listener
     // Display management methods
 
     /**
-     * Updates the display of the image stored within this viewer. 
+     * Updates the display of the image stored within this viewer.
+     * 
+     * This method should be called when image values, image display range, or
+     * Look-Up Table have been updated.
      * 
      * @see repaint()
      */
@@ -370,6 +373,14 @@ public abstract class ImageViewer implements ImageHandle.Listener
     @Override
     public void imageHandleModified(Event evt)
     {
+        int code = evt.getCode();
+        if ((code & ImageHandle.Event.LUT_MASK) != 0 || 
+                (code & ImageHandle.Event.DISPLAY_RANGE_MASK) != 0 || 
+                (code & ImageHandle.Event.IMAGE_MASK) != 0)
+        {
+            refreshDisplay();
+        }
+        
         repaint();
     }
 }

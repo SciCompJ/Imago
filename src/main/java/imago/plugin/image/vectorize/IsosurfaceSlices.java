@@ -15,7 +15,6 @@ import imago.app.scene.ShapeNode;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
-import imago.gui.ImagoGui;
 import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
 import net.sci.array.scalar.Scalar;
@@ -46,8 +45,9 @@ public class IsosurfaceSlices implements FramePlugin
     {
         // get current image data
         ImageFrame iFrame = (ImageFrame) frame;
-        Image image = iFrame.getImageHandle().getImage();
-        ImagoGui gui = iFrame.getGui();
+        ImageHandle handle = iFrame.getImageHandle();
+        Image image = handle.getImage();
+        ImagoApp app = frame.getGui().getAppli();
         
         Array<?> array = image.getData();
         if (!(array instanceof ScalarArray))
@@ -71,10 +71,9 @@ public class IsosurfaceSlices implements FramePlugin
         GenericDialog dlg = new GenericDialog(frame, "Isosurface");
         double[] extent = image.getDisplaySettings().getDisplayRange(); 
         dlg.addSlider("Isosurface Value", extent[0], extent[1], (extent[0] + extent[1]) / 2);
-        ImagoApp app = frame.getGui().getAppli();
         Collection<String> imageNames = ImageHandle.getAllNames(app);
         String[] imageNameArray = imageNames.toArray(new String[]{});
-        String firstImageName = iFrame.getImageHandle().getName();
+        String firstImageName = handle.getName();
         dlg.addChoice("Image to Overlay ", imageNameArray, firstImageName);
         dlg.showDialog();
         
@@ -89,7 +88,7 @@ public class IsosurfaceSlices implements FramePlugin
         MorphologicalMarchingCubes mc = new MorphologicalMarchingCubes(value);
         
         // initialize algo monitoring
-        mc.addAlgoListener(iFrame);
+        mc.addAlgoListener(frame);
         iFrame.getStatusBar().setCurrentStepLabel("Compute Isosurface");
         
         // run isosurface computation
@@ -102,13 +101,13 @@ public class IsosurfaceSlices implements FramePlugin
         
         iFrame.getStatusBar().setCurrentStepLabel("Add isosurface to image shape tree");
         ImageHandle targetHandle = ImageHandle.findFromName(app, imageToOverlayName);
-        ImageFrame viewer = gui.getImageFrame(targetHandle);
         
         // get serial sections node
         String nodeName = "isosurface";
         ImageSerialSectionsNode sectionsNode = getIsosurfaceNode(targetHandle, nodeName); 
         
-        // compute slice for each z
+        // for each slice, computes the intersection polygon, and if it is not empty, 
+        // add it into a new "ImageSliceNode" within the sectionsNode instance.
         for (int z = 0; z < scalar.size(2); z++)
         {
             Plane3D plane = new Plane3D(new Point3D(0, 0, z+0.003), new Vector3D(0, 0, 1));
@@ -126,12 +125,13 @@ public class IsosurfaceSlices implements FramePlugin
             }
         }
         
-        viewer.repaint();
-        
         // display elapsed time
         long t1 = System.nanoTime();
         iFrame.getStatusBar().setCurrentStepLabel("");
         iFrame.showElapsedTime("Compute Isosurface", (t1 - t0) / 1_000_000.0, image);
+        
+        // notify changes
+        handle.notifyImageHandleChange(ImageHandle.Event.SHAPES_MASK | ImageHandle.Event.CHANGE_MASK);
     }
     
     private ImageSerialSectionsNode getIsosurfaceNode(ImageHandle handle, String nodeName)

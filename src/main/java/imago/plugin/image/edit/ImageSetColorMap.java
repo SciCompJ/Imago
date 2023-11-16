@@ -19,31 +19,30 @@ import net.sci.image.Image;
 public class ImageSetColorMap implements FramePlugin
 {
     ColorMap colorMap;
-    
-	public ImageSetColorMap(ColorMap colorMap)
-	{
-		this.colorMap = colorMap;
-	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
-	public void run(ImagoFrame frame, String args)
-	{
-		// get current image data
-		ImageFrame viewer = (ImageFrame) frame;
-		ImageHandle doc = viewer.getImageHandle();
-		Image image	= doc.getImage();
+    public ImageSetColorMap(ColorMap colorMap)
+    {
+        this.colorMap = colorMap;
+    }
 
-		image.getDisplaySettings().setColorMap(this.colorMap);
-		//TODO: notify change ?
-		
-		viewer.getImageView().refreshDisplay();
-		
-		viewer.repaint();
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void run(ImagoFrame frame, String args)
+    {
+        // retrieve image handle
+        ImageFrame viewer = (ImageFrame) frame;
+        ImageHandle handle = viewer.getImageHandle();
+        
+        // update image
+        Image image = handle.getImage();
+        image.getDisplaySettings().setColorMap(this.colorMap);
+        
+        // notify changes
+        handle.notifyImageHandleChange(ImageHandle.Event.LUT_MASK | ImageHandle.Event.CHANGE_MASK);
+    }
 }

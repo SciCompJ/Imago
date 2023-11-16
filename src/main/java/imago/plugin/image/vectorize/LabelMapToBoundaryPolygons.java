@@ -26,10 +26,6 @@ import net.sci.image.vectorize.LabelMapBoundaryPolygons;
  */
 public class LabelMapToBoundaryPolygons implements FramePlugin
 {
-	public LabelMapToBoundaryPolygons()
-	{
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -40,8 +36,8 @@ public class LabelMapToBoundaryPolygons implements FramePlugin
 	public void run(ImagoFrame frame, String args)
 	{
 		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-		Image image	= doc.getImage();
+		ImageHandle handle = ((ImageFrame) frame).getImageHandle();
+		Image image	= handle.getImage();
 		Array<?> array = image.getData();
 		if (!(array instanceof IntArray))
 		{
@@ -68,13 +64,11 @@ public class LabelMapToBoundaryPolygons implements FramePlugin
 		{
 		    for (Polygon2D poly : labelPolygons.get(label))
 		    {
-		        doc.addShape(new Shape(poly));
+		        handle.addShape(new Shape(poly));
 		    }
 		}
-                
-        // TODO: maybe propagating events would be better
-        ImageFrame viewer = (ImageFrame) frame;
-        viewer.repaint(); 
+              
+		// update viewer associated to the ImageHandle
+		handle.notifyImageHandleChange();
 	}
-
 }

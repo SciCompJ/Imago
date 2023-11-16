@@ -222,6 +222,15 @@ public class ImageHandle extends ObjectHandle
         }
     }
     
+    public void notifyImageHandleChange(int code)
+    {
+        Event evt = new Event(this, code);
+        for (Listener lst : listeners)
+        {
+            lst.imageHandleModified(evt);
+        }
+    }
+    
     
 	// =============================================================
 	// General methods
@@ -246,16 +255,81 @@ public class ImageHandle extends ObjectHandle
     
     public static class Event
     {
+        /**
+         * The event mask for selecting item creation.
+         */
+        public static final int CREATE_MASK = 1;
+        
+        /**
+         * The event mask for selecting item removal.
+         */
+        public static final int REMOVE_MASK = 2;
+        
+        /**
+         * The event mask for selecting item change.
+         */
+        public static final int CHANGE_MASK = 4;
+        
+        /**
+         * The event mask for selecting image update.
+         */
+        public static final int IMAGE_MASK = 8;
+        
+        /**
+         * The event mask for selecting Look-Up Table(LUT) update.
+         */
+        public static final int DISPLAY_RANGE_MASK = 16;
+        
+        /**
+         * The event mask for selecting Look-Up Table(LUT) update.
+         */
+        public static final int LUT_MASK = 32;
+        
+        /**
+         * The event mask for selecting shape update.
+         */
+        public static final int SHAPES_MASK = 256;
+        
+        /**
+         * The source of the event.
+         */
         ImageHandle source;
         
+        /**
+         * The int code of the event, summarizing the change.
+         */
+        int code; 
+        
+        /**
+         * Build a new event.
+         * 
+         * @param source
+         *            the ImageHandle that generated the event.
+         */
         public Event(ImageHandle source)
         {
+            this(source, 0);
+        }
+        
+        public Event(ImageHandle source, int code)
+        {
             this.source = source;
+            this.code = code;
         }
         
         public ImageHandle getSource()
         {
             return source;
+        }
+        
+        /**
+         * Returns the code of The event/
+         * 
+         * @return the code of the event.
+         */
+        public int getCode()
+        {
+            return code;
         }
     }
 }
