@@ -127,6 +127,9 @@ public class ImageHandle extends ObjectHandle
 	int currentSliceIndex = 0;
 	
 	
+	ArrayList<Listener> listeners = new ArrayList<Listener>();
+	
+	
 	// =============================================================
 	// Constructors
 	
@@ -195,8 +198,31 @@ public class ImageHandle extends ObjectHandle
     {
     	return this.rootNode;
     }
-	    
-
+	
+    
+    // =============================================================
+    // Management of ImageHandleListeners
+    
+    public void addImageHandleListener(Listener lst)
+    {
+        this.listeners.add(lst);
+    }
+    
+    public void removeImageHandleListener(Listener lst)
+    {
+        this.listeners.remove(lst);
+    }
+    
+    public void notifyImageHandleChange()
+    {
+        Event evt = new Event(this);
+        for (Listener lst : listeners)
+        {
+            lst.imageHandleModified(evt);
+        }
+    }
+    
+    
 	// =============================================================
 	// General methods
 	
@@ -213,4 +239,23 @@ public class ImageHandle extends ObjectHandle
         return this.image;
     }
 
+    public interface Listener
+    {
+        public void imageHandleModified(Event evt);
+    }
+    
+    public static class Event
+    {
+        ImageHandle source;
+        
+        public Event(ImageHandle source)
+        {
+            this.source = source;
+        }
+        
+        public ImageHandle getSource()
+        {
+            return source;
+        }
+    }
 }
