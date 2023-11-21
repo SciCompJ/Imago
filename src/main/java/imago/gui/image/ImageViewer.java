@@ -316,7 +316,7 @@ public abstract class ImageViewer implements ImageHandle.Listener
      *            the vector array to convert
      * @return an instance of ScalarArray representing the input array.
      */
-    protected ScalarArray<?> computeVectorArrayDisplay(VectorArray<?> array)
+    protected ScalarArray<?> computeVectorArrayDisplay(VectorArray<?,?> array)
     {
         switch (this.vectorImageDisplayMode)
         {

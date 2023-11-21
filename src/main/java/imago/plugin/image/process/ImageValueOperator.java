@@ -104,7 +104,7 @@ public class ImageValueOperator implements FramePlugin
         else if (image.isVectorImage())
         {
             // marginal processing: process each channel independently
-            VectorArray<?> array = (VectorArray<?>) image.getData();
+            VectorArray<?,?> array = (VectorArray<?,?>) image.getData();
             int nChannels = array.channelCount();
             
             // allocate memory for result
@@ -127,7 +127,7 @@ public class ImageValueOperator implements FramePlugin
             for (int c = 0;c < nChannels; c++)
             {
                 ScalarArray<?> source = array.channel(c);
-                ScalarArray<?> target = ((VectorArray<?>) result).channel(c);
+                ScalarArray<?> target = ((VectorArray<?,?>) result).channel(c);
                 
                 processScalar(source, target, functionName, value);
             }

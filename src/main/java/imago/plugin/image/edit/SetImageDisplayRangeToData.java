@@ -36,7 +36,7 @@ public class SetImageDisplayRangeToData implements FramePlugin
 		Array<?> array = image.getData();
 		if (array instanceof VectorArray) 
 		{
-			array = VectorArray.norm((VectorArray<?>) array);
+			array = VectorArray.norm((VectorArray<?,?>) array);
 		}
 		
 		if (!(array instanceof ScalarArray))

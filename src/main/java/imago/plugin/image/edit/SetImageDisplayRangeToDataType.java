@@ -42,7 +42,7 @@ public class SetImageDisplayRangeToDataType implements FramePlugin
 		Array<?> array = metaImage.getData();
 		if (array instanceof VectorArray) 
 		{
-			array = VectorArray.norm((VectorArray<?>) array);
+			array = VectorArray.norm((VectorArray<?,?>) array);
 		}
 		
 		if (!(array instanceof ScalarArray))

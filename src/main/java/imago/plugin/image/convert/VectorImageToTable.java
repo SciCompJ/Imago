@@ -55,7 +55,7 @@ public class VectorImageToTable implements FramePlugin
 			return;
 		}
 
-		VectorArray<?> vectorArray = (VectorArray<?>) array;
+		VectorArray<?,?> vectorArray = (VectorArray<?,?>) array;
 		int nChannels = vectorArray.channelCount();
 		
 		GenericDialog dlg = new GenericDialog(frame, "Convert To Table");

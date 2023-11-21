@@ -92,7 +92,7 @@ public class SetImageDisplayRange implements FramePlugin
         }
         else if (array instanceof VectorArray)
         {
-            return computeValueExtent_Vector((VectorArray<?>) array);
+            return computeValueExtent_Vector((VectorArray<?,?>) array);
         }
         else
         {
@@ -136,7 +136,7 @@ public class SetImageDisplayRange implements FramePlugin
         return new double[] { minValue, maxValue };
     }
 
-    private double[] computeValueExtent_Vector(VectorArray<?> array)
+    private double[] computeValueExtent_Vector(VectorArray<?,?> array)
     {
         int nc = array.channelCount();
         double[] values = new double[nc];

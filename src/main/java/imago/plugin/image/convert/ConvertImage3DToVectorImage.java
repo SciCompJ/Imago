@@ -52,7 +52,7 @@ public class ConvertImage3DToVectorImage implements FramePlugin
 			return;
 		}
 
-		VectorArray<?> vectArray = VectorArray2D.fromStack((ScalarArray3D<?>) array);
+		VectorArray<?,?> vectArray = VectorArray2D.fromStack((ScalarArray3D<?>) array);
 		Image result = new Image(vectArray, image);
 				
 		// add the image document to GUI

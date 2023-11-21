@@ -142,7 +142,7 @@ public class ImageDisplayOptionsPanel extends JPanel
     
     private int countChannels(Array<?> array)
     {
-        if (array instanceof VectorArray) return ((VectorArray<?>) array).channelCount();
+        if (array instanceof VectorArray) return ((VectorArray<?,?>) array).channelCount();
         Class<?> elementClass = array.dataType();
         if (elementClass.equals(RGB8.class)) return 3;
         if (elementClass.equals(RGB16.class)) return 3;

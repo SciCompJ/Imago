@@ -56,7 +56,7 @@ public class VectorImageConvertToRGB implements FramePlugin
             return;
         }
 
-        VectorArray<?> vectorArray = (VectorArray<?>) array;
+        VectorArray<?,?> vectorArray = (VectorArray<?,?>) array;
         int nChannels = vectorArray.channelCount();
         
         // Create dialog for choosing channel indices

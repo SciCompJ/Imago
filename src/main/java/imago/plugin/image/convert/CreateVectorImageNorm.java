@@ -52,7 +52,7 @@ public class CreateVectorImageNorm implements FramePlugin
             return;
         }
 
-        VectorArray<?> vectorArray = (VectorArray<?>) array;
+        VectorArray<?,?> vectorArray = (VectorArray<?,?>) array;
         
         ScalarArray<?> norm = VectorArray.norm(vectorArray);
         

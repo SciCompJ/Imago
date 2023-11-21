@@ -54,7 +54,7 @@ public class ImagePlotChannels implements FramePlugin
         {
             throw new RuntimeException("Input array must be a vector array");
         }
-        VectorArray<?> vectorArray = (VectorArray<?>) array;
+        VectorArray<?,?> vectorArray = (VectorArray<?,?>) array;
         
         ImageViewer viewer = iframe.getImageView();
         if (!(viewer instanceof PlanarImageViewer))

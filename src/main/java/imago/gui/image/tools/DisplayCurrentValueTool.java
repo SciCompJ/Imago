@@ -170,7 +170,7 @@ public class DisplayCurrentValueTool extends ImageTool
         else if (array instanceof VectorArray)
         {
             // in case of Vector array, compute the norm of the pixel for display
-            double[] values = ((VectorArray<?>) array).getValues(pos);
+            double[] values = ((VectorArray<?,?>) array).getValues(pos);
             double norm = 0;
             for (int c = 0; c < values.length; c++)
                 norm += values[c] * values[c];

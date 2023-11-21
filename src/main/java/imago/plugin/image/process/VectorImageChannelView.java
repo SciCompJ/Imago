@@ -52,7 +52,7 @@ public class VectorImageChannelView implements FramePlugin
 			return;
 		}
 
-		VectorArray<?> vectorArray = (VectorArray<?>) array;
+		VectorArray<?,?> vectorArray = (VectorArray<?,?>) array;
 		int nChannels = vectorArray.channelCount();
 		
 		GenericDialog dlg = new GenericDialog(frame, "Extract Channel");

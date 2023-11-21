@@ -55,7 +55,7 @@ public class CreateVectorImageRGB8View implements FramePlugin
             return;
         }
 
-        VectorArray<?> vectorArray = (VectorArray<?>) array;
+        VectorArray<?,?> vectorArray = (VectorArray<?,?>) array;
         int nChannels = vectorArray.channelCount();
         
         // Create dialog for choosing channel indices

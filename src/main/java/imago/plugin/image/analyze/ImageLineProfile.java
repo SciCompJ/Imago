@@ -128,7 +128,7 @@ public class ImageLineProfile implements ImagePlugin
         }
         else if (array instanceof VectorArray2D)
         {
-            ScalarArray2D<?> normImage = ((VectorArray2D<?>) array).norm();
+            ScalarArray2D<?> normImage = ((VectorArray2D<?,?>) array).norm();
             table = intensityProfile(normImage, p1, p2, nPositions);
             plotIntensityProfile(iframe, table);
         }
