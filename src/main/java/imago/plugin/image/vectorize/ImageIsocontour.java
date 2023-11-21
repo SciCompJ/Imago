@@ -5,12 +5,11 @@ package imago.plugin.image.vectorize;
 
 import imago.app.ImageHandle;
 import imago.app.shape.Shape;
+import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
-import imago.gui.FramePlugin;
 import net.sci.array.Array;
-import net.sci.array.scalar.Scalar;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.ScalarArray2D;
 import net.sci.geom.geom2d.Geometry2D;
@@ -52,7 +51,7 @@ public class ImageIsocontour implements FramePlugin
 		}
 
         // wrap array into a 2D scalar array
-        ScalarArray2D<? extends Scalar> scalar = ScalarArray2D.wrap((ScalarArray<?>) array);
+        ScalarArray2D<?> scalar = ScalarArray2D.wrap((ScalarArray<?>) array);
 
         // Choose the iso contour value
         GenericDialog dlg = new GenericDialog(frame, "Isocontour");

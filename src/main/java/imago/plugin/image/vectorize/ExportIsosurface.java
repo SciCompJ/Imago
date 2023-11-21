@@ -12,7 +12,6 @@ import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
-import net.sci.array.scalar.Scalar;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.ScalarArray3D;
 import net.sci.geom.mesh.Mesh3D;
@@ -52,7 +51,7 @@ public class ExportIsosurface implements FramePlugin
         }
 
         // wrap array into a 3D scalar array
-        ScalarArray3D<? extends Scalar> scalar = ScalarArray3D.wrap((ScalarArray<?>) array);
+        ScalarArray3D<?> scalar = ScalarArray3D.wrap((ScalarArray<?>) array);
         
 
         // Open a dialog to choose the iso-surface value
