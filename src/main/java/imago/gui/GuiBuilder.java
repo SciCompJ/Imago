@@ -181,9 +181,9 @@ import imago.plugin.image.shape.ImageRotatedCrop;
 import imago.plugin.image.shape.ImageSubsample;
 import imago.plugin.image.vectorize.BinaryImageBoundaryGraph;
 import imago.plugin.image.vectorize.ExportIsosurface;
+import imago.plugin.image.vectorize.Image3DIsosurface;
 import imago.plugin.image.vectorize.ImageFindNonZeroPixels;
 import imago.plugin.image.vectorize.ImageIsocontour;
-import imago.plugin.image.vectorize.IsosurfaceSlices;
 import imago.plugin.image.vectorize.LabelMapToBoundaryPolygons;
 import imago.plugin.plugin.ImportImage3DPolylineSeries;
 import imago.plugin.plugin.crop.CreateSurface3DPlugin;
@@ -627,7 +627,7 @@ public class GuiBuilder
                 "Find Non-Zeros Elements", hasImage2D && hasScalarImage);
         addPlugin(menu, new ImageIsocontour(), "Isocontour...");
         addPlugin(menu, new ExportIsosurface(), "Export Isosurface...");
-        addPlugin(menu, new IsosurfaceSlices(), "Compute Isosurface Slices...");
+        addPlugin(menu, new Image3DIsosurface(), "Compute Isosurface...");
         addPlugin(menu, new Image3DKymograph(), "Kymograph", hasImage3D && hasScalarImage);
 
         // operators specific to binary images
