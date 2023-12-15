@@ -12,6 +12,7 @@ import imago.gui.image.ImageFrame;
 import imago.gui.image.ImageViewer;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
+import net.sci.array.Array3D;
 import net.sci.array.color.RGB16Array;
 import net.sci.array.color.RGB8Array;
 import net.sci.array.scalar.ScalarArray;
@@ -44,8 +45,15 @@ public class SetImageDisplayRange implements FramePlugin
 
 		Array<?> array = image.getData();
 		
-		// Compute min and max values within the array 
-		double[] extent = computeValueExtent(array);
+		// Compute min and max values within the array
+		// or within current slice in the case of 3D array
+        if (array.dimensionality() > 2)
+        {
+            int sliceIndex = ((ImageFrame) frame).getImageView().getSlicingPosition(2);
+            array = Array3D.wrap(array).slice(sliceIndex);
+        }
+        double[] extent = computeValueExtent(array);
+
 		double[] displayRange = image.getDisplaySettings().getDisplayRange();
 		
 		// Create new dialog populated with widgets
