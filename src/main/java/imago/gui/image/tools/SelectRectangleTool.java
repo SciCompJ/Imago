@@ -9,8 +9,8 @@ import java.awt.event.MouseEvent;
 import imago.gui.image.ImageDisplay;
 import imago.gui.image.ImageFrame;
 import imago.gui.image.ImageTool;
-import net.sci.geom.geom2d.Bounds2D;
 import net.sci.geom.geom2d.Point2D;
+import net.sci.geom.geom2d.polygon.Box2D;
 
 /**
  * Select a rectangular box on current viewer. Can be used for slice viewer of
@@ -85,7 +85,7 @@ public class SelectRectangleTool extends ImageTool
             this.y2 = y;
             this.state = 2;
             
-            Bounds2D box = new Bounds2D(x1, x2, y1, y2);
+            Box2D box = new Box2D(x1, x2, y1, y2);
 
             display.setSelection(box);
             this.viewer.getImageView().setSelection(box);
@@ -114,7 +114,7 @@ public class SelectRectangleTool extends ImageTool
         double x = pos.x();
         double y = pos.y();
         
-        Bounds2D box = new Bounds2D(x1, x, y1, y);
+        Box2D box = new Box2D(x1, x, y1, y);
         display.setSelection(box);
         this.viewer.repaint();
     }

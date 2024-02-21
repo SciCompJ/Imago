@@ -68,23 +68,22 @@ public class ImageCropSelection implements FramePlugin
         int[] maxInds = new int[2];
         for (int d = 0; d < 2; d++)
         {
-            minInds[d] = Math.max((int) box.getMin(d), 0); 
-            maxInds[d] = Math.min((int) box.getMax(d) + 1, array.size(d)); 
+            minInds[d] = Math.max((int) box.minCoord(d), 0); 
+            maxInds[d] = Math.min((int) box.maxCoord(d) + 1, array.size(d)); 
         }
         
-		// create operator box filtering operator
-		Crop op = Crop.fromMinMax(minInds, maxInds);
-		op.addAlgoListener((ImageFrame) frame);
-		
-		// apply operator on current image array
-		Array<?> result = op.process(array);
-		Image resultImage = new Image(result, image);
-		resultImage.setName(image.getName() + "-crop");
-		
-		// add the image document to GUI
-		ImageFrame.create(resultImage, frame);
-	}
-	
+        // create crop operator
+        Crop op = Crop.fromMinMax(minInds, maxInds);
+        op.addAlgoListener((ImageFrame) frame);
+
+        // apply operator on current image
+        Image resultImage = iframe.runOperator(op, image);
+        resultImage.setName(image.getName() + "-crop");
+
+        // add the image document to GUI
+        ImageFrame.create(resultImage, frame);
+    }
+
     /**
      * Returns true if the current frame contains an image.
      * 
