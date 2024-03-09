@@ -10,10 +10,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
 import net.sci.array.binary.BinaryArray;
-import net.sci.array.binary.BinaryArray2D;
-import net.sci.array.binary.BinaryArray3D;
 import net.sci.array.scalar.IntArray;
-import net.sci.array.scalar.ScalarArray;
 import net.sci.image.Image;
 import net.sci.image.ImageType;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DFloat32;
@@ -24,8 +21,7 @@ import net.sci.image.binary.distmap.ChamferMask2D;
 import net.sci.image.binary.distmap.ChamferMask3D;
 import net.sci.image.binary.distmap.ChamferMasks2D;
 import net.sci.image.binary.distmap.ChamferMasks3D;
-import net.sci.image.binary.distmap.DistanceTransform2D;
-import net.sci.image.binary.distmap.DistanceTransform3D;
+import net.sci.image.binary.distmap.DistanceTransform;
 
 /**
  * Distance map to nearest background pixel/voxel, using chamfer distances.
@@ -96,30 +92,25 @@ public class BinaryImageChamferDistanceMap implements FramePlugin
 		DistanceMapDataType outputType = (DistanceMapDataType) gd.getNextEnumChoice();
 		boolean normalize = gd.getNextBoolean();
 		
-		// Compute distance map
-		ScalarArray<?> result;
-		if (nd == 2)
-		{
-            // Process 3D case
-            DistanceTransform2D op = createAlgorithm(mask2d.getMask(), outputType, normalize);
-		    op.addAlgoListener(imageFrame);
-		    result = op.process2d((BinaryArray2D) image.getData());
-		}
-		else
-		{
-		    // Process 3D case
-            DistanceTransform3D op = createAlgorithm(mask3d.getMask(), outputType, normalize);
-            op.addAlgoListener(imageFrame);
-            result = op.process3d((BinaryArray3D) image.getData());
-		}
-		Image resultImage = new Image(result, ImageType.DISTANCE, image);
+		// create algorithm for computing distance map
+        DistanceTransform op = (nd == 2) 
+                ? createAlgorithm(mask2d.getMask(), outputType, normalize) 
+                : createAlgorithm(mask3d.getMask(), outputType, normalize);
+        op.addAlgoListener(imageFrame);
+        
+        // Compute distance map
+        DistanceTransform.Result res = op.computeResult((BinaryArray) image.getData());
+        
+        // create result image
+        Image resultImage = new Image(res.distanceMap, ImageType.DISTANCE, image);
 		resultImage.setName(image.getName() + "-dist");
-		
+		resultImage.getDisplaySettings().setDisplayRange(new double[] {0.0, res.maxDistance});
+
 		// add the image document to GUI
         ImageFrame.create(resultImage, frame);
 	}
 	
-    private static final DistanceTransform2D createAlgorithm(ChamferMask2D mask, DistanceMapDataType outputType, boolean normalize)
+    private static final DistanceTransform createAlgorithm(ChamferMask2D mask, DistanceMapDataType outputType, boolean normalize)
     {
         if (!outputType.isIntType())
         {
@@ -130,7 +121,7 @@ public class BinaryImageChamferDistanceMap implements FramePlugin
         return op;
     }
     
-	private static final DistanceTransform3D createAlgorithm(ChamferMask3D mask, DistanceMapDataType outputType, boolean normalize)
+	private static final DistanceTransform createAlgorithm(ChamferMask3D mask, DistanceMapDataType outputType, boolean normalize)
 	{
 	    if (!outputType.isIntType())
 	    {
