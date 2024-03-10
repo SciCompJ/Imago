@@ -220,7 +220,7 @@ public class ImageGeodesicDistanceMap implements FramePlugin
 		{
 		    for (int dist : maskArray.selectInts((UInt16Array) result))
 		    {
-                if (dist < UInt16.MAX_VALUE)
+                if (dist < UInt16.MAX_INT)
                 {
                     maxDist = Math.max(dist, maxDist);
                 }		        

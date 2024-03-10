@@ -58,7 +58,7 @@ public class SetImageDisplayRangeToDataType implements FramePlugin
 		}
 		else if (scalarArray instanceof UInt16Array)
 		{
-			extent = new double[]{0, UInt16.MAX_VALUE};
+			extent = new double[]{0, UInt16.MAX_INT};
 		}
 		System.out.println("  New value range: [" + extent[0] + " ; " + extent[1] + "]");
 		
