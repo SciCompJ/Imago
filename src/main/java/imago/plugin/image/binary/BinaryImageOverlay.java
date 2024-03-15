@@ -79,7 +79,7 @@ public class BinaryImageOverlay implements FramePlugin
 			frame.showErrorDialog("Both arrays must have same size", "Image Size Error");
 			return;
 		}
-        if (binaryMask.dataType() != Binary.class)
+        if (binaryMask.elementClass() != Binary.class)
 		{
 			frame.showErrorDialog("overlay array must be binary", "Image Type Error");
 			return;

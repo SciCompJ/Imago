@@ -140,7 +140,7 @@ public class DisplayCurrentValueTool extends ImageTool
      */
 	private static final String createValueString(Array<?> array, int[] pos)
 	{
-        if (Scalar.class.isAssignableFrom(array.dataType()))
+        if (Scalar.class.isAssignableFrom(array.elementClass()))
         {
             if (array instanceof IntArray)
             {

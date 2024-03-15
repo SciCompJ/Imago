@@ -25,7 +25,7 @@ public class CheckerBoardComposite implements ImagePairComposite
     @Override
     public <T> Array<?> process(Array<T> refArray, Array<?> otherArray)
     {
-        if (!refArray.dataType().isAssignableFrom(otherArray.dataType()))
+        if (!refArray.elementClass().isAssignableFrom(otherArray.elementClass()))
         {
             throw new IllegalArgumentException("Data type of second array is not compatible with that of reference array");
         }

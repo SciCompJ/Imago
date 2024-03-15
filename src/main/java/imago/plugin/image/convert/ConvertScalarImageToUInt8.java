@@ -58,7 +58,7 @@ public class ConvertScalarImageToUInt8 implements FramePlugin
 		}
 		
 		Image resultImage;
-		if (array.dataType() == Binary.class)
+		if (array.elementClass() == Binary.class)
 		{
 		    UInt8Array res = new BinaryToUInt8.View(BinaryArray.wrap(array));
 		    resultImage = new Image(res, image);

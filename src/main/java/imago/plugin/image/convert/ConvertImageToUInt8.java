@@ -51,7 +51,7 @@ public class ConvertImageToUInt8 implements FramePlugin
 		
 		// dispatch processing depending on input image data type
 		Image resultImage;
-		if (array.dataType() == Binary.class)
+		if (array.elementClass() == Binary.class)
 		{
 		    // Default behavior for binary: create a view
 		    UInt8Array result = new BinaryToUInt8.View(BinaryArray.wrap(array));
