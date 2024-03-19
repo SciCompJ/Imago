@@ -3,12 +3,16 @@
  */
 package imago.plugin.image.process;
 
+import java.util.function.UnaryOperator;
+
 import imago.app.ImageHandle;
 import imago.app.ImagoApp;
-import imago.gui.*;
+import imago.gui.FramePlugin;
+import imago.gui.GenericDialog;
+import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
+import imago.plugin.image.process.options.ValuePairFunction;
 import net.sci.array.Array;
-import net.sci.array.process.Math;
 import net.sci.array.scalar.Float32Array;
 import net.sci.array.scalar.Float64Array;
 import net.sci.array.scalar.ScalarArray;
@@ -25,11 +29,6 @@ import net.sci.image.Image;
  */
 public class ImageValueOperator implements FramePlugin
 {
-    /**
-     * The list of functions that can be applied.
-     */
-    String[] functionNames = new String[]{"Plus", "Minus", "Times", "Divides", "Min", "Max"};
-    
     /**
      * Control the type of output array.
      */
@@ -59,7 +58,7 @@ public class ImageValueOperator implements FramePlugin
 
 		GenericDialog gd = new GenericDialog(frame, "Math Operator");
 		gd.addChoice("Image", imageNames, imageNames[index]);
-        gd.addChoice("Operation", functionNames, functionNames[0]);
+        gd.addEnumChoice("Operation", ValuePairFunction.class, ValuePairFunction.PLUS);
         gd.addNumericField("Value", 1.0, 2, "The scalar value to use as operand");
         gd.addChoice("Output Type", outputTypeNames, outputTypeNames[0]);
 		gd.showDialog();
@@ -71,35 +70,32 @@ public class ImageValueOperator implements FramePlugin
 		
 		// parse dialog results
         String imageName = gd.getNextChoice();
-		String functionName = gd.getNextChoice();
+        ValuePairFunction op = (ValuePairFunction) gd.getNextEnumChoice();
         double value = gd.getNextNumber();
 		int outputTypeIndex = gd.getNextChoiceIndex();
         
 		// identify source image
         Image image = ImageHandle.findFromName(frame.getGui().getAppli(), imageName).getImage();
         
+        // transform binary operator into unary operator by fixing constant
+        UnaryOperator<Double> fun = (x) -> op.getFunction().apply(x, value);
+
+        // dispatch processing depending on if image is scalar or vector
         Array<?> result = null;
         if (image.isScalarImage())
         {
             ScalarArray<?> array = (ScalarArray<?>) image.getData();
-    
-            // allocate memory for result
-    		switch (outputTypeIndex)
+            
+            // allocate output array
+            result = switch (outputTypeIndex)
             {
-            case 0:
-                result = array.newInstance(array.size());
-                break;
-            case 1:
-                result = Float32Array.create(array.size());
-                break;
-            case 2:
-                result = Float64Array.create(array.size());
-                break;
-            default:
-                throw new RuntimeException("Unknown type index: " + outputTypeIndex);
-            }
+                case 0 -> array.newInstance(array.size());
+                case 1 -> Float32Array.create(array.size());
+                case 2 -> Float64Array.create(array.size());
+                default -> throw new IllegalArgumentException("Unexpected value: " + outputTypeIndex);
+            };
     		
-    		processScalar(array, (ScalarArray<?>) result, functionName, value);
+            array.apply(fun, (ScalarArray<?>) result);
         }
         else if (image.isVectorImage())
         {
@@ -107,29 +103,22 @@ public class ImageValueOperator implements FramePlugin
             VectorArray<?,?> array = (VectorArray<?,?>) image.getData();
             int nChannels = array.channelCount();
             
-            // allocate memory for result
-            switch (outputTypeIndex)
+            // allocate output array
+            result = switch (outputTypeIndex)
             {
-            case 0:
-                result = array.newInstance(array.size());
-                break;
-            case 1:
-                result = Float32VectorArray.create(array.size(), nChannels);
-                break;
-            case 2:
-                result = Float64VectorArray.create(array.size(), nChannels);
-                break;
-            default:
-                throw new RuntimeException("Unknown type index: " + outputTypeIndex);
-            }
+                case 0 -> array.newInstance(array.size());
+                case 1 -> Float32VectorArray.create(array.size(), nChannels);
+                case 2 -> Float64VectorArray.create(array.size(), nChannels);
+                default -> throw new IllegalArgumentException("Unexpected value: " + outputTypeIndex);
+            };
             
             // iterate over channels of source and target images
-            for (int c = 0;c < nChannels; c++)
+            for (int c = 0; c < nChannels; c++)
             {
                 ScalarArray<?> source = array.channel(c);
                 ScalarArray<?> target = ((VectorArray<?,?>) result).channel(c);
                 
-                processScalar(source, target, functionName, value);
+                source.apply(fun, target);
             }
         }
         else
@@ -139,40 +128,12 @@ public class ImageValueOperator implements FramePlugin
         
         // create result image
 		Image resultImage = new Image(result, image);
-		resultImage.setName(image.getName() + "-" + functionName);
+		resultImage.setName(image.getName() + "-" + op.toString());
 		
 		// add the image document to GUI
         ImageFrame.create(resultImage, frame);
 	}
 	
-	private static void processScalar(ScalarArray<?> source, ScalarArray<?> target, String functionName, double value)
-	{
-        // apply function and store to result
-        switch (functionName)
-        {
-        case "Plus":
-            Math.add(source, value, target);
-            break;
-        case "Minus":
-            Math.subtract(source, value, target);
-            break;
-        case "Times":
-            Math.multiply(source, value, target);
-            break;
-        case "Divides":
-            Math.divide(source, value, target);
-            break;
-        case "Min":
-            Math.min(source, value, target);
-            break;
-        case "Max":
-            Math.max(source, value, target);
-            break;
-        default: throw new RuntimeException("Unknown function name: " + functionName); 
-        }
-
-	}
-
 	private int findStringIndex(String string, String[] array)
 	{
 	    if (string == null)

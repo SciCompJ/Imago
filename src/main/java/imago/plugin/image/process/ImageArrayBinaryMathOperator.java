@@ -3,12 +3,11 @@
  */
 package imago.plugin.image.process;
 
-import java.util.function.BiFunction;
-
 import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.gui.*;
 import imago.gui.image.ImageFrame;
+import imago.plugin.image.process.options.ValuePairFunction;
 import net.sci.array.Arrays;
 import net.sci.array.process.math.MathBinaryOperator;
 import net.sci.array.scalar.Float32Array;
@@ -24,11 +23,6 @@ import net.sci.image.Image;
  */
 public class ImageArrayBinaryMathOperator implements FramePlugin
 {
-    /**
-     * The list of functions that can be applied.
-     */
-    String[] functionNames = new String[]{"Plus", "Minus", "Times", "Divides", "Min", "Max"};
-    
     /**
      * Control the type of output array.
      */
@@ -59,7 +53,7 @@ public class ImageArrayBinaryMathOperator implements FramePlugin
 
 		GenericDialog gd = new GenericDialog(frame, "Math Binary Operator");
 		gd.addChoice("Image 1", imageNames, imageNames[index1]);
-        gd.addChoice("Operation", functionNames, functionNames[0]);
+        gd.addEnumChoice("Operation", ValuePairFunction.class, ValuePairFunction.PLUS);
         gd.addChoice("Image 2", imageNames, imageNames[index2]);
         gd.addChoice("Output Type", outputTypeNames, outputTypeNames[0]);
 		gd.showDialog();
@@ -71,7 +65,7 @@ public class ImageArrayBinaryMathOperator implements FramePlugin
 		
 		// parse dialog results
         String image1Name = gd.getNextChoice();
-		String functionName = gd.getNextChoice();
+        ValuePairFunction opOption = (ValuePairFunction) gd.getNextEnumChoice();
         String image2Name = gd.getNextChoice();
 		int outputTypeIndex = gd.getNextChoiceIndex();
         
@@ -101,52 +95,17 @@ public class ImageArrayBinaryMathOperator implements FramePlugin
         }
         
         // create output array
-        ScalarArray<?> result;
-		switch (outputTypeIndex)
+        ScalarArray<?> result = switch (outputTypeIndex)
         {
-        case 0:
-            result = array1.newInstance(array1.size());
-            break;
-        case 1:
-            result = array2.newInstance(array2.size());
-            break;
-        case 2:
-            result = Float32Array.create(array1.size());
-            break;
-        case 3:
-            result = Float64Array.create(array1.size());
-            break;
-        default:
-            throw new RuntimeException("Unknown type index: " + outputTypeIndex);
-        }
+            case 0 -> array1.newInstance(array1.size());
+            case 1 -> array2.newInstance(array1.size());
+            case 2 -> Float32Array.create(array1.size());
+            case 3 -> Float64Array.create(array1.size());
+            default -> throw new IllegalArgumentException("Unexpected value: " + outputTypeIndex);
+        };
 
-        // use a lambda to represent the function to apply
-		BiFunction<Double, Double, Double> fun;
-		switch (functionName)
-		{
-        case "Plus":
-            fun = (x, y) -> x + y;
-            break;
-        case "Minus":
-            fun = (x, y) -> x - y;
-            break;
-        case "Times":
-            fun = (x, y) -> x * y;
-            break;
-        case "Divides":
-            fun = (x, y) -> x / y;
-            break;
-        case "Min":
-            fun = java.lang.Math::min;
-            break;
-        case "Max":
-            fun = java.lang.Math::max;
-            break;
-        default: throw new RuntimeException("Unknown function name: " + functionName); 
-		}
-
-		// create operator
-		MathBinaryOperator op = new MathBinaryOperator(fun);
+		// create array operator based on lambda stored in operator option 
+		MathBinaryOperator op = new MathBinaryOperator(opOption.getFunction());
         op.addAlgoListener(frame);
         
         // run operator
@@ -158,12 +117,12 @@ public class ImageArrayBinaryMathOperator implements FramePlugin
 		if (frame instanceof ImageFrame)
         {
 		    double dt = (t1 - t0) / 1_000_000.0;
-           ((ImageFrame) frame).showElapsedTime(functionName, dt, image1);
+           ((ImageFrame) frame).showElapsedTime(opOption.toString(), dt, image1);
         }
 		
 		// create and display result image
 		Image resultImage = new Image(result, image1);
-		resultImage.setName(String.format("%s(%s, %s)", functionName, image1.getName(), image2.getName()));
+		resultImage.setName(String.format("%s(%s, %s)", opOption.toString(), image1.getName(), image2.getName()));
         
 		// add the image document to GUI
 		ImageFrame.create(resultImage, frame);
