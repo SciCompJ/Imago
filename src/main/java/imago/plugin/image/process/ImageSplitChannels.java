@@ -51,7 +51,6 @@ public class ImageSplitChannels implements FramePlugin
 			return; 
 		}
 		
-		int nc = ((VectorArray<?,?>) array).channelCount();
 		
 		// Create an array with the name of each channel
 		String[] channelNames;
@@ -60,11 +59,11 @@ public class ImageSplitChannels implements FramePlugin
 			channelNames = new String[] { "red", "green", "blue" };
 
 			int c = 0;
-			for (UInt8Array channel : RGB8Array.splitChannels((RGB8Array) array))
+			for (UInt8Array channel : ((RGB8Array) array).channels())
 			{
 				// create the image corresponding to current channel
-				Image channelImage = new Image(channel, image);
-				channelImage.setName(image.getName() + "(" + channelNames[c++] + ")");
+				Image channelImage = new Image(channel.duplicate(), image);
+				channelImage.setName(image.getName() + "-" + channelNames[c++]);
 				
 				// add the image document to GUI
 				ImageFrame.create(channelImage, frame);
@@ -72,18 +71,22 @@ public class ImageSplitChannels implements FramePlugin
 		} 
 		else
 		{
+	        int nc = ((VectorArray<?,?>) array).channelCount();
 			channelNames = new String[nc];
+			String pattern = String.format("channel%%0%dd", (int) Math.ceil(Math.log10(nc)));
 			for (int c = 0; c < nc; c++)
 			{
-				channelNames[c] = "channel" + c;
+				channelNames[c] = String.format(pattern, c);
 			}
 			
 			int c = 0;
-			for (ScalarArray<?> channel : VectorArray.splitChannels((VectorArray<?,?>) array))
+			for (ScalarArray<?> channel : ((VectorArray<?,?>) array).channels())
 			{
 				// create the image corresponding to current channel
-				Image channelImage = new Image(channel, image);
-				channelImage.setName(image.getName() + "(" + channelNames[c++] + ")");
+				Image channelImage = new Image(channel.duplicate(), image);
+				// use same display settings as original image
+				channelImage.getDisplaySettings().setDisplayRange(image.getDisplaySettings().getDisplayRange());
+				channelImage.setName(image.getName() + "-" + channelNames[c++]);
 				
 				// add the image document to GUI
 				ImageFrame.create(channelImage, frame);
