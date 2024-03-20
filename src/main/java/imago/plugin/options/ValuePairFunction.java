@@ -1,13 +1,15 @@
 /**
  * 
  */
-package imago.plugin.image.process.options;
+package imago.plugin.options;
 
 import java.util.function.BiFunction;
 
 /**
  * A collection of common math functions taking two floating point values as
  * argument and returning a floating point value as output.
+ * 
+ * @see SingleValueFunction
  */
 public enum ValuePairFunction
 {
@@ -16,10 +18,12 @@ public enum ValuePairFunction
     MULTIPLY("Multiply", (a,b) -> a * b),
     DIVIDE("Divide", (a,b) -> a / b),
     DIFFERENCE("Difference", (a,b) -> Math.abs(a - b)),
-    MIN("Minimum", java.lang.Math::min),
-    MAX("Maximum", java.lang.Math::max),
+    MIN("Minimum", Math::min),
+    MAX("Maximum", Math::max),
     MODULO("Modulo", (a,b) -> a % b),
-    POWER("Power", java.lang.Math::pow);
+    POWER("Power", Math::pow),
+    ATAN2("Atan2", Math::atan2),
+    HYPOT("Hypot", Math::hypot);
     
     private String name;
     private BiFunction<Double,Double,Double> function;
@@ -28,6 +32,11 @@ public enum ValuePairFunction
     {
         this.name = name;
         this.function = function;
+    }
+    
+    public String getName()
+    {
+        return this.name;
     }
     
     public BiFunction<Double,Double,Double> getFunction()

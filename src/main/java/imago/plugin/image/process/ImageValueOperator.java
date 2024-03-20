@@ -11,7 +11,7 @@ import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
-import imago.plugin.image.process.options.ValuePairFunction;
+import imago.plugin.options.ValuePairFunction;
 import net.sci.array.Array;
 import net.sci.array.scalar.Float32Array;
 import net.sci.array.scalar.Float64Array;

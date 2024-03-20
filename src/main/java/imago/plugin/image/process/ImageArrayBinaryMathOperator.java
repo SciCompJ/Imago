@@ -7,7 +7,7 @@ import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.gui.*;
 import imago.gui.image.ImageFrame;
-import imago.plugin.image.process.options.ValuePairFunction;
+import imago.plugin.options.ValuePairFunction;
 import net.sci.array.Arrays;
 import net.sci.array.process.math.MathBinaryOperator;
 import net.sci.array.scalar.Float32Array;
