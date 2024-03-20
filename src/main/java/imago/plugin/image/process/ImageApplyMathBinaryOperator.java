@@ -4,31 +4,34 @@
 package imago.plugin.image.process;
 
 import imago.app.ImageHandle;
-import imago.gui.FramePlugin;
-import imago.gui.GenericDialog;
-import imago.gui.ImagoFrame;
-import imago.gui.ImagoGui;
+import imago.app.ImagoApp;
+import imago.gui.*;
 import imago.gui.image.ImageFrame;
+import imago.plugin.options.ValuePairFunction;
 import net.sci.array.Arrays;
-import net.sci.array.binary.BinaryArray;
-import net.sci.array.process.binary.LogicalBinaryOperator;
+import net.sci.array.process.math.MathBinaryOperator;
+import net.sci.array.scalar.Float32Array;
+import net.sci.array.scalar.Float64Array;
+import net.sci.array.scalar.ScalarArray;
 import net.sci.image.Image;
 
 /**
- * Applies a logical operator (OR, AND, XOR) to a pair of binary arrays, and
- * display the result in a new frame.
+ * Apply a simple math function between two image arrays.
  * 
  * @author David Legland
  *
+ * @see ImageApplyMathFunction
+ * @see ImageApplySingleValueOperator
+ * @see ImageApplyLogicalBinaryOperator
  */
-public class ImageArrayLogicalBinaryOperator implements FramePlugin
+public class ImageApplyMathBinaryOperator implements FramePlugin
 {
     /**
-     * The list of functions that can be applied.
+     * Control the type of output array.
      */
-    String[] functionNames = new String[]{"OR", "AND", "XOR", "AND NOT"};
+    String[] outputTypeNames = new String[]{"Same as Image 1", "Same as Image 2", "Float32", "Float64"};
     
- 	public ImageArrayLogicalBinaryOperator()
+	public ImageApplyMathBinaryOperator()
 	{
 	}
 
@@ -41,7 +44,8 @@ public class ImageArrayLogicalBinaryOperator implements FramePlugin
 	@Override
 	public void run(ImagoFrame frame, String args)
 	{
-	    String[] imageNames = ImageHandle.getAllNames(frame.getGui().getAppli()).toArray(new String[]{});
+        ImagoApp app = frame.getGui().getAppli();
+        String[] imageNames = ImageHandle.getAllNames(app).toArray(new String[]{});
 		int index1 = 0;
 		if (frame instanceof ImageFrame)
 		{
@@ -52,8 +56,9 @@ public class ImageArrayLogicalBinaryOperator implements FramePlugin
 
 		GenericDialog gd = new GenericDialog(frame, "Math Binary Operator");
 		gd.addChoice("Image 1", imageNames, imageNames[index1]);
-        gd.addChoice("Operation", functionNames, functionNames[0]);
+        gd.addEnumChoice("Operation", ValuePairFunction.class, ValuePairFunction.PLUS);
         gd.addChoice("Image 2", imageNames, imageNames[index2]);
+        gd.addChoice("Output Type", outputTypeNames, outputTypeNames[0]);
 		gd.showDialog();
 		
 		if (gd.getOutput() == GenericDialog.Output.CANCEL) 
@@ -63,26 +68,27 @@ public class ImageArrayLogicalBinaryOperator implements FramePlugin
 		
 		// parse dialog results
         String image1Name = gd.getNextChoice();
-		String functionName = gd.getNextChoice();
+        ValuePairFunction opOption = (ValuePairFunction) gd.getNextEnumChoice();
         String image2Name = gd.getNextChoice();
+		int outputTypeIndex = gd.getNextChoiceIndex();
         
         // retrieve images from names
         Image image1 = ImageHandle.findFromName(frame.getGui().getAppli(), image1Name).getImage();
-        if (!image1.isBinaryImage())
+        if (!image1.isScalarImage())
         {
-            ImagoGui.showErrorDialog(frame, "Requires an image containing a binary array");
+            ImagoGui.showErrorDialog(frame, "Requires an image containing a scalar array");
             return;
         }
         Image image2 = ImageHandle.findFromName(frame.getGui().getAppli(), image2Name).getImage();
-        if (!image2.isBinaryImage())
+        if (!image2.isScalarImage())
         {
-            ImagoGui.showErrorDialog(frame, "Requires an image containing a binary array");
+            ImagoGui.showErrorDialog(frame, "Requires an image containing a scalar array");
             return;
         }
 
         // extract arrays
-        BinaryArray array1 = (BinaryArray) image1.getData();
-        BinaryArray array2 = (BinaryArray) image2.getData();
+        ScalarArray<?> array1 = (ScalarArray<?>) image1.getData();
+        ScalarArray<?> array2 = (ScalarArray<?>) image2.getData();
 
         // check dimensions
         if (!Arrays.isSameSize(array1, array2))
@@ -91,44 +97,35 @@ public class ImageArrayLogicalBinaryOperator implements FramePlugin
             return;
         }
         
+        // create output array
+        ScalarArray<?> result = switch (outputTypeIndex)
+        {
+            case 0 -> array1.newInstance(array1.size());
+            case 1 -> array2.newInstance(array1.size());
+            case 2 -> Float32Array.create(array1.size());
+            case 3 -> Float64Array.create(array1.size());
+            default -> throw new IllegalArgumentException("Unexpected value: " + outputTypeIndex);
+        };
 
-        // Creates the operator, using specialized implementation when available
-        LogicalBinaryOperator op;
-		switch (functionName)
-		{
-        case "OR":
-            op = LogicalBinaryOperator.OR;
-            break;
-        case "AND":
-            op = LogicalBinaryOperator.AND;
-            break;
-        case "XOR":
-            op = new LogicalBinaryOperator((x, y) -> x ^ y);
-            break;
-        case "AND NOT":
-            op = LogicalBinaryOperator.AND_NOT;
-            break;
-        default: throw new RuntimeException("Unknown function name: " + functionName); 
-		}
-		
-		// create operator
+		// create array operator based on lambda stored in operator option 
+		MathBinaryOperator op = new MathBinaryOperator(opOption.getFunction());
         op.addAlgoListener(frame);
         
         // run operator
 		long t0 = System.nanoTime();
-		BinaryArray result = op.process(array1, array2);
+        op.process(array1, array2, result);
         long t1 = System.nanoTime();
         
         // display elapsed time
 		if (frame instanceof ImageFrame)
         {
 		    double dt = (t1 - t0) / 1_000_000.0;
-           ((ImageFrame) frame).showElapsedTime(functionName, dt, image1);
+           ((ImageFrame) frame).showElapsedTime(opOption.toString(), dt, image1);
         }
 		
 		// create and display result image
 		Image resultImage = new Image(result, image1);
-		resultImage.setName(String.format("%s(%s, %s)", functionName, image1.getName(), image2.getName()));
+		resultImage.setName(String.format("%s(%s, %s)", opOption.toString(), image1.getName(), image2.getName()));
         
 		// add the image document to GUI
 		ImageFrame.create(resultImage, frame);
@@ -151,6 +148,7 @@ public class ImageArrayLogicalBinaryOperator implements FramePlugin
 	    
 	    return 0;
 	}
+	
 	
     @Override
     public boolean isEnabled(ImagoFrame frame)

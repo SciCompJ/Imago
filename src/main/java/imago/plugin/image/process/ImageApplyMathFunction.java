@@ -21,6 +21,8 @@ import net.sci.image.Image;
  * 
  * @author David Legland
  *
+ * @see ImageApplySingleValueOperator
+ * @see ImageApplyMathBinaryOperator
  */
 public class ImageApplyMathFunction implements FramePlugin
 {

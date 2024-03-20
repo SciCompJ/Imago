@@ -26,15 +26,17 @@ import net.sci.image.Image;
  * 
  * @author David Legland
  *
+ * @see ImageApplyMathFunction
+ * @see ImageApplyMathBinaryOperator
  */
-public class ImageValueOperator implements FramePlugin
+public class ImageApplySingleValueOperator implements FramePlugin
 {
     /**
      * Control the type of output array.
      */
     String[] outputTypeNames = new String[]{"Same as Input", "Float32", "Float64"};
     
-	public ImageValueOperator()
+	public ImageApplySingleValueOperator()
 	{
 	}
 
