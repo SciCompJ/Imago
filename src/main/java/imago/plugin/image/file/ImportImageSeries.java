@@ -37,9 +37,19 @@ public class ImportImageSeries implements FramePlugin
             return;
         }
 
+        String ext = findExtension(file.getName());
+        int nFiles = file.getParentFile().listFiles(new FileFilter() {
+
+            @Override
+            public boolean accept(File pathname)
+            {
+                return pathname.getName().endsWith("." + ext);
+            }}).length;
+        
         // create a dialog to choose files to read
         GenericDialog gd = new GenericDialog(frame, "Import Series");
         gd.addNumericField("First Image", 1, 0);
+        gd.addNumericField("Last Image", nFiles, 0);
         gd.addNumericField("Increment", 1, 0);
         gd.addTextField("Contains", "");
 
@@ -50,10 +60,9 @@ public class ImportImageSeries implements FramePlugin
         }
         
         int firstImageIndex = (int) gd.getNextNumber() - 1;
+        int lastImageIndex = (int) gd.getNextNumber() - 1;
         int imageIndexIncr = (int) gd.getNextNumber();
         String stringToContains = gd.getNextString();
-        
-        String ext = findExtension(file.getName());
         
         String pattern;
         FileFilter fileFilter;
@@ -90,7 +99,7 @@ public class ImportImageSeries implements FramePlugin
 
         // count the number of images to read
         int nImages2 = 0;
-        for (int i = firstImageIndex; i < fileList.length; i += imageIndexIncr)
+        for (int i = firstImageIndex; i < lastImageIndex; i += imageIndexIncr)
         {
             nImages2++;
         }
@@ -106,11 +115,20 @@ public class ImportImageSeries implements FramePlugin
         // read each image to populate the array
         int[] pos = new int[3];
         pos[2] = 0;
-        for (int i = firstImageIndex; i < fileList.length; i += imageIndexIncr)
+        for (int i = firstImageIndex; i < lastImageIndex; i += imageIndexIncr)
         {
+            // display progress if possible
+            if (frame instanceof ImageFrame)
+            {
+                int progress = (int) (i * 100.0 / lastImageIndex);
+                ((ImageFrame) frame).getStatusBar().setProgressBarPercent(progress);
+            }
+            
+            // read current slice
             Image image = Imago.readImage(fileList[i], frame);
             Array<?> sliceArray = image.getData();
             
+            // fill 3D array with current slice content
             int[] slicePos = new int[2];
             for (int y = 0; y < sizeY; y++)
             {
