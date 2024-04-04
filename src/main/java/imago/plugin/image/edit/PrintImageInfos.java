@@ -16,6 +16,7 @@ import net.sci.array.binary.RunLengthBinaryArray2D;
 import net.sci.array.binary.RunLengthBinaryArray3D;
 import net.sci.axis.Axis;
 import net.sci.image.Calibration;
+import net.sci.image.DisplaySettings;
 import net.sci.image.Image;
 
 /**
@@ -63,8 +64,15 @@ public class PrintImageInfos implements FramePlugin
         // Show infos about channels
         textLines.add("Channels info:");
         Axis channelAxis = calib.getChannelAxis();
-        textLines.add("  name: " + channelAxis.getName());
-        textLines.add("  string: " + channelAxis.toString());
+        textLines.add("  Name: " + channelAxis.getName());
+        textLines.add("  String: " + channelAxis.toString());
+        
+        textLines.add("Display settings:");
+        DisplaySettings ds = image.getDisplaySettings();
+        double[] displayRange = ds.getDisplayRange();
+        textLines.add(String.format("  Display range: [%f ; %f]", displayRange[0], displayRange[1]));
+//        textLines.add(String.format("  Color map: ", displayRange[0], displayRange[1]));
+        textLines.add(String.format("  Background Color: %s", ds.getBackgroundColor().toString()));
         
         // Show technical info about Array instance
         Array<?> array = image.getData();
