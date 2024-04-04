@@ -12,8 +12,10 @@ import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -386,7 +388,8 @@ public class ImagoGui
         try (JarFile jarFile = new JarFile(file))
         {
             // prepare for reading data from jar file
-            URL[] urls = { new URL("jar:file:" + file + "!/") };
+            URI uri = Paths.get("jar:file:" + file + "!/").toUri();
+            URL[] urls = { uri.toURL() };
             URLClassLoader cl = URLClassLoader.newInstance(urls);
 
             // iterate over items in the jar file

@@ -92,6 +92,7 @@ public class Surface3DTest
         // closes the Surface3D object
         jsonReader.endObject();
 
+        jsonReader.close();
     }
 
     /**
