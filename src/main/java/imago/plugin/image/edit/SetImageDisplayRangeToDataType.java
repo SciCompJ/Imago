@@ -64,7 +64,7 @@ public class SetImageDisplayRangeToDataType implements FramePlugin
 		
 		metaImage.getDisplaySettings().setDisplayRange(extent);
 		
-		ImageViewer viewer = ((ImageFrame) frame).getImageView();
+		ImageViewer viewer = ((ImageFrame) frame).getImageViewer();
 		
 		// update display
 		viewer.refreshDisplay();

@@ -75,7 +75,7 @@ public class DrawBrushValueTool extends ImageTool
     @Override
     public void deselect()
     {
-        this.viewer.repaint();
+        this.frame.repaint();
     }
 
 
@@ -86,7 +86,7 @@ public class DrawBrushValueTool extends ImageTool
     public void mousePressed(MouseEvent evt)
     {
         // retrieve image data
-        Image image = this.viewer.getImageView().getImage();
+        Image image = this.frame.getImageViewer().getImage();
         Array<?> array = image.getData();
         if (!(array instanceof ScalarArray))
         {
@@ -114,7 +114,7 @@ public class DrawBrushValueTool extends ImageTool
         xprev = xi;
         yprev = yi;
         
-        UserPreferences prefs = this.viewer.getGui().getAppli().userPreferences;
+        UserPreferences prefs = this.frame.getGui().getAppli().userPreferences;
         double value = prefs.brushValue;
         double radius = prefs.brushRadius;
         double r2 = (radius + 0.5) * (radius + 0.5);
@@ -133,15 +133,15 @@ public class DrawBrushValueTool extends ImageTool
         }
         
         // refresh display
-        this.viewer.getImageView().refreshDisplay();
-        this.viewer.repaint();
+        this.frame.getImageViewer().refreshDisplay();
+        this.frame.repaint();
     }
     
     @Override
     public void mouseMoved(MouseEvent evt)
     {
         // retrieve image data
-        Image image = this.viewer.getImageView().getImage();
+        Image image = this.frame.getImageViewer().getImage();
         Array<?> array = image.getData();
         if (!(array instanceof ScalarArray))
         {
@@ -159,29 +159,29 @@ public class DrawBrushValueTool extends ImageTool
         
         // update cursor display
         updateCursor(xi, yi);
-        this.viewer.repaint();
+        this.frame.repaint();
     }
     
     @Override
     public void mouseExited(MouseEvent evt)
     {
-        ImageViewer viewer = this.viewer.getImageView();
-        if (this.viewer.getImageView() instanceof PlanarImageViewer)
+        ImageViewer viewer = this.frame.getImageViewer();
+        if (this.frame.getImageViewer() instanceof PlanarImageViewer)
         {
             ((PlanarImageViewer) viewer).getImageDisplay().setCustomCursor(null);
         }
-        else if (this.viewer.getImageView() instanceof StackSliceViewer)
+        else if (this.frame.getImageViewer() instanceof StackSliceViewer)
         {
             ((StackSliceViewer) viewer).getImageDisplay().setCustomCursor(null);
         }
-        this.viewer.repaint();
+        this.frame.repaint();
     }
     
     @Override
     public void mouseDragged(MouseEvent evt)
     {
         // retrieve image data
-        Image image = this.viewer.getImageView().getImage();
+        Image image = this.frame.getImageViewer().getImage();
         Array<?> array = image.getData();
         if (!(array instanceof ScalarArray))
         {
@@ -213,7 +213,7 @@ public class DrawBrushValueTool extends ImageTool
         if (xi >= sizeX || yi >= sizeY) return;
         
         // retrieve brush settings
-        UserPreferences prefs = this.viewer.getGui().getAppli().userPreferences;
+        UserPreferences prefs = this.frame.getGui().getAppli().userPreferences;
         double value = prefs.brushValue;
         double radius = prefs.brushRadius;
         
@@ -225,22 +225,22 @@ public class DrawBrushValueTool extends ImageTool
         
         // refresh display
         updateCursor(xi, yi);
-        this.viewer.getImageView().refreshDisplay();
-        this.viewer.repaint();
+        this.frame.getImageViewer().refreshDisplay();
+        this.frame.repaint();
     }
     
     private void updateCursor(int xi, int yi)
     {
         // create cursor shape
-        double radius = this.viewer.getGui().getAppli().userPreferences.brushRadius + 0.5;
+        double radius = this.frame.getGui().getAppli().userPreferences.brushRadius + 0.5;
         Circle2D cursor = new Circle2D(new Point2D(xi+0.5, yi+0.5), radius);
         
-        ImageViewer viewer = this.viewer.getImageView();
-        if (this.viewer.getImageView() instanceof PlanarImageViewer)
+        ImageViewer viewer = this.frame.getImageViewer();
+        if (this.frame.getImageViewer() instanceof PlanarImageViewer)
         {
             ((PlanarImageViewer) viewer).getImageDisplay().setCustomCursor(cursor);
         }
-        else if (this.viewer.getImageView() instanceof StackSliceViewer)
+        else if (this.frame.getImageViewer() instanceof StackSliceViewer)
         {
             ((StackSliceViewer) viewer).getImageDisplay().setCustomCursor(cursor);
         }        
@@ -387,7 +387,7 @@ public class DrawBrushValueTool extends ImageTool
         }
         else if (array.dimensionality() == 3)
         {
-            int zi = this.viewer.getImageView().getSlicingPosition(2);
+            int zi = this.frame.getImageViewer().getSlicingPosition(2);
             return ScalarArray3D.wrap((ScalarArray<?>) array).slice(zi);
         }
         

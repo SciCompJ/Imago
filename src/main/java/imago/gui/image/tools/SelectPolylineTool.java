@@ -109,9 +109,9 @@ public class SelectPolylineTool extends ImageTool
         Polyline2D poly = Polyline2D.create(selectedPoints, false);
 
         display.setSelection(poly);
-        this.viewer.getImageView().setSelection(poly);
+        this.frame.getImageViewer().setSelection(poly);
         
-        this.viewer.repaint();
+        this.frame.repaint();
     }
     
     @Override
@@ -135,7 +135,7 @@ public class SelectPolylineTool extends ImageTool
         display.setSelection(Polyline2D.create(selectedPoints, false));
         this.selectedPoints.remove(nv);
         
-        this.viewer.repaint();
+        this.frame.repaint();
     }
 
 }

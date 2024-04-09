@@ -37,7 +37,7 @@ public class SaveImageMetaImage implements FramePlugin
             return;
         ImageFrame iframe = (ImageFrame) frame;
         
-        ImageViewer viewer = iframe.getImageView();
+        ImageViewer viewer = iframe.getImageViewer();
         Image image = viewer.getImage();
         
         // create file dialog using last save path

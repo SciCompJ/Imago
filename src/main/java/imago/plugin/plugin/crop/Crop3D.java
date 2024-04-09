@@ -110,7 +110,7 @@ public class Crop3D extends AlgoStub implements AlgoListener
         }
         
         // need to call this to update items to display 
-        ImageViewer viewer = plugin.imageFrame.getImageView();
+        ImageViewer viewer = plugin.imageFrame.getImageViewer();
         viewer.refreshDisplay(); 
         viewer.repaint();
         

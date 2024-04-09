@@ -32,7 +32,7 @@ public class ZoomIn implements FramePlugin
             return;
         ImageFrame iframe = (ImageFrame) frame;
         
-        ImageViewer view = iframe.getImageView();
+        ImageViewer view = iframe.getImageViewer();
         double zoom = view.getZoom();
         zoom = zoom * 2;
         view.setZoom(zoom);

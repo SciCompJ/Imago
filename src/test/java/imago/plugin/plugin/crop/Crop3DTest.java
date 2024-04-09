@@ -70,8 +70,8 @@ public class Crop3DTest
         polyNode.addNode(shape1);
         polyNode.addNode(shape2);
         
-        frame.getImageView().refreshDisplay(); 
-        frame.getImageView().repaint();
+        frame.getImageViewer().refreshDisplay(); 
+        frame.getImageViewer().repaint();
         
         // compute projection points of current poly over next poly
         LinearRing2D ring1rs = ring1.resampleBySpacing(2.0).smooth(3);
@@ -101,8 +101,8 @@ public class Crop3DTest
         shapeProj.getStyle().setColor(Color.GREEN);
         polyNode.addNode(shapeProj);
 
-        frame.getImageView().refreshDisplay(); 
-        frame.getImageView().repaint();
+        frame.getImageViewer().refreshDisplay(); 
+        frame.getImageViewer().repaint();
     }
 
     /**

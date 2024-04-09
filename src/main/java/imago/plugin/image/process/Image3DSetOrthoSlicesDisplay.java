@@ -43,7 +43,7 @@ public class Image3DSetOrthoSlicesDisplay implements FramePlugin
 		OrthoSlicesViewer viewer = new OrthoSlicesViewer(handle); 
 		viewer.validate();
 		
-		imageFrame.setImageView(viewer);
+		imageFrame.setImageViewer(viewer);
         imageFrame.getWidget().validate();
         imageFrame.repaint();
 	}

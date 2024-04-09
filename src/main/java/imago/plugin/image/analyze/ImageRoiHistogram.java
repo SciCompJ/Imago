@@ -62,7 +62,7 @@ public class ImageRoiHistogram implements FramePlugin
 		ImageFrame iframe = (ImageFrame) frame;
 		Image image = iframe.getImageHandle().getImage();
 		
-        ImageViewer viewer = iframe.getImageView();
+        ImageViewer viewer = iframe.getImageViewer();
         if (!(viewer instanceof PlanarImageViewer))
         {
             System.out.println("requires an instance of planar image viewer");

@@ -66,9 +66,9 @@ public class ImageDownsample implements FramePlugin
         ImageFrame frame2 = ImageFrame.create(result, frame);
 		if (image.getDimension() > 2)
 		{
-		    int currentSlice = iFrame.getImageView().getSlicingPosition(2);
+		    int currentSlice = iFrame.getImageViewer().getSlicingPosition(2);
 		    int newSlice = currentSlice / factor;
-		    frame2.getImageView().setSlicingPosition(2, newSlice);
+		    frame2.getImageViewer().setSlicingPosition(2, newSlice);
 		}
 	}
 }

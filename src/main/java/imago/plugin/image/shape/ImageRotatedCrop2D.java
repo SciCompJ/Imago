@@ -102,7 +102,7 @@ public class ImageRotatedCrop2D implements FramePlugin
         settingsFrame.setVisible(true);
         
         // TODO: should try to avoid class cast
-        ImageDisplay imageDisplay = ((PlanarImageViewer) imageFrame.getImageView()).getImageDisplay();
+        ImageDisplay imageDisplay = ((PlanarImageViewer) imageFrame.getImageViewer()).getImageDisplay();
         imageDisplay.addMouseListener(settingsFrame);
     }
     
@@ -280,8 +280,8 @@ public class ImageRotatedCrop2D implements FramePlugin
             }
             
             // update display frame
-            this.resultFrame.getImageView().setPreviewImage(resultImage);
-            this.resultFrame.getImageView().refreshDisplay();
+            this.resultFrame.getImageViewer().setPreviewImage(resultImage);
+            this.resultFrame.getImageViewer().refreshDisplay();
             this.resultFrame.setVisible(true);
         }
 

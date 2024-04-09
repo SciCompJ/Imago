@@ -157,7 +157,7 @@ public class Surface3D extends AlgoStub implements AlgoListener
         newFrame.updatePolylineListView();
         
         // need to call this to update items to display 
-        ImageViewer viewer = newFrame.imageFrame.getImageView();
+        ImageViewer viewer = newFrame.imageFrame.getImageViewer();
         viewer.refreshDisplay(); 
         viewer.repaint();
         

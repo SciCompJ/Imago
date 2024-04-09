@@ -36,7 +36,7 @@ public class SelectToolAction extends ImagoAction {
 		System.out.println("Select tool: " + tool.getName());
 		
 		// get current frame
-		ImageViewer viewer = ((ImageFrame) this.frame).getImageView();
+		ImageViewer viewer = ((ImageFrame) this.frame).getImageViewer();
 		viewer.setCurrentTool(tool);
 	}
 

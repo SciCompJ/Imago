@@ -35,7 +35,7 @@ public class Image3DGetCurrentSlice implements FramePlugin
 	{
 		// get current image data
 		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-		ImageViewer viewer = ((ImageFrame) frame).getImageView();
+		ImageViewer viewer = ((ImageFrame) frame).getImageViewer();
 
 		Image image	= doc.getImage();
 

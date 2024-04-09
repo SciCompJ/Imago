@@ -32,7 +32,7 @@ public class ZoomOne implements FramePlugin
             return;
         ImageFrame iframe = (ImageFrame) frame;
         
-        ImageViewer display = iframe.getImageView();
+        ImageViewer display = iframe.getImageViewer();
         display.setZoom(1);
         
         display.invalidate();

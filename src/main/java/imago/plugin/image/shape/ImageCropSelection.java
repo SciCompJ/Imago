@@ -51,7 +51,7 @@ public class ImageCropSelection implements FramePlugin
         }
         
         // restrict to planar viewer
-        ImageViewer viewer = iframe.getImageView();
+        ImageViewer viewer = iframe.getImageViewer();
         if (!(viewer instanceof PlanarImageViewer))
         {
             System.out.println("requires an instance of planar image viewer");

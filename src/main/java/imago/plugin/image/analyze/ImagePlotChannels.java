@@ -56,7 +56,7 @@ public class ImagePlotChannels implements FramePlugin
         }
         VectorArray<?,?> vectorArray = (VectorArray<?,?>) array;
         
-        ImageViewer viewer = iframe.getImageView();
+        ImageViewer viewer = iframe.getImageViewer();
         if (!(viewer instanceof PlanarImageViewer))
         {
             System.out.println("Requires an instance of planar image viewer");

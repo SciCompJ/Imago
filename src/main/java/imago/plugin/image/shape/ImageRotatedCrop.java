@@ -259,7 +259,7 @@ public class ImageRotatedCrop implements FramePlugin
             settingsFrame.setVisible(true);
             
             // TODO: should try to avoid class cast
-            ImageDisplay imageDisplay = ((PlanarImageViewer) imageFrame.getImageView()).getImageDisplay();
+            ImageDisplay imageDisplay = ((PlanarImageViewer) imageFrame.getImageViewer()).getImageDisplay();
             imageDisplay.addMouseListener(settingsFrame);
         }
         else if (nd == 3)
@@ -278,7 +278,7 @@ public class ImageRotatedCrop implements FramePlugin
 
             
             // TODO: should try to avoid class cast
-            ImageViewer viewer = imageFrame.getImageView();
+            ImageViewer viewer = imageFrame.getImageViewer();
             if (viewer instanceof StackSliceViewer)
             {
                 ImageDisplay imageDisplay = ((StackSliceViewer) viewer).getImageDisplay();
@@ -475,8 +475,8 @@ public class ImageRotatedCrop implements FramePlugin
             }
             
             // update display frame
-            this.previewFrame.getImageView().setPreviewImage(previewImage);
-            this.previewFrame.getImageView().refreshDisplay();
+            this.previewFrame.getImageViewer().setPreviewImage(previewImage);
+            this.previewFrame.getImageViewer().refreshDisplay();
             this.previewFrame.setVisible(true);
         }
 
@@ -785,8 +785,8 @@ public class ImageRotatedCrop implements FramePlugin
             }
             
             // update display frame
-            this.previewFrame.getImageView().setPreviewImage(previewImage);
-            this.previewFrame.getImageView().refreshDisplay();
+            this.previewFrame.getImageViewer().setPreviewImage(previewImage);
+            this.previewFrame.getImageViewer().refreshDisplay();
             this.previewFrame.setVisible(true);
         }
 
@@ -829,7 +829,7 @@ public class ImageRotatedCrop implements FramePlugin
             // retrieve position of last mouse click
             ImageDisplay imageDisplay = (ImageDisplay) evt.getComponent();
             Point2D point = imageDisplay.displayToImage(evt.getPoint());
-            int zSlice = parentFrame.getImageView().getSlicingPosition(2);
+            int zSlice = parentFrame.getImageViewer().getSlicingPosition(2);
             
             // update position of crop box center
             this.boxCenterX = point.x();

@@ -300,7 +300,7 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         updatePolylineListView();
         
         // need to call this to update items to display 
-        ImageViewer viewer = imageFrame.getImageView();
+        ImageViewer viewer = imageFrame.getImageViewer();
         viewer.refreshDisplay(); 
         viewer.repaint();
     }
@@ -449,7 +449,7 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         this.surf3d.initializeNodes();
 
         // need to call this to update items to display
-        ImageViewer viewer = imageFrame.getImageView();
+        ImageViewer viewer = imageFrame.getImageViewer();
         viewer.refreshDisplay(); 
         viewer.repaint();
         viewer.setCurrentTool(new SelectPolygonTool(imageFrame, "selectPolyline"));
@@ -466,7 +466,7 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
      */
     public void onAddPolylineButton()
     {
-        ImageViewer viewer = imageFrame.getImageView();
+        ImageViewer viewer = imageFrame.getImageViewer();
 
         StackSliceViewer piv = (StackSliceViewer) viewer;
         int sliceIndex = piv.getSlicingPosition(2);
@@ -517,7 +517,7 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         updatePolylineListView();
         
         // need to call this to update items to display
-        ImageViewer viewer = imageFrame.getImageView();
+        ImageViewer viewer = imageFrame.getImageViewer();
         viewer.refreshDisplay(); 
         viewer.repaint();
     }
@@ -579,7 +579,7 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         this.unfoldImageButton.setEnabled(true);
 
         // need to call this to update items to display
-        ImageViewer viewer = imageFrame.getImageView();
+        ImageViewer viewer = imageFrame.getImageViewer();
         viewer.refreshDisplay(); 
         viewer.repaint();
     }
@@ -696,7 +696,7 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
             
              
             // need to call this to update items to display
-            StackSliceViewer viewer = (StackSliceViewer) imageFrame.getImageView();
+            StackSliceViewer viewer = (StackSliceViewer) imageFrame.getImageViewer();
             viewer.setSlicingPosition(2, sliceIndex);
             
             viewer.refreshDisplay(); 

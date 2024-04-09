@@ -48,7 +48,7 @@ public class ImageManualThreshold implements FramePlugin
 		ScalarArray<?> slice = array;
 		if (slice.dimensionality() > 2)
 		{
-	        int sliceIndex = imageFrame.getImageView().getSlicingPosition(2);
+	        int sliceIndex = imageFrame.getImageViewer().getSlicingPosition(2);
 	        slice = ScalarArray3D.wrapScalar3d(slice).slice(sliceIndex);
 		}
 		

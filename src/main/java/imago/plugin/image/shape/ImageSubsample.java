@@ -64,11 +64,11 @@ public class ImageSubsample implements FramePlugin
 		ImageFrame frame2 = ImageFrame.create(result, frame);
 
         // choose z-position approximately the same as original image
-        int zPos = iFrame.getImageView().getSlicingPosition(2);
+        int zPos = iFrame.getImageViewer().getSlicingPosition(2);
         double relPos = ((double) zPos) / ((double) image.getSize(2));
         zPos = (int) Math.floor(result.getSize(2) * relPos);
-        frame2.getImageView().setSlicingPosition(2, zPos);
-        frame2.getImageView().refreshDisplay();
+        frame2.getImageViewer().setSlicingPosition(2, zPos);
+        frame2.getImageViewer().refreshDisplay();
 	}
 
     private static final int[] repeatValue(int value, int n)

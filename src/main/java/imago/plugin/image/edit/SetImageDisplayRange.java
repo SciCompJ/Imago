@@ -49,7 +49,7 @@ public class SetImageDisplayRange implements FramePlugin
 		// or within current slice in the case of 3D array
         if (array.dimensionality() > 2)
         {
-            int sliceIndex = ((ImageFrame) frame).getImageView().getSlicingPosition(2);
+            int sliceIndex = ((ImageFrame) frame).getImageViewer().getSlicingPosition(2);
             array = Array3D.wrap(array).slice(sliceIndex);
         }
         double[] extent = computeValueExtent(array);
@@ -79,7 +79,7 @@ public class SetImageDisplayRange implements FramePlugin
 		image.getDisplaySettings().setDisplayRange(extent);
 		
 		// refresh display
-		ImageViewer viewer = ((ImageFrame) frame).getImageView();
+		ImageViewer viewer = ((ImageFrame) frame).getImageViewer();
 		viewer.refreshDisplay();
 		viewer.repaint();
 	}

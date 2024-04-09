@@ -64,7 +64,7 @@ public class DisplayCurrentValueTool extends ImageTool
 	public void mouseMoved(MouseEvent evt)
 	{
 		// Extract image
-		ImageViewer imageView = viewer.getImageView();
+		ImageViewer imageView = frame.getImageViewer();
 		Image image = imageView.getImage();
 		Array<?> array = image.getData();
 
@@ -123,7 +123,7 @@ public class DisplayCurrentValueTool extends ImageTool
 		String valueString = createValueString(array, pos);
 
 		// Concatenate the information and update status bar
-		StatusBar statusBar = viewer.getStatusBar();
+		StatusBar statusBar = frame.getStatusBar();
 		String format = "%1$s %2$s";
 		String label = String.format(format, posString, valueString);
 		statusBar.setCursorLabel(label);

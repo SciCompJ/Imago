@@ -32,7 +32,7 @@ public class ToggleSceneGraphDisplay implements FramePlugin
 		// get current image data
 		ImageFrame imageViewer = (ImageFrame) frame;
 		
-		ImageViewer imageView = imageViewer.getImageView();
+		ImageViewer imageView = imageViewer.getImageViewer();
 		
 		imageView.setDisplaySceneGraph(!imageView.isDisplaySceneGraph());
 		

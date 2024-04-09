@@ -142,7 +142,9 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
     /** Used to display information about image, cursor, current process... */
 	StatusBar statusBar;
 	
-	
+	/**
+	 * Provides a split view between the options panel and the image viewer.
+	 */
 	JSplitPane splitPane;
 	
 	
@@ -462,7 +464,7 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
 		return getImageHandle().getImage();
 	}
 	
-	public ImageViewer getImageView()
+	public ImageViewer getImageViewer()
 	{
 		return this.imageViewer;
 	}
@@ -471,9 +473,8 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
 	 * Updates the view to the image stored in document.
 	 * @param view the new view to the image.
 	 */
-    public void setImageView(ImageViewer view)
+    public void setImageViewer(ImageViewer view)
     {
-        System.out.println("update image view");
         ImageTool currentTool = null;
         
         if (this.imageViewer != null)

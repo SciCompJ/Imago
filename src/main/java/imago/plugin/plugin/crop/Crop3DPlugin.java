@@ -449,7 +449,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         updatePolygonListView();
         
         // need to call this to update items to display 
-        ImageViewer viewer = imageFrame.getImageView();
+        ImageViewer viewer = imageFrame.getImageViewer();
         viewer.refreshDisplay(); 
         viewer.repaint();
     }
@@ -503,7 +503,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         updatePolygonListView();
         
         // need to call this to update items to display 
-        ImageViewer viewer = imageFrame.getImageView();
+        ImageViewer viewer = imageFrame.getImageViewer();
         viewer.refreshDisplay(); 
         viewer.repaint();
     }
@@ -620,7 +620,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         
         // and updates the current frame
         // need to call this to update items to display
-        ImageViewer viewer = imageFrame.getImageView();
+        ImageViewer viewer = imageFrame.getImageViewer();
         viewer.refreshDisplay(); 
         viewer.repaint();
         viewer.setCurrentTool(new SelectPolygonTool(imageFrame, "selectPolygon"));
@@ -665,7 +665,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         
         // and updates the current frame
         // need to call this to update items to display
-        ImageViewer viewer = imageFrame.getImageView();
+        ImageViewer viewer = imageFrame.getImageViewer();
         viewer.refreshDisplay(); 
         viewer.repaint();
         viewer.setCurrentTool(new SelectPolygonTool(imageFrame, "selectPolygon"));
@@ -769,7 +769,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         updatePolygonListView();
         
         // need to call this to update items to display 
-        ImageViewer viewer = imageFrame.getImageView();
+        ImageViewer viewer = imageFrame.getImageViewer();
         viewer.refreshDisplay(); 
         viewer.repaint();
     }
@@ -779,7 +779,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
      */
     public void onAddPolygonButton()
     {
-        StackSliceViewer viewer = (StackSliceViewer) imageFrame.getImageView();
+        StackSliceViewer viewer = (StackSliceViewer) imageFrame.getImageViewer();
 
         int sliceIndex = viewer.getSlicingPosition(2);
         
@@ -834,7 +834,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         updatePolygonListView();
         
         // need to call this to update items to display
-        ImageViewer viewer = imageFrame.getImageView();
+        ImageViewer viewer = imageFrame.getImageViewer();
         viewer.refreshDisplay(); 
         viewer.repaint();
     }
@@ -912,7 +912,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         this.cropImageButton.setEnabled(true);
 
         // need to call this to update items to display
-        ImageViewer viewer = imageFrame.getImageView();
+        ImageViewer viewer = imageFrame.getImageViewer();
         viewer.refreshDisplay(); 
         viewer.repaint();
     }
@@ -1011,7 +1011,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
             int sliceIndex = Integer.parseInt(name.substring(6).trim());
              
             // need to call this to update items to display
-            StackSliceViewer viewer = (StackSliceViewer) imageFrame.getImageView();
+            StackSliceViewer viewer = (StackSliceViewer) imageFrame.getImageViewer();
             viewer.setSlicingPosition(2, sliceIndex);
             
             viewer.refreshDisplay(); 

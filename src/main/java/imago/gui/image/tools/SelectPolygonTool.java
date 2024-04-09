@@ -116,9 +116,9 @@ public class SelectPolygonTool extends ImageTool
         }
 
         display.setSelection(poly);
-        this.viewer.getImageView().setSelection(poly);
+        this.frame.getImageViewer().setSelection(poly);
         
-        this.viewer.repaint();
+        this.frame.repaint();
     }
     
     @Override
@@ -142,7 +142,7 @@ public class SelectPolygonTool extends ImageTool
         display.setSelection(new DefaultPolygon2D(selectedPoints));
         this.selectedPoints.remove(nv);
         
-        this.viewer.repaint();
+        this.frame.repaint();
     }
 
 }

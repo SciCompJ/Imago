@@ -52,7 +52,7 @@ public class SetImageDisplayRangeToData implements FramePlugin
 		image.getDisplaySettings().setDisplayRange(extent);
 
 		// refresh display
-		ImageViewer viewer = ((ImageFrame) frame).getImageView();
+		ImageViewer viewer = ((ImageFrame) frame).getImageViewer();
 		viewer.refreshDisplay();
 	}
 }

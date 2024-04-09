@@ -42,7 +42,7 @@ public class ImageSelectionToDistanceMap implements FramePlugin
         ImageFrame iframe = (ImageFrame) frame;
         
         
-        ImageViewer viewer = iframe.getImageView();
+        ImageViewer viewer = iframe.getImageViewer();
         if (!(viewer instanceof PlanarImageViewer))
         {
             System.out.println("requires an instance of planar image viewer");

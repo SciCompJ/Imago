@@ -69,7 +69,7 @@ public class FloodFillTool extends ImageTool
         double x = pos.x();
         double y = pos.y();
         
-        Image image = this.viewer.getImageView().getImage();
+        Image image = this.frame.getImageViewer().getImage();
         Array<?> array = image.getData();
         if (!(array instanceof ScalarArray))
         {
@@ -88,7 +88,7 @@ public class FloodFillTool extends ImageTool
         if (xi < 0 || yi < 0) return;
         if (xi >= sizeX || yi >= sizeY) return;
         
-        UserPreferences prefs = viewer.getGui().getAppli().userPreferences;
+        UserPreferences prefs = frame.getGui().getAppli().userPreferences;
         double value = prefs.brushValue;
 
         if (array.dimensionality() == 2)
@@ -99,12 +99,12 @@ public class FloodFillTool extends ImageTool
         else if (array.dimensionality() == 3)
         {
             ScalarArray3D<?> array3d = ScalarArray3D.wrap((ScalarArray<?>) array);
-            int zi = this.viewer.getImageView().getSlicingPosition(2);
+            int zi = this.frame.getImageViewer().getSlicingPosition(2);
             FloodFill.floodFill(array3d, xi, yi, zi, value, 6);
         }
         
-        this.viewer.getImageView().refreshDisplay();
-        this.viewer.repaint();
+        this.frame.getImageViewer().refreshDisplay();
+        this.frame.repaint();
     }
 
 }

@@ -44,7 +44,7 @@ public class ImageSetScaleFromLineSelection implements FramePlugin
 		int nd = image.getDimension();
 		
 		// retrieve line selection
-        PlanarImageViewer piv = (PlanarImageViewer) imageFrame.getImageView();
+        PlanarImageViewer piv = (PlanarImageViewer) imageFrame.getImageViewer();
         Geometry selection = piv.getSelection();
         if (!(selection instanceof LineSegment2D))
         {

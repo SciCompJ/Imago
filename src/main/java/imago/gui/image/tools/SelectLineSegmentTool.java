@@ -88,7 +88,7 @@ public class SelectLineSegmentTool extends ImageTool
             this.x2 = x;
             this.y2 = y;
             this.state = 0;
-            ImageViewer imageView = this.viewer.getImageView(); 
+            ImageViewer imageView = this.frame.getImageViewer(); 
             if (imageView instanceof PlanarImageViewer)
             {
                 LineSegment2D line = new LineSegment2D(new Point2D(x1, y1), new Point2D(x2, y2));
@@ -106,7 +106,7 @@ public class SelectLineSegmentTool extends ImageTool
                 display.setSelection(line);
             }  
         }
-        this.viewer.repaint();
+        this.frame.repaint();
     }
     
     @Override
@@ -124,18 +124,18 @@ public class SelectLineSegmentTool extends ImageTool
         double x = pos.x();
         double y = pos.y();
      
-        ImageViewer imageView = this.viewer.getImageView(); 
+        ImageViewer imageView = this.frame.getImageViewer(); 
         if (imageView instanceof PlanarImageViewer)
         {
             LineSegment2D line = new LineSegment2D(new Point2D(x1, y1), new Point2D(x, y));
             display.setSelection(line);
-            this.viewer.repaint();
+            this.frame.repaint();
         }  
         else if (imageView instanceof StackSliceViewer)
         {
             LineSegment2D line = new LineSegment2D(new Point2D(x1, y1), new Point2D(x, y));
             display.setSelection(line);
-            this.viewer.repaint();
+            this.frame.repaint();
         }  
     }
 

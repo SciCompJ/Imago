@@ -95,7 +95,7 @@ public class ImportImage3DPolylineSeries implements FramePlugin
         rootNode.addNode(polylines);
         
         // need to call this to update items to display 
-        ImageViewer viewer = iFrame.getImageView();
+        ImageViewer viewer = iFrame.getImageViewer();
         viewer.refreshDisplay(); 
         viewer.repaint();
     }

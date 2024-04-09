@@ -18,7 +18,7 @@ public abstract class ImageTool implements MouseListener, MouseMotionListener
 	// ===================================================================
 	// Class variables
 
-	protected ImageFrame viewer;
+	protected ImageFrame frame;
 
 	protected String name;
 
@@ -26,9 +26,9 @@ public abstract class ImageTool implements MouseListener, MouseMotionListener
 	// ===================================================================
 	// Constructor
 
-	protected ImageTool(ImageFrame viewer, String name)
+	protected ImageTool(ImageFrame frame, String name)
 	{
-		this.viewer = viewer;
+		this.frame = frame;
 		this.name = name;
 	}
 

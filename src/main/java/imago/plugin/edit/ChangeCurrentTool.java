@@ -36,7 +36,7 @@ public class ChangeCurrentTool implements FramePlugin
         System.out.println("Select tool: " + tool.getName());
         
         // get current frame
-        ImageViewer viewer = ((ImageFrame) frame).getImageView();
+        ImageViewer viewer = ((ImageFrame) frame).getImageViewer();
         viewer.setCurrentTool(tool);
     }
     

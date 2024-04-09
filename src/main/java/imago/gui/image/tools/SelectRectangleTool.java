@@ -88,7 +88,7 @@ public class SelectRectangleTool extends ImageTool
             Box2D box = new Box2D(x1, x2, y1, y2);
 
             display.setSelection(box);
-            this.viewer.getImageView().setSelection(box);
+            this.frame.getImageViewer().setSelection(box);
         }
         else
         {
@@ -96,7 +96,7 @@ public class SelectRectangleTool extends ImageTool
             display.setSelection(null);
         }
         
-        this.viewer.repaint();
+        this.frame.repaint();
     }
     
     @Override
@@ -116,7 +116,7 @@ public class SelectRectangleTool extends ImageTool
         
         Box2D box = new Box2D(x1, x, y1, y);
         display.setSelection(box);
-        this.viewer.repaint();
+        this.frame.repaint();
     }
 
 }

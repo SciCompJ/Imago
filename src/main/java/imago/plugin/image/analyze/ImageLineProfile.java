@@ -70,7 +70,7 @@ public class ImageLineProfile implements ImagePlugin
         Geometry2D selection;
         
         // check viewer is planar
-        ImageViewer viewer = iframe.getImageView();
+        ImageViewer viewer = iframe.getImageViewer();
         if (viewer instanceof PlanarImageViewer)
         {
             PlanarImageViewer piv = (PlanarImageViewer) viewer;
