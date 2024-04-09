@@ -67,6 +67,11 @@ public class ImageDisplay extends JPanel
     protected Geometry2D selection = null;
     
     /**
+     * A shape that will be drawn when mouse is moved, in image pixel coordinate.
+     */
+    protected Geometry2D cursor = null;
+    
+    /**
      * The zoom level used to represent the image.
      */
 	double zoom = 1;
@@ -136,8 +141,8 @@ public class ImageDisplay extends JPanel
 	}
 	
 	
-	// ===================================================================
-	// Selection management
+    // ===================================================================
+    // Selection management
 
     public Geometry2D getSelection()
     {
@@ -147,6 +152,19 @@ public class ImageDisplay extends JPanel
     public void setSelection(Geometry2D shape)
     {
         this.selection = shape;
+    }
+    
+    // ===================================================================
+    // Cursor management
+
+    public Geometry2D getCustomCursor()
+    {
+        return this.cursor;
+    }
+    
+    public void setCustomCursor(Geometry2D shape)
+    {
+        this.cursor = shape;
     }
     
 //	public ImageFrame getViewer() 
@@ -282,7 +300,8 @@ public class ImageDisplay extends JPanel
 	    paintAnnotations(g);
 	    paintSceneGraphItems(g);
 	    
-	    drawSelection(g);
+        if (this.selection != null) drawSelection(g);
+        if (this.cursor != null) drawCustomCursor(g);
 	}
 
 	private void paintImage(Graphics g)
@@ -325,19 +344,20 @@ public class ImageDisplay extends JPanel
     
     private void drawSelection(Graphics g)
     {
-        // basic check to avoid errors
-        if (this.selection == null)
-        {
-            return;            
-        }
-     
-//        System.out.println("paint selection");
-        
         // convert to Graphics2D to have more drawing possibilities
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.YELLOW);
         ShapeDrawer drawer = createDrawer();
         drawer.drawGeometry(g2, this.selection);
+    }
+
+    private void drawCustomCursor(Graphics g)
+    {
+        // convert to Graphics2D to have more drawing possibilities
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setColor(Color.BLUE);
+        ShapeDrawer drawer = createDrawer();
+        drawer.drawGeometry(g2, this.cursor);
     }
 
     private ShapeDrawer createDrawer()

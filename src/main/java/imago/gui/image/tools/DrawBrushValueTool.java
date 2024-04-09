@@ -10,11 +10,15 @@ import imago.app.UserPreferences;
 import imago.gui.image.ImageDisplay;
 import imago.gui.image.ImageFrame;
 import imago.gui.image.ImageTool;
+import imago.gui.image.ImageViewer;
+import imago.gui.image.PlanarImageViewer;
+import imago.gui.image.StackSliceViewer;
 import net.sci.array.Array;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.ScalarArray2D;
 import net.sci.array.scalar.ScalarArray3D;
 import net.sci.geom.geom2d.Point2D;
+import net.sci.geom.geom2d.curve.Circle2D;
 import net.sci.image.Image;
 
 /**
@@ -71,6 +75,7 @@ public class DrawBrushValueTool extends ImageTool
     @Override
     public void deselect()
     {
+        this.viewer.repaint();
     }
 
 
@@ -133,6 +138,46 @@ public class DrawBrushValueTool extends ImageTool
     }
     
     @Override
+    public void mouseMoved(MouseEvent evt)
+    {
+        // retrieve image data
+        Image image = this.viewer.getImageView().getImage();
+        Array<?> array = image.getData();
+        if (!(array instanceof ScalarArray))
+        {
+            return;
+        }
+        
+        // Coordinate of mouse cursor
+        ImageDisplay display = (ImageDisplay) evt.getSource();
+        Point point = new Point(evt.getX(), evt.getY());
+        Point2D pos = display.displayToImage(point);
+
+        // convert to array coord
+        int xi = (int) Math.round(pos.x());
+        int yi = (int) Math.round(pos.y());
+        
+        // update cursor display
+        updateCursor(xi, yi);
+        this.viewer.repaint();
+    }
+    
+    @Override
+    public void mouseExited(MouseEvent evt)
+    {
+        ImageViewer viewer = this.viewer.getImageView();
+        if (this.viewer.getImageView() instanceof PlanarImageViewer)
+        {
+            ((PlanarImageViewer) viewer).getImageDisplay().setCustomCursor(null);
+        }
+        else if (this.viewer.getImageView() instanceof StackSliceViewer)
+        {
+            ((StackSliceViewer) viewer).getImageDisplay().setCustomCursor(null);
+        }
+        this.viewer.repaint();
+    }
+    
+    @Override
     public void mouseDragged(MouseEvent evt)
     {
         // retrieve image data
@@ -179,10 +224,27 @@ public class DrawBrushValueTool extends ImageTool
         yprev = yi;
         
         // refresh display
+        updateCursor(xi, yi);
         this.viewer.getImageView().refreshDisplay();
         this.viewer.repaint();
     }
     
+    private void updateCursor(int xi, int yi)
+    {
+        // create cursor shape
+        double radius = this.viewer.getGui().getAppli().userPreferences.brushRadius + 0.5;
+        Circle2D cursor = new Circle2D(new Point2D(xi+0.5, yi+0.5), radius);
+        
+        ImageViewer viewer = this.viewer.getImageView();
+        if (this.viewer.getImageView() instanceof PlanarImageViewer)
+        {
+            ((PlanarImageViewer) viewer).getImageDisplay().setCustomCursor(cursor);
+        }
+        else if (this.viewer.getImageView() instanceof StackSliceViewer)
+        {
+            ((StackSliceViewer) viewer).getImageDisplay().setCustomCursor(cursor);
+        }        
+    }
     private static void drawLineOnArray(ScalarArray2D<?> array, int x1, int y1, int x2, int y2, double radius, double value)
     {
         // array size
@@ -191,9 +253,10 @@ public class DrawBrushValueTool extends ImageTool
         
         // compute integer radius
         int ri = (int) Math.floor(radius);
-        // compute squared radius
-        double r2 = radius * radius;
-
+        
+        // compute squared radius (consider diameter = 2*radius+1)
+        double r2 = (radius + 0.5) * (radius + 0.5);
+        
         // first determines if line is mostly horizontal or mostly vertical
         double dx = x2 - x1;
         double dy = y2 - y1;
