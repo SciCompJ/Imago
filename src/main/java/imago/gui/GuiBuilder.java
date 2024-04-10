@@ -172,6 +172,7 @@ import imago.plugin.image.shape.ImageConcatenate;
 import imago.plugin.image.shape.ImageCropDialog;
 import imago.plugin.image.shape.ImageCropSelection;
 import imago.plugin.image.shape.ImageDownsample;
+import imago.plugin.image.shape.ImageAddBorders;
 import imago.plugin.image.shape.ImageFlip;
 import imago.plugin.image.shape.ImageOrthogonalProjection;
 import imago.plugin.image.shape.ImagePermuteDims;
@@ -501,34 +502,31 @@ public class GuiBuilder
 
         // Change the geometry of image, and and extract slices
         menu.addSeparator();
-		JMenu geometryMenu = new JMenu("Geometry");
-		geometryMenu.setEnabled(hasImage);
-		addPlugin(geometryMenu, new ImageFlip(0), "Horizontal Flip ");
-		addPlugin(geometryMenu, new ImageFlip(1), "Vertical Flip");
-		addPlugin(geometryMenu, new ImageFlip(2), "Z-Flip");
-		geometryMenu.addSeparator();
+        JMenu geometryMenu = new JMenu("Geometry");
+        geometryMenu.setEnabled(hasImage);
+        addPlugin(geometryMenu, new ImageFlip(0), "Horizontal Flip ");
+        addPlugin(geometryMenu, new ImageFlip(1), "Vertical Flip");
+        addPlugin(geometryMenu, new ImageFlip(2), "Z-Flip");
+        geometryMenu.addSeparator();
         addArrayOperatorPlugin(geometryMenu, new Rotate90(-1), "Rotate Counter-Clockwise", hasImage2D);
         addArrayOperatorPlugin(geometryMenu, new Rotate90(+1), "Rotate Clockwise", hasImage2D);
-		addPlugin(geometryMenu, new ImageRotateAroundCenter(), "Rotate...", hasImage2D);
+        addPlugin(geometryMenu, new ImageRotateAroundCenter(), "Rotate...", hasImage2D);
         addPlugin(geometryMenu, new Image3DRotate90(), "Rotate 3D by 90 degrees...", hasImage3D);
         addPlugin(geometryMenu, new ImageRotatedCrop(), "Rotated Crop...", hasImage2D || hasImage3D);
         geometryMenu.addSeparator();
         addPlugin(geometryMenu, new ImageReshape(), "Reshape Image...", hasImage);
         addPlugin(geometryMenu, new ImagePermuteDims(), "Permute Image Dimensions...", hasImage);
-//        geometryMenu.addSeparator();
-//        addPlugin(geometryMenu, new ImageRotatedCrop2D(), "Rotated Crop 2D", hasImage2D);
         geometryMenu.addSeparator();
         addPlugin(geometryMenu, new ImageConcatenate(), "Concatenate..."); 
+        addPlugin(geometryMenu, new ImageAddBorders(), "Add Borders...", hasScalarImage); 
         addPlugin(geometryMenu, new ImageSubsample(), "Subsample...", hasImage);
         addPlugin(geometryMenu, new ImageDownsample(), "Downsample...", hasImage);
         
-		menu.add(geometryMenu);
-
-		// Create the menu for 3D images
-		JMenu stackMenu = new JMenu("3D Images");
-		stackMenu.setEnabled(hasImage3D);
-//		addMenuItem(stackMenu, 
-//				new MiddleSliceImageAction(frame, "middleSlice"), "Middle Slice", hasImage3D);
+        menu.add(geometryMenu);
+        
+        // Create the menu for 3D images
+        JMenu stackMenu = new JMenu("3D Images");
+        stackMenu.setEnabled(hasImage3D);
         addPlugin(stackMenu, new Image3DGetCurrentSlice(), "Extract Current Slice", hasImage3D);
         addPlugin(stackMenu, new Image3DGetSlice(), "Extract Slice...", hasImage3D);
         addPlugin(stackMenu, new Image3DOrthoslicesMontage(), "OrthoSlices Montage...", hasImage3D);
