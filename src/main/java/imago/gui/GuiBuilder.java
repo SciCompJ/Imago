@@ -149,6 +149,7 @@ import imago.plugin.image.process.ImageDuplicate;
 import imago.plugin.image.process.ImageExtendedExtrema;
 import imago.plugin.image.process.ImageFillHoles;
 import imago.plugin.image.process.ImageHysteresisThreshold;
+import imago.plugin.image.process.ImageImposeExtrema;
 import imago.plugin.image.process.ImageIteratedGeodesicDilations;
 import imago.plugin.image.process.ImageKMeansSegmentation;
 import imago.plugin.image.process.ImageKillBorders;
@@ -602,7 +603,8 @@ public class GuiBuilder
 
 		morphologyMenu.addSeparator();
         addPlugin(morphologyMenu, new ImageRegionalExtrema(), "Regional Min./Max...", hasScalarImage);
-		addPlugin(morphologyMenu, new ImageExtendedExtrema(), "Extended Min./Max...", hasScalarImage);
+        addPlugin(morphologyMenu, new ImageExtendedExtrema(), "Extended Min./Max...", hasScalarImage);
+        addPlugin(morphologyMenu, new ImageImposeExtrema(), "Impose Min./Max...", hasScalarImage);
 		addPlugin(morphologyMenu, new ImageMorphologicalReconstruction(), "Morphological Reconstruction...");
         addPlugin(morphologyMenu, new BinaryImageMorphologicalReconstruction(), "Binary Morphological Reconstruction...");
         addPlugin(morphologyMenu, new ImageIteratedGeodesicDilations(), "Geodesic Dilation...");
