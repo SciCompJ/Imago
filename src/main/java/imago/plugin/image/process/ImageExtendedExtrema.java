@@ -11,8 +11,10 @@ import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.scalar.ScalarArray;
 import net.sci.array.scalar.ScalarArray2D;
+import net.sci.array.scalar.ScalarArray3D;
 import net.sci.array.scalar.UInt8Array;
 import net.sci.image.Connectivity2D;
+import net.sci.image.Connectivity3D;
 import net.sci.image.Image;
 import net.sci.image.morphology.MinimaAndMaxima;
 
@@ -86,6 +88,14 @@ public class ImageExtendedExtrema implements FramePlugin
 				result = MinimaAndMaxima.extendedMinima((ScalarArray2D<?>) array, dynamic, conn);
 			else
 				result = MinimaAndMaxima.extendedMaxima((ScalarArray2D<?>) array, dynamic, conn);
+		}
+		else if (nd == 3)
+		{
+		    Connectivity3D conn = connIndex == 0 ? Connectivity3D.C6 : Connectivity3D.C26;
+		    if (opIndex == 0)
+		        result = MinimaAndMaxima.extendedMinima((ScalarArray3D<?>) array, dynamic, conn);
+		    else
+		        result = MinimaAndMaxima.extendedMaxima((ScalarArray3D<?>) array, dynamic, conn);
 		}
 		else
 		{
