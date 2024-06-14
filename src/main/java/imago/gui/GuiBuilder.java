@@ -155,6 +155,7 @@ import imago.plugin.image.process.ImageIteratedGeodesicDilations;
 import imago.plugin.image.process.ImageKMeansSegmentation;
 import imago.plugin.image.process.ImageKillBorders;
 import imago.plugin.image.process.ImageManualThreshold;
+import imago.plugin.image.process.ImageMarkerControlledWatershed;
 import imago.plugin.image.process.ImageMorphologicalFilter;
 import imago.plugin.image.process.ImageMorphologicalReconstruction;
 import imago.plugin.image.process.ImageOtsuThreshold;
@@ -637,6 +638,7 @@ public class GuiBuilder
         addPlugin(segmentationMenu, new ImageKMeansSegmentation(), "K-Means Segmentation", hasImage);
         segmentationMenu.addSeparator();
         addPlugin(segmentationMenu, new ImageWatershed(), "Watershed", hasScalarImage);
+        addPlugin(segmentationMenu, new ImageMarkerControlledWatershed(), "Marker-Based Watershed", hasScalarImage);
         menu.add(segmentationMenu);
 
         // operators specific to binary images
