@@ -9,7 +9,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
 import net.sci.array.numeric.ScalarArray;
-import net.sci.array.process.shape.Padding;
+import net.sci.array.shape.Padding;
 import net.sci.image.Image;
 
 /**

@@ -209,7 +209,7 @@ import net.sci.array.Array;
 import net.sci.array.ArrayOperator;
 import net.sci.array.color.ColorMaps;
 import net.sci.array.color.RGB8Array;
-import net.sci.array.process.shape.Rotate90;
+import net.sci.array.shape.Rotate90;
 import net.sci.image.Image;
 import net.sci.image.ImageOperator;
 import net.sci.image.process.DynamicAdjustment;

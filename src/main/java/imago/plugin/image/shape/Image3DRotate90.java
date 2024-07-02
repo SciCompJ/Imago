@@ -7,7 +7,7 @@ import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
-import net.sci.array.process.shape.Rotate3D90;
+import net.sci.array.shape.Rotate3D90;
 import net.sci.image.Image;
 
 /**

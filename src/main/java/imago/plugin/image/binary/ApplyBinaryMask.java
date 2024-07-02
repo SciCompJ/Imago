@@ -14,7 +14,7 @@ import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
 import net.sci.array.Arrays;
 import net.sci.array.binary.BinaryArray;
-import net.sci.array.process.binary.BinaryMask;
+import net.sci.array.binary.process.BinaryMask;
 import net.sci.image.Image;
 
 /**

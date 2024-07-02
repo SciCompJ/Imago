@@ -11,9 +11,9 @@ import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
 import net.sci.array.binary.Binary;
 import net.sci.array.binary.BinaryArray;
+import net.sci.array.binary.process.BinaryToUInt8;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.UInt8Array;
-import net.sci.array.process.type.BinaryToUInt8;
 import net.sci.image.Image;
 
 

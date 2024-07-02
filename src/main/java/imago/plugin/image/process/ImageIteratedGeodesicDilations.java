@@ -101,7 +101,7 @@ public class ImageIteratedGeodesicDilations implements FramePlugin
             {
                 System.out.println("iter " + iIter);
                 array = (ScalarArray2D<?>) strel.dilation(array);
-                net.sci.array.process.Math.min(array, mask2d, array);
+                net.sci.array.numeric.process.ArrayMath.min(array, mask2d, array);
             }
             
             resultImage = new Image(array, maskImage);
@@ -120,7 +120,7 @@ public class ImageIteratedGeodesicDilations implements FramePlugin
             {
                 System.out.println("iter " + iIter);
                 array = (ScalarArray3D<?>) strel.dilation(array);
-                net.sci.array.process.Math.min(array, mask3d, array);
+                net.sci.array.numeric.process.ArrayMath.min(array, mask3d, array);
             }
             
             resultImage = new Image(array, maskImage);

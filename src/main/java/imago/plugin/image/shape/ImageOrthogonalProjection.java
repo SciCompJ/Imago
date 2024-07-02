@@ -9,11 +9,11 @@ import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
 import net.sci.array.numeric.ScalarArray;
-import net.sci.array.process.numeric.MaxProjection;
-import net.sci.array.process.numeric.MeanIntensityProjection;
-import net.sci.array.process.numeric.MedianProjection;
-import net.sci.array.process.numeric.MinProjection;
-import net.sci.array.process.shape.Squeeze;
+import net.sci.array.numeric.process.MaxProjection;
+import net.sci.array.numeric.process.MeanIntensityProjection;
+import net.sci.array.numeric.process.MedianProjection;
+import net.sci.array.numeric.process.MinProjection;
+import net.sci.array.shape.Squeeze;
 import net.sci.image.Image;
 
 /**

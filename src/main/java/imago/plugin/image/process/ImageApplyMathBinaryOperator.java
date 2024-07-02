@@ -12,7 +12,7 @@ import net.sci.array.Arrays;
 import net.sci.array.numeric.Float32Array;
 import net.sci.array.numeric.Float64Array;
 import net.sci.array.numeric.ScalarArray;
-import net.sci.array.process.math.MathBinaryOperator;
+import net.sci.array.numeric.process.MathBinaryOperator;
 import net.sci.image.Image;
 
 /**

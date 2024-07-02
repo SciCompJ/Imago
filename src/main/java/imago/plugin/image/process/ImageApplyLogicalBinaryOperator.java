@@ -11,7 +11,7 @@ import imago.gui.ImagoGui;
 import imago.gui.image.ImageFrame;
 import net.sci.array.Arrays;
 import net.sci.array.binary.BinaryArray;
-import net.sci.array.process.binary.LogicalBinaryOperator;
+import net.sci.array.binary.process.LogicalBinaryOperator;
 import net.sci.image.Image;
 
 /**

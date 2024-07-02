@@ -10,7 +10,7 @@ import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.numeric.UInt8Array;
-import net.sci.array.process.ScalarArrayOperator;
+import net.sci.array.numeric.process.ScalarArrayOperator;
 import net.sci.image.Image;
 import net.sci.image.process.filter.MedianFilterBox;
 import net.sci.image.process.filter.MedianFilterBoxSliding;

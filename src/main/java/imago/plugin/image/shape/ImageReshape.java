@@ -9,7 +9,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
-import net.sci.array.process.shape.Reshape;
+import net.sci.array.shape.Reshape;
 import net.sci.image.Image;
 import net.sci.util.MathUtils;
 

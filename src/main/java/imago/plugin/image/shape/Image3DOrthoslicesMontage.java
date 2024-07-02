@@ -12,7 +12,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
 import net.sci.array.Array2D;
-import net.sci.array.process.shape.SimpleSlicer;
+import net.sci.array.shape.SimpleSlicer;
 import net.sci.image.Image;
 import net.sci.image.process.shape.Montage;
 

@@ -31,14 +31,13 @@ import net.sci.algo.AlgoListener;
 import net.sci.algo.AlgoStub;
 import net.sci.array.Array;
 import net.sci.array.Array2D;
-import net.sci.array.generic.GenericArray2D;
-import net.sci.array.interp.LinearInterpolator3D;
-import net.sci.array.interp.ScalarFunction3D;
 import net.sci.array.numeric.Float32Array2D;
 import net.sci.array.numeric.UInt8Array2D;
 import net.sci.array.numeric.UInt8Array3D;
 import net.sci.array.numeric.impl.SliceBufferedUInt8Array3D;
-import net.sci.array.process.math.FiniteDifferences;
+import net.sci.array.numeric.interp.LinearInterpolator3D;
+import net.sci.array.numeric.interp.ScalarFunction3D;
+import net.sci.array.numeric.process.FiniteDifferences;
 import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.Vector2D;
@@ -829,7 +828,7 @@ public class Surface3D extends AlgoStub implements AlgoListener
         derivV.processScalar(zCoords, dzv); 
         
         // evaluate normal vector for each vertex of the mesh
-        Array2D<Vector3D> normals = GenericArray2D.create(width, height, new Vector3D());
+        Array2D<Vector3D> normals = Array2D.create(width, height, new Vector3D());
         for (int iv = 0; iv < height; iv++)
         {
             for (int iu = 0; iu < width; iu++)

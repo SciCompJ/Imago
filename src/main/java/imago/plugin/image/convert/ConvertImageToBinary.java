@@ -9,8 +9,8 @@ import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
+import net.sci.array.binary.process.ConvertToBinary;
 import net.sci.array.numeric.ScalarArray;
-import net.sci.array.process.type.ConvertToBinary;
 import net.sci.image.Image;
 
 
@@ -18,7 +18,7 @@ import net.sci.image.Image;
  * Convert a scalar image (grayscale, intensity) into a binary image, by setting
  * all values greater than zero to true.
  *
- * @see net.sci.array.process.type.ConvertToBinary
+ * @see net.sci.array.binary.process.ConvertToBinary
  * 
  * @author David Legland
  *

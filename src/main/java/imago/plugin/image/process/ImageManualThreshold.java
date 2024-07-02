@@ -7,10 +7,10 @@ import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
+import net.sci.array.binary.process.ScalarToBinary;
 import net.sci.array.numeric.IntArray;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray3D;
-import net.sci.array.process.type.ScalarToBinary;
 import net.sci.image.Image;
 import net.sci.image.process.segment.OtsuThreshold;
 

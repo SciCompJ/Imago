@@ -10,7 +10,7 @@ import imago.gui.ImagoGui;
 import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
-import net.sci.array.process.shape.PermuteDimensions;
+import net.sci.array.shape.PermuteDimensions;
 import net.sci.image.Calibration;
 import net.sci.image.Image;
 

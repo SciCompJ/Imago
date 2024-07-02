@@ -7,7 +7,7 @@ import imago.app.ImageHandle;
 import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
-import net.sci.array.process.shape.SimpleSlicer;
+import net.sci.array.shape.SimpleSlicer;
 import net.sci.image.Image;
 
 
