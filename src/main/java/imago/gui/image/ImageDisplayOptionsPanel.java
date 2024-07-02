@@ -21,7 +21,7 @@ import javax.swing.event.ChangeListener;
 import net.sci.array.Array;
 import net.sci.array.color.RGB16;
 import net.sci.array.color.RGB8;
-import net.sci.array.vector.VectorArray;
+import net.sci.array.numeric.VectorArray;
 import net.sci.image.Calibration;
 import net.sci.image.Image;
 

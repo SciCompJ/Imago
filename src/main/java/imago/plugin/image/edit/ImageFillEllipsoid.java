@@ -9,7 +9,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
-import net.sci.array.scalar.ScalarArray3D;
+import net.sci.array.numeric.ScalarArray3D;
 import net.sci.geom.geom3d.Point3D;
 import net.sci.geom.geom3d.Rotation3D;
 import net.sci.geom.geom3d.surface.Ellipsoid3D;

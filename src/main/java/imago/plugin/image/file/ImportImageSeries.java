@@ -7,8 +7,8 @@ import java.io.File;
 import java.io.FileFilter;
 
 import net.sci.array.Array;
-import net.sci.array.scalar.UInt16Array;
-import net.sci.array.scalar.UInt8Array;
+import net.sci.array.numeric.UInt16Array;
+import net.sci.array.numeric.UInt8Array;
 import net.sci.image.Image;
 import net.sci.image.io.*;
 import imago.Imago;

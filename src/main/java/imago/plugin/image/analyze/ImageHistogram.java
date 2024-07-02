@@ -31,9 +31,9 @@ import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
 import net.sci.array.color.RGB16Array;
 import net.sci.array.color.RGB8Array;
+import net.sci.array.numeric.ScalarArray;
+import net.sci.array.numeric.UInt8Array;
 import net.sci.array.process.Histograms;
-import net.sci.array.scalar.ScalarArray;
-import net.sci.array.scalar.UInt8Array;
 import net.sci.image.Image;
 
 /**

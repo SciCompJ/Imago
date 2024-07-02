@@ -5,8 +5,8 @@ package imago.gui.imagepair.composite;
 
 import net.sci.array.Array;
 import net.sci.array.color.RGB8Array;
-import net.sci.array.scalar.ScalarArray;
-import net.sci.array.scalar.UInt8Array2D;
+import net.sci.array.numeric.ScalarArray;
+import net.sci.array.numeric.UInt8Array2D;
 
 /**
  * Display a pair of registered images as a color image, the first one in red

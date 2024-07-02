@@ -15,7 +15,7 @@ import imago.gui.FramePlugin;
 import java.util.Collection;
 
 import net.sci.array.Array;
-import net.sci.array.scalar.IntArray2D;
+import net.sci.array.numeric.IntArray2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.curve.Circle2D;
 import net.sci.geom.geom2d.curve.Ellipse2D;

@@ -9,8 +9,8 @@ import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
+import net.sci.array.numeric.ScalarArray;
 import net.sci.array.process.type.ConvertToBinary;
-import net.sci.array.scalar.ScalarArray;
 import net.sci.image.Image;
 
 

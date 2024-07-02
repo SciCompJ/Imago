@@ -12,7 +12,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.color.RGB8Array;
-import net.sci.array.scalar.UInt8Array;
+import net.sci.array.numeric.UInt8Array;
 import net.sci.image.Image;
 
 /**

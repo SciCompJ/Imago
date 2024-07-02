@@ -6,8 +6,8 @@ package imago.gui.image;
 
 import imago.app.ImageHandle;
 import imago.app.ImageHandle.Event;
-import net.sci.array.scalar.ScalarArray;
-import net.sci.array.vector.VectorArray;
+import net.sci.array.numeric.ScalarArray;
+import net.sci.array.numeric.VectorArray;
 import net.sci.geom.Geometry;
 import net.sci.image.Image;
 

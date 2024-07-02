@@ -8,9 +8,9 @@ import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.color.RGB8Array;
-import net.sci.array.scalar.ScalarArray;
-import net.sci.array.scalar.UInt8Array;
-import net.sci.array.vector.VectorArray;
+import net.sci.array.numeric.ScalarArray;
+import net.sci.array.numeric.UInt8Array;
+import net.sci.array.numeric.VectorArray;
 import net.sci.image.Image;
 
 /**

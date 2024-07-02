@@ -9,7 +9,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
-import net.sci.array.scalar.ScalarArray2D;
+import net.sci.array.numeric.ScalarArray2D;
 import net.sci.geom.geom2d.Domain2D;
 import net.sci.geom.geom2d.curve.Ellipse2D;
 import net.sci.geom.geom2d.curve.GenericDomain2D;

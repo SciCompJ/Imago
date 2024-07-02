@@ -6,7 +6,7 @@ package imago.plugin.plugin.crop;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import net.sci.array.scalar.Float64Array2D;
+import net.sci.array.numeric.Float64Array2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.polygon.LinearRing2D;
 import net.sci.geom.geom2d.polygon.Polyline2D.Vertex;

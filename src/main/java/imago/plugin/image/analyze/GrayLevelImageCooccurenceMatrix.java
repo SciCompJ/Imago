@@ -8,8 +8,8 @@ import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
-import net.sci.array.scalar.IntArray2D;
-import net.sci.array.scalar.ScalarArray2D;
+import net.sci.array.numeric.IntArray2D;
+import net.sci.array.numeric.ScalarArray2D;
 import net.sci.image.Image;
 import net.sci.image.analyze.GrayLevelCooccurenceMatrix;
 

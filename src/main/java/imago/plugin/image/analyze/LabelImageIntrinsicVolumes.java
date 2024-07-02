@@ -11,7 +11,7 @@ import imago.gui.ImagoGui;
 import imago.gui.image.ImageFrame;
 import imago.gui.table.TableFrame;
 import net.sci.array.Array;
-import net.sci.array.scalar.IntArray2D;
+import net.sci.array.numeric.IntArray2D;
 import net.sci.image.Image;
 import net.sci.image.analyze.region2d.IntrinsicVolumesAnalyzer2D;
 import net.sci.table.Table;

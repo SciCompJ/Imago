@@ -3,11 +3,11 @@
  */
 package imago.plugin.image.binary;
 
-import net.sci.array.scalar.Float32Array;
-import net.sci.array.scalar.Int32Array;
-import net.sci.array.scalar.ScalarArray;
-import net.sci.array.scalar.UInt16Array;
-import net.sci.array.scalar.UInt8Array;
+import net.sci.array.numeric.Float32Array;
+import net.sci.array.numeric.Int32Array;
+import net.sci.array.numeric.ScalarArray;
+import net.sci.array.numeric.UInt16Array;
+import net.sci.array.numeric.UInt8Array;
 
 /**
  * An enumeration of data types that can be used to represent distance maps.

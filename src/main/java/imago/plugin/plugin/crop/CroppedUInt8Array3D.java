@@ -7,8 +7,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
-import net.sci.array.scalar.UInt8Array2D;
-import net.sci.array.scalar.UInt8Array3D;
+import net.sci.array.numeric.UInt8Array2D;
+import net.sci.array.numeric.UInt8Array3D;
 import net.sci.geom.geom2d.Bounds2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.StraightLine2D;

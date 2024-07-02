@@ -9,7 +9,7 @@ import imago.gui.ImagoGui;
 import imago.gui.image.ImageFrame;
 import imago.gui.table.TableFrame;
 import imago.plugin.table.TablePlugin;
-import net.sci.array.scalar.Float32Array;
+import net.sci.array.numeric.Float32Array;
 import net.sci.image.Image;
 import net.sci.table.Table;
 

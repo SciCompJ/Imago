@@ -5,7 +5,7 @@ package imago.gui.image;
 
 import org.junit.Test;
 
-import net.sci.array.scalar.UInt8Array2D;
+import net.sci.array.numeric.UInt8Array2D;
 import net.sci.image.Image;
 import net.sci.image.ImageType;
 

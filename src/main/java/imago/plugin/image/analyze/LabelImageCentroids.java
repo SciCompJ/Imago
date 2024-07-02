@@ -13,8 +13,8 @@ import imago.gui.FramePlugin;
 import java.util.Map;
 
 import net.sci.array.Array;
-import net.sci.array.scalar.IntArray;
-import net.sci.array.scalar.IntArray3D;
+import net.sci.array.numeric.IntArray;
+import net.sci.array.numeric.IntArray3D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom3d.Point3D;
 import net.sci.image.Image;

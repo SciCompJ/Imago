@@ -5,13 +5,13 @@ package imago.plugin.image.process;
 
 import java.util.EnumSet;
 
-import net.sci.array.scalar.Float32Array;
-import net.sci.array.scalar.Float64Array;
-import net.sci.array.scalar.Int16Array;
-import net.sci.array.scalar.Int32Array;
-import net.sci.array.scalar.ScalarArray;
-import net.sci.array.scalar.UInt16Array;
-import net.sci.array.scalar.UInt8Array;
+import net.sci.array.numeric.Float32Array;
+import net.sci.array.numeric.Float64Array;
+import net.sci.array.numeric.Int16Array;
+import net.sci.array.numeric.Int32Array;
+import net.sci.array.numeric.ScalarArray;
+import net.sci.array.numeric.UInt16Array;
+import net.sci.array.numeric.UInt8Array;
 
 /**
  * An enumeration of scalar output types that can be used to populate a GenericDialog.

@@ -13,12 +13,12 @@ import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
 import imago.plugin.options.ValuePairFunction;
 import net.sci.array.Array;
-import net.sci.array.scalar.Float32Array;
-import net.sci.array.scalar.Float64Array;
-import net.sci.array.scalar.ScalarArray;
-import net.sci.array.vector.Float32VectorArray;
-import net.sci.array.vector.Float64VectorArray;
-import net.sci.array.vector.VectorArray;
+import net.sci.array.numeric.Float32Array;
+import net.sci.array.numeric.Float32VectorArray;
+import net.sci.array.numeric.Float64Array;
+import net.sci.array.numeric.Float64VectorArray;
+import net.sci.array.numeric.ScalarArray;
+import net.sci.array.numeric.VectorArray;
 import net.sci.image.Image;
 
 /**

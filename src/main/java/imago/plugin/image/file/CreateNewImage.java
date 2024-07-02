@@ -11,11 +11,11 @@ import net.sci.array.Array;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.color.RGB8;
 import net.sci.array.color.RGB8Array;
-import net.sci.array.scalar.Float32Array;
-import net.sci.array.scalar.Float64Array;
-import net.sci.array.scalar.Int32Array;
-import net.sci.array.scalar.UInt16Array;
-import net.sci.array.scalar.UInt8Array;
+import net.sci.array.numeric.Float32Array;
+import net.sci.array.numeric.Float64Array;
+import net.sci.array.numeric.Int32Array;
+import net.sci.array.numeric.UInt16Array;
+import net.sci.array.numeric.UInt8Array;
 import net.sci.image.Image;
 
 /**

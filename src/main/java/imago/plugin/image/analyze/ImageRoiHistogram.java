@@ -27,7 +27,7 @@ import imago.gui.image.PlanarImageViewer;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.color.RGB8Array2D;
-import net.sci.array.scalar.ScalarArray2D;
+import net.sci.array.numeric.ScalarArray2D;
 import net.sci.geom.geom2d.Domain2D;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.image.Image;

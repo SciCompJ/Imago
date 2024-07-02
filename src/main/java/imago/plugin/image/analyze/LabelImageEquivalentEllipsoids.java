@@ -12,7 +12,7 @@ import imago.gui.ImagoGui;
 import imago.gui.image.ImageFrame;
 import imago.gui.table.TableFrame;
 import net.sci.array.Array;
-import net.sci.array.scalar.IntArray3D;
+import net.sci.array.numeric.IntArray3D;
 import net.sci.geom.geom3d.surface.Ellipsoid3D;
 import net.sci.image.Calibration;
 import net.sci.image.Image;

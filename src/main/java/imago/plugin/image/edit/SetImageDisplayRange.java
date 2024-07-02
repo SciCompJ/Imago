@@ -15,9 +15,9 @@ import net.sci.array.Array;
 import net.sci.array.Array3D;
 import net.sci.array.color.RGB16Array;
 import net.sci.array.color.RGB8Array;
-import net.sci.array.scalar.ScalarArray;
-import net.sci.array.vector.Vector;
-import net.sci.array.vector.VectorArray;
+import net.sci.array.numeric.ScalarArray;
+import net.sci.array.numeric.Vector;
+import net.sci.array.numeric.VectorArray;
 import net.sci.image.Image;
 
 /**

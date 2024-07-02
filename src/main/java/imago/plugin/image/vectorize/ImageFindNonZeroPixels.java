@@ -16,7 +16,7 @@ import imago.gui.shape.ShapeManager;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import net.sci.array.Array;
-import net.sci.array.scalar.ScalarArray2D;
+import net.sci.array.numeric.ScalarArray2D;
 import net.sci.geom.geom2d.MultiPoint2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.image.Image;

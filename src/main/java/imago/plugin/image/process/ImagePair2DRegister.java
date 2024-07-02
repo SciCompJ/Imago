@@ -33,7 +33,7 @@ import imago.gui.ImagoGui;
 import imago.gui.imagepair.ImagePairFrame;
 import imago.gui.imagepair.ImagePairViewer;
 import imago.gui.util.GuiHelper;
-import net.sci.array.scalar.ScalarArray2D;
+import net.sci.array.numeric.ScalarArray2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.Transform2D;
 import net.sci.image.Image;

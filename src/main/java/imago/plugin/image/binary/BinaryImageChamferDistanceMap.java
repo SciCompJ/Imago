@@ -10,7 +10,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
 import net.sci.array.binary.BinaryArray;
-import net.sci.array.scalar.IntArray;
+import net.sci.array.numeric.IntArray;
 import net.sci.image.Image;
 import net.sci.image.ImageType;
 import net.sci.image.binary.distmap.ChamferDistanceTransform2DFloat32;

@@ -4,8 +4,8 @@
 package imago.gui.imagepair.composite;
 
 import net.sci.array.Array;
-import net.sci.array.scalar.ScalarArray;
-import net.sci.array.scalar.UInt8Array;
+import net.sci.array.numeric.ScalarArray;
+import net.sci.array.numeric.UInt8Array;
 
 /**
  * Display the combination of two input images by computing the sum of

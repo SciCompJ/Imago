@@ -4,7 +4,7 @@
 package imago.gui.imagepair.composite;
 
 import net.sci.array.Array;
-import net.sci.array.scalar.UInt8Array2D;
+import net.sci.array.numeric.UInt8Array2D;
 
 /**
  * Display the combination of two input images using a checker board display.

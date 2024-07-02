@@ -22,7 +22,7 @@ import imago.app.scene.Node;
 import imago.app.scene.ShapeNode;
 import imago.app.scene.io.JsonSceneReader;
 import imago.gui.image.ImageFrame;
-import net.sci.array.scalar.UInt8Array2D;
+import net.sci.array.numeric.UInt8Array2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.polygon.LinearRing2D;
 import net.sci.image.Image;

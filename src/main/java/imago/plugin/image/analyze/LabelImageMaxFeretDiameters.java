@@ -12,7 +12,7 @@ import imago.gui.*;
 import imago.gui.image.ImageFrame;
 import imago.gui.table.TableFrame;
 import net.sci.array.Array;
-import net.sci.array.scalar.IntArray2D;
+import net.sci.array.numeric.IntArray2D;
 import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.image.Image;
 import net.sci.image.analyze.region2d.MaxFeretDiameter;
