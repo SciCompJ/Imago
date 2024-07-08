@@ -13,9 +13,12 @@ import net.sci.image.Image;
 /**
  * Choose the colormap of the current scalar image.
  * 
+ * @deprecated replaced by ImageSetColorMapFactory
+ * 
  * @author David Legland
  *
  */
+@Deprecated
 public class ImageSetColorMap implements FramePlugin
 {
     ColorMap colorMap;

@@ -19,13 +19,16 @@ import net.sci.table.Table;
  */
 public class ImageColorMapDisplay implements FramePlugin
 {
-	public ImageColorMapDisplay() 
-	{
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
+    public ImageColorMapDisplay()
+    {
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
 	@Override
     public void run(ImagoFrame frame, String args)
     {
@@ -37,6 +40,11 @@ public class ImageColorMapDisplay implements FramePlugin
         
         // retrieve image color map
         ColorMap colorMap = image.getDisplaySettings().getColorMap();
+        if (colorMap == null)
+        {
+            frame.showErrorDialog("The current image is not associated to a colormap", "Image Error");
+            return;
+        }
         
         // convert colormap to table
         int nColors = colorMap.size();
@@ -55,5 +63,19 @@ public class ImageColorMapDisplay implements FramePlugin
         // add the new frame to the GUI
         TableFrame.create(table, frame);
 	}
-
+	
+	/**
+     * Returns true if this frame is an instance of ImageFrame, and the image it
+     * contains has a color map.
+     * 
+     * @return true if this frame is an instance of ImageFrame, and the image it
+     *         contains has a color map.
+     */
+	@Override
+    public boolean isEnabled(ImagoFrame frame)
+    {
+	    if (!(frame instanceof ImageFrame)) return false;
+	    Image image = ((ImageFrame) frame).getImageHandle().getImage();
+        return image.getDisplaySettings().getColorMap() != null;
+    }
 }

@@ -441,7 +441,7 @@ public class GuiBuilder
         addArrayOperatorPlugin(menu, new DynamicAdjustment(.01), "Adjust Grayscale Dynamic", hasScalarImage);
 
         // add Colormap utils
-        JMenu colormapMenu = new JMenu("Color Maps");
+        JMenu colormapMenu = new JMenu("Set Color Map");
         addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.GRAY), "Gray");
         addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.JET), "Jet");
         addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.BLUE_GRAY_RED), "Blue-Gray-Red");
@@ -450,6 +450,7 @@ public class GuiBuilder
         addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.BLUE), "Blue");
         addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.FIRE), "Fire");
         addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.GLASBEY), "Glasbey");
+        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.BLUE_WHITE_RED), "Blue-White-Red");
         colormapMenu.addSeparator();
         addPlugin(colormapMenu, new ImageColorMapDisplay(), "Show Color Map in Table", hasImage && !hasRGB8Image);
         menu.add(colormapMenu);
