@@ -8,7 +8,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.image.Image;
-import net.sci.image.process.segment.OtsuThreshold;
+import net.sci.image.segmentation.OtsuThreshold;
 
 /**
  * Applies threshold to an image by computing threshold value with Otsu

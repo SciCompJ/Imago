@@ -11,7 +11,7 @@ import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.image.Image;
-import net.sci.image.process.RotationAroundCenter;
+import net.sci.image.shape.RotationAroundCenter;
 
 /**
  * Rotate image around its center by an angle given in degrees.

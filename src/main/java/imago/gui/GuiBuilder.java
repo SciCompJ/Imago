@@ -212,12 +212,12 @@ import net.sci.array.color.RGB8Array;
 import net.sci.array.shape.Rotate90;
 import net.sci.image.Image;
 import net.sci.image.ImageOperator;
-import net.sci.image.process.DynamicAdjustment;
-import net.sci.image.process.ImageInverter;
-import net.sci.image.process.SobelGradient;
-import net.sci.image.process.SobelGradientNorm;
-import net.sci.image.process.VectorArrayNorm;
-import net.sci.image.process.filter.GaussianFilter5x5;
+import net.sci.image.contrast.DynamicAdjustment;
+import net.sci.image.contrast.ImageInverter;
+import net.sci.image.contrast.VectorArrayNorm;
+import net.sci.image.filtering.GaussianFilter5x5;
+import net.sci.image.filtering.SobelGradient;
+import net.sci.image.filtering.SobelGradientNorm;
 
 
 /**

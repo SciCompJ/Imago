@@ -20,7 +20,7 @@ import net.sci.array.numeric.ScalarArray2D;
 import net.sci.geom.geom2d.MultiPoint2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.image.Image;
-import net.sci.image.process.Find;
+import net.sci.image.vectorize.Find;
 
 /**
  * Find non-zero pixels within a planar image and add them as ImagoShape to the

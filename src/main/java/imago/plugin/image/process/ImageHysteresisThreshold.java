@@ -11,7 +11,7 @@ import imago.gui.FramePlugin;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.image.Image;
-import net.sci.image.process.segment.HysteresisThreshold;
+import net.sci.image.segmentation.HysteresisThreshold;
 
 /**
  * Opens a dialog to choose upper and lower threshold values, and creates a new

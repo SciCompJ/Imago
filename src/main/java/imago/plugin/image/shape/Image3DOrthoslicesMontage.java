@@ -14,7 +14,7 @@ import net.sci.array.Array;
 import net.sci.array.Array2D;
 import net.sci.array.shape.SimpleSlicer;
 import net.sci.image.Image;
-import net.sci.image.process.shape.Montage;
+import net.sci.image.shape.Montage;
 
 /**
  * Converts a 3D image into a mosaic image containing three orthogonal slices.

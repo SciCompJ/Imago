@@ -11,7 +11,7 @@ import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
 import net.sci.image.Image;
 import net.sci.image.ImageType;
-import net.sci.image.process.segment.KMeansSegmentation;
+import net.sci.image.segmentation.KMeansSegmentation;
 
 
 /**

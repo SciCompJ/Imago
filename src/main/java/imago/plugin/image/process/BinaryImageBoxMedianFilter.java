@@ -10,7 +10,7 @@ import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.image.Image;
-import net.sci.image.process.filter.MedianFilterBoxBinary;
+import net.sci.image.filtering.MedianFilterBoxBinary;
 
 /**
  * Applies median box filtering on a multidimensional binary image.

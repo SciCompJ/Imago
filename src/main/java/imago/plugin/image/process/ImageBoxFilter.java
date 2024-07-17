@@ -11,7 +11,7 @@ import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.image.Image;
-import net.sci.image.process.filter.BoxFilter;
+import net.sci.image.filtering.BoxFilter;
 
 /**
  * Applies box filtering on a multidimensional image.

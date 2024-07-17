@@ -28,7 +28,7 @@ import imago.app.shape.Shape;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.image.Image;
-import net.sci.image.process.shape.ImageSlicer;
+import net.sci.image.shape.ImageSlicer;
 
 
 /**

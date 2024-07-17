@@ -10,7 +10,7 @@ import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
 import net.sci.array.binary.BinaryArray;
 import net.sci.image.Image;
-import net.sci.image.morphology.reconstruct.BinaryKillBorders;
+import net.sci.image.morphology.reconstruction.BinaryKillBorders;
 
 
 /**

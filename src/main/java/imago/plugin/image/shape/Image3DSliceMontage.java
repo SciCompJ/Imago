@@ -12,7 +12,7 @@ import imago.gui.image.ImageFrame;
 import net.sci.array.Array2D;
 import net.sci.array.Array3D;
 import net.sci.image.Image;
-import net.sci.image.process.shape.Montage;
+import net.sci.image.shape.Montage;
 
 /**
  * Generates a 2D image from a 3D image by arranging a selection of slices into

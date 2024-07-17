@@ -19,7 +19,7 @@ import net.sci.geom.geom2d.polygon.Polyline2D;
 import net.sci.image.Calibration;
 import net.sci.image.Image;
 import net.sci.image.ImageAxis;
-import net.sci.image.process.shape.Kymograph3D;
+import net.sci.image.shape.Kymograph3D;
 
 /**
  * Simple demo for line profile that computes profile along image diagonal.

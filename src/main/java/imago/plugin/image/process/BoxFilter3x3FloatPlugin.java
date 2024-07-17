@@ -11,7 +11,7 @@ import net.sci.array.Array;
 import net.sci.array.numeric.Float32Array;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.image.Image;
-import net.sci.image.process.filter.BoxFilter3x3;
+import net.sci.image.filtering.BoxFilter3x3;
 
 /**
  * @author David Legland

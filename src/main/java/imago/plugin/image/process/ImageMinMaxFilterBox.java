@@ -10,7 +10,7 @@ import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.image.Image;
-import net.sci.image.process.filter.MinMaxFilterBoxNaive;
+import net.sci.image.filtering.MinMaxFilterBoxNaive;
 
 /**
  * Applies box filtering on a multidimensional image.

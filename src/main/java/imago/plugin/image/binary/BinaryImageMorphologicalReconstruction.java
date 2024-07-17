@@ -18,8 +18,8 @@ import net.sci.array.binary.BinaryArray;
 import net.sci.array.binary.BinaryArray2D;
 import net.sci.array.binary.BinaryArray3D;
 import net.sci.image.Image;
-import net.sci.image.morphology.reconstruct.RunLengthBinaryReconstruction2D;
-import net.sci.image.morphology.reconstruct.RunLengthBinaryReconstruction3D;
+import net.sci.image.morphology.reconstruction.RunLengthBinaryReconstruction2D;
+import net.sci.image.morphology.reconstruction.RunLengthBinaryReconstruction3D;
 
 /**
  * Applies binary morphological reconstruction of a marker image constrained by a mask image.

@@ -9,7 +9,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.image.Image;
-import net.sci.image.process.shape.ImageSlicer;
+import net.sci.image.shape.ImageSlicer;
 
 /**
  * Extract a planar slice from a 3D image.

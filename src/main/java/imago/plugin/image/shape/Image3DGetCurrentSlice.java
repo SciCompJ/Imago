@@ -10,7 +10,7 @@ import imago.gui.image.ImageViewer;
 import imago.gui.image.StackSliceViewer;
 import imago.gui.FramePlugin;
 import net.sci.image.Image;
-import net.sci.image.process.shape.ImageSlicer;
+import net.sci.image.shape.ImageSlicer;
 
 /**
  * Extract a planar slice from a 3D image.

@@ -12,8 +12,8 @@ import net.sci.array.Array;
 import net.sci.array.numeric.UInt8Array;
 import net.sci.array.numeric.process.ScalarArrayOperator;
 import net.sci.image.Image;
-import net.sci.image.process.filter.MedianFilterBox;
-import net.sci.image.process.filter.MedianFilterBoxSliding;
+import net.sci.image.filtering.MedianFilterBox;
+import net.sci.image.filtering.MedianFilterBoxSliding;
 
 /**
  * Applies median filtering within box on a multidimensional image.

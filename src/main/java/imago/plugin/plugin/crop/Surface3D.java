@@ -47,8 +47,8 @@ import net.sci.geom.geom3d.Point3D;
 import net.sci.geom.geom3d.Vector3D;
 import net.sci.geom.geom3d.polyline.LineString3D;
 import net.sci.image.Image;
+import net.sci.image.filtering.GaussianFilter5x5;
 import net.sci.image.io.MetaImageWriter;
-import net.sci.image.process.filter.GaussianFilter5x5;
 
 /**
  * Creation of 3D surface from a series of (open) polylines manually defined on

@@ -12,7 +12,7 @@ import net.sci.array.numeric.IntArray;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray3D;
 import net.sci.image.Image;
-import net.sci.image.process.segment.OtsuThreshold;
+import net.sci.image.segmentation.OtsuThreshold;
 
 
 /**

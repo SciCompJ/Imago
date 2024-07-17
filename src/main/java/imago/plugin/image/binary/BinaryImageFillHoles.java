@@ -14,8 +14,8 @@ import net.sci.array.binary.BinaryArray;
 import net.sci.array.binary.BinaryArray2D;
 import net.sci.array.binary.BinaryArray3D;
 import net.sci.image.Image;
-import net.sci.image.morphology.reconstruct.BinaryFillHoles2D;
-import net.sci.image.morphology.reconstruct.BinaryFillHoles3D;
+import net.sci.image.morphology.reconstruction.BinaryFillHoles2D;
+import net.sci.image.morphology.reconstruction.BinaryFillHoles3D;
 
 
 /**
