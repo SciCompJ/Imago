@@ -78,11 +78,11 @@ public class Image3DSliceMontage implements FramePlugin
             slices.add(array.slice(z));
         }
         
-//        Array2D<?> res = Montage.create(nCols, nRows, slices);
-//
-//        Image resultImage = new Image(res, image);
-//        resultImage.setName(image.getName() + "-sliceMontage");
-//        
-//        ImageFrame.create(resultImage, frame);
+        Array2D<?> res = Montage.create(nCols, nRows, slices);
+
+        Image resultImage = new Image(res, image);
+        resultImage.setName(image.getName() + "-sliceMontage");
+        
+        ImageFrame.create(resultImage, frame);
     }
 }
