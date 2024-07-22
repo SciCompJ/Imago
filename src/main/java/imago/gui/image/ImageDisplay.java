@@ -3,7 +3,6 @@
  */
 package imago.gui.image;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -39,27 +38,33 @@ import net.sci.geom.geom2d.Point2D;
  */
 public class ImageDisplay extends JPanel
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * Required for serialization. 
+     */
+    private static final long serialVersionUID = 1L;
+    
+    
+    // ===================================================================
+    // Class variables
 
-	
-	// ===================================================================
-	// Class variables
+    /**
+     * The representation of the image data to display, as a BufferedImage
+     * instance.
+     */
+    BufferedImage image;
 
-	/**
-	 * The representation of the image data to display, as a BufferedImage instance.
-	 */
-	BufferedImage image;
-	
-	Collection<Shape> shapes = new ArrayList<Shape>();
+    /**
+     * The collection of shapes to display as overlay on current image. These
+     * may corresponds to 2D shapes of the original image, or to the result of
+     * slicing of 3D shapes with the current slice.
+     */
+    Collection<Shape> shapes = new ArrayList<Shape>();
 
-	/**
-	 * A list of 2D shapes corresponding either to scene items, or to slice
-	 * views of the scene items.
-	 */
-	Collection<Shape> sceneGraphItems = new ArrayList<Shape>();
+    /**
+     * A list of 2D shapes corresponding either to scene items, or to slice
+     * views of the scene items.
+     */
+    Collection<Shape> sceneGraphItems = new ArrayList<Shape>();
 
     /**
      * The shape of the current selection, usually a polyline or a rectangle
@@ -74,37 +79,44 @@ public class ImageDisplay extends JPanel
     /**
      * The zoom level used to represent the image.
      */
-	double zoom = 1;
-	
-	/**
+    double zoom = 1;
+
+    /**
      * The X- and Y- offset of the image with respect to the upper left corner
      * of the panel. Values depends on panel and image size, and of current zoom
      * level.
      */
-	int offsetX;
-	int offsetY;
-	
-	
-	// ===================================================================
-	// Constructor
-	
-	public ImageDisplay(BufferedImage image) 
-	{
-		this.image = image;
-		this.setBackground(Color.LIGHT_GRAY);
-	}
+    int offsetX;
+    int offsetY;
+    
+    
+    // ===================================================================
+    // Constructor
 
-	// ===================================================================
-	// General methods
+    /**
+     * Simple constructor from a BufferedImage.
+     * 
+     * @param image
+     *            the image to display within the display
+     */
+    public ImageDisplay(BufferedImage image)
+    {
+        this.image = image;
+        this.setBackground(Color.LIGHT_GRAY);
+    }
+    
+    
+    // ===================================================================
+    // General methods
 
-	public BufferedImage getImage() 
-	{
-		return this.image;
-	}
-	
-
-	// ===================================================================
-	// Shape management
+    public BufferedImage getImage()
+    {
+        return this.image;
+    }
+    
+    
+    // ===================================================================
+    // Shape management
 
     public Collection<Shape> getShapes()
     {
@@ -115,32 +127,32 @@ public class ImageDisplay extends JPanel
     {
         this.shapes = newShapes;
     }
+
+    public void addShape(Shape shape)
+    {
+        this.shapes.add(shape);
+    }
     
-	public void addShape(Shape shape)
-	{
-	    this.shapes.add(shape);
-	}
-	
-	
-	// ===================================================================
-	// Scene graph items management
+    
+    // ===================================================================
+    // Scene graph items management
 
-	public void addSceneGraphItem(Shape shape)
-	{
-		this.sceneGraphItems.add(shape);
-	}
+    public void addSceneGraphItem(Shape shape)
+    {
+        this.sceneGraphItems.add(shape);
+    }
 
-	public void addSceneGraphItem(Geometry geom)
-	{
-		this.sceneGraphItems.add(new Shape(geom));
-	}
+    public void addSceneGraphItem(Geometry geom)
+    {
+        this.sceneGraphItems.add(new Shape(geom));
+    }
 
-	public void clearSceneGraphItems()
-	{
-		this.sceneGraphItems.clear();
-	}
-	
-	
+    public void clearSceneGraphItems()
+    {
+        this.sceneGraphItems.clear();
+    }
+    
+    
     // ===================================================================
     // Selection management
 
@@ -153,6 +165,7 @@ public class ImageDisplay extends JPanel
     {
         this.selection = shape;
     }
+    
     
     // ===================================================================
     // Cursor management
@@ -167,63 +180,53 @@ public class ImageDisplay extends JPanel
         this.cursor = shape;
     }
     
-//	public ImageFrame getViewer() 
-//	{
-//		Container container = this.getParent();
-//		while (!(container instanceof ImageFrame))
-//		{
-//			container = container.getParent();
-//		}
-//		return (ImageFrame) container;
-//	}
-	
-	
-	// ===================================================================
-	// Zoom management
 
-	public double getZoom()
-	{
-		return this.zoom;
-	}
-	
-	public void setZoom(double zoom) 
-	{
-		this.zoom = zoom;
-	}
+    // ===================================================================
+    // Zoom management
 
-	public BufferedImage getBufferedImage() 
-	{
-		return image;
-	}
+    public double getZoom()
+    {
+        return this.zoom;
+    }
 
-	public void setBufferedImage(BufferedImage image) 
-	{
-		this.image = image;
-	}
+    public void setZoom(double zoom)
+    {
+        this.zoom = zoom;
+    }
 
-	// ===================================================================
-	// Display methods
+    public BufferedImage getBufferedImage()
+    {
+        return image;
+    }
 
-	public void refreshDisplay()
-	{
-//		System.out.println("ImageDisplay: refreshDisplay");
-		updateOffset();
-	}
-	
-//	public void repaint() {
-//		super.repaint();
-//		System.out.println("ImageDisplay: repaint");
-//	}
-	
-	/**
-	 * Converts a position from display coordinate (the Graphics) to Image coordinates.
-	 * 
-	 * Display coordinates are positive. Image coordinates are between -.5 and size(d)-.5.
-	 *   
-	 * @param point position in display coordinates
-	 * @return position in image coordinates
-	 */
-    public Point2D displayToImage(Point point) 
+    public void setBufferedImage(BufferedImage image)
+    {
+        this.image = image;
+    }
+    
+    
+    // ===================================================================
+    // Display methods
+    
+    public void refreshDisplay()
+    {
+        // System.out.println("ImageDisplay: refreshDisplay");
+        updateOffset();
+    }
+    
+    /**
+     * Converts a position from display coordinate (the Graphics) to Image
+     * coordinates. The conversion takes into account the current zoom, and the
+     * display offset of the image within panel.
+     * 
+     * Display coordinates are positive. Image coordinates are between
+     * <code>-0.5</code> and <code>image.size(d)-0.5</code>.
+     * 
+     * @param point
+     *            position in display coordinates
+     * @return position in image coordinates
+     */
+    public Point2D displayToImage(Point point)
     {
         double x = (point.x - this.offsetX) / zoom - .5;
         double y = (point.y - this.offsetY) / zoom - .5;
@@ -231,11 +234,15 @@ public class ImageDisplay extends JPanel
     }
 
     /**
-     * Converts a position from Image coordinates to display coordinate (the Graphics).
+     * Converts a position from Image coordinates to display coordinate (the
+     * Graphics). The conversion takes into account the current zoom, and the
+     * display offset of the image within panel.
      * 
-     * Display coordinates are positive. Image coordinates are between -.5 and size(d)-.5.
-     *   
-     * @param point position in image coordinates
+     * Display coordinates are positive. Image coordinates are between
+     * <code>-0.5</code> and <code>image.size(d)-0.5</code>.
+     * 
+     * @param point
+     *            position in image coordinates
      * @return position in display coordinates
      */
     public Point2D imageToDisplay(Point2D point) 
@@ -245,75 +252,74 @@ public class ImageDisplay extends JPanel
         return new Point2D(x, y);
     }
 
-	/**
-	 * @return the current offset at which image is displayed. Always greater
-	 *         than 0 for each coordinate.
-	 */
-	public Point getOffset() 
-	{
-		return new Point(this.offsetX, this.offsetY);
-	}
+    /**
+     * @return the current offset at which image is displayed. Always greater
+     *         than 0 for each coordinate.
+     */
+    public Point getOffset()
+    {
+        return new Point(this.offsetX, this.offsetY);
+    }
 
-	/**
-	 * Compute new offset such that image is either in center position, or at
-	 * left-most or top most position.
-	 */
-	public void updateOffset() 
-	{
-		Dimension dim0 = this.getSize();
-		Dimension dim = this.getDisplaySize();
+    /**
+     * Compute new offset such that image is either in center position, or at
+     * left-most or top most position.
+     */
+    public void updateOffset()
+    {
+        Dimension dim0 = this.getSize();
+        Dimension dim = this.getDisplaySize();
 
-		this.offsetX = (int) Math.max(0, Math.floor((dim0.width - dim.width) * .5));
-		this.offsetY = (int) Math.max(0, Math.floor((dim0.height - dim.height) * .5));
-	}
+        this.offsetX = (int) Math.max(0, Math.floor((dim0.width - dim.width) * .5));
+        this.offsetY = (int) Math.max(0, Math.floor((dim0.height - dim.height) * .5));
+    }
 
-	public Dimension getPreferredSize()
-	{
-		return getDisplaySize();
-	}
-	
-	public Dimension getDisplaySize() 
-	{
-		int width = (int) Math.ceil(this.image.getWidth() * zoom);
-		int height = (int) Math.ceil(this.image.getHeight() * zoom);
-		return new Dimension(width, height);
-	}
-	
-	public void drawShape(Shape shape)
-	{
-		System.out.println("ImageDisplay.drawShape");
-		
+    public Dimension getPreferredSize()
+    {
+        return getDisplaySize();
+    }
+
+    public Dimension getDisplaySize()
+    {
+        int width = (int) Math.ceil(this.image.getWidth() * zoom);
+        int height = (int) Math.ceil(this.image.getHeight() * zoom);
+        return new Dimension(width, height);
+    }
+
+    public void drawShape(Shape shape)
+    {
+        System.out.println("ImageDisplay.drawShape");
+
         // create drawer
         ShapeDrawer drawer = createDrawer();
         drawer.drawShape((Graphics2D) this.getGraphics(), shape);
-	}
-	
-	
+    }
+
+    
     // ===================================================================
     // paint methods
 
-	public void paintComponent(Graphics g) 
-	{
+    public void paintComponent(Graphics g)
+    {
         super.paintComponent(g);
 
         paintImage(g);
-	    paintAnnotations(g);
-	    paintSceneGraphItems(g);
-	    
+        paintAnnotations(g);
+        paintSceneGraphItems(g);
+
         if (this.selection != null) drawSelection(g);
         if (this.cursor != null) drawCustomCursor(g);
-	}
+    }
 
-	private void paintImage(Graphics g)
-	{
-//        System.out.println("paint image");
+    private void paintImage(Graphics g)
+    {
+        // System.out.println("paint image");
         Dimension dim = this.getDisplaySize();
         g.drawImage(this.image, offsetX, offsetY, dim.width, dim.height, null);
-	}
-	
+    }
+
     private void paintAnnotations(Graphics g)
     {
-//        System.out.println("paint annotations");
         // convert to Graphics2D to have more drawing possibilities
         Graphics2D g2 = (Graphics2D) g;
         ShapeDrawer drawer = createDrawer();
@@ -339,7 +345,7 @@ public class ImageDisplay extends JPanel
     {
         ShapeDrawer drawer = createDrawer();
         drawer.drawShape(g2, shape);
-        g2.setStroke(new BasicStroke());
+        g2.setStroke(new java.awt.BasicStroke());
     }
     
     private void drawSelection(Graphics g)
