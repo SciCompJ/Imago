@@ -16,6 +16,7 @@ import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.UInt8Array;
 import net.sci.array.numeric.impl.ScalarArrayUInt8View;
 import net.sci.image.Image;
+import net.sci.image.ImageType;
 
 
 /**
@@ -73,6 +74,10 @@ public class ConvertImageToUInt8 implements FramePlugin
 		    ImagoGui.showErrorDialog(frame, "Requires a scalar or color image", "Data Type Error");
 		    return;
 		}
+		
+		// force type and display range of result image
+		resultImage.setType(ImageType.GRAYSCALE);
+		resultImage.getDisplaySettings().setDisplayRange(new double[] {0, 255});
 		
 		// add the image document to GUI
         resultImage.setName(image.getName() + "-uint8");

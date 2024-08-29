@@ -4,11 +4,11 @@
 package imago.plugin.image.convert;
 
 import imago.app.ImageHandle;
+import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.image.ImageFrame;
-import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.UInt8Array;
@@ -74,7 +74,10 @@ public class CreateScaledUInt8View implements FramePlugin
         
 		UInt8Array result = new ScalarArrayUInt8View(scalarArray, minValue, maxValue);
 		Image resultImage = new Image(result, image);
-				
+
+		// force display range of result image
+        resultImage.getDisplaySettings().setDisplayRange(new double[] {0, 255});
+        
 		// add the image document to GUI
 		ImageFrame.create(resultImage, frame);
 	}
