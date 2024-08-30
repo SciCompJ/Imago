@@ -132,6 +132,7 @@ import imago.plugin.image.file.ReadImageTiff;
 import imago.plugin.image.file.ReadTiffStackSlice;
 import imago.plugin.image.file.ReadTiffVirtualImage3D;
 import imago.plugin.image.file.SaveImageMetaImage;
+import imago.plugin.image.file.ShowMetaImageFileInfo;
 import imago.plugin.image.process.BinaryImageBoxMedianFilter;
 import imago.plugin.image.process.BinaryImageSplitCoalescentParticles;
 import imago.plugin.image.process.BoxFilter3x3FloatPlugin;
@@ -349,7 +350,8 @@ public class GuiBuilder
 		addPlugin(fileImportMenu, new ImportImageRawData(), "Raw Data...");
         addPlugin(fileImportMenu, new ImportImageSeries(), "Import Image Series...");
         fileImportMenu.addSeparator();
-		addPlugin(fileImportMenu, new ImportImageMetaImage(), "MetaImage Data...");
+        addPlugin(fileImportMenu, new ImportImageMetaImage(), "MetaImage Data...");
+        addPlugin(fileImportMenu, new ShowMetaImageFileInfo(), "Show MetaImage FileInfo...");
 		addPlugin(fileImportMenu, new ImportImageVgi(), "VGI Image...");
 		fileMenu.add(fileImportMenu);
 
