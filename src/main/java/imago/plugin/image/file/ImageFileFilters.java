@@ -19,6 +19,11 @@ public class ImageFileFilters
     public static final FileFilter COMMON = new FileNameExtensionFilter("Common image files", "bmp", "gif", "jpg", "jpeg", "png", "tif", "tiff");
     
     /**
+     * Formats managed by the ImageIO class.
+     */
+    public static final FileFilter IMAGE_IO = new FileNameExtensionFilter("ImageIO file formats", "bmp", "gif", "jpg", "jpeg", "png");
+    
+    /**
      * File filter for BitMap file extension.
      */
     public static final FileFilter BMP = new FileNameExtensionFilter("BMP - Bitmap files", "bmp");

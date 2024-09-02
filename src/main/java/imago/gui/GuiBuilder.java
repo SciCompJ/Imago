@@ -131,6 +131,7 @@ import imago.plugin.image.file.PrintImageFileTiffTags;
 import imago.plugin.image.file.ReadImageTiff;
 import imago.plugin.image.file.ReadTiffStackSlice;
 import imago.plugin.image.file.ReadTiffVirtualImage3D;
+import imago.plugin.image.file.SaveImageIO;
 import imago.plugin.image.file.SaveImageMetaImage;
 import imago.plugin.image.file.ShowMetaImageFileInfo;
 import imago.plugin.image.process.BinaryImageBoxMedianFilter;
@@ -356,7 +357,8 @@ public class GuiBuilder
 		fileMenu.add(fileImportMenu);
 
         fileMenu.addSeparator();
-        addPlugin(fileMenu, new SaveImageMetaImage(), "Save As MetaImage");
+        addPlugin(fileMenu, new SaveImageIO(), "Save As...");
+        addPlugin(fileMenu, new SaveImageMetaImage(), "Save As MetaImage...");
 
 //		addMenuItem(demoMenu, new CreateWhiteNoiseImageAction(frame,
 //				"createWhiteNoiseImage"), "White Noise Array<?>");
