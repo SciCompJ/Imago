@@ -82,6 +82,7 @@ import imago.plugin.image.convert.ConvertImageToInt32;
 import imago.plugin.image.convert.ConvertImageToLabel;
 import imago.plugin.image.convert.ConvertImageToUInt16;
 import imago.plugin.image.convert.ConvertImageToUInt8;
+import imago.plugin.image.convert.ConvertLabelMapToRGB8;
 import imago.plugin.image.convert.ConvertRGB8ImageToRGB16;
 import imago.plugin.image.convert.ConvertStackToMovie;
 import imago.plugin.image.convert.ConvertUInt8ImageToRGB;
@@ -214,6 +215,7 @@ import net.sci.array.color.RGB8Array;
 import net.sci.array.shape.Rotate90;
 import net.sci.image.Image;
 import net.sci.image.ImageOperator;
+import net.sci.image.ImageType;
 import net.sci.image.contrast.DynamicAdjustment;
 import net.sci.image.contrast.ImageInverter;
 import net.sci.image.contrast.VectorArrayNorm;
@@ -245,57 +247,58 @@ public class GuiBuilder
     boolean hasVectorImage = false;
     boolean hasColorImage = false;
     boolean hasRGB8Image = false;
-
-	Icon emptyIcon;
-
-	/**
-	 * Creates a builder for the specified frame.
-	 * 
-	 * @param frame the frame to build.
-	 */
-	public GuiBuilder(ImagoFrame frame)
-	{
-	    this.frame = frame;
-		createEmptyIcon();
-	}
-
-	public void createMenuBar()
-	{
-	    computeFlags();
-	    
-		JMenuBar menuBar = new JMenuBar();
-		if (frame instanceof ImageFrame)
-		{
-	        menuBar.add(createImageFileMenu());
-    		menuBar.add(createImageEditMenu());
-    		menuBar.add(createImageMenu());
-    		menuBar.add(createImageProcessMenu());
-    		menuBar.add(createImageAnalyzeMenu());
+    
+    Icon emptyIcon;
+    
+    /**
+     * Creates a builder for the specified frame.
+     * 
+     * @param frame
+     *            the frame to build.
+     */
+    public GuiBuilder(ImagoFrame frame)
+    {
+        this.frame = frame;
+        createEmptyIcon();
+    }
+    
+    public void createMenuBar()
+    {
+        computeFlags();
+        
+        JMenuBar menuBar = new JMenuBar();
+        if (frame instanceof ImageFrame)
+        {
+            menuBar.add(createImageFileMenu());
+            menuBar.add(createImageEditMenu());
+            menuBar.add(createImageMenu());
+            menuBar.add(createImageProcessMenu());
+            menuBar.add(createImageAnalyzeMenu());
             menuBar.add(createImageToolsMenu());
-		}
-		else if (frame instanceof TableFrame)
-		{
+        }
+        else if (frame instanceof TableFrame)
+        {
             menuBar.add(createTableFileMenu());
             menuBar.add(createTableEditMenu());
             menuBar.add(createTableProcessMenu());
-		}
-		else if (frame instanceof ImagoEmptyFrame)
-		{
-	        menuBar.add(createImageFileMenu());
-		}
+        }
+        else if (frame instanceof ImagoEmptyFrame)
+        {
+            menuBar.add(createImageFileMenu());
+        }
         menuBar.add(createPluginsMenu());
         menuBar.add(createHelpMenu());
-
-		frame.getWidget().setJMenuBar(menuBar);
-	}
-
-	private void computeFlags()
-	{
-	    ImageHandle doc = null;
+        
+        frame.getWidget().setJMenuBar(menuBar);
+    }
+    
+    private void computeFlags()
+    {
+        ImageHandle doc = null;
         if (frame instanceof ImageFrame)
         {
             doc = ((ImageFrame) frame).getImageHandle();
-
+            
             this.hasDoc = doc != null;
             if (!hasDoc) 
                 return;
@@ -316,27 +319,27 @@ public class GuiBuilder
             this.hasColorImage = image.isColorImage();
             this.hasRGB8Image = array instanceof RGB8Array;
         }
-	}
-	
-	/**
-	 * Creates the sub-menu for the "File" item in the main menu bar.
-	 */
-	private JMenu createImageFileMenu()
-	{
-		JMenu fileMenu = new JMenu("File");
-		addPlugin(fileMenu, new CreateNewImage(), "New Image...");
-		addPlugin(fileMenu, new OpenImage(), "Open...");
-
-		// Import demo images
-		JMenu demoMenu = new JMenu("Demo Images");
+    }
+    
+    /**
+     * Creates the sub-menu for the "File" item in the main menu bar.
+     */
+    private JMenu createImageFileMenu()
+    {
+        JMenu fileMenu = new JMenu("File");
+        addPlugin(fileMenu, new CreateNewImage(), "New Image...");
+        addPlugin(fileMenu, new OpenImage(), "Open...");
+        
+        // Import demo images
+        JMenu demoMenu = new JMenu("Demo Images");
         addPlugin(demoMenu, new OpenDemoImage("files/grains.png"), "Rice grains");
         addPlugin(demoMenu, new OpenDemoImage("files/lena_gray_512.tif"), "Lena");
-		addPlugin(demoMenu, new OpenDemoImage("files/sunflower.png"), "Sunflower");
-		addPlugin(demoMenu, new OpenDemoStack(), "Demo Stack");
+        addPlugin(demoMenu, new OpenDemoImage("files/sunflower.png"), "Sunflower");
+        addPlugin(demoMenu, new OpenDemoStack(), "Demo Stack");
         addPlugin(demoMenu, new CreateDistanceToOctahedronImage3D(), "Octahedron Distance Map");
-		addPlugin(demoMenu, new CreateColorCubeImage3D(), "3D Color Cube");
+        addPlugin(demoMenu, new CreateColorCubeImage3D(), "3D Color Cube");
         fileMenu.add(demoMenu);
-
+        
         // Import less common file formats
         JMenu tiffFileMenu = new JMenu("Tiff Files");
         addPlugin(tiffFileMenu, new ReadImageTiff(), "Read TIFF...");
@@ -346,40 +349,40 @@ public class GuiBuilder
         addPlugin(tiffFileMenu, new PrintImageFileTiffTags(), "Print Tiff File Tags...");
         fileMenu.add(tiffFileMenu);
         
-		// Import less common file formats
-		JMenu fileImportMenu = new JMenu("Import");
-		addPlugin(fileImportMenu, new ImportImageRawData(), "Raw Data...");
+        // Import less common file formats
+        JMenu fileImportMenu = new JMenu("Import");
+        addPlugin(fileImportMenu, new ImportImageRawData(), "Raw Data...");
         addPlugin(fileImportMenu, new ImportImageSeries(), "Import Image Series...");
         fileImportMenu.addSeparator();
         addPlugin(fileImportMenu, new ImportImageMetaImage(), "MetaImage Data...");
         addPlugin(fileImportMenu, new ShowMetaImageFileInfo(), "Show MetaImage FileInfo...");
-		addPlugin(fileImportMenu, new ImportImageVgi(), "VGI Image...");
-		fileMenu.add(fileImportMenu);
-
+        addPlugin(fileImportMenu, new ImportImageVgi(), "VGI Image...");
+        fileMenu.add(fileImportMenu);
+        
         fileMenu.addSeparator();
         addPlugin(fileMenu, new SaveImageIO(), "Save As...");
         addPlugin(fileMenu, new SaveImageMetaImage(), "Save As MetaImage...");
-
-//		addMenuItem(demoMenu, new CreateWhiteNoiseImageAction(frame,
-//				"createWhiteNoiseImage"), "White Noise Array<?>");
+        
+        // addMenuItem(demoMenu, new CreateWhiteNoiseImageAction(frame,
+        // "createWhiteNoiseImage"), "White Noise Array<?>");
         fileMenu.addSeparator();
         addPlugin(fileMenu, new OpenTable(), "Open Table...");
         addPlugin(fileMenu, new ShowDemoTable(), "Show Demo Table");
         
-		fileMenu.addSeparator();
+        fileMenu.addSeparator();
         addPlugin(fileMenu, new CloseCurrentFrame(), "Close", !(frame instanceof ImagoEmptyFrame));
         addPlugin(fileMenu, new CloseWithChildren(), "Close With Children", !(frame instanceof ImagoEmptyFrame));
-		addPlugin(fileMenu, new QuitApplication(), "Quit");
-		return fileMenu;
-	}
-
-	/**
-	 * Creates the sub-menu for the "Edit" item in the main menu bar.
-	 */
-	private JMenu createImageEditMenu()
-	{
-		JMenu editMenu = new JMenu("Edit");
-
+        addPlugin(fileMenu, new QuitApplication(), "Quit");
+        return fileMenu;
+    }
+    
+    /**
+     * Creates the sub-menu for the "Edit" item in the main menu bar.
+     */
+    private JMenu createImageEditMenu()
+    {
+        JMenu editMenu = new JMenu("Edit");
+        
         // selection sub-menu
         JMenu selectionMenu = new JMenu("Selection");
         addPlugin(selectionMenu, new ImageCopySelectionToWorkspace(), "Copy To Workspace");
@@ -398,15 +401,15 @@ public class GuiBuilder
         addPlugin(editMenu, new RefreshDisplay(), "Refresh Display", hasImage);
         
         // add utility
-		editMenu.addSeparator();
-		JMenu sceneGraphMenu = new JMenu("Scene Graph");
+        editMenu.addSeparator();
+        JMenu sceneGraphMenu = new JMenu("Scene Graph");
         addPlugin(sceneGraphMenu, new ImageSelectionToSceneGraph(), "Add Selection to scene graph");
-		addPlugin(sceneGraphMenu, new ShowSceneGraphTree(), "Display Scene Graph Tree");
-		addPlugin(sceneGraphMenu, new PrintImageSceneGraph(), "Print SceneGraph Tree");
+        addPlugin(sceneGraphMenu, new ShowSceneGraphTree(), "Display Scene Graph Tree");
+        addPlugin(sceneGraphMenu, new PrintImageSceneGraph(), "Print SceneGraph Tree");
         addPlugin(sceneGraphMenu, new ToggleSceneGraphDisplay(), "Toggle Scene Graph Display");
-		editMenu.add(sceneGraphMenu);
-		
-		addPlugin(editMenu, new DocClearShapes(), "Clear Shapes");
+        editMenu.add(sceneGraphMenu);
+        
+        addPlugin(editMenu, new DocClearShapes(), "Clear Shapes");
         
         editMenu.addSeparator();
         JMenu settingsMenu = new JMenu("Settings");
@@ -414,17 +417,17 @@ public class GuiBuilder
         addPlugin(settingsMenu, new ChooseBrushRadius(), "Choose Brush Radius...");
         
         editMenu.add(settingsMenu);
-		return editMenu;
-	}
-
-	/**
-	 * Creates the sub-menu for the "Image" item in the main Menu bar.
-	 */
-	private JMenu createImageMenu()
-	{
-		JMenu menu = new JMenu("Image");
-
-		// First general info and calibration about images
+        return editMenu;
+    }
+    
+    /**
+     * Creates the sub-menu for the "Image" item in the main Menu bar.
+     */
+    private JMenu createImageMenu()
+    {
+        JMenu menu = new JMenu("Image");
+        
+        // First general info and calibration about images
         addPlugin(menu, new RenameImage(), "Rename...", hasImage);
         addPlugin(menu, new PrintImageInfos(), "Print Image Info", hasImage);
         addPlugin(menu, new ImageSetScale(), "Image Scale...", hasImage);
@@ -459,7 +462,8 @@ public class GuiBuilder
         addPlugin(colormapMenu, new ImageColorMapDisplay(), "Show Color Map in Table", hasImage && !hasRGB8Image);
         menu.add(colormapMenu);
         
-        addPlugin(menu, new ImageSetBackgroundColor(), "Set Background Color...", hasLabelImage);
+        boolean hasDistanceImage = ((ImageFrame) frame).getImageHandle().getImage().getType() == ImageType.DISTANCE;
+        addPlugin(menu, new ImageSetBackgroundColor(), "Set Background Color...", hasLabelImage || hasDistanceImage);
         addPlugin(menu, new DisplayImagePair(), "Display Image Pair", hasImage);
 
         // Several options for converting images
@@ -474,7 +478,6 @@ public class GuiBuilder
         convertTypeMenu.addSeparator();
         addPlugin(convertTypeMenu, new ConvertImageToLabel(), "Label");
         addPlugin(convertTypeMenu, new SetImageTypeToLabel(), "Set to Label Image", hasScalarImage);
-        convertTypeMenu.addSeparator();
         convertTypeMenu.addSeparator();
         addPlugin(convertTypeMenu, new ConvertImageToInt16(), "Int16", hasScalarImage);
         addPlugin(convertTypeMenu, new ConvertImageToInt32(), "Int32", hasScalarImage);
@@ -494,6 +497,7 @@ public class GuiBuilder
         addPlugin(colorMenu, new MergeChannelImages(), "Merge Channels");
         addPlugin(colorMenu, new ColorImageExtractChannel(), "Select Channel...", hasColorImage);
         addPlugin(colorMenu, new ConvertUInt8ImageToRGB(), "UInt8 to RGB8", hasScalarImage);
+        addPlugin(colorMenu, new ConvertLabelMapToRGB8(), "Label Map to RGB", hasLabelImage);
         addPlugin(colorMenu, new ConvertRGB8ImageToRGB16(), "RGB8 to RGB16", hasRGB8Image);
         addPlugin(colorMenu, new ScalarImagesColorDifference(), "Color difference between two scalar images");
         menu.add(colorMenu);
