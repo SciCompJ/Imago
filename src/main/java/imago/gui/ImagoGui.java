@@ -4,6 +4,7 @@
 package imago.gui;
 
 import java.awt.Color;
+import java.awt.FileDialog;
 import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
@@ -211,7 +212,7 @@ public class ImagoGui
     public ImagoGui(ImagoApp app)
     {
         this.app = app;
-
+        
         setupLookAndFeel();
 
         try
@@ -502,6 +503,11 @@ public class ImagoGui
      */
     public File chooseFileToOpen(ImagoFrame frame, String title, FileFilter... fileFilters)
     {
+        if (app.userPreferences.useFileOpenSystemDialog)
+        {
+            return chooseFileToOpen_awt(frame, title, fileFilters);
+        }
+        
         // create dialog using last open path
         JFileChooser dlg = new JFileChooser(this.app.userPreferences.lastOpenPath);
 
@@ -540,6 +546,26 @@ public class ImagoGui
         // return the selected file
         return dlg.getSelectedFile();
     }
+    
+    private File chooseFileToOpen_awt(ImagoFrame frame, String title, FileFilter... fileFilters)
+    {
+        FileDialog dlg = new FileDialog(frame == null ? null : frame.getWidget(), "Choose a file", FileDialog.LOAD);
+        dlg.setDirectory(this.app.userPreferences.lastOpenPath);
+        if (fileFilters.length > 0)
+        {
+            FileFilter filter = fileFilters[0];
+            dlg.setFilenameFilter((dir, name) -> filter.accept(new File(dir, name)));
+        }
+        
+        dlg.setVisible(true);
+        
+        String file = dlg.getFile();
+        if (file == null) return null;
+        String dir = dlg.getDirectory();
+        this.app.userPreferences.lastOpenPath = dir;
+        
+        return new File(dir, file);
+    }
 
     /**
      * Creates a new JFileChooser instance to open a file. The dialog
@@ -557,6 +583,11 @@ public class ImagoGui
      */
     public File chooseFileToSave(ImagoFrame frame, String title, String defaultName, FileFilter... fileFilters)
     {
+        if (app.userPreferences.useSaveFileSystemDialog)
+        {
+            return chooseFileToSave_awt(frame, title, defaultName, fileFilters);
+        }
+        
         // create dialog using last open path
         JFileChooser dlg = new JFileChooser(this.app.userPreferences.lastSavePath);
 
@@ -600,6 +631,27 @@ public class ImagoGui
 
         // return the selected file
         return dlg.getSelectedFile();
+    }
+    
+    private File chooseFileToSave_awt(ImagoFrame frame, String title, String defaultName, FileFilter... fileFilters)
+    {
+        FileDialog dlg = new FileDialog(frame == null ? null : frame.getWidget(), "Choose a file", FileDialog.SAVE);
+        dlg.setDirectory(this.app.userPreferences.lastSavePath);
+        if (fileFilters.length > 0)
+        {
+            FileFilter filter = fileFilters[0];
+            dlg.setFilenameFilter((dir, name) -> filter.accept(new File(dir, name)));
+        }
+        dlg.setFile(defaultName);
+        
+        dlg.setVisible(true);
+        
+        String file = dlg.getFile();
+        if (file == null) return null;
+        
+        String dir = dlg.getDirectory();
+        this.app.userPreferences.lastSavePath = dir;
+        return new File(dir, file);
     }
     
     public void updateFrameLocation(ImagoFrame frame, ImagoFrame parentFrame)

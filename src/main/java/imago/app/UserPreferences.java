@@ -63,6 +63,14 @@ public class UserPreferences
         {
             prefs.brushValue = Double.parseDouble((String) props.get("imago.tools.brush.value"));
         }
+        if (props.containsKey("imago.files.open.useSystemDialog"))
+        {
+            prefs.useFileOpenSystemDialog = Boolean.parseBoolean((String) props.get("imago.files.open.useSystemDialog"));
+        }
+        if (props.containsKey("imago.files.save.useSystemDialog"))
+        {
+            prefs.useSaveFileSystemDialog = Boolean.parseBoolean((String) props.get("imago.files.save.useSystemDialog"));
+        }
         
         return prefs;
     }
@@ -92,6 +100,20 @@ public class UserPreferences
      */
     public double brushRadius = 2.0;
 
+    /**
+     * Boolean for choosing between system dialog or swing dialog for opening
+     * files. System dialog may open faster when number of files in directory is
+     * large, but Swing dialog has more features.
+     */
+    public boolean useFileOpenSystemDialog = false;
+    
+    /**
+     * Boolean for choosing between system dialog or swing dialog for saving
+     * files. System dialog may open faster when number of files in directory is
+     * large, but Swing dialog has more features.
+     */
+    public boolean useSaveFileSystemDialog = false;
+    
     
     // ===================================================================
     // General methods
@@ -103,6 +125,8 @@ public class UserPreferences
         Properties props = new Properties();
         props.put("imago.files.lastOpenPath", this.lastOpenPath);
         props.put("imago.files.lastSavePath", this.lastSavePath);
+        props.put("imago.files.open.useSystemDialog", Boolean.toString(this.useFileOpenSystemDialog));
+        props.put("imago.files.save.useSystemDialog", Boolean.toString(this.useSaveFileSystemDialog));
         props.put("imago.tools.brush.radius", Double.toString(this.brushRadius));
         props.put("imago.tools.brush.value", Double.toString(this.brushValue));
         

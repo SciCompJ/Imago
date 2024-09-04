@@ -33,6 +33,7 @@ import imago.plugin.developer.DisplayExceptionDialog;
 import imago.plugin.edit.ChangeCurrentTool;
 import imago.plugin.edit.ChooseBrushRadius;
 import imago.plugin.edit.ChooseBrushValue;
+import imago.plugin.edit.ChooseFileDialogWidgetToolkit;
 import imago.plugin.edit.DocClearShapes;
 import imago.plugin.edit.PrintDocumentList;
 import imago.plugin.edit.PrintFrameList;
@@ -413,6 +414,8 @@ public class GuiBuilder
         
         editMenu.addSeparator();
         JMenu settingsMenu = new JMenu("Settings");
+        addPlugin(settingsMenu, new ChooseFileDialogWidgetToolkit(), "Choose File Dialog Widget Toolkits...");
+        settingsMenu.addSeparator();
         addPlugin(settingsMenu, new ChooseBrushValue(), "Choose Brush Value...");
         addPlugin(settingsMenu, new ChooseBrushRadius(), "Choose Brush Radius...");
         
