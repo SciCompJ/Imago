@@ -39,25 +39,29 @@ public class SaveImageIO implements FramePlugin
         Image image = viewer.getImage();
         
         // create file dialog using last save path
-        File file = frame.getGui().chooseFileToSave(frame, "Save Image", image.getName() + ".png",
+        File file = frame.getGui().chooseFileToSave(frame, 
+                "Save Image", image.getName() + ".png",
                 ImageFileFilters.IMAGE_IO, ImageFileFilters.PNG, ImageFileFilters.JPEG, ImageFileFilters.GIF,
                 ImageFileFilters.BMP);
-		
-		// Create a writer with specified file
-		ImageIOImageWriter writer = new ImageIOImageWriter(file);
-		long t0 = System.nanoTime();
-		try
-		{
-			writer.writeImage(image);
-		}
-		catch(Exception ex)
-		{
-		    System.err.println(ex);
+        
+        // check validity of file
+        if (file == null) return;
+
+        // Create a writer with specified file
+        ImageIOImageWriter writer = new ImageIOImageWriter(file);
+        long t0 = System.nanoTime();
+        try
+        {
+            writer.writeImage(image);
+        }
+        catch (Exception ex)
+        {
+            System.err.println(ex);
             ImagoGui.showErrorDialog(frame, ex.getLocalizedMessage(), "ImageIO Save Error");
-			return;
-		}
-		long t1 = System.nanoTime();
-		double dt = (t1 - t0) / 1_000_000.0;
+            return;
+        }
+        long t1 = System.nanoTime();
+        double dt = (t1 - t0) / 1_000_000.0;
 
         iframe.getStatusBar().setProgressBarPercent(0);
         iframe.showElapsedTime("Save Image", dt, image);
