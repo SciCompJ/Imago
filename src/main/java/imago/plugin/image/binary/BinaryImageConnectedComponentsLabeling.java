@@ -10,10 +10,12 @@ import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.binary.BinaryArray;
-import net.sci.array.color.ColorMaps;
-import net.sci.array.color.RGB8;
-import net.sci.image.DisplaySettings;
+import net.sci.array.numeric.IntArray;
+import net.sci.image.Connectivity2D;
+import net.sci.image.Connectivity3D;
 import net.sci.image.Image;
+import net.sci.image.binary.labeling.ComponentsLabeling;
+import net.sci.image.binary.labeling.FloodFillComponentsLabeling1D;
 import net.sci.image.binary.labeling.FloodFillComponentsLabeling2D;
 import net.sci.image.binary.labeling.FloodFillComponentsLabeling3D;
 
@@ -72,31 +74,25 @@ public class BinaryImageConnectedComponentsLabeling implements FramePlugin
 
         // parse dialog results
         int connIndex = gd.getNextChoiceIndex();
-        int conn = nd == 2 ? (connIndex == 0 ? 4 : 8) : (connIndex == 0 ? 6 : 26);
+        int connValue = nd == 2 ? (connIndex == 0 ? 4 : 8) : (connIndex == 0 ? 6 : 26);
         int bitDepthIndex = gd.getNextChoiceIndex();
         int[] bitDepths = new int[] { 8, 16, 32 };
         int bitDepth = bitDepths[bitDepthIndex];
+        IntArray.Factory<?> factory = ComponentsLabeling.chooseIntArrayFactory(bitDepth);
+
+        // Create Components Labeling algorithm
+        ComponentsLabeling algo = switch(nd)
+        {
+            case 1 -> new FloodFillComponentsLabeling1D(factory);
+            case 2 -> new FloodFillComponentsLabeling2D(Connectivity2D.fromValue(connValue), factory);
+            case 3 -> new FloodFillComponentsLabeling3D(Connectivity3D.fromValue(connValue), factory);
+            default -> throw new RuntimeException("Can not manage images with dimensionality " + nd);
+        };
 
         // apply connected components labeling
-        Image result;
-        if (nd == 2)
-        {
-            FloodFillComponentsLabeling2D algo = new FloodFillComponentsLabeling2D(conn, bitDepth);
-            result = ((ImageFrame) frame).runOperator(algo, image);
-        }
-        else
-        {
-            FloodFillComponentsLabeling3D algo = new FloodFillComponentsLabeling3D(conn, bitDepth);
-            result = ((ImageFrame) frame).runOperator(algo, image);
-        }
-
-        // choose default JET color map
-        // TODO: update by scaling?
-        DisplaySettings settings = result.getDisplaySettings();
-        int nColors = (int) Math.min(settings.getDisplayRange()[1], 255);
-        settings.setColorMap(ColorMaps.JET.createColorMap(nColors));
-        settings.setBackgroundColor(RGB8.WHITE);
-
+        Image result = ((ImageFrame) frame).runOperator(algo, image);
+        result.setName(image.getName() + "-lbl");
+        
         // add the image document to GUI
         ImageFrame.create(result, frame);
     }
