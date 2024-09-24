@@ -26,44 +26,45 @@ import net.sci.image.morphology.reconstruction.BinaryFillHoles3D;
  */
 public class BinaryImageFillHoles implements FramePlugin
 {
-	public BinaryImageFillHoles() 
-	{
-	}
-	
-	@Override
-	public void run(ImagoFrame frame, String args) 
-	{
-		// get current frame
-		ImageFrame imageFrame = (ImageFrame) frame; 
-		Image image = imageFrame.getImageHandle().getImage();
+    public BinaryImageFillHoles()
+    {
+    }
 
-		Array<?> array = image.getData();
-		if (!(array instanceof BinaryArray))
-		{
-			return;
-		}
-		
-		ArrayOperator algo;
-		if (array instanceof BinaryArray2D)
-		{
-		    algo = new BinaryFillHoles2D();
-		}
-		else if (array instanceof BinaryArray3D)
-		{
+    @Override
+    public void run(ImagoFrame frame, String args)
+    {
+        // get current frame
+        ImageFrame imageFrame = (ImageFrame) frame;
+        Image image = imageFrame.getImageHandle().getImage();
+
+        Array<?> array = image.getData();
+        if (!(array instanceof BinaryArray))
+        {
+            return;
+        }
+
+        ArrayOperator algo;
+        if (array instanceof BinaryArray2D)
+        {
+            algo = new BinaryFillHoles2D();
+        }
+        else if (array instanceof BinaryArray3D)
+        {
             algo = new BinaryFillHoles3D();
         }
-		else
-		{
-		    ImagoGui.showErrorDialog(imageFrame, "Can not manage arrays with class: " + array.getClass().getName());
-		    return;
-		}
-		
-		Image resultImage = imageFrame.runOperator(algo, image);
+        else
+        {
+            ImagoGui.showErrorDialog(imageFrame,
+                    "Can not manage arrays with class: " + array.getClass().getName());
+            return;
+        }
+
+        Image resultImage = imageFrame.runOperator(algo, image);
         resultImage.setName(image.getName() + "-FillHoles");
-        
-		// add the image document to GUI
+
+        // add the image document to GUI
         ImageFrame.create(resultImage, frame);
-	}
+    }
 
     /**
      * Returns true if the current frame contains a binary image.
