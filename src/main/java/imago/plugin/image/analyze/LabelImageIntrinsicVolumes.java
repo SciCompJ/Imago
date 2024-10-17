@@ -13,7 +13,7 @@ import imago.gui.table.TableFrame;
 import net.sci.array.Array;
 import net.sci.array.numeric.IntArray2D;
 import net.sci.image.Image;
-import net.sci.image.analyze.region2d.IntrinsicVolumesAnalyzer2D;
+import net.sci.image.analyze.region2d.IntrinsicVolumes2D;
 import net.sci.table.Table;
 
 /**
@@ -73,7 +73,7 @@ public class LabelImageIntrinsicVolumes implements FramePlugin
         int conn =  conns[dlg.getNextChoiceIndex()];
         
         // create analyzer
-        IntrinsicVolumesAnalyzer2D algo = new IntrinsicVolumesAnalyzer2D();
+        IntrinsicVolumes2D algo = new IntrinsicVolumes2D();
         algo.setDirectionNumber(directionNumber);
         algo.setConnectivity(conn);
         
