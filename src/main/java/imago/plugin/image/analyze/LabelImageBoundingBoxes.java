@@ -83,6 +83,10 @@ public class LabelImageBoundingBoxes implements FramePlugin
             String firstImageName = doc.getName();
             dlg.addChoice("Image to Overlay ", imageNameArray, firstImageName);
             dlg.showDialog();
+            if (dlg.wasCanceled())
+            {
+                return;
+            }
             
             boolean showTable = dlg.getNextBoolean();
             boolean overlay = dlg.getNextBoolean();

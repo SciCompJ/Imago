@@ -72,6 +72,11 @@ public class LabelImageEquivalentEllipsoids implements FramePlugin
          
         // Convert ellipsoids to table
         Table table = algo.createTable(ellipsoids);
+        
+        // choose name
+        String name = image.getName();
+        if (name != null && name.length() > 0) name = name + "-";
+        name = name + "ellipsoids";
         table.setName(image.getName() + "-ellipsoids");
 
         // display table as a new frame

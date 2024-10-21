@@ -114,6 +114,10 @@ public class LabelImageEquivalentEllipses implements FramePlugin
             }
             
             // add the new frame to the GUI
+            String name = image.getName();
+            if (name != null && name.length() > 0) name = name + "-";
+            name = name + "ellipses";
+            table.setName(name);
             TableFrame.create(table, frame);
         }
         
