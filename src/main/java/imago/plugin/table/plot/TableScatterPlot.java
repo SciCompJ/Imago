@@ -7,6 +7,7 @@ import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
 
+import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.frames.ImagoChartFrame;
 import imago.gui.table.TableFrame;
@@ -26,42 +27,57 @@ public class TableScatterPlot implements TablePlugin
     {
     }
     
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
     public void run(ImagoFrame frame, String args)
-	{
-	    // Get the data table
-	    if (!(frame instanceof TableFrame))
-	    {
-	        return;
-	    }
-	    Table table = ((TableFrame) frame).getTable();
-	    
-	    if (table.columnCount() < 2)
-	    {
-	        throw new RuntimeException("Requires a table with at least two columns");
-	    }
-
-	    int col1 = 0;
-	    int col2 = 1;
+    {
+        // Get the data table
+        if (!(frame instanceof TableFrame))
+        {
+            return;
+        }
+        Table table = ((TableFrame) frame).getTable();
+        
+        if (table.columnCount() < 2)
+        {
+            throw new RuntimeException("Requires a table with at least two columns");
+        }
+        
+        int col1 = 0;
+        int col2 = 1;
+        GenericDialog dlg = new GenericDialog(frame, "Scatter Plot");
+        String[] colNames = table.getColumnNames();
+        dlg.addChoice("X-Axis Column", colNames, colNames[0]);
+        dlg.addChoice("Y-Axis Column", colNames, colNames[1]);
+        
+        dlg.showDialog();
+        if (dlg.wasCanceled())
+        {
+            return;
+        }
+        
+        col1 = dlg.getNextChoiceIndex();
+        col2 = dlg.getNextChoiceIndex();
     
         double[] xData = table.getColumnValues(col1);
         double[] yData = table.getColumnValues(col2);
-        String[] colNames = table.getColumnNames();
             
-        String tableName = table.getName();
-        if (tableName == null || tableName.length() == 0)
+        String chartTitle = table.getName();
+        if (chartTitle == null || chartTitle.length() == 0)
         {
-            tableName = "data";
+            chartTitle = "data";
         }
         
         // Create Chart
         XYChart chart = new XYChartBuilder()
                 .width(600)
                 .height(500)
-                .title(tableName)
+                .title(chartTitle)
                 .xAxisTitle(colNames[col1])
                 .yAxisTitle(colNames[col2])
                 .build();
