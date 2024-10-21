@@ -281,6 +281,7 @@ public class GuiBuilder
         {
             menuBar.add(createTableFileMenu());
             menuBar.add(createTableEditMenu());
+            menuBar.add(createTablePlotMenu());
             menuBar.add(createTableProcessMenu());
         }
         else if (frame instanceof ImagoEmptyFrame)
@@ -773,7 +774,7 @@ public class GuiBuilder
     	}
 
     /**
-     * Creates the sub-menu for the "File" item in the main menu bar.
+     * Creates the sub-menu for the "File" item in the main menu bar of Table frames.
      */
     private JMenu createTableFileMenu()
     {
@@ -794,9 +795,10 @@ public class GuiBuilder
 
         return fileMenu;
     }
-
+    
     /**
-     * Creates the sub-menu for the "Edit" item in the main menu bar.
+     * Creates the sub-menu for the "Edit" item in the main menu bar of Table
+     * frames.
      */
     private JMenu createTableEditMenu()
     {
@@ -816,7 +818,20 @@ public class GuiBuilder
     }
 
     /**
-     * Creates the sub-menu for the "Process" item in the main menu bar.
+     * Creates the sub-menu for the "plot" item in the main menu bar of Table
+     * frames.
+     */
+    private JMenu createTablePlotMenu()
+    {
+        JMenu plotMenu = new JMenu("Plot");
+        addPlugin(plotMenu, new TableScatterPlot(), "Scatter Plot...");
+        addPlugin(plotMenu, new TableLinePlot(), "Line Plot...");
+        return plotMenu;
+    }
+    
+    /**
+     * Creates the sub-menu for the "Process" item in the main menu bar of Table
+     * frames.
      */
     private JMenu createTableProcessMenu()
     {
@@ -829,7 +844,10 @@ public class GuiBuilder
         return processMenu;
     }
 
-    
+    /**
+     * Creates the sub-menu for the "Plugins" item in the main menu bar, shared
+     * by several frame types.
+     */
     private JMenu createPluginsMenu()
     {
         JMenu menu = new JMenu("Plugins");
@@ -859,33 +877,30 @@ public class GuiBuilder
         return menu;
     }
     
+    // private JMenu createDeveloperMenu()
+    // {
+    // JMenu menu = new JMenu("Developer");
+    // addPlugin(menu, new DisplayExceptionDialog(), "Show Demo Exception");
+    // return menu;
+    // }
     
-
-//    private JMenu createDeveloperMenu()
-//    {
-//        JMenu menu = new JMenu("Developer");
-//        addPlugin(menu, new DisplayExceptionDialog(), "Show Demo Exception");
-//        return menu;
-//    }
-
     private JMenu createHelpMenu()
-	{
-		JMenu menu = new JMenu("Help");
-		addMenuItem(menu, null, "About...", true);
-		return menu;
-	}
-
-	private JMenuItem addMenuItem(JMenu menu, ImagoAction action, String label,
-			boolean enabled)
-	{
-		JMenuItem item = new JMenuItem(action);
-		item.setText(label);
-		item.setIcon(this.emptyIcon);
-		item.setEnabled(enabled);
-		menu.add(item);
-		return item;
-	}
-
+    {
+        JMenu menu = new JMenu("Help");
+        addMenuItem(menu, null, "About...", true);
+        return menu;
+    }
+    
+    private JMenuItem addMenuItem(JMenu menu, ImagoAction action, String label, boolean enabled)
+    {
+        JMenuItem item = new JMenuItem(action);
+        item.setText(label);
+        item.setIcon(this.emptyIcon);
+        item.setEnabled(enabled);
+        menu.add(item);
+        return item;
+    }
+    
     private JMenuItem addImageOperatorPlugin(JMenu menu, ImageOperator operator, String label, boolean enabled)
     {
         FramePlugin plugin = new ImageOperatorPlugin(operator);
@@ -965,16 +980,23 @@ public class GuiBuilder
         menu.add(item);
         return item;
     }
-
-	private void createEmptyIcon()
-	{
-		int width = 16;
-		int height = 16;
-		BufferedImage image = new BufferedImage(width, height,
-				BufferedImage.TYPE_INT_ARGB);
-		for (int y = 0; y < height; y++)
-			for (int x = 0; x < width; x++)
-				image.setRGB(x, y, 0x00FFFFFF);
-		this.emptyIcon = new ImageIcon(image);
-	}
+    
+    /**
+     * Initializes the empty icon image with an image of type ARGB, and filled
+     * with the value "0x00FFFFFF": white, and totally transparent.
+     */
+    private void createEmptyIcon()
+    {
+        int width = 16;
+        int height = 16;
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                image.setRGB(x, y, 0x00FFFFFF);
+            }
+        }
+        this.emptyIcon = new ImageIcon(image);
+    }
 }
