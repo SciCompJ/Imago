@@ -257,7 +257,7 @@ public class TableFrame extends ImagoFrame
         }
         
         String dimString = "(unknown size)";
-        int dim[] = this.table.getSize();
+        int dim[] = this.table.size();
         if (dim.length == 2) 
         {
             dimString = dim[0] + "x" + dim[1];
