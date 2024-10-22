@@ -201,6 +201,7 @@ import imago.plugin.table.SaveTable;
 import imago.plugin.table.ShowDemoTable;
 import imago.plugin.table.edit.FoldTableToImage;
 import imago.plugin.table.edit.MergeTablesByColumns;
+import imago.plugin.table.edit.PrintTableSummary;
 import imago.plugin.table.edit.PrintTableToConsole;
 import imago.plugin.table.edit.TableKeepNumericColumns;
 import imago.plugin.table.edit.TableSelectColumns;
@@ -786,10 +787,6 @@ public class GuiBuilder
         addPlugin(fileMenu, new SaveTable(), "Save Table...");
 
         fileMenu.addSeparator();
-        addPlugin(fileMenu, new TableScatterPlot(), "Scatter Plot...");
-        addPlugin(fileMenu, new TableLinePlot(), "Line Plot...");
-
-        fileMenu.addSeparator();
         addPlugin(fileMenu, new CloseCurrentFrame(), "Close", !(frame instanceof ImagoEmptyFrame));
         addPlugin(fileMenu, new QuitApplication(), "Quit");
 
@@ -812,6 +809,7 @@ public class GuiBuilder
         editMenu.addSeparator();
         addPlugin(editMenu, new FoldTableToImage(), "Fold Table to Image");
         editMenu.addSeparator();
+        addPlugin(editMenu, new PrintTableSummary(), "Print Summary");
         addPlugin(editMenu, new PrintTableToConsole(), "Print to Console");
         
         return editMenu;
