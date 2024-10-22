@@ -12,6 +12,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.frames.ImagoChartFrame;
 import imago.gui.table.TableFrame;
 import imago.plugin.table.TablePlugin;
+import net.sci.table.NumericColumn;
 import net.sci.table.Table;
 
 
@@ -48,8 +49,8 @@ public class TableScatterPlot implements TablePlugin
             throw new RuntimeException("Requires a table with at least two columns");
         }
         
-        int col1 = 0;
-        int col2 = 1;
+        int indCol1 = 0;
+        int indCol2 = 1;
         GenericDialog dlg = new GenericDialog(frame, "Scatter Plot");
         String[] colNames = table.getColumnNames();
         dlg.addChoice("X-Axis Column", colNames, colNames[0]);
@@ -61,12 +62,23 @@ public class TableScatterPlot implements TablePlugin
             return;
         }
         
-        col1 = dlg.getNextChoiceIndex();
-        col2 = dlg.getNextChoiceIndex();
-    
-        double[] xData = table.getColumnValues(col1);
-        double[] yData = table.getColumnValues(col2);
-            
+        indCol1 = dlg.getNextChoiceIndex();
+        indCol2 = dlg.getNextChoiceIndex();
+   
+        if (!(table.column(indCol1) instanceof NumericColumn))
+        {
+            throw new RuntimeException("Requires a numeric column");
+        }
+        if (!(table.column(indCol2) instanceof NumericColumn))
+        {
+            throw new RuntimeException("Requires a numeric column");
+        }
+        NumericColumn col1 = (NumericColumn) table.column(indCol1);
+        NumericColumn col2 = (NumericColumn) table.column(indCol2);
+        
+        double[] xData = col1.getValues();
+        double[] yData = col2.getValues();
+
         String chartTitle = table.getName();
         if (chartTitle == null || chartTitle.length() == 0)
         {
@@ -78,8 +90,8 @@ public class TableScatterPlot implements TablePlugin
                 .width(600)
                 .height(500)
                 .title(chartTitle)
-                .xAxisTitle(colNames[col1])
-                .yAxisTitle(colNames[col2])
+                .xAxisTitle(colNames[indCol1])
+                .yAxisTitle(colNames[indCol2])
                 .build();
         
         chart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);

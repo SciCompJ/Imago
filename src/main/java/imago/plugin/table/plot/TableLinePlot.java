@@ -15,6 +15,8 @@ import imago.gui.ImagoFrame;
 import imago.gui.frames.ImagoChartFrame;
 import imago.gui.table.TableFrame;
 import imago.plugin.table.TablePlugin;
+import net.sci.table.Column;
+import net.sci.table.NumericColumn;
 import net.sci.table.Table;
 
 
@@ -29,41 +31,45 @@ public class TableLinePlot implements TablePlugin
     public TableLinePlot()
     {
     }
-    
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
     @Override
     public void run(ImagoFrame frame, String args)
-	{
-	    // Get the data table
-	    if (!(frame instanceof TableFrame))
-	    {
-	        return;
-	    }
-	    Table table = ((TableFrame) frame).getTable();
+    {
+        // Get the data table
+        if (!(frame instanceof TableFrame))
+        {
+            return;
+        }
+        Table table = ((TableFrame) frame).getTable();
 
-	    // get general info from table
-	    int nRows = table.rowCount();
-	    int nCols = table.columnCount();
+        // get general info from table
+        int nRows = table.rowCount();
+        int nCols = table.columnCount();
         String[] colNames = table.getColumnNames();
-        
+
         String[] colNames2 = new String[nCols + 1];
         colNames2[0] = "none";
         System.arraycopy(colNames, 0, colNames2, 1, nCols);
- 
-        // Display dialog for choosing options
-	    GenericDialog dlg = new GenericDialog(frame, "Line Plot");
-	    dlg.addChoice("X-Axis", colNames2, colNames2[0]);
 
-	    int nCols2 = Math.min(nCols, 10);
-	    for (int i = 0; i < nCols2; i++)
-	    {
-	        dlg.addCheckBox(colNames[i], false);
-	    }
-	    dlg.showDialog();
-        
-        if (dlg.wasCanceled()) 
+        // Display dialog for choosing options
+        GenericDialog dlg = new GenericDialog(frame, "Line Plot");
+        dlg.addChoice("X-Axis", colNames2, colNames2[0]);
+
+        // limit the number of columns to 10.
+        int nCols2 = Math.min(nCols, 10);
+        for (int i = 0; i < nCols2; i++)
+        {
+            dlg.addCheckBox(colNames[i], false);
+        }
+        dlg.showDialog();
+
+        if (dlg.wasCanceled())
         {
             return;
         }
@@ -75,11 +81,13 @@ public class TableLinePlot implements TablePlugin
         {
             showColumnFlags[i] = dlg.getNextBoolean();
         }
-        
-        // Choose data for x-axis, or generate if requested
-	    double[] xData = xAxisIndex == 0 ? generateLinearVector(nRows) : table.getColumnValues(xAxisIndex-1);
 
-	    // Default name for table
+        // Choose data for x-axis, or generate if requested
+        double[] xData = xAxisIndex == 0 
+                ? generateLinearVector(nRows)
+                : table.getColumnValues(xAxisIndex - 1);
+
+        // Default name for table
         String tableName = table.getName();
         if (tableName == null || tableName.length() == 0)
         {
@@ -104,16 +112,26 @@ public class TableLinePlot implements TablePlugin
         {
             if (showColumnFlags[i]) 
             {
-                XYSeries series = chart.addSeries(colNames[i], xData, table.getColumnValues(i));
+                // check validity of current column
+                Column col = table.column(i);
+                if (!(table.column(i) instanceof NumericColumn))
+                {
+                    String pattern = "Column #%d (%s) is not numeric";
+                    String msg = String.format(pattern, i, col.getName());
+                    throw new RuntimeException(msg);
+                }
+                
+                // add a new series with data from current column
+                XYSeries series = chart.addSeries(colNames[i], xData, ((NumericColumn) col).getValues());
                 series.setMarker(SeriesMarkers.NONE);
             }
         }
 
         // Show it
         ImagoChartFrame.displayChart(frame, "Line Plot", chart);
-	}
-	
-	/**
+    }
+
+    /**
      * Generate a linear vectors containing values starting from 1, 2... to
      * nRows.
      * 
@@ -121,13 +139,13 @@ public class TableLinePlot implements TablePlugin
      *            the number of values
      * @return a linear vector of nRows values
      */
-	private double[] generateLinearVector(int nRows)
-	{
-	    double[] values = new double[nRows];
-	    for (int i = 0; i < nRows; i++)
-	    {
-	        values[i] = i+1;
-	    }
-	    return values;
-	}
+    private double[] generateLinearVector(int nRows)
+    {
+        double[] values = new double[nRows];
+        for (int i = 0; i < nRows; i++)
+        {
+            values[i] = i + 1;
+        }
+        return values;
+    }
 }
