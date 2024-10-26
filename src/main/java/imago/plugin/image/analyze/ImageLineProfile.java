@@ -31,7 +31,8 @@ import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.image.Image;
-import net.sci.table.DefaultNumericTable;
+import net.sci.table.NumericTable;
+import net.sci.table.impl.DefaultNumericTable;
 
 /**
  * Simple demo for line profile that computes profile along image diagonal.
@@ -114,7 +115,7 @@ public class ImageLineProfile implements ImagePlugin
         Point2D p2 = line.getP2();
         
         // dispatch processing according to image type
-        DefaultNumericTable table = null;
+        NumericTable table = null;
         if (array instanceof ScalarArray)
         {
             ScalarArray2D<?> array2d = ScalarArray2D.wrap((ScalarArray<?>) array);
@@ -186,7 +187,7 @@ public class ImageLineProfile implements ImagePlugin
     /**
      * Display a line profile.
      */
-    private void plotIntensityProfile(ImagoFrame parentFrame, DefaultNumericTable table)
+    private void plotIntensityProfile(ImagoFrame parentFrame, NumericTable table)
     {
         int nValues = table.rowCount();
 
@@ -224,7 +225,7 @@ public class ImageLineProfile implements ImagePlugin
         ImagoChartFrame.displayChart(parentFrame, "Intensity Profile", chart);
     }
     
-    private void plotRGB8LineProfile(ImagoFrame parentFrame, DefaultNumericTable table)
+    private void plotRGB8LineProfile(ImagoFrame parentFrame, NumericTable table)
     {
         int nChannels = table.columnCount();
         int nValues = table.rowCount();

@@ -32,7 +32,7 @@ import net.sci.geom.geom2d.Domain2D;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.image.Image;
 import net.sci.image.analyze.RegionHistogram;
-import net.sci.table.DefaultNumericTable;
+import net.sci.table.NumericTable;
 
 /**
  * Computes and display histogram computed within current ROI.
@@ -43,25 +43,24 @@ import net.sci.table.DefaultNumericTable;
 public class ImageRoiHistogram implements FramePlugin
 {
 
-	public ImageRoiHistogram()
-	{
-	}
+    public ImageRoiHistogram()
+    {
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
-	public void run(ImagoFrame frame, String args)
-	{
-		// Check type is image frame
-		if (!(frame instanceof ImageFrame))
-			return;
-		ImageFrame iframe = (ImageFrame) frame;
-		Image image = iframe.getImageHandle().getImage();
-		
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void run(ImagoFrame frame, String args)
+    {
+        // Check type is image frame
+        if (!(frame instanceof ImageFrame)) return;
+        ImageFrame iframe = (ImageFrame) frame;
+        Image image = iframe.getImageHandle().getImage();
+
         ImageViewer viewer = iframe.getImageViewer();
         if (!(viewer instanceof PlanarImageViewer))
         {
@@ -77,14 +76,12 @@ public class ImageRoiHistogram implements FramePlugin
             return;
         }
         
-        Domain2D domain = (Domain2D) selection;
+        NumericTable table = computeHistogram(image, (Domain2D) selection);
 
-		DefaultNumericTable table = computeHistogram(image, domain);
-		
-		showHistogram(frame, table);
-	}
+        showHistogram(frame, table);
+    }
 
-	private DefaultNumericTable computeHistogram(Image image, Domain2D domain)
+	private NumericTable computeHistogram(Image image, Domain2D domain)
 	{
 		Array<?> array = image.getData();
 		if (array instanceof ScalarArray2D)
@@ -117,7 +114,7 @@ public class ImageRoiHistogram implements FramePlugin
 	 *            the number of bins of the resulting histogram
 	 * @return a new instance of DefaultNumericTable containing the resulting histogram
 	 */
-	public static final DefaultNumericTable histogram(ScalarArray2D<?> array, Domain2D domain, double[] range, int nBins)
+	public static final NumericTable histogram(ScalarArray2D<?> array, Domain2D domain, double[] range, int nBins)
 	{
 		// compute the sizeX of an individual bin
 		double binWidth = (range[1] - range[0]) / (nBins - 1);
@@ -126,7 +123,7 @@ public class ImageRoiHistogram implements FramePlugin
 		int[] histo = RegionHistogram.histogram2d(array, domain, range, nBins);
 
 		// format the result into data table
-		DefaultNumericTable table = new DefaultNumericTable(nBins, 2);
+		NumericTable table = NumericTable.create(nBins, 2);
 		for (int i = 0; i < nBins; i++)
 		{
 			table.setValue(i, 0, range[0] + i * binWidth);
@@ -150,13 +147,13 @@ public class ImageRoiHistogram implements FramePlugin
 	 *            the input array of RGB8 elements
 	 * @return a new instance of DefaultNumericTable containing the resulting histogram.
 	 */
-	public static final DefaultNumericTable histogram(RGB8Array2D array, Domain2D domain)
+	public static final NumericTable histogram(RGB8Array2D array, Domain2D domain)
 	{
 		// allocate memory for result
 		int[][] histo = RegionHistogram.histogram2d(array, domain);
 
 		// format the result into data table
-		DefaultNumericTable table = new DefaultNumericTable(256, 4);
+		NumericTable table = NumericTable.create(256, 4);
 		for (int i = 0; i < 256; i++)
 		{
 			table.setValue(i, 0, i);
@@ -215,7 +212,7 @@ public class ImageRoiHistogram implements FramePlugin
 	// frame.setVisible(true);
 	// }
 
-	private void showHistogram(ImagoFrame parentFrame, DefaultNumericTable histo)
+	private void showHistogram(ImagoFrame parentFrame, NumericTable histo)
 	{
 		int nChannels = histo.columnCount();
 		if (nChannels == 2)
@@ -235,7 +232,7 @@ public class ImageRoiHistogram implements FramePlugin
 	/**
 	 * Display histogram of 256 gray scale images.
 	 */
-	private void showGray8Histogram(ImagoFrame parentFrame, DefaultNumericTable histo)
+	private void showGray8Histogram(ImagoFrame parentFrame, NumericTable histo)
 	{
 		int nValues = histo.rowCount();
 
@@ -305,7 +302,7 @@ public class ImageRoiHistogram implements FramePlugin
 		frame.setVisible(true);
 	}
 
-	private void showRGB8Histogram(ImagoFrame parentFrame, DefaultNumericTable histo)
+	private void showRGB8Histogram(ImagoFrame parentFrame, NumericTable histo)
 	{
 		int nChannels = histo.columnCount() - 1;
 		int nValues = histo.rowCount();

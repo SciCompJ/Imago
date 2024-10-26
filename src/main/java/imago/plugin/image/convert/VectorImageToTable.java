@@ -88,7 +88,7 @@ public class VectorImageToTable implements FramePlugin
         String[] channelNames = new String[nChannels];
         for (int c = 0; c < nChannels; c++)
         {
-            channelNames[c] = channelAxis.getItemName(c);
+            channelNames[c] = channelAxis.itemName(c);
         }
         
         // create the table
