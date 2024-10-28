@@ -250,7 +250,7 @@ public class TableFrame extends ImagoFrame
     public void updateTitle()
     {
         // table name
-        String name = this.table.getName();
+        String name = this.handle.getName();
         if (name == null || name.isEmpty()) 
         {
             name = "No Name";
@@ -258,21 +258,15 @@ public class TableFrame extends ImagoFrame
         
         String dimString = "(unknown size)";
         int dim[] = this.table.size();
-        if (dim.length == 2) 
-        {
-            dimString = dim[0] + "x" + dim[1];
-        } 
-        else if (dim.length == 3) 
-        {
-            dimString = dim[0] + "x" + dim[1] + "x" + dim[2];
-        } 
-        else if (dim.length == 4) 
-        {
-            dimString = dim[0] + "x" + dim[1] + "x" + dim[2] + "x" + dim[3];
-        }
+        dimString = dim[0] + "x" + dim[1];
         
         String titleString = name + " - " + dimString;
         this.setTitle(titleString);
+    }
+    
+    public TableHandle getTableHandle()
+    {
+        return this.handle;
     }
     
     public Table getTable()

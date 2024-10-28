@@ -1,30 +1,27 @@
 /**
  * 
  */
-package imago.plugin.image.edit;
+package imago.plugin.table.edit;
 
-import imago.app.ImageHandle;
+import imago.app.TableHandle;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
-import imago.gui.image.ImageFrame;
+import imago.gui.table.TableFrame;
 
 /**
  * Rename the name of the current image, ensuring unicity of its name.
- * 
- * @author dlegland
- *
  */
-public class RenameImage implements FramePlugin
+public class RenameTable implements FramePlugin
 {
     @Override
     public void run(ImagoFrame frame, String args)
     {
-        // get current frame
-        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-        String name = doc.getName();
+        // get current frame and table
+        TableHandle handle = ((TableFrame) frame).getTableHandle();
+        String name = handle.getName();
         
-        GenericDialog dlg = new GenericDialog(frame, "Rename Image");
+        GenericDialog dlg = new GenericDialog(frame, "Rename Table");
         dlg.addTextField("New Name:", name, 20);
         
         // wait for user validation or cancellation
@@ -47,9 +44,8 @@ public class RenameImage implements FramePlugin
         newName = frame.getGui().getAppli().createHandleName(newName);
         
         // setup name for image, handle, and frame.
-        doc.getImage().setName(newName);
-        doc.getImage().setExtension("");
-        doc.setName(newName);
-        ((ImageFrame) frame).updateTitle();
+        handle.setName(newName);
+        handle.getTable().setName(newName);
+        ((TableFrame) frame).updateTitle();
     }
 }

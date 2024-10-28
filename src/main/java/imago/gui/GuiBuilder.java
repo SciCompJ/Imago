@@ -203,6 +203,7 @@ import imago.plugin.table.edit.FoldTableToImage;
 import imago.plugin.table.edit.MergeTablesByColumns;
 import imago.plugin.table.edit.PrintTableSummary;
 import imago.plugin.table.edit.PrintTableToConsole;
+import imago.plugin.table.edit.RenameTable;
 import imago.plugin.table.edit.TableKeepNumericColumns;
 import imago.plugin.table.edit.TableSelectColumns;
 import imago.plugin.table.edit.TransposeTable;
@@ -725,56 +726,51 @@ public class GuiBuilder
         menu.addSeparator();
         addPlugin(menu, new GrayLevelImageCooccurenceMatrix(), "Gray Level Co-Occurence Matrix", hasImage2D && hasScalarImage);
         
-		return menu;
-	}
-
+        return menu;
+    }
+    
     /**
-    	 * Creates the sub-menu for the "Tools" item in the main menu bar.
-    	 */
-    	private JMenu createImageToolsMenu()
-    	{
-    		JMenu toolsMenu = new JMenu("Tools");
+     * Creates the sub-menu for the "Tools" item in the main menu bar.
+     */
+    private JMenu createImageToolsMenu()
+    {
+        JMenu toolsMenu = new JMenu("Tools");
+        
+        // tool selection handles
+        if (frame instanceof ImageFrame)
+        {
+            ImageFrame viewer = (ImageFrame) frame;
+            
+            addPlugin(toolsMenu, new ChangeCurrentTool(new SelectionTool(viewer, "select")), "Select", hasImage);
+            addPlugin(toolsMenu,
+                    new ChangeCurrentTool(new SelectLineSegmentTool(viewer, "selectLineSegment")), "Select Line",
+                    hasImage);
+            addPlugin(toolsMenu, new ChangeCurrentTool(new SelectRectangleTool(viewer, "selectRectangle")),
+                    "Select Rectangle", hasImage);
+            addPlugin(toolsMenu, new ChangeCurrentTool(new SelectPolygonTool(viewer, "selectPolygon")),
+                    "Select Polygon", hasImage);
+            addPlugin(toolsMenu, new ChangeCurrentTool(new SelectPolylineTool(viewer, "selectPolyline")),
+                    "Select Polyline", hasImage);
+            
+            toolsMenu.addSeparator();
+            addPlugin(toolsMenu, new ChangeCurrentTool(new DrawValueTool(viewer, "drawValue")), "Draw (Dot)",
+                    hasScalarImage);
+            addPlugin(toolsMenu, new ChangeCurrentTool(new DrawBrushValueTool(viewer, "drawBrushValue")),
+                    "Draw (Brush)", hasScalarImage);
+            addPlugin(toolsMenu, new ChangeCurrentTool(new FloodFillTool(viewer, "floodFillValue")), "Flood-Fill",
+                    hasScalarImage);
+            // addPlugin(editMenu,
+            // new ChangeCurrentTool(new DrawValueTool(viewer, "drawBlack",
+            // 0.0)),
+            // "Draw Black", hasScalarImage);
+            
+            toolsMenu.addSeparator();
+            addPlugin(toolsMenu, new ImageSetScaleFromLineSelection(), "Set Scale from Selection...", hasImage);
+        }
+        
+        return toolsMenu;
+    }
     
-    		// tool selection handles
-    		if (frame instanceof ImageFrame)
-    		{
-    			ImageFrame viewer = (ImageFrame) frame;
-    
-    			addPlugin(toolsMenu, new ChangeCurrentTool(new SelectionTool(viewer, "select")), "Select", hasImage);
-    			addPlugin(toolsMenu, 
-                        new ChangeCurrentTool(new SelectLineSegmentTool(viewer, "selectLineSegment")),
-                        "Select Line", hasImage);
-                addPlugin(toolsMenu, 
-                        new ChangeCurrentTool(new SelectRectangleTool(viewer, "selectRectangle")),
-                        "Select Rectangle", hasImage);
-                addPlugin(toolsMenu, 
-                        new ChangeCurrentTool(new SelectPolygonTool(viewer, "selectPolygon")),
-                        "Select Polygon", hasImage);
-                addPlugin(toolsMenu, 
-                        new ChangeCurrentTool(new SelectPolylineTool(viewer, "selectPolyline")),
-                        "Select Polyline", hasImage);
-    
-                toolsMenu.addSeparator();
-                addPlugin(toolsMenu, 
-                        new ChangeCurrentTool(new DrawValueTool(viewer, "drawValue")),
-                        "Draw (Dot)", hasScalarImage);
-                addPlugin(toolsMenu, 
-                        new ChangeCurrentTool(new DrawBrushValueTool(viewer, "drawBrushValue")),
-                        "Draw (Brush)", hasScalarImage);
-                addPlugin(toolsMenu, 
-                        new ChangeCurrentTool(new FloodFillTool(viewer, "floodFillValue")),
-                        "Flood-Fill", hasScalarImage);
-    //            addPlugin(editMenu, 
-    //                    new ChangeCurrentTool(new DrawValueTool(viewer, "drawBlack", 0.0)),
-    //                    "Draw Black", hasScalarImage);
-    
-                toolsMenu.addSeparator();
-                addPlugin(toolsMenu, new ImageSetScaleFromLineSelection(), "Set Scale from Selection...", hasImage);
-    		}
-    
-    		return toolsMenu;
-    	}
-
     /**
      * Creates the sub-menu for the "File" item in the main menu bar of Table frames.
      */
@@ -802,9 +798,11 @@ public class GuiBuilder
     {
         JMenu editMenu = new JMenu("Edit");
         
-        addPlugin(editMenu, new TableSelectColumns(), "Select Columns");
+        addPlugin(editMenu, new RenameTable(), "Rename...");
+        editMenu.addSeparator();
+        addPlugin(editMenu, new TableSelectColumns(), "Select Columns...");
         addPlugin(editMenu, new TableKeepNumericColumns(), "Keep Numeric Columns");
-        addPlugin(editMenu, new MergeTablesByColumns(), "Merge Columns");
+        addPlugin(editMenu, new MergeTablesByColumns(), "Merge Columns...");
         editMenu.addSeparator();
         addPlugin(editMenu, new TransposeTable(), "Transpose");
         editMenu.addSeparator();
