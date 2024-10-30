@@ -8,6 +8,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
+import imago.gui.GuiBuilder;
 import net.sci.array.Array;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.numeric.IntArray;
@@ -61,6 +62,10 @@ public class SetImageTypeToLabel implements FramePlugin
 
         // notify changes
         handle.notifyImageHandleChange(ImageHandle.Event.IMAGE_MASK | ImageHandle.Event.CHANGE_MASK);
+        
+        // need to refresh GUI menu
+        new GuiBuilder(frame).createMenuBar();
         viewer.updateTitle();
+        frame.getWidget().validate();
     }
 }
