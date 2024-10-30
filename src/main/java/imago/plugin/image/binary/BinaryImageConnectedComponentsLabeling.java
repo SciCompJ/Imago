@@ -10,7 +10,11 @@ import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.binary.BinaryArray;
+import net.sci.array.numeric.Int32Array;
 import net.sci.array.numeric.IntArray;
+import net.sci.array.numeric.UInt16Array;
+import net.sci.array.numeric.UInt8Array;
+import net.sci.array.numeric.impl.RunLengthInt32ArrayFactory;
 import net.sci.image.Connectivity2D;
 import net.sci.image.Connectivity3D;
 import net.sci.image.Image;
@@ -64,7 +68,7 @@ public class BinaryImageConnectedComponentsLabeling implements FramePlugin
         {
             gd.addChoice("Connectivity: ", new String[] { "6", "26" }, "6");
         }
-        gd.addChoice("Output Type: ", new String[] { "8-bits", "16-bits", "32-bits" }, "16-bits");
+        gd.addChoice("Output Type: ", new String[] { "8-bits", "16-bits", "32-bits", "32-bits (RLE)" }, "16-bits");
         gd.showDialog();
 
         if (gd.getOutput() == GenericDialog.Output.CANCEL)
@@ -76,9 +80,14 @@ public class BinaryImageConnectedComponentsLabeling implements FramePlugin
         int connIndex = gd.getNextChoiceIndex();
         int connValue = nd == 2 ? (connIndex == 0 ? 4 : 8) : (connIndex == 0 ? 6 : 26);
         int bitDepthIndex = gd.getNextChoiceIndex();
-        int[] bitDepths = new int[] { 8, 16, 32 };
-        int bitDepth = bitDepths[bitDepthIndex];
-        IntArray.Factory<?> factory = ComponentsLabeling.chooseIntArrayFactory(bitDepth);
+        IntArray.Factory<?> factory = switch (bitDepthIndex)
+        {
+            case 0 -> UInt8Array.defaultFactory;
+            case 1 -> UInt16Array.defaultFactory;
+            case 2 -> Int32Array.defaultFactory;
+            case 3 -> new RunLengthInt32ArrayFactory();
+            default -> throw new IllegalArgumentException("Bit depth index out of range");
+        };
 
         // Create Components Labeling algorithm
         ComponentsLabeling algo = switch(nd)
@@ -90,7 +99,7 @@ public class BinaryImageConnectedComponentsLabeling implements FramePlugin
         };
 
         // apply connected components labeling
-        Image result = ((ImageFrame) frame).runOperator(algo, image);
+        Image result = imageFrame.runOperator(algo, image);
         result.setName(image.getName() + "-lbl");
         
         // add the image document to GUI
