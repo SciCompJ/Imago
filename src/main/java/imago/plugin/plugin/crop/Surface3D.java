@@ -35,7 +35,7 @@ import net.sci.array.numeric.Float32Array2D;
 import net.sci.array.numeric.UInt8Array2D;
 import net.sci.array.numeric.UInt8Array3D;
 import net.sci.array.numeric.impl.SliceBufferedUInt8Array3D;
-import net.sci.array.numeric.interp.LinearInterpolator3D;
+import net.sci.array.numeric.interp.LinearInterpolatedArray3D;
 import net.sci.array.numeric.interp.ScalarFunction3D;
 import net.sci.array.numeric.process.FiniteDifferences;
 import net.sci.geom.geom2d.LineSegment2D;
@@ -654,7 +654,7 @@ public class Surface3D extends AlgoStub implements AlgoListener
         
         // create interpolation operators, using buffering of 3D image slices
         UInt8Array3D array2 = new SliceBufferedUInt8Array3D(array, 10);
-        ScalarFunction3D interp = new LinearInterpolator3D(array2);
+        ScalarFunction3D interp = new LinearInterpolatedArray3D(array2);
         
         // Evaluate image slice
         for (int iy = 0; iy < height; iy++)

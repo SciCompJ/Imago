@@ -25,7 +25,7 @@ import net.sci.array.color.RGB8Array2D;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray2D;
 import net.sci.array.numeric.VectorArray2D;
-import net.sci.array.numeric.interp.LinearInterpolator2D;
+import net.sci.array.numeric.interp.LinearInterpolatedArray2D;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.LineSegment2D;
@@ -146,7 +146,7 @@ public class ImageLineProfile implements ImagePlugin
         double dx = (p2.x() - x0) / n;
         double dy = (p2.y() - y0) / n;
         
-        LinearInterpolator2D interp = new LinearInterpolator2D(array);
+        LinearInterpolatedArray2D interp = new LinearInterpolatedArray2D(array);
         DefaultNumericTable table = new DefaultNumericTable(n, 1);
         for (int i = 0; i < n; i++)
         {
@@ -172,7 +172,7 @@ public class ImageLineProfile implements ImagePlugin
         for (int c = 0; c < 3; c++)
         {
             ScalarArray2D<?> channel = array.channel(c);
-            LinearInterpolator2D interp = new LinearInterpolator2D(channel);
+            LinearInterpolatedArray2D interp = new LinearInterpolatedArray2D(channel);
             for (int i = 0; i < n; i++)
             {
                 double x = x0 + i * dx;
