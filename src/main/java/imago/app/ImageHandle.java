@@ -231,18 +231,22 @@ public class ImageHandle extends ObjectHandle
         }
     }
     
+    // =============================================================
+    // General methods
     
-	// =============================================================
-	// General methods
-	
-	public void copyDisplaySettings(ImageHandle doc) 
-	{
-		if (this.image.getDimension() > 2) 
-		{
-			this.currentSliceIndex = Math.min(Math.max(doc.getCurrentSliceIndex(), 0), this.image.getSize(2));
-		}	
-	}
-	
+    public void copyDisplaySettings(ImageHandle doc)
+    {
+        if (this.image.getDimension() > 2)
+        {
+            // use same z-slice index only if the two stacks have the same size
+            int size2 = this.image.getSize(2);
+            if (doc.image.getSize(2) == size2)
+            {
+                this.currentSliceIndex = Math.min(Math.max(doc.getCurrentSliceIndex(), 0), size2);
+            }
+        }
+    }
+    
     public Image getObject()
     {
         return this.image;
