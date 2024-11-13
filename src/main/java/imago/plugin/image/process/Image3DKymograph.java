@@ -9,7 +9,6 @@ import imago.gui.image.ImageViewer;
 import imago.plugin.image.ImagePlugin;
 import net.sci.array.Array;
 import net.sci.array.numeric.ScalarArray3D;
-import net.sci.axis.Axis;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Curve2D;
 import net.sci.geom.geom2d.Geometry2D;
@@ -93,7 +92,7 @@ public class Image3DKymograph implements ImagePlugin
         Image resImage = new Image(res);
         Calibration calib = image.getCalibration();
         Calibration resCalib = resImage.getCalibration();
-        resCalib.setAxis(0, new ImageAxis("Curvilinear Abscissa", Axis.Type.SPACE, 1.0, 0.0, ""));
+        resCalib.setAxis(0, new ImageAxis("Curvilinear Abscissa", ImageAxis.Type.SPACE, 1.0, 0.0, ""));
         resCalib.setAxis(1, calib.getAxis(2));
         
         // add the image document to GUI

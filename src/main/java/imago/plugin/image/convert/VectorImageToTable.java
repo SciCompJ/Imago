@@ -26,42 +26,41 @@ import net.sci.table.Table;
  */
 public class VectorImageToTable implements FramePlugin
 {
-	public VectorImageToTable()
-	{
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
-	public void run(ImagoFrame frame, String args)
-	{
-		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-		Image image = doc.getImage();
-		
-		if (image == null)
-		{
-			return;
-		}
-		Array<?> array = image.getData();
-		if (array == null)
-		{
-			return;
-		}
-		if (!(array instanceof VectorArray))
-		{
-            ImagoGui.showErrorDialog(frame, "Requires a Vector image", "Data Type Error");
-			return;
-		}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void run(ImagoFrame frame, String args)
+    {
+        // get current frame
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
+        Image image = doc.getImage();
 
-		VectorArray<?,?> vectorArray = (VectorArray<?,?>) array;
-		int nChannels = vectorArray.channelCount();
-		
-		GenericDialog dlg = new GenericDialog(frame, "Convert To Table");
-		dlg.addCheckBox("Include Coords", true);
-		
-		// Display dialog and wait for OK or Cancel
+        if (image == null)
+        {
+            return;
+        }
+        Array<?> array = image.getData();
+        if (array == null)
+        {
+            return;
+        }
+        if (!(array instanceof VectorArray))
+        {
+            ImagoGui.showErrorDialog(frame, "Requires a Vector image", "Data Type Error");
+            return;
+        }
+
+        VectorArray<?, ?> vectorArray = (VectorArray<?, ?>) array;
+        int nChannels = vectorArray.channelCount();
+
+        GenericDialog dlg = new GenericDialog(frame, "Convert To Table");
+        dlg.addCheckBox("Include Coords", true);
+
+        // Display dialog and wait for OK or Cancel
         dlg.showDialog();
         if (dlg.wasCanceled())
         {
@@ -74,7 +73,7 @@ public class VectorImageToTable implements FramePlugin
         long nElems = array.elementCount();
         if (nElems > Integer.MAX_VALUE)
         {
-            throw new RuntimeException("Array has too many elements to be transformed as Table");
+            throw new RuntimeException("Array has too many elements to be transformed into a Table");
         }
 
         // input image dimensions
@@ -112,9 +111,8 @@ public class VectorImageToTable implements FramePlugin
                 row++;
             }
             
-            String[] colNames = new String[nCols];
-
             // create column names for dimensions
+            String[] colNames = new String[nCols];
             for (int d = 0; d < nDims; d++)
             {
                 colNames[d] = calib.getAxis(d).getShortName();

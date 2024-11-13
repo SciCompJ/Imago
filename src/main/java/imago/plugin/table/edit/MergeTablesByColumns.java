@@ -77,11 +77,12 @@ public class MergeTablesByColumns implements FramePlugin
         }
         
         // create table
-        Table res = Table.create(table1.rowCount(), columns.size());
-        for (int i = 0; i < columns.size(); i++)
-        {
-            res.setColumn(i, columns.get(i));
-        }
+        Table res = Table.create(columns.toArray(new Column[] {}));
+//        Table res = Table.create(table1.rowCount(), columns.size());
+//        for (int i = 0; i < columns.size(); i++)
+//        {
+//            res.setColumnValues(i, columns.get(i).getValues());
+//        }
         res.setName(table1.getName() + "+" + table2.getName());
         res.setRowNames(table1.getRowNames());
         
