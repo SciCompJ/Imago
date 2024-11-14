@@ -32,23 +32,39 @@ public class PrintTableSummary implements FramePlugin
 
         textLines.add("Table name: " + table.getName());
         
-        // determine max length of column names
-        int nChars = 0;
-        for (String name : table.getColumnNames())
-        {
-            nChars = Math.max(nChars, name.length());
-        }
-        nChars = Math.min(nChars, 15);
-        
-        // create format string
+        // number of digits for display of column index
         int nDigits = table.columnCount() > 9 ? 2 : 1;
-        String format = " [%" + nDigits + "d] %-" + nChars + "s: %s";
         
-        // iterate over columns
-        int c = 0;
-        for (Column col : table.columns())
+        // Use different processing depending on column names exist or not
+        String[] colNames = table.getColumnNames();
+        if (colNames != null)
         {
-            textLines.add(String.format(Locale.ENGLISH, format, c++, col.getName(), col.contentSummary()));
+            int nChars = 0;
+            for (String name : table.getColumnNames())
+            {
+                nChars = Math.max(nChars, name.length());
+            }
+            nChars = Math.min(nChars, 15);
+            
+            // create format string
+            String format = " [%" + nDigits + "d] %-" + nChars + "s: %s";
+            
+            // iterate over columns
+            int c = 0;
+            for (Column col : table.columns())
+            {
+                textLines.add(String.format(Locale.ENGLISH, format, c++, col.getName(), col.contentSummary()));
+            }
+        }
+        else
+        {
+            String format = " [%" + nDigits + "d]: %s";
+            // iterate over columns
+            int c = 0;
+            for (Column col : table.columns())
+            {
+                textLines.add(String.format(Locale.ENGLISH, format, c++, col.contentSummary()));
+            }
         }
         
         ImagoTextFrame newFrame = new ImagoTextFrame(frame, "Table Summary", textLines);
