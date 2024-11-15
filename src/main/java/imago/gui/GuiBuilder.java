@@ -202,7 +202,7 @@ import imago.plugin.table.SaveTable;
 import imago.plugin.table.ShowDemoTable;
 import imago.plugin.table.edit.FoldTableToImage;
 import imago.plugin.table.edit.MergeTablesByColumns;
-import imago.plugin.table.edit.PrintTableSummary;
+import imago.plugin.table.edit.PrintTableInfo;
 import imago.plugin.table.edit.PrintTableToConsole;
 import imago.plugin.table.edit.RenameTable;
 import imago.plugin.table.edit.TableKeepNumericColumns;
@@ -811,7 +811,7 @@ public class GuiBuilder
         editMenu.addSeparator();
         addPlugin(editMenu, new FoldTableToImage(), "Fold Table to Image");
         editMenu.addSeparator();
-        addPlugin(editMenu, new PrintTableSummary(), "Print Summary");
+        addPlugin(editMenu, new PrintTableInfo(), "Print Table Info");
         addPlugin(editMenu, new PrintTableToConsole(), "Print to Console");
         
         return editMenu;

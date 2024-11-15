@@ -15,12 +15,12 @@ import net.sci.table.Column;
 import net.sci.table.Table;
 
 /**
- * Display summary of the table: table name, and short summary of the content of
+ * Display some info on the table: table name, and short summary of the content of
  * each column.
  * 
  * @see imago.plugin.image.edit.PrintImageInfos;
  */
-public class PrintTableSummary implements FramePlugin
+public class PrintTableInfo implements FramePlugin
 {
 
     @Override
@@ -39,31 +39,24 @@ public class PrintTableSummary implements FramePlugin
         String[] colNames = table.getColumnNames();
         if (colNames != null)
         {
-            int nChars = 0;
-            for (String name : table.getColumnNames())
-            {
-                nChars = Math.max(nChars, name.length());
-            }
-            nChars = Math.min(nChars, 15);
-            
             // create format string
+            int nChars = Math.min(maxLength(colNames), 15);
             String format = " [%" + nDigits + "d] %-" + nChars + "s: %s";
             
             // iterate over columns
-            int c = 0;
-            for (Column col : table.columns())
+            for (int c = 0; c < table.columnCount(); c++)
             {
-                textLines.add(String.format(Locale.ENGLISH, format, c++, col.getName(), col.contentSummary()));
+                Column col = table.column(c);
+                textLines.add(String.format(Locale.ENGLISH, format, c, col.getName(), col.contentSummary()));
             }
         }
         else
         {
             String format = " [%" + nDigits + "d]: %s";
             // iterate over columns
-            int c = 0;
-            for (Column col : table.columns())
+            for (int c = 0; c < table.columnCount(); c++)
             {
-                textLines.add(String.format(Locale.ENGLISH, format, c++, col.contentSummary()));
+                textLines.add(String.format(Locale.ENGLISH, format, c, table.column(c).contentSummary()));
             }
         }
         
@@ -72,5 +65,14 @@ public class PrintTableSummary implements FramePlugin
         newFrame.getWidget().setSize(new Dimension(600, 400));
         newFrame.setVisible(true);
     }
-
+    
+    private static final int maxLength(String[] strings)
+    {
+        int nChars = 0;
+        for (String str : strings)
+        {
+            nChars = Math.max(nChars, str.length());
+        }
+        return nChars;
+    }
 }
