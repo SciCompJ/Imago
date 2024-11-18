@@ -22,6 +22,7 @@ import imago.app.TableHandle;
 import imago.gui.GuiBuilder;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
+import net.sci.axis.Axis;
 import net.sci.table.Table;
 
 /**
@@ -184,8 +185,9 @@ public class TableFrame extends ImagoFrame
         JScrollPane scrollPane = new JScrollPane(jtable);
         mainPanel.add(scrollPane, BorderLayout.CENTER);
         
-        // decorate the scroll panel with label column
-        JTable rowTable = new RowNumberTable(jtable);
+        // decorate the scroll panel with either row index, or row names, if they exist
+        Axis rowAxis = table.getRowAxis();
+        JTable rowTable = rowAxis != null ? new RowNamesTable(jtable, table.getRowNames()) : new RowNumberTable(jtable);
         scrollPane.setRowHeaderView(rowTable);
         scrollPane.setCorner(JScrollPane.UPPER_LEFT_CORNER, rowTable.getTableHeader());
         
