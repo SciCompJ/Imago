@@ -209,6 +209,7 @@ import imago.plugin.table.edit.RenameTable;
 import imago.plugin.table.edit.TableKeepNumericColumns;
 import imago.plugin.table.edit.TableSelectColumns;
 import imago.plugin.table.edit.TransposeTable;
+import imago.plugin.table.plot.PlotTableColumnHistogram;
 import imago.plugin.table.plot.TableLinePlot;
 import imago.plugin.table.plot.TableScatterPlot;
 import imago.plugin.table.process.AggregateTableWithColumn;
@@ -828,6 +829,8 @@ public class GuiBuilder
         JMenu plotMenu = new JMenu("Plot");
         addPlugin(plotMenu, new TableScatterPlot(), "Scatter Plot...");
         addPlugin(plotMenu, new TableLinePlot(), "Line Plot...");
+        plotMenu.addSeparator();
+        addPlugin(plotMenu, new PlotTableColumnHistogram(), "Histogram...");
         return plotMenu;
     }
     
