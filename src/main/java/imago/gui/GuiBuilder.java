@@ -213,6 +213,7 @@ import imago.plugin.table.plot.PlotTableColumnHistogram;
 import imago.plugin.table.plot.TableLinePlot;
 import imago.plugin.table.plot.TableScatterPlot;
 import imago.plugin.table.process.AggregateTableWithColumn;
+import imago.plugin.table.process.TableConfusionMatrix;
 import imago.plugin.table.process.TableKMeans;
 import imago.plugin.table.process.TablePca;
 import net.sci.array.Array;
@@ -842,11 +843,13 @@ public class GuiBuilder
     {
         JMenu processMenu = new JMenu("Process");
         
-        addPlugin(processMenu, new AggregateTableWithColumn(), "Aggregate by group");
+        addPlugin(processMenu, new AggregateTableWithColumn(), "Aggregate by group...");
         processMenu.addSeparator();
         addPlugin(processMenu, new TablePca(), "Principal Components Analysis");
         processMenu.addSeparator();
-        addPlugin(processMenu, new TableKMeans(), "K-Means");
+        addPlugin(processMenu, new TableKMeans(), "K-Means...");
+        processMenu.addSeparator();
+        addPlugin(processMenu, new TableConfusionMatrix(), "Confusion Matrix...");
         
         return processMenu;
     }
