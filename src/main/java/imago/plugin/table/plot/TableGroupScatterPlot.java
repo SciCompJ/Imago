@@ -3,6 +3,8 @@
  */
 package imago.plugin.table.plot;
 
+import java.util.ArrayList;
+
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
@@ -13,18 +15,20 @@ import imago.gui.ImagoFrame;
 import imago.gui.frames.ImagoChartFrame;
 import imago.gui.table.TableFrame;
 import imago.plugin.table.TablePlugin;
+import net.sci.table.CategoricalColumn;
 import net.sci.table.NumericColumn;
 import net.sci.table.Table;
 
 
 /**
- * Create a scatter plot from two (numeric) columns in a data table.
+ * Create a scatter plot from two columns in a data table, using a third column
+ * to determine groups.
  * 
- * @see TableGroupScatterPlot
+ * @see TableScatterPlot
  * 
  * @author David Legland
  */
-public class TableScatterPlot implements TablePlugin
+public class TableGroupScatterPlot implements TablePlugin
 {
     /*
      * (non-Javadoc)
@@ -42,17 +46,19 @@ public class TableScatterPlot implements TablePlugin
         }
         Table table = ((TableFrame) frame).getTable();
         
-        if (table.columnCount() < 2)
+        if (table.columnCount() < 3)
         {
-            throw new RuntimeException("Requires a table with at least two columns");
+            throw new RuntimeException("Requires a table with at least three columns");
         }
         
         int indColX = 0;
         int indColY = 1;
-        GenericDialog dlg = new GenericDialog(frame, "Scatter Plot");
+        int indColG = 2;
+        GenericDialog dlg = new GenericDialog(frame, "Scatter Groups");
         String[] colNames = table.getColumnNames();
         dlg.addChoice("X-Axis Column", colNames, colNames[0]);
         dlg.addChoice("Y-Axis Column", colNames, colNames[1]);
+        dlg.addChoice("Groups Column", colNames, colNames[2]);
         
         dlg.showDialog();
         if (dlg.wasCanceled())
@@ -62,6 +68,7 @@ public class TableScatterPlot implements TablePlugin
         
         indColX = dlg.getNextChoiceIndex();
         indColY = dlg.getNextChoiceIndex();
+        indColG = dlg.getNextChoiceIndex();
    
         if (!(table.column(indColX) instanceof NumericColumn))
         {
@@ -71,11 +78,30 @@ public class TableScatterPlot implements TablePlugin
         {
             throw new RuntimeException("Requires a numeric column");
         }
+        if (!(table.column(indColG) instanceof CategoricalColumn))
+        {
+            throw new RuntimeException("Group column must be a categorical column");
+        }
         NumericColumn colX = (NumericColumn) table.column(indColX);
         NumericColumn colY = (NumericColumn) table.column(indColY);
+        CategoricalColumn groups = (CategoricalColumn) table.column(indColG);
         
-        double[] xData = colX.getValues();
-        double[] yData = colY.getValues();
+        int nGroups = groups.levelNames().length;
+        ArrayList<ArrayList<Double>> xData = new ArrayList<>(nGroups);
+        ArrayList<ArrayList<Double>> yData = new ArrayList<>(nGroups);
+        for (int i = 0; i < nGroups; i++)
+        {
+            xData.add(new ArrayList<Double>());
+            yData.add(new ArrayList<Double>());
+        }
+        
+        // iterate over rows
+        for (int i = 0; i < table.rowCount(); i++)
+        {
+            int iGroup = groups.getLevelIndex(i);
+            xData.get(iGroup).add(colX.getValue(i));
+            yData.get(iGroup).add(colY.getValue(i));
+        }
 
         String chartTitle = table.getName();
         if (chartTitle == null || chartTitle.length() == 0)
@@ -95,9 +121,15 @@ public class TableScatterPlot implements TablePlugin
         
         chart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
         chart.getStyler().setMarkerSize(4);
+        chart.getStyler().setLegendVisible(true);
         
-        chart.addSeries("data", xData, yData);
-        chart.getStyler().setLegendVisible(false);
+        String[] levelNames = groups.levelNames();
+        for (int i = 0; i < nGroups; i++)
+        {
+            double[] xarr = xData.get(i).stream().mapToDouble(Double::doubleValue).toArray();
+            double[] yarr = yData.get(i).stream().mapToDouble(Double::doubleValue).toArray();
+            chart.addSeries(levelNames[i], xarr, yarr);
+        }
         
         // Show it
         ImagoChartFrame.displayChart(frame, "Scatter Plot", chart);
