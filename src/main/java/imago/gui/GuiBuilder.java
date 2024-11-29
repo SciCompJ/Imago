@@ -211,6 +211,7 @@ import imago.plugin.table.edit.TableSelectColumns;
 import imago.plugin.table.edit.TransposeTable;
 import imago.plugin.table.plot.PlotTableColumnHistogram;
 import imago.plugin.table.plot.TableLinePlot;
+import imago.plugin.table.plot.TablePairPlot;
 import imago.plugin.table.plot.TableScatterPlot;
 import imago.plugin.table.plot.TableGroupScatterPlot;
 import imago.plugin.table.process.AggregateTableWithColumn;
@@ -830,7 +831,9 @@ public class GuiBuilder
     {
         JMenu plotMenu = new JMenu("Plot");
         addPlugin(plotMenu, new TableScatterPlot(), "Scatter Plot...");
-        addPlugin(plotMenu, new TableGroupScatterPlot(), "Group Scatter Plot...");
+        addPlugin(plotMenu, new TableGroupScatterPlot(), "Scatter Plot By Group...");
+        addPlugin(plotMenu, new TablePairPlot(), "Pair Plot");
+        plotMenu.addSeparator();
         addPlugin(plotMenu, new TableLinePlot(), "Line Plot...");
         plotMenu.addSeparator();
         addPlugin(plotMenu, new PlotTableColumnHistogram(), "Histogram...");

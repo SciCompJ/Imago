@@ -3,13 +3,17 @@
  */
 package imago.gui.frames;
 
+import java.awt.GridLayout;
 import java.awt.Point;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import org.knowm.xchart.XChartPanel;
+import org.knowm.xchart.XYChart;
 import org.knowm.xchart.internal.chartpart.Chart;
 
 import imago.gui.ImagoFrame;
@@ -49,6 +53,65 @@ public class ImagoChartFrame extends ImagoFrame
                     @SuppressWarnings({ "rawtypes", "unchecked" })
                     XChartPanel chartPanel = new XChartPanel(chart);
                     jFrame.add(chartPanel);
+                    
+                    // Display the window.
+                    jFrame.pack();
+                    jFrame.setVisible(true);
+                }
+            });
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        catch (InvocationTargetException e)
+        {
+            e.printStackTrace();
+        }
+        
+        return frame;
+    }
+
+    public static final ImagoChartFrame displayChartMatrix(ImagoFrame parentFrame, String title,
+            List<XYChart> charts)
+    {
+        // Create and set up the window.
+        final ImagoChartFrame frame = new ImagoChartFrame(parentFrame, title);
+        JFrame jFrame = frame.getWidget();
+        jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        
+        // relocate with respect to parent frame
+        Point pos0 = parentFrame.getWidget().getLocation();
+        jFrame.setLocation(pos0.x + 30, pos0.y + 20);
+        
+        // setup grid layout for chart panels
+        int numRows = (int) (Math.sqrt(charts.size()) + .5);
+        int numColumns = (int) ((double) charts.size() / numRows + 1);
+        jFrame.getContentPane().setLayout(new GridLayout(numRows, numColumns));
+        
+        // Schedule a job for the event-dispatching thread:
+        // creating and showing this application's GUI.
+        try
+        {
+            javax.swing.SwingUtilities.invokeAndWait(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    for (XYChart chart : charts)
+                    {
+                        if (chart != null)
+                        {
+                            XChartPanel<XYChart> chartPanel = new XChartPanel<XYChart>(chart);
+                            // chartPanels.add(chartPanel);
+                            jFrame.add(chartPanel);
+                        }
+                        else
+                        {
+                            JPanel chartPanel = new JPanel();
+                            jFrame.getContentPane().add(chartPanel);
+                        }
+                    }
                     
                     // Display the window.
                     jFrame.pack();
