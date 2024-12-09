@@ -6,12 +6,15 @@ package imago.plugin.image.process;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.MenuItem;
 import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Locale;
 
 import javax.swing.BoxLayout;
@@ -19,17 +22,24 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import com.google.gson.stream.JsonWriter;
 
 import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
-import imago.gui.ImagoGui;
 import imago.gui.imagepair.ImagePairFrame;
 import imago.gui.imagepair.ImagePairViewer;
 import imago.gui.util.GuiHelper;
@@ -43,9 +53,9 @@ import net.sci.register.transform.CenteredSimilarity2D;
 import net.sci.register.transform.TranslationModel2D;
 
 /**
- * 
+ * Provides a simple interface to quickly register two 2D images. 
  */
-public class ImagePair2DRegister implements FramePlugin, KeyListener
+public class ImagePair2DRegister implements FramePlugin
 {
     // ===================================================================
     // Class properties
@@ -80,11 +90,7 @@ public class ImagePair2DRegister implements FramePlugin, KeyListener
     
     JFrame pluginFrame = null;
 
-    
-    // ----------------------------------------------------
-    // Menu items
-    
-    MenuItem saveRegistrationItem;
+    JFileChooser saveWindow = null;
     
     
     // ----------------------------------------------------
@@ -116,33 +122,34 @@ public class ImagePair2DRegister implements FramePlugin, KeyListener
     JButton runButton;
 
     
+    // ===================================================================
+    // Implementation of the Plugin interface    
+    
+    @Override
+    public void run(ImagoFrame frame, String args)
+    {
+        this.parentFrame = frame;
+        
+        // build control frame
+        this.pluginFrame = new JFrame("Simple Registration");
+        if (parentFrame != null)
+        {
+            Point pos = parentFrame.getWidget().getLocation();
+            this.pluginFrame.setLocation(pos.x + 30, pos.y + 20);
+        }
+        
+        initWidgets();
+        setupLayout(pluginFrame);
+        setupMenu(pluginFrame);
+        
+        pluginFrame.pack();
+        pluginFrame.setVisible(true);
+    }
+    
+
     // ====================================================
     // Main processing methods
  
-    // ===================================================================
-        // Implementation of the Plugin interface    
-    
-        @Override
-        public void run(ImagoFrame frame, String args)
-        {
-            this.parentFrame = frame;
-            
-            // build control frame
-            this.pluginFrame = new JFrame("Simple Registration");
-            if (parentFrame != null)
-            {
-                Point pos = parentFrame.getWidget().getLocation();
-                this.pluginFrame.setLocation(pos.x + 30, pos.y + 20);
-            }
-            
-            initWidgets();
-            setupLayout(pluginFrame);
-    //        setupMenu(pluginFrame);
-            
-            pluginFrame.pack();
-            pluginFrame.setVisible(true);
-        }
-
     /**
      * The main processing method. It applies several processing steps:
      * <ul>
@@ -179,33 +186,20 @@ public class ImagePair2DRegister implements FramePlugin, KeyListener
     
     public void updateTransform()
     {
-        int transfoIndex = this.transformModelCombo.getSelectedIndex();
+        // pre-compute center
+        double sizeX = this.refImage.getSize(0);
+        double sizeY = this.refImage.getSize(1);
+        Point2D center = new Point2D(sizeX / 2, sizeY / 2);
         
-        switch (transfoIndex)
+        int transfoIndex = this.transformModelCombo.getSelectedIndex();
+        this.transform = switch (transfoIndex)
         {
-        case 0:
-            this.transform = new TranslationModel2D(this.xShift, this.yShift);
-            break;
-            
-        case 1:
-        {
-            double sizeX = this.refImage.getSize(0);
-            double sizeY = this.refImage.getSize(1);
-            Point2D center = new Point2D(sizeX/2, sizeY/2);
-            this.transform = new CenteredMotion2D(center, this.rotationAngle, this.xShift, this.yShift);
-            break;
-        }
-        case 2:
-        {
-            double sizeX = this.refImage.getSize(0);
-            double sizeY = this.refImage.getSize(1);
-            Point2D center = new Point2D(sizeX/2, sizeY/2);
-            this.transform = new CenteredSimilarity2D(center, this.logScaling, this.rotationAngle, this.xShift, this.yShift);
-            break;
-        }
-        default:
-            throw new RuntimeException("This transformation is not implemented: " + this.transform.getClass().getName());
-        }
+            case 0 -> new TranslationModel2D(this.xShift, this.yShift);
+            case 1 -> new CenteredMotion2D(center, this.rotationAngle, this.xShift, this.yShift);
+            case 2 -> new CenteredSimilarity2D(center, this.logScaling, this.rotationAngle, this.xShift, this.yShift);
+            default -> throw new RuntimeException(
+                    "This transformation is not implemented: " + this.transform.getClass().getName());
+        };
     }
 
     /**
@@ -223,16 +217,11 @@ public class ImagePair2DRegister implements FramePlugin, KeyListener
         ScalarArray2D<?> movArray = (ScalarArray2D<?>) movingImage.getData();
         TransformedImage2D transformed = new TransformedImage2D(movArray, transfo);
         
-        int[] dims = refArray.size();
-        ScalarArray2D<?> resArray = ScalarArray2D.wrapScalar2d(refArray.newInstance(dims));
-        for (int[] pos : resArray.positions())
-        {
-            resArray.setValue(pos, transformed.evaluate(pos[0], pos[1]));
-        }
+        ScalarArray2D<?> resArray = ScalarArray2D.wrapScalar2d(refArray.newInstance(refArray.size()));
+        resArray.fillValues(pos -> transformed.evaluate(pos[0], pos[1]));
         
         return new Image(resArray, movingImage);
     }
-    
     
     /**
      * Updates the current display of result, by combining the result of
@@ -259,38 +248,48 @@ public class ImagePair2DRegister implements FramePlugin, KeyListener
      */
     public void saveRegistration()
     {
-//        // create file dialog using last save path
-//        String imageName = referenceImagePlus.getShortTitle();
-//        saveWindow = new JFileChooser(new File(imageName + ".json"));
-//        saveWindow.setDialogTitle("Save Registration Data");
-//        saveWindow.addChoosableFileFilter(regFileFilter);
-//        saveWindow.addChoosableFileFilter(new FileNameExtensionFilter("JSON files (*.json)", "json"));
-//        saveWindow.addChoosableFileFilter(new FileNameExtensionFilter("All files (*.*)", "*"));
-//        saveWindow.setFileFilter(regFileFilter);
-//
-//        // Open dialog to choose the file
-//        int ret = saveWindow.showSaveDialog(this);
-//        if (ret != JFileChooser.APPROVE_OPTION) 
-//        {
-//            return;
-//        }
-//
-//        // Check the chosen file is valid
-//        File file = saveWindow.getSelectedFile();
-//        if (!file.getName().endsWith(".json"))
-//        {
-//            File parent = file.getParentFile();
-//            file = new File(parent, file.getName() + ".json");
-//        }
-//        
-//        try 
-//        {
-//            Registration.saveRegistration(file, referenceImagePlus, movingImagePlus, transform);
-//        }
-//        catch (IOException ex)
-//        {
-//            throw new RuntimeException(ex);
-//        }
+        // create file dialog using last save path
+        String pattern = "register_%s_to_%s.json";
+        String defaultName = String.format(pattern, movingImage.getName(), refImage.getName());
+        JFileChooser saveWindow = new JFileChooser(new File(defaultName));
+        saveWindow.setDialogTitle("Save Registration Data");
+        FileFilter jsonFileFilter = new FileNameExtensionFilter("JSON files (*.json)", "json");
+        saveWindow.addChoosableFileFilter(jsonFileFilter);
+        saveWindow.addChoosableFileFilter(new FileNameExtensionFilter("All files (*.*)", "*"));
+        saveWindow.setFileFilter(jsonFileFilter);
+
+        // Open dialog to choose the file
+        int ret = saveWindow.showSaveDialog(pluginFrame);
+        if (ret != JFileChooser.APPROVE_OPTION) 
+        {
+            return;
+        }
+
+        // Check the chosen file is valid
+        File file = saveWindow.getSelectedFile();
+        if (!file.getName().endsWith(".json"))
+        {
+            File parent = file.getParentFile();
+            file = new File(parent, file.getName() + ".json");
+        }
+        
+        try 
+        {
+            // open a text file to write JSON data
+            FileWriter fileWriter = new FileWriter(file.getAbsoluteFile());
+            JsonWriter jsonWriter = new JsonWriter(new PrintWriter(fileWriter));
+            jsonWriter.setIndent("  ");
+            
+            // wrap into a Registration writer
+            JsonRegistrationWriter writer = new JsonRegistrationWriter(jsonWriter);
+            writer.writeRegistrationInfo(refImage, movingImage, transform);
+
+            fileWriter.close();
+       }
+        catch (IOException ex)
+        {
+            throw new RuntimeException(ex);
+        }
     }
 
 
@@ -320,12 +319,12 @@ public class ImagePair2DRegister implements FramePlugin, KeyListener
         
         this.transformModelCombo = new JComboBox<String>();
         this.transformModelCombo.addItem("Translation");
-        this.transformModelCombo.addItem("Motion (Translation+Rotation)");
-        this.transformModelCombo.addItem("Similarity (Tr.+Rot.+Scaling)");
+        this.transformModelCombo.addItem("Motion (Trans.+Rot.)");
+        this.transformModelCombo.addItem("Similarity (Trans.+Rot.+Scal.)");
         this.transformModelCombo.addItemListener(evt -> {
             if (evt.getStateChange() == ItemEvent.SELECTED) 
             {
-                updateEnabledRegistrationWidgets();;
+                updateEnabledRegistrationWidgets();
                 if (this.autoUpdateCheckBox.isSelected()) runRegistration();
             }
         });
@@ -442,7 +441,17 @@ public class ImagePair2DRegister implements FramePlugin, KeyListener
     {
         String text = doubleToString(initialValue);
         JTextField textField = new JTextField(text, 10);
-        textField.addKeyListener(this);
+        textField.addKeyListener(new KeyAdapter()
+        {
+            @Override
+            public void keyTyped(KeyEvent evt)
+            {
+                if (evt.getSource() instanceof JTextField)
+                {
+                    processTextUpdate((JTextField) evt.getSource());
+                }
+            }
+        });
         return textField;
     }
 
@@ -489,20 +498,20 @@ public class ImagePair2DRegister implements FramePlugin, KeyListener
         frame.add(mainPanel, BorderLayout.CENTER);
     }
     
-//    private void setupMenu(JFrame frame)
-//        {
-//    //        // init menu items
-//    //        saveRegistrationItem = new MenuItem("Save Registration...");
-//    //        saveRegistrationItem.addActionListener(this);
-//    
-//            MenuBar menuBar = new MenuBar();
-//            Menu fileMenu = new Menu("File");
-//    //        fileMenu.add(saveRegistrationItem);
-//            
-//            menuBar.add(fileMenu);
-//            frame.setMenuBar(menuBar);
-//        }
-
+    private void setupMenu(JFrame frame)
+    {
+        // init menu items
+        JMenuItem saveRegistrationItem = new JMenuItem("Save Registration...");
+        saveRegistrationItem.addActionListener(evt -> saveRegistration());
+        
+        JMenuBar menuBar = new JMenuBar();
+        JMenu fileMenu = new JMenu("File");
+        fileMenu.add(saveRegistrationItem);
+        
+        menuBar.add(fileMenu);
+        frame.setJMenuBar(menuBar);
+    }
+    
     private JPanel createPanel(JComponent comp, JButton button1, JButton button2)
     {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -512,45 +521,23 @@ public class ImagePair2DRegister implements FramePlugin, KeyListener
         return panel;
     }
     
-    // ====================================================
-    // Implementation of KeyListener (for Text fields)
-    
-    @Override
-    public void keyTyped(KeyEvent evt)
-    {
-        if (evt.getSource() instanceof JTextField)
-        {
-            processTextUpdate((JTextField) evt.getSource());
-        }
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e)
-    {
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e)
-    {
-    }
-    
     private void processTextUpdate(JTextField textField)
     {
         try
         {
-            if(textField == xShiftTextField)
+            if (textField == xShiftTextField)
             {
                 this.xShift = Double.parseDouble(xShiftTextField.getText());
             }
-            else if(textField == yShiftTextField)
+            else if (textField == yShiftTextField)
             {
                 this.yShift = Double.parseDouble(yShiftTextField.getText());
             }
-            else if(textField == rotationAngleTextField)
+            else if (textField == rotationAngleTextField)
             {
                 this.rotationAngle = Double.parseDouble(rotationAngleTextField.getText());
             }
-            else if(textField == logScalingTextField)
+            else if (textField == logScalingTextField)
             {
                 this.logScaling = Double.parseDouble(logScalingTextField.getText());
             }
@@ -570,17 +557,5 @@ public class ImagePair2DRegister implements FramePlugin, KeyListener
     private static final String doubleToString(double value)
     {
         return String.format(Locale.ENGLISH, "%.2f", value);
-    }
-    
-    public static final void main(String... args)
-    {
-        System.out.println("hello");
-        
-        ImagoGui gui = new ImagoGui(new ImagoApp());
-        ImagoFrame baseFrame = gui.getEmptyFrame();
-        
-        ImagePair2DRegister plugin = new ImagePair2DRegister();
-        plugin.run(baseFrame, "");
-        
     }
 }
