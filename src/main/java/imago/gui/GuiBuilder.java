@@ -6,6 +6,7 @@ package imago.gui;
 import java.awt.Component;
 import java.awt.Insets;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.Constructor;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -269,7 +270,7 @@ public class GuiBuilder
     public GuiBuilder(ImagoFrame frame)
     {
         this.frame = frame;
-        createEmptyIcon();
+        this.emptyIcon = createEmptyIcon();
     }
     
     public void createMenuBar()
@@ -699,15 +700,15 @@ public class GuiBuilder
 	{
 		JMenu menu = new JMenu("Analyze");
 
-		addPlugin(menu, new ImageHistogram(), "Histogram", hasImage);
+		addPlugin(menu, ImageHistogram.class, "Histogram", hasImage);
 		addPlugin(menu, new ImageRoiHistogram(), "ROI Histogram", hasImage && hasImage2D);
         addPlugin(menu, new ImageMeanValue(), "Mean Value", hasImage);
         addPlugin(menu, new ColorImageBivariateHistograms(), "Bivariate Color Histograms", hasColorImage);
-        addPlugin(menu, new ImageBivariateHistogram(), "Bivariate Histogram");
+        addPlugin(menu, ImageBivariateHistogram.class, "Bivariate Histogram");
 		menu.addSeparator();
-		addPlugin(menu, new ImageLineProfile(), "Line Profile", hasImage);
+		addPlugin(menu, ImageLineProfile.class, "Line Profile", hasImage);
         menu.addSeparator();
-        addPlugin(menu, new ImagePlotChannels(), "Channel Profile", hasImage);
+        addPlugin(menu, ImagePlotChannels.class, "Channel Profile", hasImage);
 
         menu.addSeparator();
         JMenu regions2dMenu = new JMenu("Regions (2D)");
@@ -980,19 +981,52 @@ public class GuiBuilder
         return subMenu;
     }
 
+    private JMenuItem addPlugin(JMenu menu, Class<? extends FramePlugin> pluginClass, String label)
+    {
+        try
+        {
+            FramePlugin plugin = createPlugin(pluginClass);
+            return addPlugin(menu, plugin, label, plugin.isEnabled(frame));
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+    
+    private JMenuItem addPlugin(JMenu menu, Class<? extends FramePlugin> pluginClass, String label, boolean isEnabled)
+    {
+        try 
+        {
+            return addPlugin(menu, createPlugin(pluginClass), label, isEnabled);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
     private JMenuItem addPlugin(JMenu menu, FramePlugin plugin, String label)
     {
-       return addPlugin(menu, plugin, label, plugin.isEnabled(frame));
+        return addPlugin(menu, plugin, label, plugin.isEnabled(frame));
     }
 
     private JMenuItem addPlugin(JMenu menu, FramePlugin plugin, String label, boolean enabled)
     {
+        JMenuItem item = createPluginMenuItem(plugin, label);
+        item.setEnabled(enabled);
+        menu.add(item);
+        return item;
+    }
+    
+    private JMenuItem createPluginMenuItem(FramePlugin plugin, String label)
+    {
         JMenuItem item = new JMenuItem(new RunPluginAction(frame, plugin));
         item.setText(label);
         item.setIcon(this.emptyIcon);
-        item.setEnabled(enabled);
         item.setMargin(new Insets(0, 0, 0, 0));
-        menu.add(item);
         return item;
     }
     
@@ -1000,7 +1034,7 @@ public class GuiBuilder
      * Initializes the empty icon image with an image of type ARGB, and filled
      * with the value "0x00FFFFFF": white, and totally transparent.
      */
-    private void createEmptyIcon()
+    private static final ImageIcon createEmptyIcon()
     {
         int width = 16;
         int height = 16;
@@ -1012,6 +1046,20 @@ public class GuiBuilder
                 image.setRGB(x, y, 0x00FFFFFF);
             }
         }
-        this.emptyIcon = new ImageIcon(image);
+        return new ImageIcon(image);
+    }
+    
+    private static final FramePlugin createPlugin(Class<? extends FramePlugin> pluginClass)
+    {
+        try
+        {
+            // assumes there is a default constructor
+            Constructor<? extends FramePlugin> cons = pluginClass.getConstructor();
+            return cons.newInstance();
+        }
+        catch(Throwable ex)
+        {
+            throw new RuntimeException("Could not initialize plugin from class: " + pluginClass.getName());
+        }       
     }
 }
