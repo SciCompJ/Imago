@@ -41,33 +41,22 @@ public class SaveTable implements TablePlugin
             return;
         }
         
-        // Check the chosen file is valid
-        if (!file.isFile())
+        try
         {
-            ImagoGui.showErrorDialog(frame,
-                    "Could not find the selected file: " + file.getName(),
-                    "Image I/O Error");
+            new DelimitedTableWriter().writeTable(table, file);
+        }
+        catch (IOException ex)
+        {
+            ex.printStackTrace(System.err);
+            // custom title, error icon
+            ImagoGui.showErrorDialog(frame, "Could not write the table.", "Table I/O Error");
             return;
         }
-	
-		try
-		{
-		    new DelimitedTableWriter().writeTable(table, file);
-		} 
-		catch (IOException ex)
-		{
-			ex.printStackTrace(System.err);
-			// custom title, error icon
-			ImagoGui.showErrorDialog(frame,
-					"Could not write the table.", "Table I/O Error");
-			return;
-		}
-		catch (Exception ex)
-		{
-            ImagoGui.showErrorDialog(frame,
-                    "Could not write the table.", "Table I/O Error");
-			ex.printStackTrace(System.err);
-			return;
-		}
-	}
+        catch (Exception ex)
+        {
+            ex.printStackTrace(System.err);
+            ImagoGui.showErrorDialog(frame, "Could not write the table.", "Table I/O Error");
+            return;
+        }
+    }
 }
