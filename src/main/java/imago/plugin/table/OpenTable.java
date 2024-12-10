@@ -4,9 +4,9 @@
 package imago.plugin.table;
 
 import java.io.File;
-import java.io.IOException;
 
 import imago.gui.FramePlugin;
+import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.table.TableFrame;
@@ -20,10 +20,6 @@ import net.sci.table.io.DelimitedTableReader;
  */
 public class OpenTable implements FramePlugin
 {
-    public OpenTable()
-    {
-    }
-    
 	/* (non-Javadoc)
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
@@ -46,31 +42,41 @@ public class OpenTable implements FramePlugin
             return;
         }
         
+        GenericDialog dlg = new GenericDialog(frame, "Table Options");
+        dlg.addTextField("Delimiters", " \t");
+        dlg.addCheckBox("Header", true);
+        dlg.addNumericField("Skip lines", 0, 0);
+        dlg.addCheckBox("Read Row Names", false);
+        
+        // wait for user input
+        dlg.showDialog();
+        if (dlg.getOutput() == GenericDialog.Output.CANCEL) 
+        {
+            return;
+        }
+        
+        DelimitedTableReader reader = new DelimitedTableReader();
+        reader.setDelimiters(dlg.getNextString());
+        reader.setReadHeader(dlg.getNextBoolean());
+        reader.setSkipLines((int) dlg.getNextNumber());
+        reader.setReadRowNames(dlg.getNextBoolean());
+        
         // try reading the table
-		Table table;
-		try
-		{
-		    table = new DelimitedTableReader().readTable(file);
-		} 
-		catch (IOException ex)
-		{
-			ex.printStackTrace(System.err);
-			// custom title, error icon
-			ImagoGui.showErrorDialog(frame,
-					"Could not read the table.", "Table I/O Error");
-			return;
-		}
-		catch (Exception ex)
-		{
-            ImagoGui.showErrorDialog(frame,
-                    "Could not read the table.", "Table I/O Error");
-			ex.printStackTrace(System.err);
-			return;
-		}
-
-		table.setName(file.getName());
-		
+        Table table;
+        try
+        {
+            table = reader.readTable(file);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace(System.err);
+            ImagoGui.showErrorDialog(frame, "Could not read the table.", "Table I/O Error");
+            return;
+        }
+        
+        table.setName(file.getName());
+        
         // add the new frame to the GUI
-		TableFrame.create(table, frame);
-	}
+        TableFrame.create(table, frame);
+    }
 }
