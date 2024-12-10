@@ -62,6 +62,7 @@ public class TableLinePlot implements TablePlugin
         dlg.addChoice("X-Axis", colNames2, colNames2[0]);
 
         // limit the number of columns to 10.
+        dlg.addMessage("Columns:");
         int nCols2 = Math.min(nCols, 10);
         for (int i = 0; i < nCols2; i++)
         {
@@ -82,11 +83,6 @@ public class TableLinePlot implements TablePlugin
             showColumnFlags[i] = dlg.getNextBoolean();
         }
 
-        // Choose data for x-axis, or generate if requested
-        double[] xData = xAxisIndex == 0 
-                ? generateLinearVector(nRows)
-                : table.getColumnValues(xAxisIndex - 1);
-
         // Default name for table
         String tableName = table.getName();
         if (tableName == null || tableName.length() == 0)
@@ -94,12 +90,20 @@ public class TableLinePlot implements TablePlugin
             tableName = "data";
         }
         
+        // Choose data for x-axis, or generate if requested
+        double[] xData = xAxisIndex == 0 
+                ? generateLinearVector(nRows)
+                : table.getColumnValues(xAxisIndex - 1);
+        String xAxisName = xAxisIndex == 0
+                ? table.getRowAxis() != null ? table.getRowAxis().getName() : ""
+                : table.getColumnName(xAxisIndex - 1);
+
         // Create Chart
         XYChart chart = new XYChartBuilder()
                 .width(600)
                 .height(500)
                 .title(tableName)
-                .xAxisTitle("obs. index")
+                .xAxisTitle(xAxisName)
                 .yAxisTitle("")
                 .build();
         
