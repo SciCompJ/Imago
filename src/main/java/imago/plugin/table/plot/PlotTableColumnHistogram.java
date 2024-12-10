@@ -16,7 +16,7 @@ import org.knowm.xchart.style.markers.SeriesMarkers;
 
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImagoChartFrame;
+import imago.gui.chart.ChartFrame;
 import imago.gui.table.TableFrame;
 import imago.plugin.table.TablePlugin;
 import net.sci.table.NumericColumn;
@@ -103,7 +103,7 @@ public class PlotTableColumnHistogram implements TablePlugin
         series.setMarker(SeriesMarkers.NONE);
         
         // Show it
-        ImagoChartFrame.displayChart(frame, "Histogram", chart);
+        ChartFrame.create(chart, "Histogram", frame);
 	}
     
     /**

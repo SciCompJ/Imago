@@ -16,6 +16,7 @@ import javax.swing.JMenuItem;
 
 import imago.app.ImageHandle;
 import imago.gui.action.RunPluginAction;
+import imago.gui.chart.ChartFrame;
 import imago.gui.frames.ImagoEmptyFrame;
 import imago.gui.image.ImageFrame;
 import imago.gui.image.tools.DrawBrushValueTool;
@@ -293,6 +294,10 @@ public class GuiBuilder
             menuBar.add(createTableEditMenu());
             menuBar.add(createTablePlotMenu());
             menuBar.add(createTableProcessMenu());
+        }
+        else if (frame instanceof ChartFrame)
+        {
+            menuBar.add(createChartFileMenu());
         }
         else if (frame instanceof ImagoEmptyFrame)
         {
@@ -860,6 +865,16 @@ public class GuiBuilder
         return processMenu;
     }
 
+    /**
+     * Creates the sub-menu for the "File" item in the main menu bar of Chart frames.
+     */
+    private JMenu createChartFileMenu()
+    {
+        JMenu fileMenu = new JMenu("File");
+        addPlugin(fileMenu, new CloseCurrentFrame(), "Close", !(frame instanceof ImagoEmptyFrame));
+        return fileMenu;
+    }
+    
     /**
      * Creates the sub-menu for the "Plugins" item in the main menu bar, shared
      * by several frame types.

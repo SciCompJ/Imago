@@ -12,7 +12,7 @@ import org.knowm.xchart.style.markers.SeriesMarkers;
 
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImagoChartFrame;
+import imago.gui.chart.ChartFrame;
 import imago.gui.table.TableFrame;
 import imago.plugin.table.TablePlugin;
 import net.sci.table.Column;
@@ -128,7 +128,7 @@ public class TableLinePlot implements TablePlugin
         }
 
         // Show it
-        ImagoChartFrame.displayChart(frame, "Line Plot", chart);
+        ChartFrame.create(chart, "Line Plot", frame);
     }
 
     /**

@@ -20,7 +20,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 
 /**
- *  
+ *  Should be replaced by imago.gui.chart.ChartFrame.
  *
  */
 public class ImagoChartFrame extends ImagoFrame 
@@ -28,6 +28,16 @@ public class ImagoChartFrame extends ImagoFrame
 	// ===================================================================
 	// Class variables
 
+    /**
+     * Displays a chart within a new frame.
+     * 
+     * @see  ChartFrame.create(chart, "Line Plot", frame);
+     *
+     * @param parentFrame the parent frame
+     * @param title the title of the frame
+     * @param chart the chart to display
+     * @return an instance to ImagoChartFrame
+     */
     public static final ImagoChartFrame displayChart(ImagoFrame parentFrame, String title,
             @SuppressWarnings("rawtypes") Chart chart)
     {

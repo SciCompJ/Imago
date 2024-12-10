@@ -12,7 +12,7 @@ import org.knowm.xchart.style.Styler.ChartTheme;
 
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImagoChartFrame;
+import imago.gui.chart.ChartFrame;
 import imago.gui.table.TableFrame;
 import imago.plugin.table.TablePlugin;
 import net.sci.table.CategoricalColumn;
@@ -132,6 +132,6 @@ public class TableGroupScatterPlot implements TablePlugin
         }
         
         // Show it
-        ImagoChartFrame.displayChart(frame, "Scatter Plot", chart);
+        ChartFrame.create(chart, "Scatter Plot", frame);
 	}
 }

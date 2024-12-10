@@ -12,7 +12,7 @@ import org.knowm.xchart.style.colors.XChartSeriesColors;
 import org.knowm.xchart.style.markers.SeriesMarkers;
 
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImagoChartFrame;
+import imago.gui.chart.ChartFrame;
 import imago.gui.image.ImageFrame;
 import imago.gui.image.ImageViewer;
 import imago.gui.image.PlanarImageViewer;
@@ -222,7 +222,7 @@ public class ImageLineProfile implements ImagePlugin
         series.setMarker(SeriesMarkers.NONE);
         
         // Show it
-        ImagoChartFrame.displayChart(parentFrame, "Intensity Profile", chart);
+        ChartFrame.create(chart, "Intensity Profile", parentFrame);
     }
     
     private void plotRGB8LineProfile(ImagoFrame parentFrame, NumericTable table)
@@ -271,7 +271,7 @@ public class ImageLineProfile implements ImagePlugin
         series[2].setLineColor(XChartSeriesColors.BLUE);
         
         // Show it
-        ImagoChartFrame.displayChart(parentFrame, "Color Profile", chart);
+        ChartFrame.create(chart, "Color Profile", parentFrame);
     }
     
     private String createTitleString(String baseTitle, String imageName)
