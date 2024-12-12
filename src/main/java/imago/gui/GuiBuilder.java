@@ -172,6 +172,7 @@ import imago.plugin.image.process.ImageSplitChannels;
 import imago.plugin.image.process.ImageVarianceFilterBox;
 import imago.plugin.image.process.ImageWatershed;
 import imago.plugin.image.process.LabelMapCropLabel;
+import imago.plugin.image.process.LabelMapSizeOpening;
 import imago.plugin.image.process.MergeChannelImages;
 import imago.plugin.image.process.VectorImageChannelView;
 import imago.plugin.image.shape.Image3DGetCurrentSlice;
@@ -689,6 +690,7 @@ public class GuiBuilder
         // operators specific to binary images
         JMenu labelMenu = new JMenu("Binary / Label Images");
         addPlugin(labelMenu, new LabelMapCropLabel(), "Crop Label...", hasLabelImage);
+        addPlugin(labelMenu, new LabelMapSizeOpening(), "Size Opening...", hasLabelImage);
         labelMenu.addSeparator();
         addPlugin(labelMenu, new BinaryImageBoundaryGraph(),
                 "Boundary Graph", hasImage2D && hasBinaryImage);
