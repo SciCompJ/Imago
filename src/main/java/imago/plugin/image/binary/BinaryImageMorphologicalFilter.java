@@ -42,11 +42,10 @@ public class BinaryImageMorphologicalFilter implements FramePlugin
     
     /**
      * A pre-defined set of basis morphological operations, that can be easily 
-     * used with a GenericDialog.</p>
+     * used with a GenericDialog.
      *  
      * Example:
-     * <pre>
-     * {@code
+     * {@snippet lang="java" :
      * // Use a generic dialog to define an operator 
      * GenericDialog gd = new GenericDialog();
      * gd.addChoice("Operation", Operation.getAllLabels();
@@ -55,28 +54,28 @@ public class BinaryImageMorphologicalFilter implements FramePlugin
      * // Apply the operation on the current array
      * Array<?> array = image.getData();
      * op.apply(array, SquareStrel.fromRadius(2));
-     * }</pre>
+     * }
      */
     public enum Operation
     {
         /** Morphological erosion */
-        EROSION("Erosion", "Ero", se -> new BinaryErosion(se)),
+        EROSION("Erosion", "Ero", BinaryErosion::new),
         /** Morphological dilation */
-        DILATION("Dilation", "Dil", se -> new BinaryDilation(se)),
+        DILATION("Dilation", "Dil", BinaryDilation::new),
         /** Morphological opening (erosion followed by dilation) */
-        OPENING("Opening", "Op", se -> new BinaryOpening(se)),
+        OPENING("Opening", "Op", BinaryOpening::new),
         /** Morphological closing (dilation followed by erosion) */
-        CLOSING("Closing", "Cl", se -> new BinaryClosing(se)),
+        CLOSING("Closing", "Cl", BinaryClosing::new),
         /** Morphological gradient (difference of dilation with erosion) */
-        GRADIENT("Gradient", "Grad", se -> new BinaryGradient(se)),
+        GRADIENT("Gradient", "Grad", BinaryGradient::new),
         /** Morphological internal gradient (difference of original image with erosion) */
-        INNER_GRADIENT("Inner Gradient", "InnGrad", se -> new BinaryInnerGradient(se)), 
+        INNER_GRADIENT("Inner Gradient", "InnGrad", BinaryInnerGradient::new), 
         /** Morphological internal gradient (difference of dilation with original image) */
-        OUTER_GRADIENT("Outer Gradient", "OutGrad", se -> new BinaryOuterGradient(se)),
+        OUTER_GRADIENT("Outer Gradient", "OutGrad", BinaryOuterGradient::new),
         /** White Top-Hat */
-        WHITETOPHAT("White Top Hat", "WTH", se -> new BinaryWhiteTopHat(se)),
+        WHITETOPHAT("White Top Hat", "WTH", BinaryWhiteTopHat::new),
         /** Black Top-Hat */
-        BLACKTOPHAT("Black Top Hat", "BTH", se -> new BinaryBlackTopHat(se));
+        BLACKTOPHAT("Black Top Hat", "BTH", BinaryBlackTopHat::new);
         
         /**
          * A label that can be used for display in graphical widgets.
@@ -97,21 +96,44 @@ public class BinaryImageMorphologicalFilter implements FramePlugin
             this.factory = factory;
         }
         
+        /**
+         * Creates a new operator based on the specified structuring element.
+         * 
+         * @param strel
+         *            the structuring element to use for the operation
+         * @return a new instance of BinaryMorphologicalFilter that can be used
+         *         to process binary arrays
+         */
         public BinaryMorphologicalFilter createOperator(Strel strel)
         {
             return this.factory.apply(strel);        
         }
         
+        /**
+         * Returns the suffix used to create new image name.
+         * 
+         * @return the suffix used to create new image name.
+         */
         public String suffix()
         {
             return suffix;
         }
         
+        /**
+         * Creates a String representation of this operator.
+         * 
+         * @return a String representation of this operator.
+         */
         public String toString() 
         {
             return this.label;
         }
         
+        /**
+         * Returns all the operator labels within this enumeration.
+         * 
+         * @return all the operator labels within this enumeration.
+         */
         public static String[] getAllLabels()
         {
             int n = Operation.values().length;
