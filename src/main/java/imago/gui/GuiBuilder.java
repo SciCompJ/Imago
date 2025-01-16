@@ -490,24 +490,28 @@ public class GuiBuilder
         // Several options for converting images
         menu.addSeparator();
         
-        JMenu convertTypeMenu = new JMenu("Convert Type");
-        convertTypeMenu.setEnabled(hasImage);
-        addPlugin(convertTypeMenu, new ConvertImageToBinary(), "Binary");
-        addPlugin(convertTypeMenu, new ConvertImageToUInt8(), "UInt8");
-        addPlugin(convertTypeMenu, new CreateScaledUInt8View(), "UInt8 (change dynamic)", hasScalarImage);
-        addPlugin(convertTypeMenu, new ConvertImageToUInt16(), "UInt16", hasScalarImage);
-        convertTypeMenu.addSeparator();
-        addPlugin(convertTypeMenu, new ConvertImageToLabel(), "Label");
-        addPlugin(convertTypeMenu, new SetImageTypeToLabel(), "Set to Label Image", hasScalarImage);
-        convertTypeMenu.addSeparator();
-        addPlugin(convertTypeMenu, new ConvertImageToInt16(), "Int16", hasScalarImage);
-        addPlugin(convertTypeMenu, new ConvertImageToInt32(), "Int32", hasScalarImage);
-        convertTypeMenu.addSeparator();
-        addPlugin(convertTypeMenu, new ConvertImageToFloat32(), "Float32", hasImage);
-        addPlugin(convertTypeMenu, new ConvertImageToFloat64(), "Float64", hasImage);
-        menu.add(convertTypeMenu);
+        JMenu convertImageTypeMenu = new JMenu("Change Image Type");
+        convertImageTypeMenu.setEnabled(hasImage);
+        addPlugin(convertImageTypeMenu, new ConvertImageToBinary(), "Binary");
+        convertImageTypeMenu.addSeparator();
+        addPlugin(convertImageTypeMenu, new ConvertImageToLabel(), "Label");
+        addPlugin(convertImageTypeMenu, new SetImageTypeToLabel(), "Set to Label Image", hasScalarImage);
+        menu.add(convertImageTypeMenu);
         
-        // image type conversion handles
+        JMenu convertDataTypeMenu = new JMenu("Convert Data Type");
+        convertDataTypeMenu.setEnabled(hasImage);
+        addPlugin(convertDataTypeMenu, new ConvertImageToUInt8(), "UInt8");
+        addPlugin(convertDataTypeMenu, new CreateScaledUInt8View(), "UInt8 (change dynamic)", hasScalarImage);
+        addPlugin(convertDataTypeMenu, new ConvertImageToUInt16(), "UInt16", hasScalarImage);
+        convertDataTypeMenu.addSeparator();
+        addPlugin(convertDataTypeMenu, new ConvertImageToInt16(), "Int16", hasScalarImage);
+        addPlugin(convertDataTypeMenu, new ConvertImageToInt32(), "Int32", hasScalarImage);
+        convertDataTypeMenu.addSeparator();
+        addPlugin(convertDataTypeMenu, new ConvertImageToFloat32(), "Float32", hasImage);
+        addPlugin(convertDataTypeMenu, new ConvertImageToFloat64(), "Float64", hasImage);
+        menu.add(convertDataTypeMenu);
+        
+        // image dimensionality conversion plugins
         addPlugin(menu, new ConvertStackToMovie(), "Convert stack to movie", hasImage3D);
 
         // Color images operators
