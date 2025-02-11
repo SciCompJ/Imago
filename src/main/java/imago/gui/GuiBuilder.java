@@ -71,6 +71,7 @@ import imago.plugin.image.binary.BinaryImageConnectedComponentsLabeling;
 import imago.plugin.image.binary.BinaryImageFillHoles;
 import imago.plugin.image.binary.BinaryImageKillBorders;
 import imago.plugin.image.binary.BinaryImageMorphologicalFilter;
+import imago.plugin.image.binary.BinaryImageMorphologicalFilterBall;
 import imago.plugin.image.binary.BinaryImageMorphologicalReconstruction;
 import imago.plugin.image.binary.BinaryImageOverlay;
 import imago.plugin.image.binary.BinaryImageSkeleton;
@@ -636,6 +637,7 @@ public class GuiBuilder
 		addPlugin(morphologyMenu, new ImageMorphologicalFilter(), "Morphological Filters...");
 //		addPlugin(morphologyMenu, new ImageMorphologicalFilter3D(), "Morphological Filters (3D)...");
         addPlugin(morphologyMenu, new BinaryImageMorphologicalFilter(), "Binary Morphological Filters...");
+        addPlugin(morphologyMenu, new BinaryImageMorphologicalFilterBall(), "Ball Binary Morphological Filters...");
 
 		morphologyMenu.addSeparator();
         addPlugin(morphologyMenu, new ImageRegionalExtrema(), "Regional Min./Max...", hasScalarImage);
