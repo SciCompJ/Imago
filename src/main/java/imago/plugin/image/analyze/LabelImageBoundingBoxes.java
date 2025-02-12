@@ -146,12 +146,12 @@ public class LabelImageBoundingBoxes implements FramePlugin
             for (int i = 0; i < boxes.length; i++)
             {
                 Bounds3D box = boxes[i];
-                table.setValue(i, 0, box.getXMin());
-                table.setValue(i, 1, box.getXMax());
-                table.setValue(i, 2, box.getYMin());
-                table.setValue(i, 3, box.getYMax());
-                table.setValue(i, 4, box.getZMin());
-                table.setValue(i, 5, box.getZMax());
+                table.setValue(i, 0, box.xMin());
+                table.setValue(i, 1, box.xMax());
+                table.setValue(i, 2, box.yMin());
+                table.setValue(i, 3, box.yMax());
+                table.setValue(i, 4, box.zMin());
+                table.setValue(i, 5, box.zMax());
             }
             table.setName(image.getName() + "-BBoxes");
 

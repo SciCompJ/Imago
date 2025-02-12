@@ -56,8 +56,8 @@ public class CroppedUInt8Array3D extends UInt8Array3D
         
         // compute bounds in Y direction
         Bounds2D box = ring.bounds();
-        int ymin = (int) Math.max(0, Math.ceil(box.getYMin()));
-        int ymax = (int) Math.min(this.size1, Math.floor(box.getYMax()));
+        int ymin = (int) Math.max(0, Math.ceil(box.yMin()));
+        int ymax = (int) Math.min(this.size1, Math.floor(box.yMax()));
 
         // iterate over lines inside bounding box
         for (int y = ymin; y < ymax; y++)
