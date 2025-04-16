@@ -60,7 +60,6 @@ public class ImageSelectionToSceneGraph implements FramePlugin
 		{
 		    throw new RuntimeException("Requires an image containing 2D Array");
 		}
-
 		
         PlanarImageViewer piv = (PlanarImageViewer) viewer;
         Geometry2D selection = (Geometry2D) piv.getSelection();
@@ -69,7 +68,6 @@ public class ImageSelectionToSceneGraph implements FramePlugin
             System.out.println("requires selection to be a simple polygon");
             return;
         }
-        
 		
         // enforce counter-clockwise polygon
         Polygon2D poly = (Polygon2D) selection;
@@ -83,7 +81,7 @@ public class ImageSelectionToSceneGraph implements FramePlugin
         node.setName("Selection");
         ((GroupNode) handle.getRootNode()).addNode(node);
         
-        piv.setSelection(null);
+//        piv.setSelection(null);
         
         // need to call this to update items to display 
         viewer.refreshDisplay(); 

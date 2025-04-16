@@ -100,6 +100,7 @@ import imago.plugin.image.convert.VectorImageToTable;
 import imago.plugin.image.edit.CreateColorCubeImage3D;
 import imago.plugin.image.edit.CreateDistanceToOctahedronImage3D;
 import imago.plugin.image.edit.DisplayImagePair;
+import imago.plugin.image.edit.ImageClearSelection;
 import imago.plugin.image.edit.ImageColorMapDisplay;
 import imago.plugin.image.edit.ImageCopySelectionToWorkspace;
 import imago.plugin.image.edit.ImageFillBox;
@@ -408,6 +409,9 @@ public class GuiBuilder
         JMenu selectionMenu = new JMenu("Selection");
         addPlugin(selectionMenu, new ImageCopySelectionToWorkspace(), "Copy To Workspace");
         addPlugin(selectionMenu, new ImportSelectionFromWorkspace(), "Import From Workspace");
+        addPlugin(selectionMenu, new ImageSelectionToSceneGraph(), "Add Selection to Scene Graph");
+        selectionMenu.addSeparator();
+        addPlugin(selectionMenu, new ImageClearSelection(), "Clear Selection");
         editMenu.add(selectionMenu);
 
         // crop tools
@@ -424,9 +428,8 @@ public class GuiBuilder
         // add utility
         editMenu.addSeparator();
         JMenu sceneGraphMenu = new JMenu("Scene Graph");
-        addPlugin(sceneGraphMenu, new ImageSelectionToSceneGraph(), "Add Selection to scene graph");
         addPlugin(sceneGraphMenu, new ShowSceneGraphTree(), "Display Scene Graph Tree");
-        addPlugin(sceneGraphMenu, new PrintImageSceneGraph(), "Print SceneGraph Tree");
+        addPlugin(sceneGraphMenu, new PrintImageSceneGraph(), "Print Scene Graph Tree");
         addPlugin(sceneGraphMenu, new ToggleSceneGraphDisplay(), "Toggle Scene Graph Display");
         editMenu.add(sceneGraphMenu);
         

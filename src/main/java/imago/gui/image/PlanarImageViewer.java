@@ -46,8 +46,10 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 	protected ImageTool currentTool = null;
 	
 	/**
-	 * The shape of the current selection, usually a polyline or a rectangle, in pixels coordinates.
-	 */
+     * The shape of the current selection, usually a polyline or a rectangle, in
+     * pixels coordinates. Can be null, meaning that viewer has currently no
+     * selection.
+     */
 	protected Geometry2D selection = null;
 	
 	
@@ -96,8 +98,11 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
 	}
 
 	/**
-	 * @return the current selection, as a Geometry2D instance.
-	 */
+	 * Returns the current selection of the viewer.
+	 * 
+     * @return the current selection, as a Geometry2D instance, or {@code null}
+     *         if there is no selection.
+     */
 	public Geometry2D getSelection()
 	{
 		return this.selection;
@@ -110,15 +115,17 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
      */
 	public void setSelection(Geometry selection)
 	{
-	    if (!(selection instanceof Geometry2D))
+	    if (selection != null)
 	    {
-	        throw new RuntimeException("Selection must be an instance of Geometry2D");
+	        if (!(selection instanceof Geometry2D))
+	        {
+	            throw new RuntimeException("Selection must be an instance of Geometry2D");
+	        }
 	    }
 	    
 		this.selection = (Geometry2D) selection;
 		this.imageDisplay.setSelection((Geometry2D) selection);
 	}
-	
 	
 	// ===================================================================
 	// Zoom management
