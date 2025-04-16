@@ -8,6 +8,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
+import net.sci.array.color.ColorMaps;
 import net.sci.array.numeric.IntArray2D;
 import net.sci.array.numeric.ScalarArray2D;
 import net.sci.image.Image;
@@ -67,6 +68,10 @@ public class GrayLevelImageCooccurenceMatrix implements FramePlugin
         
         // convert to Image
         Image resultImage = new Image(result);
+        
+        // setup display
+        resultImage.getDisplaySettings().setDisplayRange(new double[] {0, result.valueRange()[1]});
+        resultImage.getDisplaySettings().setColorMap(ColorMaps.JET.createColorMap(256));
         
         // add the image documents to GUI
         ImageFrame.create(resultImage, frame);
