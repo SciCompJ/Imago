@@ -236,9 +236,9 @@ public class ImageHandle extends ObjectHandle
     
     public void copyDisplaySettings(ImageHandle doc)
     {
-        if (this.image.getDimension() > 2)
+        // if the two images are 3D and have the same size, use same index of current slice
+        if (this.image.getDimension() > 2 && doc.image.getDimension() > 2)
         {
-            // use same z-slice index only if the two stacks have the same size
             int size2 = this.image.getSize(2);
             if (doc.image.getSize(2) == size2)
             {
