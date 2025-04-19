@@ -7,14 +7,23 @@ import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
+import net.sci.algo.AlgoEvent;
+import net.sci.algo.AlgoListener;
+import net.sci.algo.AlgoStub;
 import net.sci.array.Array;
+import net.sci.array.binary.Binary;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.color.RGB8;
 import net.sci.array.color.RGB8Array;
+import net.sci.array.numeric.Float32;
 import net.sci.array.numeric.Float32Array;
+import net.sci.array.numeric.Float64;
 import net.sci.array.numeric.Float64Array;
+import net.sci.array.numeric.Int32;
 import net.sci.array.numeric.Int32Array;
+import net.sci.array.numeric.UInt16;
 import net.sci.array.numeric.UInt16Array;
+import net.sci.array.numeric.UInt8;
 import net.sci.array.numeric.UInt8Array;
 import net.sci.image.Image;
 
@@ -26,50 +35,18 @@ import net.sci.image.Image;
  */
 public class CreateNewImage implements FramePlugin
 {
+    /**
+     * Enumeration type to choose an image data factory.
+     */
     public enum Type
     {
-        BINARY("Binary", (dims,  value) -> {
-            BinaryArray array = BinaryArray.create(dims); 
-            if (value > 0)
-            {
-                array.fill(true);
-            }
-            return array;
-        }),
-        GRAY8("Gray8", (dims, value) -> {
-            UInt8Array array = UInt8Array.create(dims);
-            // convert fill value to int before calling fill method
-            array.fillInt((int) value);
-            return array;
-        }),
-        GRAY16("Gray16", (dims, value) -> {
-            UInt16Array array = UInt16Array.create(dims);
-            // convert fill value to int before calling fill method
-            array.fillInt((int) value);
-            return array;
-        }),
-        INT32("Int32", (dims, value) -> {
-            Int32Array array = Int32Array.create(dims);
-            // convert fill value to int before calling fill method
-            array.fillInt((int) value);
-            return array;
-        }),
-        FLOAT32("Float32", (dims, value) -> {
-            Float32Array array = Float32Array.create(dims); 
-            array.fillValue(value);
-            return array;
-        }),
-        FLOAT64("Float64", (dims, value) -> {
-            Float64Array array = Float64Array.create(dims); 
-            array.fillValue(value);
-            return array;
-        }),
-        RGB8("Color", (dims, value) -> {
-            RGB8Array array = RGB8Array.create(dims);
-            RGB8 rgb = new RGB8(value, value, value);
-            array.fill(rgb);
-            return array;
-        });
+        BINARY("Binary",    ImageDataFactory.BINARY),
+        GRAY8("Gray8",      ImageDataFactory.GRAY8),
+        GRAY16("Gray16",    ImageDataFactory.GRAY16),
+        INT32("Int32",      ImageDataFactory.INT32),
+        FLOAT32("Float32",  ImageDataFactory.FLOAT32),
+        FLOAT64("Float64",  ImageDataFactory.FLOAT64),
+        COLOR("Color",      ImageDataFactory.COLOR);
         
         /**
          * Returns a set of labels for most of classical types.
@@ -78,7 +55,7 @@ public class CreateNewImage implements FramePlugin
          */
         public static String[] getAllLabels()
         {
-            // array of all enumaration items
+            // array of all enumeration items
             Type[] values = Type.values();
             int n = values.length;
             
@@ -143,13 +120,13 @@ public class CreateNewImage implements FramePlugin
             {
                 return FLOAT32;
             }
-            else if (array instanceof Float32Array)
+            else if (array instanceof Float64Array)
             {
                 return FLOAT64;
             }
             else if (array instanceof RGB8Array)
             {
-                return RGB8;
+                return COLOR;
             }
             
             // return a default type
@@ -158,9 +135,16 @@ public class CreateNewImage implements FramePlugin
 
         private final String label;
         
-        private final Factory factory;
+//        private final Supplier<ImageDataFactory> factorySupplier;
+        private final ImageDataFactory factory;
         
-        private Type(String label, Factory factory)
+//        private Type(String label, Supplier<ImageDataFactory> factorySupplier)
+//        {
+//            this.label = label;
+//            this.factorySupplier = factorySupplier;
+//        }
+        
+        private Type(String label, ImageDataFactory factory)
         {
             this.label = label;
             this.factory = factory;
@@ -171,6 +155,11 @@ public class CreateNewImage implements FramePlugin
             return factory.create(dims, fillValue);
         }
         
+        ImageDataFactory factory()
+        {
+            return factory;
+        }
+        
         /** 
          * @return the label associated to this shape.
          */
@@ -178,44 +167,26 @@ public class CreateNewImage implements FramePlugin
         {
             return this.label;
         }
-
-        /**
-         * Inner interface used for defining the creation function used by the
-         * different types.
-         */
-        private interface Factory
-        {
-            /**
-             * Creates a new array.
-             * 
-             * @param dims
-             *            the size of the new array
-             * @param value
-             *            the value to fill the array with.
-             * @return a new array filled with the specified value.
-             */
-            public Array<?> create(int[] dims, double value);
-        }
     };
-    
+
     /*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
-	public void run(ImagoFrame frame, String args)
-	{
-		System.out.println("create new image");
-		
-		// determine default values for dialog
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void run(ImagoFrame frame, String args)
+    {
+        System.out.println("create new image");
+
+        // determine default values for dialog
         String baseName = frame.getGui().getAppli().createHandleName("NoName");
-		int sizeX_init = 200;
+        int sizeX_init = 200;
         int sizeY_init = 200;
         int sizeZ_init = 1;
         Type type_init = Type.GRAY8;
-        
+
         // if the plugin is run from an image frame, use default values
         // corresponding to the image
         if (frame instanceof ImageFrame)
@@ -229,41 +200,152 @@ public class CreateNewImage implements FramePlugin
             }
             type_init = Type.fromArray(image.getData());
         }
-		
+
         // create dialog to enter options
-		GenericDialog gd = new GenericDialog(frame, "Create Image");
-		gd.addTextField("Name: ", baseName);
+        GenericDialog gd = new GenericDialog(frame, "Create Image");
+        gd.addTextField("Name: ", baseName);
         gd.addNumericField("Size X: ", sizeX_init, 0);
-		gd.addNumericField("Size Y: ", sizeY_init, 0);
-		gd.addNumericField("Size Z: ", sizeZ_init, 0);
+        gd.addNumericField("Size Y: ", sizeY_init, 0);
+        gd.addNumericField("Size Z: ", sizeZ_init, 0);
         gd.addChoice("Image Type: ", Type.getAllLabels(), type_init.toString());
-		gd.addNumericField("Fill Value: ", 0, 0);
-		gd.showDialog();
-		
-		if (gd.getOutput() == GenericDialog.Output.CANCEL) 
-		{
-			return;
-		}
-		
-		// parse dialog results
+        gd.addNumericField("Fill Value: ", 0, 0);
+        gd.showDialog();
+
+        if (gd.getOutput() == GenericDialog.Output.CANCEL)
+        {
+            return;
+        }
+
+        // parse dialog results
         String imageName = gd.getNextString();
-		int sizeX = (int) gd.getNextNumber();
-		int sizeY = (int) gd.getNextNumber();
-		int sizeZ = (int) gd.getNextNumber();
-		Type type = Type.fromLabel(gd.getNextChoice());
-		double fillValue = gd.getNextNumber();
-		
-		// create dimension vector for the new array
-		int[] dims = sizeZ <= 1 ? new int[]{sizeX, sizeY} : new int[]{sizeX, sizeY, sizeZ}; 
-		
-		// Create the array depending on the type
-        Array<?> array = type.createArray(dims, fillValue);
-        
-		// Create image
-		Image image = new Image(array);
-		image.setName(imageName);
-		
-		// add the image document to GUI
+        int sizeX = (int) gd.getNextNumber();
+        int sizeY = (int) gd.getNextNumber();
+        int sizeZ = (int) gd.getNextNumber();
+        Type type = Type.fromLabel(gd.getNextChoice());
+        double fillValue = gd.getNextNumber();
+
+        // create dimension vector for the new array
+        int[] dims = sizeZ <= 1 ? new int[] { sizeX, sizeY } : new int[] { sizeX, sizeY, sizeZ };
+
+        // Create the array depending on the type
+        ImageDataFactory factory = type.factory();
+        factory.addAlgoListener(frame);
+        Array<?> array = factory.create(dims, fillValue);
+        factory.removeAlgoListener(frame);
+
+        // Create image
+        Image image = new Image(array);
+        image.setName(imageName);
+
+        // add the image document to GUI
         ImageFrame.create(image, frame);
-	}
+    }
+
+    private static abstract class ImageDataFactory extends AlgoStub implements AlgoListener
+    {
+        public static final ImageDataFactory BINARY = new ImageDataFactory()
+        {
+            @Override
+            public Array<?> create(int[] dims, double initialValue)
+            {
+                BinaryArray.Factory factory = BinaryArray.defaultFactory;
+                factory.addAlgoListener(this);
+                Array<?> res = factory.create(dims, new Binary(initialValue > 0));
+                factory.removeAlgoListener(this);
+                return res;
+            }
+        };
+
+        public static final ImageDataFactory GRAY8 = new ImageDataFactory()
+        {
+            @Override
+            public Array<?> create(int[] dims, double initialValue)
+            {
+                UInt8Array.Factory factory = UInt8Array.defaultFactory;
+                factory.addAlgoListener(this);
+                Array<?> res = factory.create(dims, new UInt8(UInt8.convert(initialValue)));
+                factory.removeAlgoListener(this);
+                return res;
+            }
+        };
+
+        public static final ImageDataFactory GRAY16 = new ImageDataFactory()
+        {
+            @Override
+            public Array<?> create(int[] dims, double initialValue)
+            {
+                UInt16Array.Factory factory = UInt16Array.defaultFactory;
+                factory.addAlgoListener(this);
+                Array<?> res = factory.create(dims, new UInt16(UInt16.convert(initialValue)));
+                factory.removeAlgoListener(this);
+                return res;
+            }
+        };
+
+        public static final ImageDataFactory INT32 = new ImageDataFactory()
+        {
+            @Override
+            public Array<?> create(int[] dims, double initialValue)
+            {
+                Int32Array.Factory factory = Int32Array.defaultFactory;
+                factory.addAlgoListener(this);
+                Array<?> res = factory.create(dims, new Int32(Int32.convert(initialValue)));
+                factory.removeAlgoListener(this);
+                return res;
+            }
+        };
+
+        public static final ImageDataFactory FLOAT32 = new ImageDataFactory()
+        {
+            @Override
+            public Array<?> create(int[] dims, double initialValue)
+            {
+                Float32Array.Factory factory = Float32Array.defaultFactory;
+                factory.addAlgoListener(this);
+                Array<?> res = factory.create(dims, new Float32((float) initialValue));
+                factory.removeAlgoListener(this);
+                return res;
+            }
+        };
+
+        public static final ImageDataFactory FLOAT64 = new ImageDataFactory()
+        {
+            @Override
+            public Array<?> create(int[] dims, double initialValue)
+            {
+                Float64Array.Factory factory = Float64Array.defaultFactory;
+                factory.addAlgoListener(this);
+                Array<?> res = factory.create(dims, new Float64(initialValue));
+                factory.removeAlgoListener(this);
+                return res;
+            }
+        };
+        
+        public static final ImageDataFactory COLOR = new ImageDataFactory()
+        {
+            @Override
+            public Array<?> create(int[] dims, double initialValue)
+            {
+                RGB8Array.Factory factory = RGB8Array.defaultFactory;
+                factory.addAlgoListener(this);
+                Array<?> res = factory.create(dims, new RGB8(initialValue, initialValue, initialValue));
+                factory.removeAlgoListener(this);
+                return res;
+            }
+        };
+        
+        public abstract Array<?> create(int[] dims, double initialValue);
+        
+        @Override
+        public void algoProgressChanged(AlgoEvent evt)
+        {
+            this.fireProgressChanged(evt);
+        }
+
+        @Override
+        public void algoStatusChanged(AlgoEvent evt)
+        {
+            this.fireStatusChanged(evt);
+        }
+    }
 }
