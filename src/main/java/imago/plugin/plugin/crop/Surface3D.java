@@ -473,7 +473,7 @@ public class Surface3D extends AlgoStub implements AlgoListener
     private static final ShapeNode createPolylineNode(Polyline2D poly, String name)
     {
         ShapeNode node = new ShapeNode(name, poly);
-        node.getStyle().setColor(Color.GREEN);
+        node.getStyle().setLineColor(Color.GREEN);
         node.getStyle().setLineWidth(0.5);
         return node;
     }
@@ -483,7 +483,7 @@ public class Surface3D extends AlgoStub implements AlgoListener
         // create a node for the shape
         String sliceName = String.format(Locale.US, "interp%0" + nDigits + "d", sliceIndex);
         ShapeNode shapeNode = new ShapeNode(sliceName, poly);
-        shapeNode.getStyle().setColor(Color.MAGENTA);
+        shapeNode.getStyle().setLineColor(Color.MAGENTA);
         shapeNode.getStyle().setLineWidth(1.0);
 
         // create the slice for interpolated version

@@ -83,7 +83,7 @@ public class Shape
      */
     public Color getColor()
     {
-        return style.getColor();
+        return style.getLineColor();
     }
 
     /**
@@ -91,7 +91,7 @@ public class Shape
      */
     public void setColor(Color color)
     {
-        this.style.setColor(color);
+        this.style.setLineColor(color);
     }
 
     /**

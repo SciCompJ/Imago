@@ -61,7 +61,7 @@ public class ImportImage3DPolylineSeries implements FramePlugin
         
         // setup drawing style
         Style style = new Style();
-        style.setColor(Color.GREEN);
+        style.setLineColor(Color.GREEN);
         style.setLineWidth(2.0);
         
         // create nodes corresponding to each polyline

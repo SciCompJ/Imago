@@ -177,7 +177,7 @@ public class Image3DIsosurface implements FramePlugin
         // Create a new LinearRing shape from the boundary of the polygon
         ShapeNode shapeNode = new ShapeNode(name, poly);
         shapeNode.getStyle().setLineWidth(2.5);
-        shapeNode.getStyle().setColor(Color.MAGENTA);
+        shapeNode.getStyle().setLineColor(Color.MAGENTA);
         return shapeNode;
     }
 

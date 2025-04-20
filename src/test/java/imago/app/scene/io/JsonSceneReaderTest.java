@@ -155,7 +155,7 @@ public class JsonSceneReaderTest
 	public void testReadStyle() throws IOException
 	{
 		Style style = new Style();
-		style.setColor(Color.MAGENTA);
+		style.setLineColor(Color.MAGENTA);
 		style.setLineWidth(1.4);
 		
 		StringWriter stringWriter = new StringWriter();
@@ -167,7 +167,7 @@ public class JsonSceneReaderTest
 		JsonSceneReader sceneReader = new JsonSceneReader(jsonReader);
 		Style res = sceneReader.readStyle();
 		
-		assertEquals(style.getColor(), res.getColor());
+		assertEquals(style.getLineColor(), res.getLineColor());
 		assertEquals(style.getLineWidth(), res.getLineWidth(), .1);
 	}
 	

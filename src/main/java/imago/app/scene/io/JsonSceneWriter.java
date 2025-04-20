@@ -181,7 +181,7 @@ public class JsonSceneWriter
 		
 		// write common properties
 		this.writer.name("color");
-		writeColor(style.getColor());
+		writeColor(style.getLineColor());
 		writeValue("lineWidth", style.getLineWidth());
 
 		this.writer.endObject();

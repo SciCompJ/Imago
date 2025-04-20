@@ -288,7 +288,7 @@ public class JsonSceneReader
 			switch(key)
 			{
 			case "color":
-				style.setColor(readColor());
+				style.setLineColor(readColor());
 				break;
 			case "lineWidth":
 				style.setLineWidth(reader.nextDouble());

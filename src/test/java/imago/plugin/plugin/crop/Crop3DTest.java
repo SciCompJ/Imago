@@ -57,7 +57,7 @@ public class Crop3DTest
         ring1.addVertex(new Point2D(350, 350));
         ring1.addVertex(new Point2D( 50, 350));
         ShapeNode shape1 = new ShapeNode("Blue", ring1);
-        shape1.getStyle().setColor(Color.BLUE);
+        shape1.getStyle().setLineColor(Color.BLUE);
         
         LinearRing2D ring2 = LinearRing2D.create(4);
         ring2.addVertex(new Point2D( 80,  20));
@@ -65,7 +65,7 @@ public class Crop3DTest
         ring2.addVertex(new Point2D(320, 380));
         ring2.addVertex(new Point2D( 20, 320));
         ShapeNode shape2 = new ShapeNode("Red", ring2);
-        shape2.getStyle().setColor(Color.RED);
+        shape2.getStyle().setLineColor(Color.RED);
         
         polyNode.addNode(shape1);
         polyNode.addNode(shape2);
@@ -98,7 +98,7 @@ public class Crop3DTest
 
         
         ShapeNode shapeProj = new ShapeNode("Green", interpPoly);
-        shapeProj.getStyle().setColor(Color.GREEN);
+        shapeProj.getStyle().setLineColor(Color.GREEN);
         polyNode.addNode(shapeProj);
 
         frame.getImageViewer().refreshDisplay(); 

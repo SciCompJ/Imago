@@ -18,12 +18,17 @@ public class Style
     /**
      * The color used to draw lines.
      */
-    Color color = Color.BLUE;
+    Color lineColor = Color.BLUE;
 
     /**
      * The thickness used to draw lines.
      */
     double lineWidth = 1.0;
+
+    /**
+     * The color used to fill shapes.
+     */
+    Color fillColor = Color.CYAN;
 
 
     // ===================================================================
@@ -45,7 +50,7 @@ public class Style
      */
     public Style(Style refStyle)
     {
-    	this.color = refStyle.color;
+    	this.lineColor = refStyle.lineColor;
     	this.lineWidth = refStyle.lineWidth;
     }
     
@@ -54,31 +59,28 @@ public class Style
     // Accessors and mutators
     
     /**
-     * @return the color
+     * @return the color to draw lines
      */
-    public Color getColor()
+    public Color getLineColor()
     {
-        return color;
+        return lineColor;
     }
 
-
     /**
-     * @param color the color to set
+     * @param color the color to draw lines
      */
-    public void setColor(Color color)
+    public void setLineColor(Color color)
     {
-        this.color = color;
+        this.lineColor = color;
     }
 
-
     /**
-     * @return the lineWidth
+     * @return the width of lines
      */
     public double getLineWidth()
     {
         return lineWidth;
     }
-
 
     /**
      * @param lineWidth the lineWidth to set
@@ -86,5 +88,21 @@ public class Style
     public void setLineWidth(double lineWidth)
     {
         this.lineWidth = lineWidth;
+    }
+    
+    /**
+     * @return the color used to fill shapes
+     */
+    public Color getFillColor()
+    {
+        return fillColor;
+    }
+
+    /**
+     * @param color the new color used to fill shapes
+     */
+    public void setFillColor(Color color)
+    {
+        this.fillColor = color;
     }
 }

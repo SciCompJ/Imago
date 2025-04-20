@@ -164,7 +164,7 @@ public class Crop3D extends AlgoStub implements AlgoListener
     private void initializeDrawStyles()
     {
         polygonStyle.setLineWidth(3.5);
-        interpStyle.setColor(Color.MAGENTA);
+        interpStyle.setLineColor(Color.MAGENTA);
         interpStyle.setLineWidth(1.0);
     }
     
