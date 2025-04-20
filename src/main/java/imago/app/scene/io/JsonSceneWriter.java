@@ -12,6 +12,7 @@ import java.util.Locale;
 import com.google.gson.stream.JsonWriter;
 
 import imago.app.scene.*;
+import imago.app.shape.Style;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.polygon.Polyline2D;
@@ -89,7 +90,7 @@ public class JsonSceneWriter
      * Writes the content of the specified node into this writer.
      * 
      * @see #writeGeometry(net.sci.geom.Geometry)
-     * @see #writeStyle(imago.app.scene.Style)
+     * @see #writeStyle(imago.app.shape.Style)
      * 
      * @param node
      *            an instance of a Node in a Scene.

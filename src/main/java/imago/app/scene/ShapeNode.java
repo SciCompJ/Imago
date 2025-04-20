@@ -6,6 +6,7 @@ package imago.app.scene;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
+import imago.app.shape.Style;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.Point2D;

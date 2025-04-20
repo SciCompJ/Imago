@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.app.scene;
+package imago.app.shape;
 
 import java.awt.Color;
 

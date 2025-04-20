@@ -22,7 +22,7 @@ import imago.app.scene.ImageSerialSectionsNode;
 import imago.app.scene.ImageSliceNode;
 import imago.app.scene.Node;
 import imago.app.scene.ShapeNode;
-import imago.app.scene.Style;
+import imago.app.shape.Style;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.polygon.LinearRing2D;
 

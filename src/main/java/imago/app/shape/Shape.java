@@ -5,7 +5,6 @@ package imago.app.shape;
 
 import java.awt.Color;
 
-import imago.app.scene.Style;
 import net.sci.geom.Geometry;
 
 /**
