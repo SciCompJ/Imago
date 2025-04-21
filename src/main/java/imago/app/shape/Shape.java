@@ -79,6 +79,14 @@ public class Shape
     }
 
     /**
+     * @return the style
+     */
+    public Style getStyle()
+    {
+        return style;
+    }
+
+    /**
      * @return the color
      */
     public Color getColor()

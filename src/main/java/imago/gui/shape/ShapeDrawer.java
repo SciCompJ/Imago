@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Paint;
 import java.awt.Stroke;
 import java.awt.geom.Path2D;
 import java.util.Iterator;
@@ -21,6 +22,7 @@ import imago.app.shape.Shape;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Bounds2D;
 import net.sci.geom.geom2d.Curve2D;
+import net.sci.geom.geom2d.Domain2D;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
@@ -99,17 +101,28 @@ public class ShapeDrawer
      */
     public void drawShape(Graphics2D g2, Shape shape)
     {
-        // setup draw style
-        Stroke stroke = new BasicStroke((float) shape.getLineWidth());
-        g2.setStroke(stroke);
-        g2.setColor(shape.getColor());
-        
         Geometry geom = shape.getGeometry();
+        
+        // call the fill method only for domain geometries 
+        if (geom instanceof Domain2D)
+        {
+            Paint basePaint = g2.getPaint();
+            g2.setPaint(shape.getStyle().getFillColor());
+            fillGeometry(g2, (Geometry2D) geom);
+            g2.setPaint(basePaint);
+        }
+        
         if (geom instanceof Geometry2D)
         {
+            Stroke baseStroke = g2.getStroke();
+            // setup line draw style
+            Stroke stroke = new BasicStroke((float) shape.getLineWidth());
+            g2.setStroke(stroke);
+            g2.setColor(shape.getColor());
+            
             drawGeometry(g2, (Geometry2D) geom);
+            g2.setStroke(baseStroke);
         }
-        g2.setStroke(new BasicStroke());
     }
     
     /**
@@ -180,10 +193,41 @@ public class ShapeDrawer
         else
         {
             // basic check to avoid errors
-            System.out.println("[Image Display] can not handle geometry of class: " + geom.getClass());
+            System.out.println("ShapeDrawer can not draw geometry with class: " + geom.getClass());
         }
     }
 
+    /**
+     * Draws a geometry on the specified graphics. Paint settings are assumed to
+     * be already defined.
+     * 
+     * @param geom
+     *            the geometry to draw
+     */
+    public void fillGeometry(Graphics2D g2, Geometry2D geom)
+    {
+        // basic checkups
+        if (geom == null)
+        {
+            throw new RuntimeException("Geometry should not be null");
+        }
+
+        if (geom instanceof PolygonalDomain2D)
+        {
+            PolygonalDomain2D poly = (PolygonalDomain2D) geom;
+            fillPolygon(g2, poly);
+        }
+        else if (geom instanceof Ellipse2D)
+        {
+            LinearRing2D poly = ((Ellipse2D) geom).asPolyline(120);
+            fillLinearRing(g2, poly);
+        }
+        else
+        {
+            // basic check to avoid errors
+            System.out.println("ShapeDrawer can not fill geometry with class: " + geom.getClass());
+        }
+    }
     
     // ===================================================================
     // Specific geometry paint methods
@@ -304,13 +348,51 @@ public class ShapeDrawer
      * 
      * @param poly the polygon to draw
      */
+    private void fillPolygon(Graphics2D g2, PolygonalDomain2D poly)
+    {
+        for (LinearRing2D ring : poly.rings())
+        {
+            fillLinearRing(g2, ring);
+        }
+    }
+    
+    /**
+     * Draws a polygon on the specified graphics. Paint settings are assumed to be
+     * already defined.
+     * 
+     * @param poly the polygon to draw
+     */
     private void drawLinearRing(Graphics2D g2, LinearRing2D poly)
+    {
+        Path2D path = createPath(poly);
+        if (path != null)
+        {
+            g2.draw(path);
+        }
+    }
+    
+    /**
+     * Draws a polygon on the specified graphics. Paint settings are assumed to be
+     * already defined.
+     * 
+     * @param poly the polygon to draw
+     */
+    private void fillLinearRing(Graphics2D g2, LinearRing2D poly)
+    {
+        Path2D path = createPath(poly);
+        if (path != null)
+        {
+            g2.fill(path);
+        }
+    }
+
+    private Path2D createPath(LinearRing2D poly)
     {
         // check size
         int nv = poly.vertexCount();
         if (nv < 2)
         {
-            return;
+            return null;
         }
     
         // initialize a path at first vertex of the polygon
@@ -325,11 +407,9 @@ public class ShapeDrawer
             path.lineTo(p.x(), p.y());
         }
         path.closePath();
-
-        // display the polygon
-        g2.draw(path);
+        
+        return path;
     }
-    
     
     private Point2D userToDisplay(Point2D point)
     {
