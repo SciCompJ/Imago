@@ -25,7 +25,13 @@ import net.sci.table.Table;
  */
 public class TableSelectRows implements TablePlugin
 {
-
+    /**
+     * Default empty constructor.
+     */
+    public TableSelectRows()
+    {
+    }
+    
     /* (non-Javadoc)
      * @see imago.gui.Plugin#run(imago.gui.ImagoFrame, java.lang.String)
      */
@@ -105,12 +111,12 @@ public class TableSelectRows implements TablePlugin
     {
         if (column instanceof NumericColumn numCol)
         {
-            double[] values = new double[rowIndices.size()];
+            NumericColumn res = numCol.newInstance(column.getName(), rowIndices.size());
             for (int i = 0; i < rowIndices.size(); i++)
             {
-                values[i] = numCol.getValue(rowIndices.get(i)); 
+                res.setValue(i, numCol.getValue(rowIndices.get(i))); 
             }
-            return NumericColumn.create(column.getName(), values);
+            return res;
         }
         
         if (column instanceof CategoricalColumn catCol)
