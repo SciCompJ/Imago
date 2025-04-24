@@ -630,8 +630,8 @@ public class GuiBuilder
         JMenu gradientFiltersMenu = new JMenu("Gradient Filters");
         addImageOperatorPlugin(gradientFiltersMenu, new SobelGradient(), "Sobel Gradient", hasScalarImage);
 		addImageOperatorPlugin(gradientFiltersMenu, new SobelGradientNorm(), "Sobel Gradient Norm", hasScalarImage);
-		addImageOperatorPlugin(gradientFiltersMenu, new VectorArrayNorm(), "Vector Image Norm", hasVectorImage);
-		// addMenuItem(menu, new ImageOperatorAction(frame, "vectorAngle",
+        addImageOperatorPlugin(gradientFiltersMenu, new VectorArrayNorm(), "Vector Image Norm", hasVectorImage);
+        // addMenuItem(menu, new ImageOperatorAction(frame, "vectorAngle",
 		// new VectorImageAngle()),
 		// "Array<?> Angle", hasImage);
         menu.add(gradientFiltersMenu);

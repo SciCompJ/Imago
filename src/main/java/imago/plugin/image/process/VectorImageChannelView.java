@@ -13,7 +13,7 @@ import net.sci.array.Array;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.VectorArray;
 import net.sci.image.Image;
-
+import net.sci.image.ImageType;
 
 /**
  * Extract a specific channel from a vector image
@@ -23,42 +23,45 @@ import net.sci.image.Image;
  */
 public class VectorImageChannelView implements FramePlugin
 {
-	public VectorImageChannelView()
-	{
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
-	public void run(ImagoFrame frame, String args)
-	{
-		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-		Image image = doc.getImage();
-		
-		if (image == null)
-		{
-			return;
-		}
-		Array<?> array = image.getData();
-		if (array == null)
-		{
-			return;
-		}
-		if (!(array instanceof VectorArray))
-		{
+    public VectorImageChannelView()
+    {
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void run(ImagoFrame frame, String args)
+    {
+        // get current frame
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
+        Image image = doc.getImage();
+        
+        if (image == null)
+        {
+            return;
+        }
+        Array<?> array = image.getData();
+        if (array == null)
+        {
+            return;
+        }
+        if (!(array instanceof VectorArray))
+        {
             ImagoGui.showErrorDialog(frame, "Requires a Vector image", "Data Type Error");
-			return;
-		}
-
-		VectorArray<?,?> vectorArray = (VectorArray<?,?>) array;
-		int nChannels = vectorArray.channelCount();
-		
-		GenericDialog dlg = new GenericDialog(frame, "Extract Channel");
-		dlg.addNumericField("Channel index", 0, 0, String.format("Between 0 and %d", nChannels));
-		
-		// Display dialog and wait for OK or Cancel
+            return;
+        }
+        
+        VectorArray<?, ?> vectorArray = (VectorArray<?, ?>) array;
+        int nChannels = vectorArray.channelCount();
+        
+        GenericDialog dlg = new GenericDialog(frame, "Extract Channel");
+        dlg.addNumericField("Channel index", 0, 0, String.format("Between 0 and %d", nChannels));
+        
+        // Display dialog and wait for OK or Cancel
         dlg.showDialog();
         if (dlg.wasCanceled())
         {
@@ -76,12 +79,12 @@ public class VectorImageChannelView implements FramePlugin
         // allocate memory for result array
         ScalarArray<?> channelArray = vectorArray.channel(channelIndex);
         
-		Image resultImage = new Image(channelArray, image);
-		String name = image.getName();
-		resultImage.setName(name + "-channel" + String.format("%d", channelIndex));
-				
-		// add the image document to GUI
-		ImageFrame.create(resultImage, frame);
-	}
-
+        Image resultImage = new Image(channelArray, ImageType.DIVERGING, image);
+        String name = String.format("%s-channel%02d", image.getName(), channelIndex);
+        resultImage.setName(name);
+        
+        // add the image document to GUI
+        ImageFrame.create(resultImage, frame);
+    }
+    
 }
