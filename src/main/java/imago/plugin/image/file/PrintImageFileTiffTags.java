@@ -10,7 +10,7 @@ import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import net.sci.image.io.TiffImageReader;
-import net.sci.image.io.tiff.TiffFileInfo;
+import net.sci.image.io.tiff.ImageFileDirectory;
 import net.sci.image.io.tiff.TiffTag;
 
 
@@ -55,12 +55,12 @@ public class PrintImageFileTiffTags implements FramePlugin
 			return;
 		}
 		
-		Collection<TiffFileInfo> fileInfoList = reader.getImageFileDirectories();
+		Collection<ImageFileDirectory> fileInfoList = reader.getImageFileDirectories();
 	    System.out.println("Tiff Image File with " + fileInfoList.size() + " Image File Directories.");
         
-	    TiffFileInfo info = fileInfoList.iterator().next();
-	      // display tags on console
-        for (TiffTag tag : info.tags.values())
+	    ImageFileDirectory info = fileInfoList.iterator().next();
+	    // display tags on console
+        for (TiffTag tag : info.entries())
         {
             String id = tag.name == null ? "" : " (" + tag.name + ")";
             String desc = String.format("Tag code: %5d %-30s", tag.code, id);
