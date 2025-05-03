@@ -7,6 +7,8 @@ import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
+import net.sci.array.binary.DenseBinaryArrayFactory;
+import net.sci.array.binary.RunLengthBinaryArrayFactory;
 import net.sci.array.binary.process.ScalarToBinary;
 import net.sci.array.numeric.IntArray;
 import net.sci.array.numeric.ScalarArray;
@@ -61,7 +63,9 @@ public class ImageManualThreshold implements FramePlugin
         // TODO: add widget for histogram representation
         gd.addSlider("Threshold Value: ", range[0], range[1], initValue);
         gd.addCheckBox("Upper values threshold", true);
-        gd.addCheckBox("Create view", false);
+//        gd.addCheckBox("Create view", false);
+        String[] outputTypes = new String[] {"Dense array", "Run-Length array", "View"};
+        gd.addChoice("Output Type", outputTypes, outputTypes[1]);
         gd.showDialog();
         
         if (gd.getOutput() == GenericDialog.Output.CANCEL) 
@@ -72,19 +76,29 @@ public class ImageManualThreshold implements FramePlugin
         // parse dialog results
         double thresholdValue = gd.getNextNumber();
         boolean upperThreshold = gd.getNextBoolean();
-        boolean createView = gd.getNextBoolean();
+        int outputTypeIndex = gd.getNextChoiceIndex();
         
         // create operator for threshold computation
         ScalarToBinary algo = new ScalarToBinary(upperThreshold ? x -> x >= thresholdValue : x -> x <= thresholdValue);
         
         Image resultImage;
-        if (createView)
+        if (outputTypeIndex == 2)
         {
             resultImage = new Image(algo.createView(array), image);
         }
+        else if (outputTypeIndex == 0)
+        {
+            algo.setFactory(new DenseBinaryArrayFactory());
+            resultImage = imageFrame.runOperator("Manual Threshold", algo, image);
+        }
+        else if (outputTypeIndex == 1)
+        {
+            algo.setFactory(new RunLengthBinaryArrayFactory());
+            resultImage = imageFrame.runOperator("Manual Threshold", algo, image);
+        }
         else
         {
-            resultImage = imageFrame.runOperator("Manual Threshold", algo, image);
+            throw new RuntimeException("Impossible choice...");
         }
         
         // create image name
