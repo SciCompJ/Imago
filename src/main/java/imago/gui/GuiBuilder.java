@@ -287,7 +287,7 @@ public class GuiBuilder
         JMenuBar menuBar = new JMenuBar();
         if (frame instanceof ImageFrame)
         {
-            menuBar.add(createImageFileMenu());
+            menuBar.add(createFileMenu());
             menuBar.add(createImageEditMenu());
             menuBar.add(createImageMenu());
             menuBar.add(createImageProcessMenu());
@@ -307,7 +307,7 @@ public class GuiBuilder
         }
         else if (frame instanceof ImagoEmptyFrame)
         {
-            menuBar.add(createImageFileMenu());
+            menuBar.add(createFileMenu());
         }
         menuBar.add(createPluginsMenu());
         menuBar.add(createHelpMenu());
@@ -345,9 +345,10 @@ public class GuiBuilder
     }
     
     /**
-     * Creates the sub-menu for the "File" item in the main menu bar.
+     * Creates the sub-menu for the "File" item in the main menu bar. This menu
+     * is common to the image frame and the empty frame.
      */
-    private JMenu createImageFileMenu()
+    private JMenu createFileMenu()
     {
         JMenu fileMenu = new JMenu("File");
         addPlugin(fileMenu, new CreateNewImage(), "New Image...");
@@ -382,20 +383,25 @@ public class GuiBuilder
         addPlugin(fileImportMenu, new ImportImageVgi(), "VGI Image...");
         fileMenu.add(fileImportMenu);
         
-        fileMenu.addSeparator();
-        addPlugin(fileMenu, new SaveImageIO(), "Save As...");
-        addPlugin(fileMenu, new SaveImageAsTiff(), "Save As Tiff...");
-        addPlugin(fileMenu, new SaveImageMetaImage(), "Save As MetaImage...");
+        if (frame instanceof ImageFrame)
+        {
+            fileMenu.addSeparator();
+            addPlugin(fileMenu, new SaveImageIO(), "Save As...");
+            addPlugin(fileMenu, new SaveImageAsTiff(), "Save As Tiff...");
+            addPlugin(fileMenu, new SaveImageMetaImage(), "Save As MetaImage...");
+        }
         
-        // addMenuItem(demoMenu, new CreateWhiteNoiseImageAction(frame,
-        // "createWhiteNoiseImage"), "White Noise Array<?>");
         fileMenu.addSeparator();
         addPlugin(fileMenu, new OpenTable(), "Open Table...");
         addPlugin(fileMenu, new ShowDemoTable(), "Show Demo Table");
         
         fileMenu.addSeparator();
-        addPlugin(fileMenu, new CloseCurrentFrame(), "Close", !(frame instanceof ImagoEmptyFrame));
-        addPlugin(fileMenu, new CloseWithChildren(), "Close With Children", !(frame instanceof ImagoEmptyFrame));
+        if (!(frame instanceof ImagoEmptyFrame))
+        {
+            addPlugin(fileMenu, new CloseCurrentFrame(), "Close");
+            addPlugin(fileMenu, new CloseWithChildren(), "Close With Children");
+        }
+        
         addPlugin(fileMenu, new QuitApplication(), "Quit");
         return fileMenu;
     }
