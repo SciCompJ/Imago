@@ -64,7 +64,7 @@ public class SaveImageMetaImage implements FramePlugin
         }
         catch (Exception ex)
         {
-            System.err.println(ex);
+            ex.printStackTrace(System.err);
             ImagoGui.showErrorDialog(frame, ex.getLocalizedMessage(), "MHD Image Export Error");
             return;
         }

@@ -58,7 +58,7 @@ public class ReadImageTiff implements FramePlugin, AlgoListener
 		}
 		catch (Exception ex) 
 		{
-		    System.err.println(ex);
+		    ex.printStackTrace(System.err);
             ImagoGui.showErrorDialog(frame, ex.getLocalizedMessage(), "TIFF Image Reading Error");
 			return;
 		}

@@ -64,14 +64,14 @@ public class SaveImageAsTiff implements FramePlugin
         // Create a writer with specified file
         TiffImageWriter writer = new TiffImageWriter(file);
         long t0 = System.nanoTime();
-//        writer.addAlgoListener(iframe);
+        writer.addAlgoListener(iframe);
         try
         {
             writer.writeImage(image);
         }
         catch (Exception ex)
         {
-            System.err.println(ex);
+            ex.printStackTrace(System.err);
             ImagoGui.showErrorDialog(frame, ex.getLocalizedMessage(), "Tiff Image Export Error");
             return;
         }

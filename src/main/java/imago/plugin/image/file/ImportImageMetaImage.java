@@ -68,6 +68,7 @@ public class ImportImageMetaImage implements FramePlugin
         }
         catch (IOException ex)
         {
+            ex.printStackTrace(System.err);
             throw new RuntimeException("Unable to read image from file: " + file.getName(), ex);
         }
 
