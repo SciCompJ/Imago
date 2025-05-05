@@ -11,6 +11,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
+import net.sci.array.ArrayOperator;
 import net.sci.array.binary.BinaryArray;
 import net.sci.image.Image;
 import net.sci.image.morphology.filtering.BallBinaryDilation;
@@ -142,7 +143,7 @@ public class BinaryImageMorphologicalFilterBall implements FramePlugin
     /**
      * The radius of the structuring element, in pixels.
      */
-    int radius = 2;
+    double radius = 2.0;
     
     
     // =============================================================
@@ -182,24 +183,21 @@ public class BinaryImageMorphologicalFilterBall implements FramePlugin
         // parse dialog results
         // extract chosen parameters
         this.op = (Operation) gd.getNextEnumChoice();
-        double radius = gd.getNextNumber();
+        this.radius = gd.getNextNumber();
         
-        long t0 = System.nanoTime();
-        BinaryArray res = switch (op)
+        ArrayOperator algo = switch (op)
         {
-            case DILATION -> new BallBinaryDilation(radius).process(array);
-            case EROSION -> new BallBinaryErosion(radius).process(array);
+            case DILATION -> new BallBinaryDilation(radius);
+            case EROSION -> new BallBinaryErosion(radius);
             default -> throw new RuntimeException("Operation is not managed: " + op);
         };
-        long t1 = System.nanoTime();
-        imageFrame.showElapsedTime(op.name(), (t1 - t0) / 1_000_000.0, image);
         
-        // Execute core of the plugin on the array of original image
-        Image resultImage = new Image(res, image);
+        // run the operator on the image
+        Image resultImage = imageFrame.runOperator(algo, image);
         
         // setup name of result image
         String strelName = nd == 2 ? "Disk" : "Ball";
-        String suffix = String.format(Locale.ENGLISH, "%s%s%3f", op.suffix(), strelName, radius);
+        String suffix = String.format(Locale.ENGLISH, "%s%s%02.0f", op.suffix(), strelName, radius);
         resultImage.setName(image.getName() + "-" + suffix);
         
         ImageFrame.create(resultImage, frame);
