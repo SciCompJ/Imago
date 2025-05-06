@@ -6,7 +6,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <groupId>net.scicompj</groupId>
   <artifactId>Imago</artifactId>
-  <version>0.1.4-SNAPSHOT</version>
+  <version>0.2.0</version>
 
   <name>Imago.jar</name>
   <description>Interactive image processing and analysis</description>
@@ -31,7 +31,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <dependency>
       <groupId>net.scicompj</groupId>
       <artifactId>cs4j</artifactId>
-      <version>0.3.1-SNAPSHOT</version>
+      <version>0.4.1-SNAPSHOT</version>
     </dependency>
     
     <!-- Jama (Java Matrix package) is used for computing inertia ellipsoid --> 
