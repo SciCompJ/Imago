@@ -8,6 +8,14 @@ import java.awt.Color;
 /**
  * Encapsulates the information for drawing shapes.
  * 
+ * {@snippet lang="java" :
+ * Style style = new Style()
+ *      .setLineColor(Color.RED)
+ *      .setLineWidth(2.5)
+ *      .setFillColor(Color.YELOW),
+ *      .setFillOpacity(0.3);
+ * }
+ * 
  * @author dlegland
  */
 public class Style
@@ -30,6 +38,11 @@ public class Style
      */
     Color fillColor = Color.CYAN;
 
+    /**
+     * The opacity of the fill, between 0 and 1. Initialized at 0.5.
+     */
+    double fillOpacity = 0.5;
+
 
     // ===================================================================
     // Constructors
@@ -39,7 +52,6 @@ public class Style
      */
     public Style()
     {
-    	
     }
     
     /**
@@ -52,6 +64,8 @@ public class Style
     {
     	this.lineColor = refStyle.lineColor;
     	this.lineWidth = refStyle.lineWidth;
+        this.fillColor = refStyle.fillColor;
+        this.fillOpacity = refStyle.fillOpacity;
     }
     
     
@@ -69,9 +83,10 @@ public class Style
     /**
      * @param color the color to draw lines
      */
-    public void setLineColor(Color color)
+    public Style setLineColor(Color color)
     {
         this.lineColor = color;
+        return this;
     }
 
     /**
@@ -85,9 +100,10 @@ public class Style
     /**
      * @param lineWidth the lineWidth to set
      */
-    public void setLineWidth(double lineWidth)
+    public Style setLineWidth(double lineWidth)
     {
         this.lineWidth = lineWidth;
+        return this;
     }
     
     /**
@@ -101,8 +117,26 @@ public class Style
     /**
      * @param color the new color used to fill shapes
      */
-    public void setFillColor(Color color)
+    public Style setFillColor(Color color)
     {
         this.fillColor = color;
+        return this;
+    }
+    
+    /**
+     * @return the fill opacity
+     */
+    public double getFillOpacity()
+    {
+        return fillOpacity;
+    }
+
+    /**
+     * @param opacity the opacity of the fill, between 0 and 1.
+     */
+    public Style setFillOpacity(double opacity)
+    {
+        this.fillOpacity = lineWidth;
+        return this;
     }
 }

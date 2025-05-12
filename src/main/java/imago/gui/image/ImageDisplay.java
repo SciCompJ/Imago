@@ -89,6 +89,12 @@ public class ImageDisplay extends JPanel
     int offsetX;
     int offsetY;
     
+    /**
+     * The class responsible for drawing shapes. Need to be updated after
+     * changes of zoom and/or offset.
+     */
+    ShapeDrawer drawer;
+    
     
     // ===================================================================
     // Constructor
@@ -103,6 +109,8 @@ public class ImageDisplay extends JPanel
     {
         this.image = image;
         this.setBackground(Color.LIGHT_GRAY);
+        
+        this.drawer = new ShapeDrawer();
     }
     
     
@@ -192,6 +200,8 @@ public class ImageDisplay extends JPanel
     public void setZoom(double zoom)
     {
         this.zoom = zoom;
+        
+        updateShapeDrawer();
     }
 
     public BufferedImage getBufferedImage()
@@ -272,6 +282,8 @@ public class ImageDisplay extends JPanel
 
         this.offsetX = (int) Math.max(0, Math.floor((dim0.width - dim.width) * .5));
         this.offsetY = (int) Math.max(0, Math.floor((dim0.height - dim.height) * .5));
+        
+        updateShapeDrawer();
     }
 
     public Dimension getPreferredSize()
@@ -291,7 +303,6 @@ public class ImageDisplay extends JPanel
         System.out.println("ImageDisplay.drawShape");
 
         // create drawer
-        ShapeDrawer drawer = createDrawer();
         drawer.drawShape((Graphics2D) this.getGraphics(), shape);
     }
 
@@ -304,9 +315,13 @@ public class ImageDisplay extends JPanel
         super.paintComponent(g);
 
         paintImage(g);
-        paintAnnotations(g);
-        paintSceneGraphItems(g);
-
+        
+        Graphics2D g2 = (Graphics2D) g;
+        // annotations
+        this.drawer.drawShapes(g2, this.shapes);
+        // scene graph
+        this.drawer.drawShapes(g2, this.sceneGraphItems);
+        
         if (this.selection != null) drawSelection(g);
         if (this.cursor != null) drawCustomCursor(g);
     }
@@ -318,42 +333,11 @@ public class ImageDisplay extends JPanel
         g.drawImage(this.image, offsetX, offsetY, dim.width, dim.height, null);
     }
 
-    private void paintAnnotations(Graphics g)
-    {
-        // convert to Graphics2D to have more drawing possibilities
-        Graphics2D g2 = (Graphics2D) g;
-        ShapeDrawer drawer = createDrawer();
-        
-        for(Shape shape : this.shapes)
-        {
-            drawer.drawShape(g2, shape);
-        }
-    }
-    
-    private void paintSceneGraphItems(Graphics g)
-    {
-        // convert to Graphics2D to have more drawing possibilities
-        Graphics2D g2 = (Graphics2D) g;
-        
-        for(Shape shape : this.sceneGraphItems)
-        {
-            drawShape(g2, shape);
-        }
-    }
-    
-    private void drawShape(Graphics2D g2, Shape shape)
-    {
-        ShapeDrawer drawer = createDrawer();
-        drawer.drawShape(g2, shape);
-        g2.setStroke(new java.awt.BasicStroke());
-    }
-    
     private void drawSelection(Graphics g)
     {
         // convert to Graphics2D to have more drawing possibilities
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.YELLOW);
-        ShapeDrawer drawer = createDrawer();
         drawer.drawGeometry(g2, this.selection);
     }
 
@@ -362,15 +346,12 @@ public class ImageDisplay extends JPanel
         // convert to Graphics2D to have more drawing possibilities
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.BLUE);
-        ShapeDrawer drawer = createDrawer();
         drawer.drawGeometry(g2, this.cursor);
     }
 
-    private ShapeDrawer createDrawer()
+    private void updateShapeDrawer()
     {
-        ShapeDrawer drawer = new ShapeDrawer();
         drawer.setScaling(zoom);
         drawer.setShift(offsetX, offsetY);
-        return drawer;
     }
 }

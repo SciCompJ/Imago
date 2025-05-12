@@ -12,6 +12,7 @@ import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Stroke;
 import java.awt.geom.Path2D;
+import java.util.Collection;
 import java.util.Iterator;
 
 import javax.swing.JFrame;
@@ -107,7 +108,8 @@ public class ShapeDrawer
         if (geom instanceof Domain2D)
         {
             Paint basePaint = g2.getPaint();
-            g2.setPaint(shape.getStyle().getFillColor());
+            Color fillColor = setOpacity(shape.getStyle().getFillColor(), shape.getStyle().getFillOpacity());
+            g2.setPaint(fillColor);
             fillGeometry(g2, (Geometry2D) geom);
             g2.setPaint(basePaint);
         }
@@ -124,6 +126,20 @@ public class ShapeDrawer
             g2.setStroke(baseStroke);
         }
     }
+    
+    private Color setOpacity(Color baseColor, double opacity)
+    {
+        return new Color(baseColor.getRed(), baseColor.getGreen(), baseColor.getBlue(), (int) (255 * opacity));
+    }
+    
+    public void drawShapes(Graphics2D g2, Collection<Shape> shapes)
+    {
+        for (Shape shape : shapes)
+        {
+            drawShape(g2, shape);
+        }
+    }
+    
     
     /**
      * Draws a geometry on the specified graphics. Paint settings are assumed to
