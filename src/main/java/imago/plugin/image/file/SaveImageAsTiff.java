@@ -12,6 +12,7 @@ import imago.gui.image.ImageFrame;
 import imago.gui.image.ImageViewer;
 import net.sci.image.Image;
 import net.sci.image.io.TiffImageWriter;
+import net.sci.image.io.tiff.BaselineTags;
 
 
 /**
@@ -63,6 +64,8 @@ public class SaveImageAsTiff implements FramePlugin
 
         // Create a writer with specified file
         TiffImageWriter writer = new TiffImageWriter(file);
+        writer.addCustomTag(new BaselineTags.Software().setValue("Imago ")); // adds a space to make sure ImageJ read correctly
+        
         long t0 = System.nanoTime();
         writer.addAlgoListener(iframe);
         try
