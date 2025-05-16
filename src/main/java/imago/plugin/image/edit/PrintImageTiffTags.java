@@ -7,6 +7,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -22,49 +23,57 @@ import net.sci.image.Image;
 import net.sci.image.io.tiff.TiffTag;
 
 /**
+ * Show the list of tags retrieved from an images stored in TIFF format.
+ * 
  * @author dlegland
- *
  */
 public class PrintImageTiffTags implements FramePlugin
 {
-	public PrintImageTiffTags() 
-	{
-	}
-	
-
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
-	public void run(ImagoFrame frame, String args)
-	{
-		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-		Image image = doc.getImage();
-
-		if (image.tiffTags.size() == 0)
-		{
-		    frame.showMessage("This image does not contain any tag", "Show Tiff Tags");
-		    return;
-		}
-	        
-		// display tags on console
-		for (TiffTag tag : image.tiffTags.values())
-		{
-			String desc = tag.name == null ? "" : " (" + tag.name + ")";
-			String info = String.format("Tag code: %5d %-30s", tag.code, desc);
-			System.out.println(info + "\tType=" + tag.type + ", \tcount=" + tag.count + ", content=" + tag.content);
-		}
-		
-		// tries to display in a frame
-		TiffTagsDisplayFrame tagsFrame = new TiffTagsDisplayFrame(frame, image);
-		tagsFrame.setVisible(true);
-	}
-	
-	class TiffTagsDisplayFrame extends ImagoFrame
-	{
-	    Image image;
-
+    /**
+     * Default empty constructor.
+     */
+    public PrintImageTiffTags()
+    {
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void run(ImagoFrame frame, String args)
+    {
+        // get current frame
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
+        Image image = doc.getImage();
+        
+        if (!image.metadata.containsKey("tiff-tags"))
+        {
+            frame.showMessage("This image does not contain any tag", "Show Tiff Tags");
+            return;
+        }
+        
+        // display tags on console
+        @SuppressWarnings("unchecked")
+        Map<Integer, TiffTag> tiffTags = (Map<Integer, TiffTag>) image.metadata.get("tiff-tags");
+        for (TiffTag tag : tiffTags.values())
+        {
+            String desc = tag.name == null ? "" : " (" + tag.name + ")";
+            String info = String.format("Tag code: %5d %-30s", tag.code, desc);
+            System.out.println(info + "\tType=" + tag.type + ", \tcount=" + tag.count + ", content=" + tag.content);
+        }
+        
+        // tries to display in a frame
+        TiffTagsDisplayFrame tagsFrame = new TiffTagsDisplayFrame(frame, image);
+        tagsFrame.setVisible(true);
+    }
+    
+    class TiffTagsDisplayFrame extends ImagoFrame
+    {
+        Image image;
+        
         protected TiffTagsDisplayFrame(ImagoFrame parent, Image image)
         {
             super(parent, "Tiff Tags");
@@ -94,15 +103,19 @@ public class PrintImageTiffTags implements FramePlugin
             JPanel mainPanel = new JPanel(new BorderLayout());
             mainPanel.setBackground(Color.GREEN);
 
+            // retrieve the map of tags
+            @SuppressWarnings("unchecked")
+            Map<Integer, TiffTag> tiffTags = (Map<Integer, TiffTag>) image.metadata.get("tiff-tags");
+            
             // Table header
             String[] colNames = new String[]{"Code", "Name", "Origin", "Value"};
-            int nRows = image.tiffTags.size();
+            int nRows = tiffTags.size();
              
             // Convert numeric values to table of objects
             int nCols = colNames.length;
             Object[][] data = new Object[nRows][nCols];
             int iRow = 0;
-            for (TiffTag tag : image.tiffTags.values())
+            for (TiffTag tag : tiffTags.values())
             {
                 Object[] row = new Object[nCols];
                 row[0] = tag.code;
@@ -134,6 +147,10 @@ public class PrintImageTiffTags implements FramePlugin
                 if (obj instanceof int[])
                 {
                     return convertIntArray((int[]) obj);
+                }
+                else if (obj instanceof byte[])
+                {
+                    return "byte[]";
                 }
                 else if (obj instanceof int[][])
                 {
