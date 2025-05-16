@@ -23,12 +23,12 @@ import net.sci.table.Table;
  * @author dlegland
  *
  */
-public class TableSelectRows implements TablePlugin
+public class TableFilterRows implements TablePlugin
 {
     /**
      * Default empty constructor.
      */
-    public TableSelectRows()
+    public TableFilterRows()
     {
     }
     
