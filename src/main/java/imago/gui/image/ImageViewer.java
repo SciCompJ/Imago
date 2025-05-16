@@ -155,14 +155,22 @@ public abstract class ImageViewer implements ImageHandle.Listener
 		return this.image;
 	}
 	
-	/**
-	 * @return the base image stored in this view
-	 */
-	public Image getImage() 
-	{
-		return this.image;
-	}
-	
+    /**
+     * @return the base image stored in this view
+     */
+    public Image getImage() 
+    {
+        return this.image;
+    }
+    
+    /**
+     * @return the ImageHandle of the image stored within this view.
+     */
+    public ImageHandle getImageHandle() 
+    {
+        return this.imageHandle;
+    }
+    
 	/**
 	 * @return the previewImage
 	 */

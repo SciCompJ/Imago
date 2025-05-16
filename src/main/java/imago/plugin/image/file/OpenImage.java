@@ -23,6 +23,9 @@ import net.sci.image.Image;
  */
 public class OpenImage implements FramePlugin
 {
+    /**
+     * Default empty constructor.
+     */
     public OpenImage()
     {
     }
@@ -69,6 +72,9 @@ public class OpenImage implements FramePlugin
         }
         
         // add the image document to GUI
-        ImageFrame.create(image, frame);
+        ImageFrame newFrame = ImageFrame.create(image, frame);
+        
+        // process optional meta data
+        ReadImageTiff.importImageMetaData(newFrame.getImageViewer());
     }    
 }
