@@ -17,7 +17,7 @@ import net.sci.geom.geom3d.LineSegment3D;
 import net.sci.geom.geom3d.Polygon3D;
 import net.sci.geom.geom3d.StraightLine3D;
 import net.sci.geom.geom3d.polyline.Polyline3D;
-import net.sci.geom.mesh.Mesh3D;
+import net.sci.geom.mesh3d.Mesh3D;
 
 
 /**

@@ -14,8 +14,8 @@ import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray3D;
-import net.sci.geom.mesh.Mesh3D;
-import net.sci.geom.mesh.io.OffMeshWriter;
+import net.sci.geom.mesh3d.Mesh3D;
+import net.sci.geom.mesh3d.io.OffMeshWriter;
 import net.sci.image.Image;
 import net.sci.image.vectorize.MorphologicalMarchingCubes;
 

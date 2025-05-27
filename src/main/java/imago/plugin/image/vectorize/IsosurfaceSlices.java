@@ -24,8 +24,8 @@ import net.sci.geom.geom3d.Plane3D;
 import net.sci.geom.geom3d.Point3D;
 import net.sci.geom.geom3d.Vector3D;
 import net.sci.geom.geom3d.polyline.Polyline3D;
-import net.sci.geom.mesh.DefaultTriMesh3D;
-import net.sci.geom.mesh.process.IntersectionMeshPlane;
+import net.sci.geom.mesh3d.DefaultTriMesh3D;
+import net.sci.geom.mesh3d.process.IntersectionMeshPlane;
 import net.sci.image.Image;
 import net.sci.image.vectorize.MorphologicalMarchingCubes;
 
