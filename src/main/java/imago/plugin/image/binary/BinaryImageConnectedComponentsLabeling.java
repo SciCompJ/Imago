@@ -15,13 +15,13 @@ import net.sci.array.numeric.IntArray;
 import net.sci.array.numeric.UInt16Array;
 import net.sci.array.numeric.UInt8Array;
 import net.sci.array.numeric.impl.RunLengthInt32ArrayFactory;
-import net.sci.image.Connectivity2D;
-import net.sci.image.Connectivity3D;
 import net.sci.image.Image;
 import net.sci.image.binary.labeling.ComponentsLabeling;
 import net.sci.image.binary.labeling.FloodFillComponentsLabeling1D;
 import net.sci.image.binary.labeling.FloodFillComponentsLabeling2D;
 import net.sci.image.binary.labeling.FloodFillComponentsLabeling3D;
+import net.sci.image.connectivity.Connectivity2D;
+import net.sci.image.connectivity.Connectivity3D;
 
 /**
  * Connected component labeling of a binary image.

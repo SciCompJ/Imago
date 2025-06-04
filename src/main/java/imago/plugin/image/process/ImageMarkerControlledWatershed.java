@@ -24,11 +24,11 @@ import net.sci.array.numeric.Scalar;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray2D;
 import net.sci.array.numeric.ScalarArray3D;
-import net.sci.image.Connectivity2D;
-import net.sci.image.Connectivity3D;
 import net.sci.image.Image;
 import net.sci.image.ImageType;
 import net.sci.image.binary.BinaryImages;
+import net.sci.image.connectivity.Connectivity2D;
+import net.sci.image.connectivity.Connectivity3D;
 import net.sci.image.morphology.watershed.MeyerMarkerControlledWatershed2D;
 import net.sci.image.morphology.watershed.MeyerMarkerControlledWatershed3D;
 

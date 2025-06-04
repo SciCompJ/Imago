@@ -9,10 +9,10 @@ import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
-import net.sci.image.Connectivity2D;
-import net.sci.image.Connectivity3D;
 import net.sci.image.Image;
 import net.sci.image.binary.SplitCoalescentParticles;
+import net.sci.image.connectivity.Connectivity2D;
+import net.sci.image.connectivity.Connectivity3D;
 
 /**
  * 
