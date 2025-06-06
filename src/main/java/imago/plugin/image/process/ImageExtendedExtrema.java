@@ -85,17 +85,17 @@ public class ImageExtendedExtrema implements FramePlugin
 		{
 			Connectivity2D conn = connIndex == 0 ? Connectivity2D.C4 : Connectivity2D.C8;
 			if (opIndex == 0)
-				result = MinimaAndMaxima.extendedMinima((ScalarArray2D<?>) array, dynamic, conn);
+				result = MinimaAndMaxima.extendedMinima2d((ScalarArray2D<?>) array, dynamic, conn);
 			else
-				result = MinimaAndMaxima.extendedMaxima((ScalarArray2D<?>) array, dynamic, conn);
+				result = MinimaAndMaxima.extendedMaxima2d((ScalarArray2D<?>) array, dynamic, conn);
 		}
 		else if (nd == 3)
 		{
 		    Connectivity3D conn = connIndex == 0 ? Connectivity3D.C6 : Connectivity3D.C26;
 		    if (opIndex == 0)
-		        result = MinimaAndMaxima.extendedMinima((ScalarArray3D<?>) array, dynamic, conn);
+		        result = MinimaAndMaxima.extendedMinima3d((ScalarArray3D<?>) array, dynamic, conn);
 		    else
-		        result = MinimaAndMaxima.extendedMaxima((ScalarArray3D<?>) array, dynamic, conn);
+		        result = MinimaAndMaxima.extendedMaxima3d((ScalarArray3D<?>) array, dynamic, conn);
 		}
 		else
 		{

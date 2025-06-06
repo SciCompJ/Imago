@@ -109,11 +109,11 @@ public class ImageImposeExtrema implements FramePlugin
             // minima or maxima imposition
             if (opIndex == 0)
             {
-                res = MinimaAndMaxima.imposeMinima(array2d, marker2d, conn2d);
+                res = MinimaAndMaxima.imposeMinima2d(array2d, marker2d, conn2d);
             }
             else
             {
-                res = MinimaAndMaxima.imposeMaxima(array2d, marker2d, conn2d);
+                res = MinimaAndMaxima.imposeMaxima2d(array2d, marker2d, conn2d);
             }
         }
         else if (ndims == 3)
@@ -128,11 +128,11 @@ public class ImageImposeExtrema implements FramePlugin
             // minima or maxima imposition
             if (opIndex == 0)
             {
-                res = MinimaAndMaxima.imposeMinima(array3d, marker3d, conn3d);
+                res = MinimaAndMaxima.imposeMinima3d(array3d, marker3d, conn3d);
             }
             else
             {
-                res = MinimaAndMaxima.imposeMaxima(array3d, marker3d, conn3d);
+                res = MinimaAndMaxima.imposeMaxima3d(array3d, marker3d, conn3d);
             }
         }
         else

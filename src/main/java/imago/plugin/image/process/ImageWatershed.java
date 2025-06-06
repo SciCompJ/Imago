@@ -94,16 +94,16 @@ public class ImageWatershed implements FramePlugin
 		{
 		    ScalarArray2D<?> array2d = (ScalarArray2D<?>) ScalarArray2D.wrapScalar2d((ScalarArray<?>) array);
 			Connectivity2D conn = connIndex == 0 ? Connectivity2D.C4 : Connectivity2D.C8;
-			BinaryArray2D minima = MinimaAndMaxima.extendedMinima(array2d, dynamic, conn);
-			ScalarArray2D<?> imposed = MinimaAndMaxima.imposeMinima(array2d, minima, conn);
+			BinaryArray2D minima = MinimaAndMaxima.extendedMinima2d(array2d, dynamic, conn);
+			ScalarArray2D<?> imposed = MinimaAndMaxima.imposeMinima2d(array2d, minima, conn);
 			result = new Watershed2D(conn).process(imposed);
 		}
 		else if (nd == 3)
 		{
 		    ScalarArray3D<?> array3d = (ScalarArray3D<?>) ScalarArray3D.wrapScalar3d((ScalarArray<?>) array);
 		    Connectivity3D conn = connIndex == 0 ? Connectivity3D.C6 : Connectivity3D.C26;
-		    BinaryArray3D minima = MinimaAndMaxima.extendedMinima(array3d, dynamic, conn);
-		    ScalarArray3D<?> imposed = MinimaAndMaxima.imposeMinima(array3d, minima, conn);
+		    BinaryArray3D minima = MinimaAndMaxima.extendedMinima3d(array3d, dynamic, conn);
+		    ScalarArray3D<?> imposed = MinimaAndMaxima.imposeMinima3d(array3d, minima, conn);
 		    result = new Watershed3D(conn).process(imposed);
 		}
 		else

@@ -71,17 +71,17 @@ public class ImageRegionalExtrema implements FramePlugin
         {
             Connectivity2D conn = connIndex == 0 ? Connectivity2D.C4 : Connectivity2D.C8;
             if (opIndex == 0)
-                result = MinimaAndMaxima.regionalMinima((ScalarArray2D<?>) array, conn);
+                result = MinimaAndMaxima.regionalMinima2d((ScalarArray2D<?>) array, conn);
             else
-                result = MinimaAndMaxima.regionalMaxima((ScalarArray2D<?>) array, conn);
+                result = MinimaAndMaxima.regionalMaxima2d((ScalarArray2D<?>) array, conn);
         }
         else if (nd == 3)
         {
             Connectivity3D conn = connIndex == 0 ? Connectivity3D.C6 : Connectivity3D.C26;
             if (opIndex == 0)
-                result = MinimaAndMaxima.regionalMinima((ScalarArray3D<?>) array, conn);
+                result = MinimaAndMaxima.regionalMinima3d((ScalarArray3D<?>) array, conn);
             else
-                result = MinimaAndMaxima.regionalMinima((ScalarArray3D<?>) array, conn);
+                result = MinimaAndMaxima.regionalMinima3d((ScalarArray3D<?>) array, conn);
         }
         else
         {
