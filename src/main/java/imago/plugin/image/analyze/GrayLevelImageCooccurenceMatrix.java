@@ -12,7 +12,7 @@ import net.sci.array.color.ColorMaps;
 import net.sci.array.numeric.IntArray2D;
 import net.sci.array.numeric.ScalarArray2D;
 import net.sci.image.Image;
-import net.sci.image.analyze.GrayLevelCooccurenceMatrix;
+import net.sci.image.analyze.texture.GrayLevelCooccurenceMatrix;
 
 /**
  * @author dlegland
