@@ -45,6 +45,7 @@ import imago.gui.image.StackSliceViewer;
 import imago.gui.image.tools.SelectPolygonTool;
 import imago.plugin.image.file.ImageFileFilters;
 import net.sci.geom.Geometry;
+import net.sci.geom.geom2d.curve.Ellipse2D;
 import net.sci.geom.geom2d.polygon.Polygon2D;
 import net.sci.image.Image;
 import net.sci.image.io.TiffImageReader;
@@ -784,6 +785,10 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         int sliceIndex = viewer.getSlicingPosition(2);
         
         Geometry selection = viewer.getSelection();
+        if (selection instanceof Ellipse2D)
+        {
+            selection = Polygon2D.convert(((Ellipse2D) selection).asPolyline(120));
+        }
         if (!(selection instanceof Polygon2D))
         {
             System.out.println("requires selection to be a simple polygon");
