@@ -22,6 +22,7 @@ import imago.gui.image.ImageFrame;
 import imago.gui.image.tools.DrawBrushValueTool;
 import imago.gui.image.tools.DrawValueTool;
 import imago.gui.image.tools.FloodFillTool;
+import imago.gui.image.tools.SelectEllipseTool;
 import imago.gui.image.tools.SelectLineSegmentTool;
 import imago.gui.image.tools.SelectPolygonTool;
 import imago.gui.image.tools.SelectPolylineTool;
@@ -786,6 +787,8 @@ public class GuiBuilder
                     hasImage);
             addPlugin(toolsMenu, new ChangeCurrentTool(new SelectRectangleTool(viewer, "selectRectangle")),
                     "Select Rectangle", hasImage);
+            addPlugin(toolsMenu, new ChangeCurrentTool(new SelectEllipseTool(viewer, "selectEllipse")),
+                    "Select Ellipse", hasImage);
             addPlugin(toolsMenu, new ChangeCurrentTool(new SelectPolygonTool(viewer, "selectPolygon")),
                     "Select Polygon", hasImage);
             addPlugin(toolsMenu, new ChangeCurrentTool(new SelectPolylineTool(viewer, "selectPolyline")),
@@ -798,10 +801,6 @@ public class GuiBuilder
                     "Draw (Brush)", hasScalarImage);
             addPlugin(toolsMenu, new ChangeCurrentTool(new FloodFillTool(viewer, "floodFillValue")), "Flood-Fill",
                     hasScalarImage);
-            // addPlugin(editMenu,
-            // new ChangeCurrentTool(new DrawValueTool(viewer, "drawBlack",
-            // 0.0)),
-            // "Draw Black", hasScalarImage);
             
             toolsMenu.addSeparator();
             addPlugin(toolsMenu, new ImageSetScaleFromLineSelection(), "Set Scale from Selection...", hasImage);
