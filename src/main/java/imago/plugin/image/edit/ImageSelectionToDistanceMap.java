@@ -13,6 +13,7 @@ import net.sci.array.Array;
 import net.sci.array.numeric.Float32Array2D;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.image.Image;
+import net.sci.image.ImageType;
 
 /**
  * Convert the selection of the current image into a new scalar image containing
@@ -68,11 +69,18 @@ public class ImageSelectionToDistanceMap implements FramePlugin
         Float32Array2D distMap = Float32Array2D.create(sizeX, sizeY);
         
         // iterate over output pixels
-        distMap.fillValues((x, y) -> selection.distance(x, y));
+        double maxDist = 0.0;
+        for (int[] pos : distMap.positions())
+        {
+            double dist = selection.distance(pos[0], pos[1]);
+            distMap.setValue(pos[0], pos[1], dist);
+            maxDist = Math.max(maxDist, dist);
+        }
         
         // create result image
-        Image resultImage = new Image(distMap, image);
-
+        Image resultImage = new Image(distMap, ImageType.DISTANCE, image);
+        resultImage.getDisplaySettings().setDisplayRange(new double[] { 0, maxDist });
+        
         // add the image document to GUI
         ImageFrame.create(resultImage, frame);
     }
