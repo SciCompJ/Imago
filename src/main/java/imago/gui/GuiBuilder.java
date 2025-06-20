@@ -163,6 +163,7 @@ import imago.plugin.image.process.ImageHysteresisThreshold;
 import imago.plugin.image.process.ImageImposeExtrema;
 import imago.plugin.image.process.ImageIteratedGeodesicDilations;
 import imago.plugin.image.process.ImageKMeansSegmentation;
+import imago.plugin.image.process.ImageIsodataThreshold;
 import imago.plugin.image.process.ImageKillBorders;
 import imago.plugin.image.process.ImageManualThreshold;
 import imago.plugin.image.process.ImageMarkerControlledWatershed;
@@ -681,7 +682,8 @@ public class GuiBuilder
         // operators specific to binary images
         menu.addSeparator();
         JMenu segmentationMenu = new JMenu("Segmentation");
-		addPlugin(segmentationMenu, new ImageOtsuThreshold(), "Otsu Threshold", hasScalarImage);
+		addPlugin(segmentationMenu, new ImageOtsuThreshold(), "Otsu Auto Threshold", hasScalarImage);
+        addPlugin(segmentationMenu, new ImageIsodataThreshold(), "Isodata Auto Threshold", hasScalarImage);
         addPlugin(segmentationMenu, new ImageManualThreshold(), "Manual Threshold", hasScalarImage);
         addPlugin(segmentationMenu, new ImageHysteresisThreshold(), "Hysteresis Threshold", hasScalarImage);
         segmentationMenu.addSeparator();
