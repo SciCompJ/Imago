@@ -79,6 +79,7 @@ import imago.plugin.image.binary.BinaryImageOverlay;
 import imago.plugin.image.binary.BinaryImageSkeleton;
 import imago.plugin.image.binary.ImageGeodesicDistanceMap;
 import imago.plugin.image.convert.ConvertChannelsToDimension;
+import imago.plugin.image.convert.ConvertColorImageToGrayscale;
 import imago.plugin.image.convert.ConvertDimensionToChannels;
 import imago.plugin.image.convert.ConvertImage3DToVectorImage;
 import imago.plugin.image.convert.ConvertImageToBinary;
@@ -536,6 +537,7 @@ public class GuiBuilder
         // editMenu.add(convertTypeMenu);
         addPlugin(colorMenu, new ImageSplitChannels(), "Split Channels", hasVectorImage || hasColorImage);
         addPlugin(colorMenu, new MergeChannelImages(), "Merge Channels");
+        addPlugin(colorMenu, new ConvertColorImageToGrayscale(), "Convert To Grayscale", hasColorImage);
         addPlugin(colorMenu, new ColorImageExtractChannel(), "Select Channel...", hasColorImage);
         addPlugin(colorMenu, new ConvertUInt8ImageToRGB(), "UInt8 to RGB8", hasScalarImage);
         addPlugin(colorMenu, new ConvertLabelMapToRGB8(), "Label Map to RGB", hasLabelImage);
