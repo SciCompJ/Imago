@@ -43,6 +43,8 @@ import javax.swing.JTextField;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
+import imago.app.ImagoApp;
+import imago.gui.frames.ImagoEmptyFrame;
 import imago.gui.util.JMultiLineLabel;
 
 /**
@@ -114,10 +116,10 @@ public class GenericDialog
     boolean updateWidgets = false;
    
     
-    // the listeners
+    /** The class that listens to the events of the dialog widgets */
     Controller controller;
     
-
+    
     // =============================================================
     // Constructors
     
@@ -138,7 +140,7 @@ public class GenericDialog
     {
         this.dialog = new JDialog(frame, title, true);
     
-        // creates the listeners
+        // creates the widgets listener
         this.controller = new Controller(dialog);
                 
         // setup global layout
@@ -174,64 +176,112 @@ public class GenericDialog
 	// =============================================================
     // General methods
     
-	/**
-	 * Adds a numeric field.
-	 */
-	public void addNumericField(String label, double defaultValue, int digits) 
-	{
-		addNumericField(label, defaultValue, digits, 6, null);
-	}
-
-	/**
-	 * Adds a numeric field.
-	 */
-	public void addNumericField(String label, double defaultValue, int digits, 
-			String tooltip) 
-	{
-		addNumericField(label, defaultValue, digits, 6, null);
-	}
-
-	public void addNumericField(String label, double defaultValue, int digits,
-			int columns, String units)
-	{
-		addNumericField(label, defaultValue, digits, columns, units, null);
-	}
-		
     /**
-     * Adds a numeric field.
+     * Adds a text field containing a numeric value.
      * 
      * @param label
-     *            the label
+     *            the label to display before the text field
      * @param defaultValue
-     *            state to be initially displayed
+     *            the initial value within the text field
      * @param digits
-     *            number of digits to right of decimal point
+     *            the number of digits to the right of the decimal point
+     * @return the widget of the text field
+     */
+	public JTextField addNumericField(String label, double defaultValue, int digits) 
+	{
+		return addNumericField(label, defaultValue, digits, 6, null);
+	}
+
+    /**
+     * Adds a text field containing a numeric value.
+     * 
+     * @param label
+     *            the label to display before the text field
+     * @param defaultValue
+     *            the initial value within the text field
+     * @param digits
+     *            the number of digits to the right of the decimal point
+     * @param toolTipText
+     *            (optional) a tooltip string used to display information about this option
+     * @return the widget of the text field
+     */
+	public JTextField addNumericField(String label, double defaultValue, int digits, 
+			String toolTipText) 
+	{
+		return addNumericField(label, defaultValue, digits, 6, null);
+	}
+
+    /**
+     * Adds a text field containing a numeric value.
+     * 
+     * @param label
+     *            the label to display before the text field
+     * @param defaultValue
+     *            the initial value within the text field
+     * @param digits
+     *            the number of digits to the right of the decimal point
      * @param columns
      *            sizeX of field in characters
      * @param units
-     *            a string displayed to the right of the field
-     * @param toolTip
-     *            a tooltip string used to display information about this option
+     *            (optional) a string displayed to the right of the field
+     * @return the widget of the text field
      */
-    public void addNumericField(String label, double defaultValue, int digits,
-			int columns, String units, String toolTip) 
+	public JTextField addNumericField(String label, double defaultValue, int digits,
+			int columns, String units)
+	{
+		return addNumericField(label, defaultValue, digits, columns, units, null);
+	}
+		
+    /**
+     * Adds a text field containing a numeric value.
+     * 
+     * @param label
+     *            the label to display before the text field
+     * @param defaultValue
+     *            the initial value within the text field
+     * @param digits
+     *            the number of digits to the right of the decimal point
+     * @param columns
+     *            sizeX of field in characters
+     * @param units
+     *            (optional) a string displayed to the right of the field
+     * @param toolTipText
+     *            (optional) a tooltip string used to display information about this option
+     * @return the widget of the text field
+     */
+    public JTextField addNumericField(String label, double defaultValue, int digits,
+			int columns, String units, String toolTipText) 
 	{
 		// creates the label widget
 		JLabel labelItem = new JLabel(formatLabel(label));
-		if (toolTip != null) 
+		if (toolTipText != null) 
 		{
-			labelItem.setToolTipText(toolTip);
+			labelItem.setToolTipText(toolTipText);
 		}
 		
+		// create the widget containing the text
+        String text = formatNumber(defaultValue, digits);
+        JTextField tf = createNumericTextField(text, columns);
+        
+        // add to the list of text fields
+        if (numericFields == null) 
+        {
+            numericFields = new ArrayList<JTextField>(5);
+//          defaultValues = new Vector(5);
+//          defaultText = new Vector(5);
+        }
+        numericFields.add(tf);
+//      defaultValues.addElement(new Double(defaultValue));
+//      defaultText.addElement(tf.getText());
+        
+        
+        // add widgets to the dialog layout
 		c.gridx = 0;
 		c.gridy = currentRow;
 		c.anchor = GridBagConstraints.EAST;
 		c.gridwidth = 1;
 		
-//		if (firstNumericField)
-//			c.insets = getInsets(5, 0, 3, 0);
-//		else
-//			c.insets = getInsets(0, 0, 3, 0);
+		// adapt insets for first row
 		if (firstNumericField)
 			c.insets = getInsets(5, 5, 3, 5);
 		else
@@ -239,23 +289,6 @@ public class GenericDialog
 		gridLayout.setConstraints(labelItem, c);
 		this.dialog.add(labelItem);
 		
-		if (numericFields == null) 
-		{
-			numericFields = new ArrayList<JTextField>(5);
-//			defaultValues = new Vector(5);
-//			defaultText = new Vector(5);
-		}
-
-		String text = formatNumber(defaultValue, digits);
-		JTextField tf = createNumericTextField(text, columns);
-//		if (toolTip != null) 
-//		{
-//			labelItem.setToolTipText(toolTip);
-//		}
-		
-		numericFields.add(tf);
-//		defaultValues.addElement(new Double(defaultValue));
-//		defaultText.addElement(tf.getText());
 		c.gridx = 1;
 		c.gridy = currentRow;
 		c.anchor = GridBagConstraints.WEST;
@@ -263,6 +296,7 @@ public class GenericDialog
 		
 		if (firstNumericField) tf.selectAll();
 		firstNumericField = false;
+		
 		if (units == null || units.equals("")) 
 		{
 			gridLayout.setConstraints(tf, c);
@@ -280,6 +314,8 @@ public class GenericDialog
 //		if (Recorder.record || macro)
 //			saveLabel(tf, label);
 		currentRow++;
+		
+		return tf;
 	}
 
 	/**
@@ -290,22 +326,23 @@ public class GenericDialog
      * @param text
      *            the text initially displayed
      */
-	public void addTextField(String label, String text) 
+	public JTextField addTextField(String label, String text) 
 	{
-		addTextField(label, text, 8);
+		return addTextField(label, text, 8);
 	}
 
 	/**
-	 * Adds a text field.
-	 * 
-	 * @param label
-	 *            the label
-	 * @param text
-	 *            text initially displayed
-	 * @param columns
-	 *            sizeX of the text field
-	 */
-	public void addTextField(String label, String text, int columns) 
+     * Adds a text field.
+     * 
+     * @param label
+     *            the label
+     * @param text
+     *            text initially displayed
+     * @param nCols
+     *            the number of columns of the text field
+     * @return the widget of the text field
+     */
+	public JTextField addTextField(String label, String text, int nCols) 
 	{
 		JLabel theLabel = new JLabel(formatLabel(label));
 
@@ -334,7 +371,7 @@ public class GenericDialog
 //		}
 
 		// creates text field component
-		JTextField tf = createTextField(text, columns);
+		JTextField tf = createTextField(text, nCols);
 		// tf.setEchoChar(echoChar);
 		// echoChar = 0;
 		
@@ -349,14 +386,18 @@ public class GenericDialog
 		// if (Recorder.record || macro)
 		// saveLabel(tf, label);
 		currentRow++;
+		
+		return tf;
 	}
 
 	/** 
 	 * Adds a checkbox; does not make it recordable if isPreview is true.
      * With isPreview true, the checkbox can be referred to as previewCheckbox
      * from hereon.
+     * 
+     * @return the widget of the check box
      */
-	public void addCheckBox(String label, boolean defaultValue) 
+	public JCheckBox addCheckBox(String label, boolean defaultValue) 
 	{
 		// Creates the new check box
 		label = formatLabel(label);
@@ -390,6 +431,8 @@ public class GenericDialog
 //														// recordable
 //			saveLabel(cb, label);
 		currentRow++;
+		
+		return cb;
 	}
 
 	/**
@@ -401,11 +444,12 @@ public class GenericDialog
      *            the array of item names
      * @param defaultItem
      *            the name of the default item
+     * @return the widget of the combo box
      *            
      * @see #addChoice(String, EnumSet, Enum)
      * @see #addEnumChoice(String, Class, Enum)           
      */
-	public void addChoice(String label, String[] items, String defaultItem) 
+	public JComboBox<String> addChoice(String label, String[] items, String defaultItem) 
 	{
 	    // create widget for label
 	    String label2 = formatLabel(label);
@@ -455,6 +499,8 @@ public class GenericDialog
 	    //		if (Recorder.record || macro)
 	    //			saveLabel(thisChoice, label);
 	    currentRow++;
+	    
+	    return combo;
 	}
 
 	/**
@@ -478,10 +524,11 @@ public class GenericDialog
      *            the list of enum handles
      * @param defaultItem
      *            the default choice for this option
+     * @return the widget of the combo box
      */
-    public <E extends Enum<E>> void addChoice(String label, EnumSet<E> items, E defaultItem) 
+    public <E extends Enum<E>> JComboBox<String> addChoice(String label, EnumSet<E> items, E defaultItem) 
     {
-        addChoice(label, createStringArray(items), defaultItem.toString());
+        return addChoice(label, createStringArray(items), defaultItem.toString());
     }
     
     private static final <E extends Enum<E>> String[] createStringArray(EnumSet<E> items)
@@ -515,16 +562,19 @@ public class GenericDialog
      *            the list of enum handles
      * @param defaultItem
      *            the default choice for this option
+     * @return the widget of the combo box
      */
-    public <E extends Enum<E>> void addEnumChoice(String label, Class<E> enumClass, E defaultItem) 
+    public <E extends Enum<E>> JComboBox<String> addEnumChoice(String label, Class<E> enumClass, E defaultItem) 
     {
         // create the combo box using strings
         EnumSet<E> enumSet = EnumSet.allOf(enumClass);
-        addChoice(label, enumSet, defaultItem);
+        JComboBox<String> combo = addChoice(label, enumSet, defaultItem);
         
         // update the field containing data associated to choices
         int index = choiceData.size() - 1;
         choiceData.set(index, enumSet.toArray());
+        
+        return combo;
     }
     
 	/**
@@ -540,8 +590,9 @@ public class GenericDialog
      *            the maximum state of the slider
      * @param defaultValue
      *            the initial state of the slider
+     * @return the widget of the slider
      */
-    public void addSlider(String label, double minValue, double maxValue, double defaultValue)
+    public JScrollBar addSlider(String label, double minValue, double maxValue, double defaultValue)
 	{
 		int columns = 4;
 		int digits = 0;
@@ -568,20 +619,19 @@ public class GenericDialog
 		gridLayout.setConstraints(theLabel, c);
 		this.dialog.add(theLabel);
 		
-		if (scrollBars == null) 
-		{
-			scrollBars = new ArrayList<JScrollBar>(5);
-			sliderIndexes = new int[MAX_SLIDERS];
-			sliderScales = new double[MAX_SLIDERS];
-		}
-
-		JScrollBar s = new JScrollBar(JScrollBar.HORIZONTAL, (int) defaultValue,
+		JScrollBar scrollBar = new JScrollBar(JScrollBar.HORIZONTAL, (int) defaultValue,
 				1, (int) minValue, (int) maxValue + 1);
+        scrollBar.addAdjustmentListener(this.controller);
+        scrollBar.setUnitIncrement(1);
 
-//		GUI.fix(s);
-		scrollBars.add(s);
-		s.addAdjustmentListener(this.controller);
-		s.setUnitIncrement(1);
+        if (scrollBars == null) 
+        {
+            scrollBars = new ArrayList<JScrollBar>(5);
+            sliderIndexes = new int[MAX_SLIDERS];
+            sliderScales = new double[MAX_SLIDERS];
+        }
+
+		scrollBars.add(scrollBar);
 
 		if (numericFields==null) 
 		{
@@ -622,8 +672,8 @@ public class GenericDialog
 		pc.gridwidth = 1;
 		pc.ipadx = 75;
 		pc.anchor = GridBagConstraints.WEST;
-		pgrid.setConstraints(s, pc);
-		panel.add(s);
+		pgrid.setConstraints(scrollBar, pc);
+		panel.add(scrollBar);
 		pc.ipadx = 0;  // reset
 		// text field
 		pc.gridx = 1;
@@ -644,6 +694,8 @@ public class GenericDialog
 		currentRow++;
 //		if (Recorder.record || macro)
 //			saveLabel(tf, label);
+		
+		return scrollBar;
    }
    
 	/**
@@ -1179,12 +1231,15 @@ public class GenericDialog
 	public static final void main(String[] args) 
 	{
 		System.out.println("start main");
+		
+		ImagoGui gui = new ImagoGui(new ImagoApp());
+		ImagoFrame frame = new ImagoEmptyFrame(gui);
 		 
-		GenericDialog gd = new GenericDialog("Dialog Example");
+		GenericDialog gd = new GenericDialog(frame, "Dialog Example");
 		gd.addNumericField("Radius:", 12.3, 2, "Size is given by 2 * radius + 1");
 		gd.addNumericField("Default Value:", 0, 2);
 		gd.addTextField("New name:", "Truc");
-		gd.addSlider("Slider:", 0, 100, 37);
+        gd.addSlider("Slider:", 0, 100, 37);
 		gd.addCheckBox("Show Result", true);
 		gd.showDialog();
 		
