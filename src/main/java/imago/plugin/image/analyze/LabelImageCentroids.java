@@ -79,6 +79,7 @@ public class LabelImageCentroids implements FramePlugin
             
             // display results in a new Table
             Table table = algo.createTable(centroids);
+            table.setName(image.getName() + "-Centroids");
             TableFrame.create(table, frame);
         }
         else if (nd == 3)

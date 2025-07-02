@@ -104,6 +104,9 @@ public class LabelImageEquivalentEllipses implements FramePlugin
             table.setColumnNames(new String[]{"Center.X", "Center.Y", "MajorSemiAxisLength", "MinorSemiAxisLength", "Orientation"});
             for (int i = 0; i < ellipses.length; i++)
             {
+                // update row name
+                table.setRowName(i, Integer.toString(labels[i]));
+                
                 Ellipse2D elli = ellipses[i];
                 Point2D center = elli.center();
                 table.setValue(i, 0, center.x());
@@ -113,11 +116,11 @@ public class LabelImageEquivalentEllipses implements FramePlugin
                 table.setValue(i, 4, elli.orientation());
             }
             
+            // setup meta-data
+            table.setName(createTableName(image));
+            table.getRowAxis().setName("Label");
+            
             // add the new frame to the GUI
-            String name = image.getName();
-            if (name != null && name.length() > 0) name = name + "-";
-            name = name + "ellipses";
-            table.setName(name);
             TableFrame.create(table, frame);
         }
         
@@ -135,4 +138,10 @@ public class LabelImageEquivalentEllipses implements FramePlugin
         }
     }
     
+    private static final String createTableName(Image image)
+    {
+        String name = image.getName();
+        if (name != null && name.length() > 0) name = name + "-";
+        return name + "ellipses";
+    }
 }
