@@ -23,6 +23,7 @@ import imago.gui.GuiBuilder;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import net.sci.axis.Axis;
+import net.sci.axis.CategoricalAxis;
 import net.sci.table.Table;
 
 /**
@@ -185,9 +186,9 @@ public class TableFrame extends ImagoFrame
         JScrollPane scrollPane = new JScrollPane(jtable);
         mainPanel.add(scrollPane, BorderLayout.CENTER);
         
-        // decorate the scroll panel with either row index, or row names, if they exist
-        Axis rowAxis = table.getRowAxis();
-        JTable rowTable = rowAxis != null ? new RowNamesTable(jtable, table.getRowNames()) : new RowNumberTable(jtable);
+        // decorate the scroll panel with row index
+        // (if row names are specified, they are included as an additional column)
+        JTable rowTable = new RowNumberTable(jtable);
         scrollPane.setRowHeaderView(rowTable);
         scrollPane.setCorner(JScrollPane.UPPER_LEFT_CORNER, rowTable.getTableHeader());
         
@@ -199,30 +200,46 @@ public class TableFrame extends ImagoFrame
         // table size
         int nRows = table.rowCount();
         int nCols = table.columnCount();
+        
+        // If row names are specified, add another column as first column
+        int columnOffset = 0;
+        Axis rowAxis = table.getRowAxis();
+        if (rowAxis != null)
+        {
+            columnOffset++;
+        }
 
         // Ensure the table has valid column names
-        String[] colNames = table.getColumnNames();
-        if (colNames == null)
+        String[] colNames = new String[nCols + columnOffset];
+        if (rowAxis != null)
         {
-            colNames = new String[nCols];
-            int nDigits = (int) Math.ceil(Math.log10(nCols));
-            String pattern = "%0" + nDigits + "d";
-            for (int c = 0;c < nCols; c++)
+            colNames[0] = "Row Names";
+            if (rowAxis.getName() != null && !rowAxis.getName().isBlank())
             {
-                colNames[c] = String.format(pattern, c);
+                colNames[0] = rowAxis.getName();
             }
         }
-         
-        // Convert numeric values to table of objects
-        Object[][] data = new Object[nRows][nCols];
-        for (int i = 0; i < nRows; i++)
+        for (int iCol = 0; iCol < table.columnCount(); iCol++)
         {
-            Object[] row = new Object[nCols];
-            for (int j = 0; j < nCols; j++)
+            colNames[iCol + columnOffset] = table.getColumnName(iCol);
+        }
+        
+        // Convert numeric values to table of objects
+        Object[][] data = new Object[nRows][nCols + columnOffset];
+        for (int iRow = 0; iRow < nRows; iRow++)
+        {
+            Object[] row = data[iRow];
+            
+            if (rowAxis != null)
             {
-                row[j] = table.get(i, j);
+                row[0] = ((CategoricalAxis) rowAxis).itemName(iRow);
             }
-            data[i] = row;
+            
+            for (int iCol = 0; iCol < nCols; iCol++)
+            {
+                row[iCol + columnOffset] = table.get(iRow, iCol);
+            }
+            data[iRow] = row;
         };
         
         // create JTable object

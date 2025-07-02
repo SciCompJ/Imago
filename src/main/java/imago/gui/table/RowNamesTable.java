@@ -11,14 +11,14 @@ import javax.swing.table.*;
  * must be added to the row header of the scrollpane that contains the main
  * table.
  * 
- * <code>
+ * {@snipper lang="java" :
  *  JTable mainTable = new JTable(...);
  *  JScrollPane scrollPane = new JScrollPane(mainTable);
  *  JTable rowTable = new RowNameTable(mainTable);
  *  scrollPane.setRowHeaderView(rowTable);
  *  scrollPane.setCorner(JScrollPane.UPPER_LEFT_CORNER,
  *      rowTable.getTableHeader());
- *  </code>
+ *  }
  * 
  * Ref: http://tips4java.wordpress.com/2008/11/18/row-number-table/
  */
