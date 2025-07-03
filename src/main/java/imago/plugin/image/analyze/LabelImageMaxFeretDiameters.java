@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import imago.app.ImageHandle;
+import imago.app.ObjectHandle;
 import imago.app.shape.Shape;
 import imago.gui.*;
 import imago.gui.image.ImageFrame;
@@ -82,6 +83,7 @@ public class LabelImageMaxFeretDiameters implements FramePlugin
         {
             // Convert ellipse to table, and display
             Table table = algo.createTable(diams);
+            table.setName(ObjectHandle.appendSuffix(image.getName(), "maxFeret"));
             
             // add the new frame to the GUI
             TableFrame.create(table, frame);

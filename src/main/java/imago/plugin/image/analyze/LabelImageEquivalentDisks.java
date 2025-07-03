@@ -4,6 +4,7 @@
 package imago.plugin.image.analyze;
 
 import imago.app.ImageHandle;
+import imago.app.ObjectHandle;
 import imago.app.shape.Shape;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
@@ -101,11 +102,13 @@ public class LabelImageEquivalentDisks implements FramePlugin
                 Point2D center = elli.center();
                 table.setValue(i, 0, center.x());
                 table.setValue(i, 1, center.y());
+                // equivalent radius obtained from ellipse area
                 double radius = Math.sqrt(elli.semiMajorAxisLength() * elli.semiMinorAxisLength());
                 table.setValue(i, 2, radius);
             }
             
             // add the new frame to the GUI
+            table.setName(ObjectHandle.appendSuffix(image.getName(), "eqvdisks"));
             TableFrame.create(table, frame);
         }
         

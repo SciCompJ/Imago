@@ -4,6 +4,7 @@
 package imago.plugin.image.analyze;
 
 import imago.app.ImageHandle;
+import imago.app.ObjectHandle;
 import imago.app.shape.Shape;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
@@ -117,7 +118,7 @@ public class LabelImageEquivalentEllipses implements FramePlugin
             }
             
             // setup meta-data
-            table.setName(createTableName(image));
+            table.setName(ObjectHandle.appendSuffix(image.getName(), "ellipses"));
             table.getRowAxis().setName("Label");
             
             // add the new frame to the GUI
@@ -136,12 +137,5 @@ public class LabelImageEquivalentEllipses implements FramePlugin
             }
             handle.notifyImageHandleChange();
         }
-    }
-    
-    private static final String createTableName(Image image)
-    {
-        String name = image.getName();
-        if (name != null && name.length() > 0) name = name + "-";
-        return name + "ellipses";
     }
 }

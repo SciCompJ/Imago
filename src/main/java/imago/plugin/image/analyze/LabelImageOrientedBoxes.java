@@ -6,6 +6,7 @@ package imago.plugin.image.analyze;
 import java.util.Collection;
 
 import imago.app.ImageHandle;
+import imago.app.ObjectHandle;
 import imago.app.shape.Shape;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
@@ -99,6 +100,7 @@ public class LabelImageOrientedBoxes implements FramePlugin
         {
             // Convert bounds to table, and display
             Table table = analyzer.createTable(RegionAnalyzer.createMap(labels, boxes));
+            table.setName(ObjectHandle.appendSuffix(image.getName(), "obox"));
 
             // add the new frame to the GUI
             TableFrame.create(table, frame);

@@ -6,6 +6,7 @@ package imago.plugin.image.analyze;
 import java.util.Map;
 
 import imago.app.ImageHandle;
+import imago.app.ObjectHandle;
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
@@ -74,10 +75,7 @@ public class LabelImageEquivalentEllipsoids implements FramePlugin
         Table table = algo.createTable(ellipsoids);
         
         // choose name
-        String name = image.getName();
-        if (name != null && name.length() > 0) name = name + "-";
-        name = name + "ellipsoids";
-        table.setName(image.getName() + "-ellipsoids");
+        table.setName(ObjectHandle.appendSuffix(image.getName(), "ellipsoids"));
 
         // display table as a new frame
         TableFrame.create(table, frame);

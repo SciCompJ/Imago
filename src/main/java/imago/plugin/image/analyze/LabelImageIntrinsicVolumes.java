@@ -4,6 +4,7 @@
 package imago.plugin.image.analyze;
 
 import imago.app.ImageHandle;
+import imago.app.ObjectHandle;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
@@ -83,6 +84,7 @@ public class LabelImageIntrinsicVolumes implements FramePlugin
         // Equivalent to:
         //  Map<Integer, IntrinsicVolumesAnalyzer2D.Result> results = algo.analyzeRegions(image);
         //  Table table = algo.createTable(results);
+        table.setName(ObjectHandle.appendSuffix(image.getName(), "morpho"));
         
         // add the new frame to the GUI
         TableFrame.create(table, frame);

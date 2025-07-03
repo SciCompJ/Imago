@@ -18,6 +18,7 @@ import net.sci.image.Image;
 import net.sci.image.analyze.region2d.GeodesicDiameter;
 import net.sci.image.binary.distmap.ChamferMask2D;
 import net.sci.image.binary.distmap.ChamferMasks2D;
+import net.sci.table.Table;
 
 /**
  * 
@@ -84,7 +85,9 @@ public class LabelImageGeodesicDiameters implements FramePlugin
         if (showTable)
         {
             // create result frame and display
-            TableFrame.create(algo.createTable(diams), frame);
+            Table table = algo.createTable(diams);
+            table.setName(image.getName() + "-GeodDiam");
+            TableFrame.create(table, frame);
         }
         
         if (overlayPaths)

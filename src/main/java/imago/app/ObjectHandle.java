@@ -34,6 +34,30 @@ public abstract class ObjectHandle
         return names;
     }
     
+    /**
+     * Creates a new name by appending a suffix to another name. If the base
+     * name is null or composed of only blank characters, the new name is
+     * corresponds to the suffix alone. Otherwise, the new name is created by
+     * inserting a hyphen character ("-") between the base name and the suffix.
+     * 
+     * @param baseName
+     *            the radical used to create the new name
+     * @param suffix
+     *            the string to append at the end of the suffix
+     * @return a new name composed of the base name and a suffix.
+     */
+    public static final String appendSuffix(String baseName, String suffix)
+    {
+        if (baseName != null && !baseName.isBlank())
+        {
+            return baseName + "-" + suffix;
+        }
+        else
+        {
+            return suffix;
+        }
+    }
+    
     
     // =============================================================
     // Class variables

@@ -6,6 +6,7 @@ package imago.plugin.image.analyze;
 import java.util.Collection;
 
 import imago.app.ImageHandle;
+import imago.app.ObjectHandle;
 import imago.app.shape.Shape;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
@@ -104,7 +105,8 @@ public class LabelImageBoundingBoxes implements FramePlugin
             {
                 // Convert bounds to table, and display
                 Table table = analyzer.createTable(RegionAnalyzer.createMap(labels, boxes));
-                
+                table.setName(ObjectHandle.appendSuffix(image.getName(), "bounds"));
+       
                 // add the new frame to the GUI
                 TableFrame.create(table, frame);
             }
@@ -153,7 +155,7 @@ public class LabelImageBoundingBoxes implements FramePlugin
                 table.setValue(i, 4, box.zMin());
                 table.setValue(i, 5, box.zMax());
             }
-            table.setName(image.getName() + "-BBoxes");
+            table.setName(image.getName() + "-Bounds");
 
             // add the new frame to the GUI
             TableFrame.create(table, frame);
