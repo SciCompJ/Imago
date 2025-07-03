@@ -104,6 +104,7 @@ import imago.plugin.image.edit.CreateColorCubeImage3D;
 import imago.plugin.image.edit.CreateDistanceToOctahedronImage3D;
 import imago.plugin.image.edit.DisplayImagePair;
 import imago.plugin.image.edit.ImageClearSelection;
+import imago.plugin.image.edit.AddPointShapeFromTable;
 import imago.plugin.image.edit.ImageColorMapDisplay;
 import imago.plugin.image.edit.ImageCopySelectionToWorkspace;
 import imago.plugin.image.edit.ImageFillBox;
@@ -446,6 +447,7 @@ public class GuiBuilder
         editMenu.add(sceneGraphMenu);
         
         addPlugin(editMenu, new DocClearShapes(), "Clear Shapes");
+        addPlugin(editMenu, new AddPointShapeFromTable(), "Add Point Shapes...");
         
         editMenu.addSeparator();
         JMenu settingsMenu = new JMenu("Settings");
