@@ -20,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import imago.app.shape.Shape;
+import imago.app.shape.Style;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Bounds2D;
 import net.sci.geom.geom2d.Curve2D;
@@ -114,7 +115,11 @@ public class ShapeDrawer
             g2.setPaint(basePaint);
         }
         
-        if (geom instanceof Geometry2D)
+        if (geom instanceof Point2D)
+        {
+            drawPoint(g2, (Point2D) geom, shape.getStyle());
+        }
+        else if (geom instanceof Geometry2D)
         {
             Stroke baseStroke = g2.getStroke();
             // setup line draw style
@@ -291,6 +296,61 @@ public class ShapeDrawer
         g2.drawLine(x-2, y, x+2, y);
         g2.drawLine(x, y-2, x, y+2);
         
+    }
+    
+    /**
+     * Draws a point on the specified graphics. Paint settings are assumed to be
+     * already defined.
+     * 
+     * @param point the point to draw
+     */
+    private void drawPoint(Graphics2D g2, Point2D point, Style style)
+    {
+        float xc = (float) (point.x() * scaleX + shiftX);
+        float yc = (float) (point.y() * scaleY + shiftY);
+        float r = style.getMarkerSize() * 0.5f;
+        
+        // setup line draw style
+        Stroke stroke = new BasicStroke((float) style.getLineWidth());
+        g2.setStroke(stroke);
+        g2.setColor(style.getLineColor());
+        
+        switch(style.getMarkerType())
+        {
+            case CIRCLE -> {
+                g2.draw(new java.awt.geom.Ellipse2D.Float(xc - r, yc - r, 2 *r, 2*r));
+            }
+            case SQUARE -> {
+                g2.draw(new java.awt.geom.Rectangle2D.Float(xc - r, yc - r, 2 *r, 2*r));
+            }
+            case PLUS -> {
+                g2.drawLine((int) (xc-r), (int) yc, (int) (xc+r), (int) yc);
+                g2.drawLine((int) xc, (int) (yc-r), (int) xc, (int) (yc+r));
+            }
+            case CROSS -> {
+                g2.drawLine((int) (xc-r), (int) (yc-r), (int) xc, (int) yc);
+                g2.drawLine((int) xc, (int) yc, (int) (xc+r), (int) (yc+r));
+            } 
+            case TRIANGLE_DOWN -> {
+                float dy = (float)(Math.sqrt(3) * 0.5 - 0.5) * r;
+                Path2D.Float path = new Path2D.Float();
+                path.moveTo(xc, yc + r);
+                path.lineTo(xc - r, yc - dy);
+                path.lineTo(xc + r, yc - dy);
+                path.lineTo(xc, yc + r);
+                g2.draw(path);
+            } 
+            case TRIANGLE_UP-> {
+                float dy = (float)(Math.sqrt(3) * 0.5 - 0.5) * r;
+                Path2D.Float path = new Path2D.Float();
+                path.moveTo(xc, yc - r);
+                path.lineTo(xc + r, yc + dy);
+                path.lineTo(xc - r, yc + dy);
+                path.lineTo(xc, yc - r);
+                g2.draw(path);
+            } 
+            default -> throw new RuntimeException("Could not manage marker type: " + style.getMarkerType());
+        };
     }
     
     /**

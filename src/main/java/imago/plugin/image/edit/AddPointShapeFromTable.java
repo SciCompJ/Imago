@@ -6,6 +6,7 @@ package imago.plugin.image.edit;
 import javax.swing.JComboBox;
 
 import imago.app.ImageHandle;
+import imago.app.shape.MarkerType;
 import imago.app.shape.Shape;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
@@ -24,9 +25,11 @@ import net.sci.table.Table;
  */
 public class AddPointShapeFromTable implements FramePlugin
 {
+    /**
+     * Default empty constructor
+     */
     public AddPointShapeFromTable()
     {
-        
     }
 
     @Override
@@ -55,6 +58,8 @@ public class AddPointShapeFromTable implements FramePlugin
         JComboBox<String> tableCombo = gd.addChoice("Table", tableNames, tableNames[0]);
         JComboBox<String> xPosCombo = gd.addChoice("X-Position", colNames, colNames[0]);
         JComboBox<String> yPosCombo = gd.addChoice("Y-Position", colNames, colNames[0]);
+        gd.addEnumChoice("Marker Type", MarkerType.class, MarkerType.PLUS);
+        gd.addNumericField("Marker Size", 6, 0);
         
         // updates the combo box containing column names when table changes 
         tableCombo.addActionListener(evt -> {
@@ -80,18 +85,26 @@ public class AddPointShapeFromTable implements FramePlugin
         String tableName = gd.getNextChoice();
         String xColName = gd.getNextChoice();
         String yColName = gd.getNextChoice();
+        MarkerType markerType = (MarkerType) gd.getNextEnumChoice();
+        int markerSize = (int) gd.getNextNumber();
         
+        // retrieve relevant columns from table
         table = TableFrame.getTableFrame(gui, tableName).getTable();
         Column xColumn = table.column(table.findColumnIndex(xColName));
         Column yColumn = table.column(table.findColumnIndex(yColName));
         if (!(xColumn instanceof NumericColumn)) throw new RuntimeException("Requires numeric column for x-coordinates");
         if (!(yColumn instanceof NumericColumn)) throw new RuntimeException("Requires numeric column for y-coordinates");
         
+        // iterate over pairs of coordinates to create point annotations
         for (int i = 0; i < xColumn.length(); i++)
         {
             Point2D point = new Point2D(xColumn.getValue(i), yColumn.getValue(i));
             Shape shape = new Shape(point);
-            shape.getStyle().setLineColor(java.awt.Color.BLUE);
+            shape.getStyle()
+                .setMarkerType(markerType)
+                .setMarkerSize(markerSize)
+                .setLineColor(java.awt.Color.BLUE)
+                ;
             handle.addShape(shape);
         }
         handle.notifyImageHandleChange();
