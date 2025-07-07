@@ -21,7 +21,35 @@ import java.awt.Color;
 public class Style
 {
     // ===================================================================
+    // Enumerations
+    
+    // ===================================================================
     // Class variables
+    
+    /**
+     * A boolean flag for visibility of marker elements.
+     */
+    boolean markerVisible = true;
+    
+    /**
+     * The type of marker.
+     */
+    MarkerType markerType = MarkerType.CIRCLE;
+    
+    /**
+     * The color used to draw markers.
+     */
+    Color markerColor = Color.BLUE;
+    
+    /**
+     * The size of the marker elements.
+     */
+    int markerSize = 6;
+        
+    /**
+     * A boolean flag for visibility of line elements.
+     */
+    boolean lineVisible = true;
     
     /**
      * The color used to draw lines.
@@ -33,6 +61,11 @@ public class Style
      */
     double lineWidth = 1.0;
 
+    /**
+     * A boolean flag for visibility of fill elements.
+     */
+    boolean fillVisible = true;
+    
     /**
      * The color used to fill shapes.
      */
@@ -62,16 +95,113 @@ public class Style
      */
     public Style(Style refStyle)
     {
+        this.markerVisible = refStyle.markerVisible;
+        this.markerType = refStyle.markerType;
+        this.markerColor = refStyle.markerColor;
+        this.markerSize = refStyle.markerSize;
+        
+        this.lineVisible = refStyle.lineVisible;
     	this.lineColor = refStyle.lineColor;
     	this.lineWidth = refStyle.lineWidth;
+    	
+        this.fillVisible = refStyle.fillVisible;
         this.fillColor = refStyle.fillColor;
         this.fillOpacity = refStyle.fillOpacity;
     }
     
     
     // ===================================================================
-    // Accessors and mutators
+    // Accessors and mutators for markers
     
+    /**
+     * @return the markerVisible
+     */
+    public boolean isMarkerVisible()
+    {
+        return markerVisible;
+    }
+
+    /**
+     * @param markerVisible the markerVisible to set
+     */
+    public Style setMarkerVisible(boolean markerVisible)
+    {
+        this.markerVisible = markerVisible;
+        return this;
+    }
+
+    /**
+     * @return the markerType
+     */
+    public MarkerType getMarkerType()
+    {
+        return markerType;
+    }
+
+    /**
+     * @param markerType the markerType to set
+     */
+    public Style setMarkerType(MarkerType markerType)
+    {
+        this.markerType = markerType;
+        return this;
+    }
+
+    /**
+     * @return the markerColor
+     */
+    public Color getMarkerColor()
+    {
+        return markerColor;
+    }
+
+    /**
+     * @param markerColor the markerColor to set
+     */
+    public Style setMarkerColor(Color markerColor)
+    {
+        this.markerColor = markerColor;
+        return this;
+    }
+
+    /**
+     * @return the markerSize
+     */
+    public int getMarkerSize()
+    {
+        return markerSize;
+    }
+
+    /**
+     * @param markerSize the markerSize to set
+     */
+    public Style setMarkerSize(int markerSize)
+    {
+        this.markerSize = markerSize;
+        return this;
+    }
+    
+
+    // ===================================================================
+    // Accessors and mutators for lines
+    
+    /**
+     * @return the lineVisible
+     */
+    public boolean isLineVisible()
+    {
+        return lineVisible;
+    }
+
+    /**
+     * @param lineVisible the lineVisible to set
+     */
+    public Style setLineVisible(boolean lineVisible)
+    {
+        this.lineVisible = lineVisible;
+        return this;
+    }
+
     /**
      * @return the color to draw lines
      */
@@ -105,7 +235,28 @@ public class Style
         this.lineWidth = lineWidth;
         return this;
     }
+
     
+    // ===================================================================
+    // Accessors and mutators for fill
+    
+    /**
+     * @return the fillVisible
+     */
+    public boolean isFillVisible()
+    {
+        return fillVisible;
+    }
+
+    /**
+     * @param fillVisible the fillVisible to set
+     */
+    public Style setFillVisible(boolean fillVisible)
+    {
+        this.fillVisible = fillVisible;
+        return this;
+    }
+
     /**
      * @return the color used to fill shapes
      */
