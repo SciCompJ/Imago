@@ -9,7 +9,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Paint;
+import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.Path2D;
 import java.util.Collection;
@@ -94,25 +94,29 @@ public class ShapeDrawer
     // Drawing methods
 
     /**
-     * Draws a shape on the specified graphics. In practice, sets uo the display
+     * Draws a shape on the specified graphics. In practice, sets up the display
      * settings from shape style, and calls the <code>drawGeometry()</code>
      * method.
      * 
      * @param shape
      *            the shape to draw
      */
-    public void drawShape(Graphics2D g2, Shape shape)
+    public void drawShape(Graphics2D g, Shape shape)
     {
+        // creates a new Graphics on top of original graphics instance
+        Graphics2D g2 = (Graphics2D) g.create();
+        
+        // small setup
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
         Geometry geom = shape.getGeometry();
         
         // call the fill method only for domain geometries 
         if (geom instanceof Domain2D)
         {
-            Paint basePaint = g2.getPaint();
             Color fillColor = setOpacity(shape.getStyle().getFillColor(), shape.getStyle().getFillOpacity());
             g2.setPaint(fillColor);
             fillGeometry(g2, (Geometry2D) geom);
-            g2.setPaint(basePaint);
         }
         
         if (geom instanceof Point2D)
@@ -121,14 +125,12 @@ public class ShapeDrawer
         }
         else if (geom instanceof Geometry2D)
         {
-            Stroke baseStroke = g2.getStroke();
             // setup line draw style
             Stroke stroke = new BasicStroke((float) shape.getLineWidth());
             g2.setStroke(stroke);
             g2.setColor(shape.getColor());
             
             drawGeometry(g2, (Geometry2D) geom);
-            g2.setStroke(baseStroke);
         }
     }
     
@@ -328,25 +330,25 @@ public class ShapeDrawer
                 g2.drawLine((int) xc, (int) (yc-r), (int) xc, (int) (yc+r));
             }
             case CROSS -> {
-                g2.drawLine((int) (xc-r), (int) (yc-r), (int) xc, (int) yc);
-                g2.drawLine((int) xc, (int) yc, (int) (xc+r), (int) (yc+r));
+                g2.drawLine((int) (xc-r), (int) (yc-r), (int) (xc+r), (int) (yc+r));
+                g2.drawLine((int) (xc-r), (int) (yc+r), (int) (xc+r), (int) (yc-r));
             } 
             case TRIANGLE_DOWN -> {
-                float dy = (float)(Math.sqrt(3) * 0.5 - 0.5) * r;
+                float dy = (float) (Math.sqrt(3) * r / 3.0);
                 Path2D.Float path = new Path2D.Float();
-                path.moveTo(xc, yc + r);
+                path.moveTo(xc, yc + dy * 2.0);
                 path.lineTo(xc - r, yc - dy);
                 path.lineTo(xc + r, yc - dy);
-                path.lineTo(xc, yc + r);
+                path.lineTo(xc, yc + dy * 2.0);
                 g2.draw(path);
             } 
             case TRIANGLE_UP-> {
-                float dy = (float)(Math.sqrt(3) * 0.5 - 0.5) * r;
+                float dy = (float) (Math.sqrt(3) * r / 3.0);
                 Path2D.Float path = new Path2D.Float();
-                path.moveTo(xc, yc - r);
+                path.moveTo(xc, yc - dy * 2.0);
                 path.lineTo(xc + r, yc + dy);
                 path.lineTo(xc - r, yc + dy);
-                path.lineTo(xc, yc - r);
+                path.lineTo(xc, yc - dy * 2.0);
                 g2.draw(path);
             } 
             default -> throw new RuntimeException("Could not manage marker type: " + style.getMarkerType());
@@ -507,12 +509,14 @@ public class ShapeDrawer
             {
                 super.paintComponent(g);
                 
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
                 // create drawer
                 ShapeDrawer drawer = new ShapeDrawer();
                 drawer.setScaling(10, -10);
                 drawer.setShift(200, 200);
 
-                Graphics2D g2 = (Graphics2D) g;
                 drawer.drawGeometry(g2, new LineSegment2D(new Point2D(-10, 0), new Point2D(+10, 0)));
                 drawer.drawGeometry(g2, new LineSegment2D(new Point2D(0, -10), new Point2D(0, +10)));
                 drawer.drawGeometry(g2, new Point2D(4, 3));
