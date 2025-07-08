@@ -11,6 +11,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.util.Collection;
 import java.util.Iterator;
@@ -293,11 +294,11 @@ public class ShapeDrawer
      */
     private void drawPoint(Graphics2D g2, Point2D point)
     {
-        int x = (int) (point.x() * scaleX + shiftX);
-        int y = (int) (point.y() * scaleY + shiftY);
+        point = userToDisplay(point);
+        int x = (int) point.x();
+        int y = (int) point.y();
         g2.drawLine(x-2, y, x+2, y);
         g2.drawLine(x, y-2, x, y+2);
-        
     }
     
     /**
@@ -308,8 +309,9 @@ public class ShapeDrawer
      */
     private void drawPoint(Graphics2D g2, Point2D point, Style style)
     {
-        float xc = (float) (point.x() * scaleX + shiftX);
-        float yc = (float) (point.y() * scaleY + shiftY);
+        point = userToDisplay(point);
+        float xc = (float) point.x();
+        float yc = (float) point.y();
         float r = style.getMarkerSize() * 0.5f;
         
         // setup line draw style
@@ -322,16 +324,32 @@ public class ShapeDrawer
             case CIRCLE -> {
                 g2.draw(new java.awt.geom.Ellipse2D.Float(xc - r, yc - r, 2 *r, 2*r));
             }
+            case PLUS -> {
+                g2.draw(new Line2D.Float((int) (xc-r), (int) yc, (int) (xc+r), (int) yc));
+                g2.draw(new Line2D.Float((int) xc, (int) (yc-r), (int) xc, (int) (yc+r)));
+            }
+            case CROSS -> {
+                g2.draw(new Line2D.Float((int) (xc-r), (int) (yc-r), (int) (xc+r), (int) (yc+r)));
+                g2.draw(new Line2D.Float((int) (xc-r), (int) (yc+r), (int) (xc+r), (int) (yc-r)));
+            } 
+            case ASTERISK -> {
+                g2.draw(new Line2D.Float((int) (xc-r), (int) yc, (int) (xc+r), (int) yc));
+                g2.draw(new Line2D.Float((int) xc, (int) (yc-r), (int) xc, (int) (yc+r)));
+                float r2 = (float) (r * Math.sqrt(2) * 0.5);
+                g2.draw(new Line2D.Float((int) (xc-r2), (int) (yc-r2), (int) (xc+r2), (int) (yc+r2)));
+                g2.draw(new Line2D.Float((int) (xc-r2), (int) (yc+r2), (int) (xc+r2), (int) (yc-r2)));
+            } 
             case SQUARE -> {
                 g2.draw(new java.awt.geom.Rectangle2D.Float(xc - r, yc - r, 2 *r, 2*r));
             }
-            case PLUS -> {
-                g2.drawLine((int) (xc-r), (int) yc, (int) (xc+r), (int) yc);
-                g2.drawLine((int) xc, (int) (yc-r), (int) xc, (int) (yc+r));
-            }
-            case CROSS -> {
-                g2.drawLine((int) (xc-r), (int) (yc-r), (int) (xc+r), (int) (yc+r));
-                g2.drawLine((int) (xc-r), (int) (yc+r), (int) (xc+r), (int) (yc-r));
+            case DIAMOND -> {
+                Path2D.Float path = new Path2D.Float();
+                path.moveTo(xc, yc + r);
+                path.lineTo(xc - r, yc);
+                path.lineTo(xc, yc - r);
+                path.lineTo(xc + r, yc);
+                path.lineTo(xc, yc + r);
+                g2.draw(path);
             } 
             case TRIANGLE_DOWN -> {
                 float dy = (float) (Math.sqrt(3) * r / 3.0);
@@ -349,6 +367,24 @@ public class ShapeDrawer
                 path.lineTo(xc + r, yc + dy);
                 path.lineTo(xc - r, yc + dy);
                 path.lineTo(xc, yc - dy * 2.0);
+                g2.draw(path);
+            } 
+            case TRIANGLE_LEFT-> {
+                float dx = (float) (Math.sqrt(3) * r / 3.0);
+                Path2D.Float path = new Path2D.Float();
+                path.moveTo(xc - dx * 2.0, yc);
+                path.lineTo(xc + dx, yc - r);
+                path.lineTo(xc + dx, yc + r);
+                path.lineTo(xc - dx * 2.0, yc);
+                g2.draw(path);
+            } 
+            case TRIANGLE_RIGHT-> {
+                float dx = (float) (Math.sqrt(3) * r / 3.0);
+                Path2D.Float path = new Path2D.Float();
+                path.moveTo(xc + dx * 2.0, yc);
+                path.lineTo(xc - dx, yc + r);
+                path.lineTo(xc - dx, yc - r);
+                path.lineTo(xc + dx * 2.0, yc);
                 g2.draw(path);
             } 
             default -> throw new RuntimeException("Could not manage marker type: " + style.getMarkerType());
@@ -491,8 +527,8 @@ public class ShapeDrawer
     
     private Point2D userToDisplay(Point2D point)
     {
-        double x = point.x() * scaleX + shiftX;
-        double y = point.y() * scaleY + shiftY;
+        double x = (point.x() + 0.5) * scaleX + shiftX;
+        double y = (point.y() + 0.5) * scaleY + shiftY;
         return new Point2D(x, y);
     }
     

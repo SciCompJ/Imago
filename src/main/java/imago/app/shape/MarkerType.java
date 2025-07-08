@@ -9,9 +9,13 @@ package imago.app.shape;
 public enum MarkerType
 {
     CIRCLE,
-    SQUARE,
     CROSS,
+    ASTERISK,
     PLUS,
+    SQUARE,
+    DIAMOND,
     TRIANGLE_UP,
-    TRIANGLE_DOWN
+    TRIANGLE_DOWN,
+    TRIANGLE_LEFT,
+    TRIANGLE_RIGHT,
 }
