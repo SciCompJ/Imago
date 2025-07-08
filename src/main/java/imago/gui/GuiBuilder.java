@@ -100,11 +100,11 @@ import imago.plugin.image.convert.CreateVectorImageRGB8View;
 import imago.plugin.image.convert.ScalarImagesColorDifference;
 import imago.plugin.image.convert.VectorImageConvertToRGB;
 import imago.plugin.image.convert.VectorImageToTable;
+import imago.plugin.image.edit.AddPointShapeFromTable;
 import imago.plugin.image.edit.CreateColorCubeImage3D;
 import imago.plugin.image.edit.CreateDistanceToOctahedronImage3D;
 import imago.plugin.image.edit.DisplayImagePair;
 import imago.plugin.image.edit.ImageClearSelection;
-import imago.plugin.image.edit.AddPointShapeFromTable;
 import imago.plugin.image.edit.ImageColorMapDisplay;
 import imago.plugin.image.edit.ImageCopySelectionToWorkspace;
 import imago.plugin.image.edit.ImageFillBox;
@@ -142,9 +142,9 @@ import imago.plugin.image.file.PrintImageFileTiffTags;
 import imago.plugin.image.file.ReadImageTiff;
 import imago.plugin.image.file.ReadTiffStackSlice;
 import imago.plugin.image.file.ReadTiffVirtualImage3D;
+import imago.plugin.image.file.SaveImageAsTiff;
 import imago.plugin.image.file.SaveImageIO;
 import imago.plugin.image.file.SaveImageMetaImage;
-import imago.plugin.image.file.SaveImageAsTiff;
 import imago.plugin.image.file.ShowMetaImageFileInfo;
 import imago.plugin.image.process.BinaryImageBoxMedianFilter;
 import imago.plugin.image.process.BinaryImageSplitCoalescentParticles;
@@ -158,14 +158,15 @@ import imago.plugin.image.process.ImageApplyMathFunction;
 import imago.plugin.image.process.ImageApplySingleValueOperator;
 import imago.plugin.image.process.ImageBivariateHistogram;
 import imago.plugin.image.process.ImageBoxFilter;
+import imago.plugin.image.process.ImageCropThumbnailList;
 import imago.plugin.image.process.ImageDuplicate;
 import imago.plugin.image.process.ImageExtendedExtrema;
 import imago.plugin.image.process.ImageFillHoles;
 import imago.plugin.image.process.ImageHysteresisThreshold;
 import imago.plugin.image.process.ImageImposeExtrema;
+import imago.plugin.image.process.ImageIsodataThreshold;
 import imago.plugin.image.process.ImageIteratedGeodesicDilations;
 import imago.plugin.image.process.ImageKMeansSegmentation;
-import imago.plugin.image.process.ImageIsodataThreshold;
 import imago.plugin.image.process.ImageKillBorders;
 import imago.plugin.image.process.ImageManualThreshold;
 import imago.plugin.image.process.ImageMarkerControlledWatershed;
@@ -218,9 +219,9 @@ import imago.plugin.table.edit.NumericTableSummary;
 import imago.plugin.table.edit.PrintTableInfo;
 import imago.plugin.table.edit.PrintTableToConsole;
 import imago.plugin.table.edit.RenameTable;
+import imago.plugin.table.edit.TableFilterRows;
 import imago.plugin.table.edit.TableKeepNumericColumns;
 import imago.plugin.table.edit.TableSelectColumns;
-import imago.plugin.table.edit.TableFilterRows;
 import imago.plugin.table.edit.TransposeTable;
 import imago.plugin.table.plot.PlotTableColumnHistogram;
 import imago.plugin.table.plot.TableGroupScatterPlot;
@@ -245,8 +246,6 @@ import net.sci.image.contrast.VectorArrayNorm;
 import net.sci.image.filtering.GaussianFilter5x5;
 import net.sci.image.filtering.SobelGradient;
 import net.sci.image.filtering.SobelGradientNorm;
-
-
 /**
  * Setup the menu for a given frame.
  * 
@@ -578,6 +577,8 @@ public class GuiBuilder
         addPlugin(geometryMenu, new ImageAddBorders(), "Add Borders...", hasScalarImage); 
         addPlugin(geometryMenu, new ImageSubsample(), "Subsample...", hasImage);
         addPlugin(geometryMenu, new ImageDownsample(), "Downsample...", hasImage);
+        geometryMenu.addSeparator();
+        addPlugin(geometryMenu, new ImageCropThumbnailList(), "Crop Thumbnails from Positions...", hasImage);
         
         menu.add(geometryMenu);
         
