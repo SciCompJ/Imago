@@ -848,7 +848,7 @@ public class GuiBuilder
         addPlugin(editMenu, new TableSelectColumns(), "Select Columns...");
         addPlugin(editMenu, new TableKeepNumericColumns(), "Keep Numeric Columns");
         addPlugin(editMenu, new MergeTablesByColumns(), "Merge Columns...");
-        addPlugin(editMenu, new TableFilterRows(), "Select Rows...");
+        addPlugin(editMenu, new TableFilterRows(), "Filter/Select Rows...");
         editMenu.addSeparator();
         addPlugin(editMenu, new TransposeTable(), "Transpose");
         editMenu.addSeparator();

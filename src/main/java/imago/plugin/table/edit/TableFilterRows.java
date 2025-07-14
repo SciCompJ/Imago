@@ -11,9 +11,8 @@ import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.table.TableFrame;
 import imago.plugin.table.TablePlugin;
-import net.sci.table.CategoricalColumn;
+import net.sci.axis.Axis;
 import net.sci.table.Column;
-import net.sci.table.NumericColumn;
 import net.sci.table.Table;
 
 /**
@@ -49,7 +48,7 @@ public class TableFilterRows implements TablePlugin
         String[] colNames = table.getColumnNames();
 
         // Display dialog for choosing options
-        GenericDialog dlg = new GenericDialog(frame, "Select Table Rows");
+        GenericDialog dlg = new GenericDialog(frame, "Filter Table Rows");
         dlg.addChoice("Column", colNames, colNames[0]);
         dlg.addChoice("Operation", RelationalOperator.getAllLabels(), RelationalOperator.GT.toString());
         dlg.addNumericField("Value", 0.0, 2);
@@ -79,19 +78,11 @@ public class TableFilterRows implements TablePlugin
         }
         
         // identify index of rows to keep
-        int nRows = table.rowCount();
-        ArrayList<Integer> rowIndices = new ArrayList<Integer>(nRows);
-        for (int i = 0; i < nRows; i++)
-        {
-            if (op.process(table.getValue(i, colIndex), value))
-            {
-                rowIndices.add(i);
-            }
-        }
+        int[] rowIndices = findRowIndices(table.column(colIndex), op, value);
         
         // create a new table from filtered columns
         Column[] newCols = table.columns().stream()
-                .map(col -> selectRows(col, rowIndices))
+                .map(col -> col.selectRows(rowIndices))
                 .toArray(Column[]::new);
         Table res = Table.create(newCols);
         
@@ -102,34 +93,32 @@ public class TableFilterRows implements TablePlugin
             tableName = "data";
         }
         res.setName(tableName + "-rowSel");
+
+        Axis rowAxis = table.getRowAxis();
+        if (rowAxis != null)
+        {
+            res.setRowAxis(rowAxis.selectElements(rowIndices));
+        }
         
         // add the new frame to the GUI
         TableFrame.create(res, frame);
     }
     
-    private static final Column selectRows(Column column, ArrayList<Integer> rowIndices)
+    private int[] findRowIndices(Column column, RelationalOperator op, double value)
     {
-        if (column instanceof NumericColumn numCol)
+        // identify index of rows to keep
+        int nRows = column.length();
+        ArrayList<Integer> rowIndices = new ArrayList<Integer>(nRows);
+        for (int i = 0; i < nRows; i++)
         {
-            NumericColumn res = numCol.newInstance(column.getName(), rowIndices.size());
-            for (int i = 0; i < rowIndices.size(); i++)
+            if (op.process(column.getValue(i), value))
             {
-                res.setValue(i, numCol.getValue(rowIndices.get(i))); 
+                rowIndices.add(i);
             }
-            return res;
         }
         
-        if (column instanceof CategoricalColumn catCol)
-        {
-            String[] values = new String[rowIndices.size()];
-            for (int i = 0; i < rowIndices.size(); i++)
-            {
-                values[i] = catCol.getString(rowIndices.get(i)); 
-            }
-            return CategoricalColumn.create(column.getName(), values);
-        }
-        
-        throw new RuntimeException("Unable to manage column with type: " + column.getClass());
+        // return as an array of int
+        return  rowIndices.stream().mapToInt(i->i).toArray();
     }
     
     public enum RelationalOperator
