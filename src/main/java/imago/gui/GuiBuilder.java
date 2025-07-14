@@ -220,6 +220,7 @@ import imago.plugin.table.edit.PrintTableInfo;
 import imago.plugin.table.edit.PrintTableToConsole;
 import imago.plugin.table.edit.RenameTable;
 import imago.plugin.table.edit.TableFilterRows;
+import imago.plugin.table.edit.TableSortRows;
 import imago.plugin.table.edit.TableKeepNumericColumns;
 import imago.plugin.table.edit.TableSelectColumns;
 import imago.plugin.table.edit.TransposeTable;
@@ -848,7 +849,9 @@ public class GuiBuilder
         addPlugin(editMenu, new TableSelectColumns(), "Select Columns...");
         addPlugin(editMenu, new TableKeepNumericColumns(), "Keep Numeric Columns");
         addPlugin(editMenu, new MergeTablesByColumns(), "Merge Columns...");
+        editMenu.addSeparator();
         addPlugin(editMenu, new TableFilterRows(), "Filter/Select Rows...");
+        addPlugin(editMenu, new TableSortRows(), "Sort Rows...");
         editMenu.addSeparator();
         addPlugin(editMenu, new TransposeTable(), "Transpose");
         editMenu.addSeparator();
