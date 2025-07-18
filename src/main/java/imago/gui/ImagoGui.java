@@ -801,8 +801,11 @@ public class ImagoGui
      */
     public void disposeEmptyFrame()
     {
-        this.emptyFrame.getWidget().dispose();
-        this.emptyFrame = null;
+        if (this.emptyFrame != null)
+        {
+            this.emptyFrame.getWidget().dispose();
+            this.emptyFrame = null;
+        }
     }
 
     // ===================================================================
