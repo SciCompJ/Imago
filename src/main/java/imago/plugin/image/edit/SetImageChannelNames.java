@@ -9,6 +9,12 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
@@ -21,14 +27,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
-import imago.Imago;
 import imago.app.ImageHandle;
-import imago.app.ImagoApp;
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.frames.ImagoEmptyFrame;
 import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
 import net.sci.array.numeric.VectorArray;
@@ -36,7 +41,8 @@ import net.sci.axis.CategoricalAxis;
 import net.sci.image.Image;
 
 /**
- * 
+ * Opens a (modal) dialog to edit the names of the channels of the current
+ * image. Can also save and load channel names from text files.
  */
 public class SetImageChannelNames implements FramePlugin
 {
@@ -71,6 +77,7 @@ public class SetImageChannelNames implements FramePlugin
     
     private class CustomDialog
     {
+        ImageFrame parentFrame;
         JDialog dialog;
         Image image;
 
@@ -85,8 +92,11 @@ public class SetImageChannelNames implements FramePlugin
         JButton okButton;
         JButton cancelButton;
 
+        private static FileFilter textFileFilter = new FileNameExtensionFilter("Text files (*.txt)", "txt");
+        
         public CustomDialog(ImageFrame parentFrame)
         {
+            this.parentFrame = parentFrame;
             this.image = parentFrame.getImageHandle().getImage();
             
             this.dialog = new JDialog(parentFrame.getWidget(), "Set Channel Names", true);
@@ -105,9 +115,9 @@ public class SetImageChannelNames implements FramePlugin
         {
             renameButton = createButton("Rename", evt -> onRename());
             importButton = createButton("Import", evt -> onImport());
-            importButton.setEnabled(false);
+//            importButton.setEnabled(false);
             exportButton = createButton("Export", evt -> onExport());
-            exportButton.setEnabled(false);
+//            exportButton.setEnabled(false);
             
             okButton = createButton("OK", evt -> onOK());
             cancelButton = createButton("Cancel", evt -> onCancel());
@@ -236,12 +246,77 @@ public class SetImageChannelNames implements FramePlugin
         {
             System.out.println("import...");
             
+            // open a dialog to choose a text file
+            File file = parentFrame.getGui().chooseFileToOpen(parentFrame,
+                    "Read Channel Names", textFileFilter);
+
+            // Check validity of the chosen file
+            if (file == null) return;
+            if (!file.exists()) return;
+            
+            ArrayList<String> tokens = new ArrayList<String>();
+            try (Scanner scanner = new Scanner(file))
+            {
+                while (scanner.hasNextLine())
+                {
+                    String line = scanner.nextLine().trim();
+                    if (!line.isEmpty())
+                    {
+                        tokens.add(line);
+                    }
+                }
+            }
+            catch (IOException ex)
+            {
+                throw new RuntimeException(ex);
+            }
+
+            int nTokens = tokens.size();
+            if (nTokens != this.image.getCalibration().getChannelAxis().length())
+            {
+                return;
+            }
+            
+            for (int i = 0; i < nTokens; i++)
+            {
+                channelListModel.set(i, tokens.get(i));
+            }
+            
+            // refresh display
+            channelNameList.invalidate();
+            dialog.repaint();
         }
 
-        public void onExport()
+        public void onExport() 
         {
             System.out.println("export...");
             
+            // open a dialog to choose a text file
+            File file = parentFrame.getGui().chooseFileToSave(parentFrame,
+                    "Write Channel Names", "channels.txt", textFileFilter);
+
+            // Check validity of the chosen file
+            if (file == null) return;
+
+            // print header into header file
+            try (FileOutputStream stream = new FileOutputStream(file))
+            {
+                PrintStream ps = new PrintStream(stream);
+                int nChannels = channelListModel.getSize();
+                for (int i = 0; i < nChannels; i++)
+                {
+                    ps.printf("%s\n", channelListModel.get(i));
+                }
+                ps.close();
+            }
+            catch (FileNotFoundException ex)
+            {
+                ex.printStackTrace();
+            }
+            catch (IOException ex)
+            {
+                ex.printStackTrace();
+            }
         }
     }
     
@@ -263,6 +338,5 @@ public class SetImageChannelNames implements FramePlugin
 //        
 //        SetImageChannelNames plugin = new SetImageChannelNames();
 //        plugin.run(frame, "");
-//        
 //    }
 }
