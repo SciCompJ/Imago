@@ -124,6 +124,7 @@ import imago.plugin.image.edit.PrintImageSceneGraph;
 import imago.plugin.image.edit.PrintImageTiffTags;
 import imago.plugin.image.edit.RefreshDisplay;
 import imago.plugin.image.edit.RenameImage;
+import imago.plugin.image.edit.SetImageChannelNames;
 import imago.plugin.image.edit.SetImageDisplayRange;
 import imago.plugin.image.edit.SetImageDisplayRangeToData;
 import imago.plugin.image.edit.SetImageDisplayRangeToDataType;
@@ -220,9 +221,9 @@ import imago.plugin.table.edit.PrintTableInfo;
 import imago.plugin.table.edit.PrintTableToConsole;
 import imago.plugin.table.edit.RenameTable;
 import imago.plugin.table.edit.TableFilterRows;
-import imago.plugin.table.edit.TableSortRows;
 import imago.plugin.table.edit.TableKeepNumericColumns;
 import imago.plugin.table.edit.TableSelectColumns;
+import imago.plugin.table.edit.TableSortRows;
 import imago.plugin.table.edit.TransposeTable;
 import imago.plugin.table.plot.PlotTableColumnHistogram;
 import imago.plugin.table.plot.TableGroupScatterPlot;
@@ -554,6 +555,7 @@ public class GuiBuilder
         addPlugin(vectorMenu, new CreateVectorImageRGB8View(), "Create RGB View", hasVectorImage);
         addPlugin(vectorMenu, new ConvertChannelsToDimension(), "Convert Channels to Dimension", hasVectorImage);
         addPlugin(vectorMenu, new ConvertDimensionToChannels(), "Convert Dimension to Channels", hasScalarImage);
+        addPlugin(vectorMenu, new SetImageChannelNames(), "Set Channel Names...", hasVectorImage || hasColorImage);
         addPlugin(vectorMenu, new VectorImageToTable(), "Convert To Table", hasVectorImage);
         menu.add(vectorMenu);
 
