@@ -274,22 +274,51 @@ public class ImagoGui
             return plugin;
         }
 
+        // If there was already an attempt to create the plugin, do not try again 
+        if (plugins.containsKey(pluginClass))
+        {
+            return null;
+        }
+        
         try
         {
-            // retrieve empty constructor of the plugin
-            Constructor<?> cons = pluginClass.getConstructor();
-            
             // Instantiate a new plugin from the constructor
-            plugin = (FramePlugin) cons.newInstance();
+            plugin = createPluginInstance(pluginClass);
         }
         catch (Exception ex)
         {
+            // If a problem occurred, displays the error, but do not break the application flow.
+            // returns a "null" plugin that will be ignored by the GUI builder.
             ex.printStackTrace(System.err);
-            return null;
+            plugin = null;
         }
 
         plugins.put(pluginClass, plugin);
         return plugin;
+    }
+    
+    private FramePlugin createPluginInstance(Class<? extends FramePlugin> pluginClass)
+    {
+        Constructor<? extends FramePlugin> cons;
+        try
+        {
+            // retrieve empty constructor of the plugin
+            cons = pluginClass.getConstructor();
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException("Could not create constructor for Plugin: " + pluginClass.getName(), ex);
+        }
+        
+        try
+        {
+            // Instantiate a new plugin from the constructor
+            return (FramePlugin) cons.newInstance();
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException("Could not instantiate Plugin: " + pluginClass.getName(), ex);
+        }
     }
 
     /**

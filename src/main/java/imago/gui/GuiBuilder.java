@@ -720,6 +720,9 @@ public class GuiBuilder
         JMenu devMenu = new JMenu("Developer");
         menu.add(devMenu);
         addPlugin(devMenu, imago.plugin.developer.DisplayExceptionDialog.class, "Show Demo Exception");
+        addPlugin(devMenu, imago.plugin.developer.FailingConstructorPlugin.class, "(X) Can not Instantiate");
+        addPlugin(devMenu, imago.plugin.developer.RunThrowExceptionPlugin.class, "(X) Can not Run");
+        devMenu.addSeparator();
         addPlugin(devMenu, imago.plugin.edit.PrintFrameList.class, "Print Frame List");
         addPlugin(devMenu, imago.plugin.edit.PrintDocumentList.class, "Print Document List");
         addPlugin(devMenu, imago.plugin.edit.PrintWorkspaceContent.class, "Print Workspace Content");
