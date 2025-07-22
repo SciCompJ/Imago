@@ -162,9 +162,10 @@ public class GuiBuilder
         addPlugin(fileMenu, imago.plugin.image.file.OpenImage.class, "Open...");
         // Import demo images
         JMenu demoMenu = new JMenu("Demo Images");
-        addPlugin(demoMenu, new OpenDemoImage("files/grains.png"), "Rice grains");
+        addPlugin(demoMenu, new OpenDemoImage("images/grains.png"), "Rice grains");
+        addPlugin(demoMenu, new OpenDemoImage("images/peppers.png"), "Peppers");
         addPlugin(demoMenu, new OpenDemoImage("files/lena_gray_512.tif"), "Lena");
-        addPlugin(demoMenu, new OpenDemoImage("files/sunflower.png"), "Sunflower");
+        addPlugin(demoMenu, new OpenDemoImage("images/sunflower.png"), "Sunflower");
         addPlugin(demoMenu, imago.plugin.image.file.OpenDemoStack.class, "Demo Stack");
         addPlugin(demoMenu, imago.plugin.image.edit.CreateDistanceToOctahedronImage3D.class, "Octahedron Distance Map");
         addPlugin(demoMenu, imago.plugin.image.edit.CreateColorCubeImage3D.class, "3D Color Cube");

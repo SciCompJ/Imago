@@ -3,18 +3,24 @@
  */
 package imago.plugin.image.file;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+
+import javax.imageio.ImageIO;
 
 import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
 import net.sci.image.Image;
+import net.sci.image.io.ImageIOImageReader;
 
 /**
+ * Opens an image given a path to the file, or to the resource within the jar.
+ * 
  * @author David Legland
- *
  */
 public class OpenDemoImage implements FramePlugin
 {
@@ -36,6 +42,20 @@ public class OpenDemoImage implements FramePlugin
     {
         File file = new File(this.fileName);
         
+        // First try to read the image from within the jar
+        try
+        {
+            Image image = readImageIO();
+            // add the image document to GUI
+            ImageFrame.create(image, frame);
+            return;
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
+        
+        // If image could not be found, try with more standard method
         Image image;
         try
         {
@@ -58,4 +78,20 @@ public class OpenDemoImage implements FramePlugin
         ImageFrame.create(image, frame);
     }
     
+    private Image readImageIO() throws IOException
+    {
+        InputStream stream = this.getClass().getClassLoader().getResourceAsStream(fileName);
+        if (stream == null)
+        {
+            throw new IllegalArgumentException("Could not find image file: " + fileName);
+        }
+        BufferedImage bufImg = ImageIO.read(stream);
+        
+        // Convert to Image class
+        Image image = ImageIOImageReader.convertBufferedImage(bufImg);
+        image.setNameFromFileName(fileName);
+        image.setFilePath(fileName);
+
+        return image;
+    }
 }
