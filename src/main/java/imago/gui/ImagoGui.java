@@ -742,49 +742,9 @@ public class ImagoGui
 
     public Collection<ImagoFrame> getFrames(Function<ImagoFrame, Boolean> filter)
     {
-        ArrayList<ImagoFrame> res = new ArrayList<ImagoFrame>();
-        for (ImagoFrame frame : this.frames)
-        {
-            if (filter.apply(frame))
-            {
-                res.add(frame);
-            }
-        }
-
-        return res;
-    }
-
-    // TODO: deprecate
-    public Collection<ImageFrame> getImageFrames()
-    {
-        ArrayList<ImageFrame> viewers = new ArrayList<ImageFrame>(this.frames.size());
-        for (ImagoFrame frame : this.frames)
-        {
-            if (frame instanceof ImageFrame)
-            {
-                viewers.add((ImageFrame) frame);
-            }
-        }
-
-        return viewers;
-    }
-
-    /**
-     * Finds the frame corresponding to he viewer of a given document.
-     * 
-     * @param handle
-     *            the document
-     * @return an instance of ImageFrame associated to this document
-     */
-    public ImageFrame getImageFrame(ImageHandle handle)
-    {
-        for (ImageFrame frame : getImageFrames())
-        {
-            if (handle == frame.getImageHandle())
-            { return frame; }
-        }
-
-        throw new RuntimeException("Could not find any image frame for handle with name: " + handle.getName());
+        return this.frames.stream()
+                .filter(filter::apply)
+                .toList();
     }
 
     public Collection<ImagoFrame> getFrames()

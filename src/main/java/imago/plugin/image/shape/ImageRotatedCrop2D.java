@@ -154,7 +154,7 @@ public class ImageRotatedCrop2D implements FramePlugin
             super("Crop Oriented Box");
             
             this.parentFrame = parentFrame;
-            this.image = parentFrame.getImage();
+            this.image = parentFrame.getImageHandle().getImage();
             this.array = ScalarArray2D.wrapScalar2d((ScalarArray<?>) image.getData());
             
             // init default values

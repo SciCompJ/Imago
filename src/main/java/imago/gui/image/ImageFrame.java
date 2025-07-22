@@ -454,16 +454,6 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
 		return this.imageViewer.imageHandle;
 	}
 	
-    /**
-     * @deprecated use getImageHandle().getImage() instead
-     * @return the image referenced by the viewer
-     */
-	@Deprecated
-	public Image getImage() 
-	{
-		return getImageHandle().getImage();
-	}
-	
 	public ImageViewer getImageViewer()
 	{
 		return this.imageViewer;
