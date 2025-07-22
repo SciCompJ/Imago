@@ -19,7 +19,7 @@ import net.sci.table.io.DelimitedTableWriter;
  * @author David Legland
  *
  */
-public class SaveTable implements TablePlugin
+public class SaveTable implements TableFramePlugin
 {
     public SaveTable()
     {

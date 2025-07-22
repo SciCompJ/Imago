@@ -6,7 +6,7 @@ package imago.plugin.table.process;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.table.TableFrame;
-import imago.plugin.table.TablePlugin;
+import imago.plugin.table.TableFramePlugin;
 import net.sci.table.CategoricalColumn;
 import net.sci.table.Table;
 import net.sci.table.process.Aggregate;
@@ -14,7 +14,7 @@ import net.sci.table.process.Aggregate;
 /**
  * 
  */
-public class AggregateTableWithColumn implements TablePlugin
+public class AggregateTableWithColumn implements TableFramePlugin
 {
 
     @Override

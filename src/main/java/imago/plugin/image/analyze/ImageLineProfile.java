@@ -17,7 +17,7 @@ import imago.gui.image.ImageFrame;
 import imago.gui.image.ImageViewer;
 import imago.gui.image.PlanarImageViewer;
 import imago.gui.image.StackSliceViewer;
-import imago.plugin.image.ImagePlugin;
+import imago.plugin.image.ImageFramePlugin;
 import net.sci.array.Array;
 import net.sci.array.Array2D;
 import net.sci.array.Array3D;
@@ -40,7 +40,7 @@ import net.sci.table.impl.DefaultNumericTable;
  * @author David Legland
  *
  */
-public class ImageLineProfile implements ImagePlugin
+public class ImageLineProfile implements ImageFramePlugin
 {
     public ImageLineProfile()
     {

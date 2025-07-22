@@ -18,7 +18,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.chart.ChartFrame;
 import imago.gui.table.TableFrame;
-import imago.plugin.table.TablePlugin;
+import imago.plugin.table.TableFramePlugin;
 import net.sci.table.NumericColumn;
 import net.sci.table.Table;
 
@@ -30,7 +30,7 @@ import net.sci.table.Table;
  * @author David Legland
  *
  */
-public class PlotTableColumnHistogram implements TablePlugin
+public class PlotTableColumnHistogram implements TableFramePlugin
 {
     /*
      * (non-Javadoc)

@@ -5,7 +5,7 @@ package imago.plugin.table.edit;
 
 import imago.gui.ImagoFrame;
 import imago.gui.table.TableFrame;
-import imago.plugin.table.TablePlugin;
+import imago.plugin.table.TableFramePlugin;
 import net.sci.table.NumericTable;
 import net.sci.table.Table;
 
@@ -16,7 +16,7 @@ import net.sci.table.Table;
  * @author David Legland
  *
  */
-public class TableKeepNumericColumns implements TablePlugin
+public class TableKeepNumericColumns implements TableFramePlugin
 {
     public TableKeepNumericColumns()
     {

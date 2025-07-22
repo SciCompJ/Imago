@@ -5,14 +5,14 @@ package imago.plugin.table.edit;
 
 import imago.gui.ImagoFrame;
 import imago.gui.table.TableFrame;
-import imago.plugin.table.TablePlugin;
+import imago.plugin.table.TableFramePlugin;
 import net.sci.table.Table;
 
 /**
  * @author dlegland
  *
  */
-public class TransposeTable implements TablePlugin
+public class TransposeTable implements TableFramePlugin
 {
 
     /**

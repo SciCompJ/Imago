@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.table.TableFrame;
-import imago.plugin.table.TablePlugin;
+import imago.plugin.table.TableFramePlugin;
 import net.sci.axis.Axis;
 import net.sci.table.Column;
 import net.sci.table.Table;
@@ -23,7 +23,7 @@ import net.sci.table.Table;
  * @author dlegland
  *
  */
-public class TableSortRows implements TablePlugin
+public class TableSortRows implements TableFramePlugin
 {
     /**
      * Default empty constructor.

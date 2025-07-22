@@ -5,13 +5,13 @@ package imago.plugin.table.edit;
 
 import imago.gui.ImagoFrame;
 import imago.gui.table.TableFrame;
-import imago.plugin.table.TablePlugin;
+import imago.plugin.table.TableFramePlugin;
 
 /**
  * @author dlegland
  *
  */
-public class PrintTableToConsole implements TablePlugin
+public class PrintTableToConsole implements TableFramePlugin
 {
 
     /**

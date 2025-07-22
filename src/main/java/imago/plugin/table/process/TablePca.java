@@ -4,7 +4,7 @@ import net.sci.table.Table;
 import net.sci.table.transform.PCA;
 import imago.gui.ImagoFrame;
 import imago.gui.table.TableFrame;
-import imago.plugin.table.TablePlugin;
+import imago.plugin.table.TableFramePlugin;
 
 /**
  * Compute PCA on a numeric data table.
@@ -12,7 +12,7 @@ import imago.plugin.table.TablePlugin;
  * @author dlegland
  *
  */
-public class TablePca implements TablePlugin
+public class TablePca implements TableFramePlugin
 {
 
     /* (non-Javadoc)

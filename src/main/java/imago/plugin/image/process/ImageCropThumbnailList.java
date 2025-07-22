@@ -15,7 +15,7 @@ import imago.gui.ImagoGui;
 import imago.gui.image.ImageFrame;
 import imago.gui.image.ImageViewer;
 import imago.gui.table.TableFrame;
-import imago.plugin.image.ImagePlugin;
+import imago.plugin.image.ImageFramePlugin;
 import net.sci.array.Array;
 import net.sci.array.Array2D;
 import net.sci.array.Array3D;
@@ -30,7 +30,7 @@ import net.sci.table.Table;
  * corresponding to thumbnail centers. Concatenates the results into a new 3D
  * image.
  */
-public class ImageCropThumbnailList implements ImagePlugin
+public class ImageCropThumbnailList implements ImageFramePlugin
 {
     /**
      * Default empty constructor.

@@ -19,7 +19,7 @@ import org.knowm.xchart.style.markers.SeriesMarkers;
 import imago.gui.ImagoFrame;
 import imago.gui.frames.ImagoChartFrame;
 import imago.gui.table.TableFrame;
-import imago.plugin.table.TablePlugin;
+import imago.plugin.table.TableFramePlugin;
 import net.sci.table.NumericColumn;
 import net.sci.table.NumericTable;
 import net.sci.table.Table;
@@ -27,7 +27,7 @@ import net.sci.table.Table;
 /**
  * 
  */
-public class TablePairPlot implements TablePlugin
+public class TablePairPlot implements TableFramePlugin
 {
     
     @Override

@@ -9,13 +9,13 @@ import net.sci.table.Table;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.table.TableFrame;
-import imago.plugin.table.TablePlugin;
+import imago.plugin.table.TableFramePlugin;
 
 /**
  * @author dlegland
  *
  */
-public class TableSelectColumns implements TablePlugin
+public class TableSelectColumns implements TableFramePlugin
 {
 
     /* (non-Javadoc)

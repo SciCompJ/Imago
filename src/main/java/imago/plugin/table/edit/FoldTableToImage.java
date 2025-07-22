@@ -8,7 +8,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.image.ImageFrame;
 import imago.gui.table.TableFrame;
-import imago.plugin.table.TablePlugin;
+import imago.plugin.table.TableFramePlugin;
 import net.sci.array.numeric.Float32Array;
 import net.sci.image.Image;
 import net.sci.table.Table;
@@ -17,7 +17,7 @@ import net.sci.table.Table;
  * @author dlegland
  *
  */
-public class FoldTableToImage implements TablePlugin
+public class FoldTableToImage implements TableFramePlugin
 {
 
     /**

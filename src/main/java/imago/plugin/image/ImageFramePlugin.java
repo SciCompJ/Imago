@@ -1,22 +1,23 @@
 /**
  * 
  */
-package imago.plugin.table;
+package imago.plugin.image;
 
 import imago.gui.ImagoFrame;
-import imago.gui.table.TableFrame;
+import imago.gui.image.ImageFrame;
 import imago.gui.FramePlugin;
+import net.sci.image.Image;
 
 /**
- * Specialization of the Plugin interface for Table plugins.
+ * Specialization of the Plugin interface for Image plugins.
  * 
  * Simply consists in providing a default implementation for the isEnabled
- * method, that returns true if the parent frame contains a table.
+ * method, that returns true if the parent frame contains an image.
  * 
  * @author dlegland
  *
  */
-public interface TablePlugin extends FramePlugin
+public interface ImageFramePlugin extends FramePlugin
 {
     /**
      * Defines whether this plugin should be enabled for the given frame.
@@ -30,11 +31,13 @@ public interface TablePlugin extends FramePlugin
      */
     public default boolean isEnabled(ImagoFrame frame)
     {
-        if (!(frame instanceof TableFrame))
+        if (!(frame instanceof ImageFrame))
         {
             return false;
         }
         
-        return true;
+        Image image = ((ImageFrame) frame).getImageHandle().getImage();
+        
+        return image != null;
     }
 }

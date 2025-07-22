@@ -6,7 +6,7 @@ package imago.plugin.image.process;
 import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
 import imago.gui.image.ImageViewer;
-import imago.plugin.image.ImagePlugin;
+import imago.plugin.image.ImageFramePlugin;
 import net.sci.array.Array;
 import net.sci.array.numeric.ScalarArray3D;
 import net.sci.geom.Geometry;
@@ -26,7 +26,7 @@ import net.sci.image.shape.Kymograph3D;
  * @author David Legland
  *
  */
-public class Image3DKymograph implements ImagePlugin
+public class Image3DKymograph implements ImageFramePlugin
 {
     public Image3DKymograph()
     {
