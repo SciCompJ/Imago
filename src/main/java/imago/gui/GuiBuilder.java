@@ -294,6 +294,7 @@ public class GuiBuilder
         addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.BLUE), "Blue");
         addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.FIRE), "Fire");
         addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.GLASBEY), "Glasbey");
+        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.HSV), "HSV");
         addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.BLUE_WHITE_RED), "Blue-White-Red");
         colormapMenu.addSeparator();
         addPlugin(colormapMenu, imago.plugin.image.edit.ImageColorMapDisplay.class, "Show Color Map in Table", hasImage && !hasRGB8Image);
@@ -346,6 +347,7 @@ public class GuiBuilder
         JMenu vectorMenu = new JMenu("Vector");
         addPlugin(vectorMenu, imago.plugin.image.process.VectorImageChannelView.class, "Channel View", hasVectorImage);
         addPlugin(vectorMenu, imago.plugin.image.convert.CreateVectorImageNorm.class, "Vector Image Norm", hasVectorImage);
+        addPlugin(vectorMenu, imago.plugin.image.process.VectorImageAngle.class, "Vector Image Angle");
         addPlugin(vectorMenu, imago.plugin.image.convert.VectorImageConvertToRGB.class, "Convert to RGB", hasVectorImage);
         addPlugin(vectorMenu, imago.plugin.image.convert.CreateVectorImageRGB8View.class, "Create RGB View", hasVectorImage);
         addPlugin(vectorMenu, imago.plugin.image.convert.ConvertChannelsToDimension.class, "Convert Channels to Dimension", hasVectorImage);
@@ -536,9 +538,7 @@ public class GuiBuilder
         addPlugin(menu, imago.plugin.image.process.ImageBivariateHistogram.class, "Bivariate Histogram");
 		menu.addSeparator();
         addPlugin(menu, imago.plugin.image.analyze.ImageLineProfile.class, "Line Profile", hasImage);
-        addPlugin(menu, imago.plugin.image.analyze.ImageLineProfile.class, "Line Profile", hasImage);
         menu.addSeparator();
-        addPlugin(menu, imago.plugin.image.analyze.ImagePlotChannels.class, "Channel Profile", hasImage);
         addPlugin(menu, imago.plugin.image.analyze.ImagePlotChannels.class, "Channel Profile", hasImage);
 
         menu.addSeparator();
