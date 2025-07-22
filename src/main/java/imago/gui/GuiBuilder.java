@@ -6,7 +6,6 @@ package imago.gui;
 import java.awt.Component;
 import java.awt.Insets;
 import java.awt.image.BufferedImage;
-import java.lang.reflect.Constructor;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -131,7 +130,6 @@ import imago.plugin.image.edit.SetImageDisplayRangeToDataType;
 import imago.plugin.image.edit.SetImageTypeToLabel;
 import imago.plugin.image.edit.ShowSceneGraphTree;
 import imago.plugin.image.edit.ToggleSceneGraphDisplay;
-import imago.plugin.image.file.CreateNewImage;
 import imago.plugin.image.file.ImportImageMetaImage;
 import imago.plugin.image.file.ImportImageRawData;
 import imago.plugin.image.file.ImportImageSeries;
@@ -357,9 +355,8 @@ public class GuiBuilder
     private JMenu createFileMenu()
     {
         JMenu fileMenu = new JMenu("File");
-        addPlugin(fileMenu, new CreateNewImage(), "New Image...");
+        addPlugin(fileMenu, imago.plugin.image.file.CreateNewImage.class, "New Image...");
         addPlugin(fileMenu, new OpenImage(), "Open...");
-        
         // Import demo images
         JMenu demoMenu = new JMenu("Demo Images");
         addPlugin(demoMenu, new OpenDemoImage("files/grains.png"), "Rice grains");
@@ -1039,27 +1036,26 @@ public class GuiBuilder
 
     private JMenuItem addPlugin(JMenu menu, Class<? extends FramePlugin> pluginClass, String label)
     {
-        try
+        FramePlugin plugin = frame.gui.retrievePlugin(pluginClass);
+        if (plugin != null)
         {
-            FramePlugin plugin = createPlugin(pluginClass);
             return addPlugin(menu, plugin, label, plugin.isEnabled(frame));
         }
-        catch (Exception ex)
+        else
         {
-            ex.printStackTrace();
             return null;
         }
     }
     
     private JMenuItem addPlugin(JMenu menu, Class<? extends FramePlugin> pluginClass, String label, boolean isEnabled)
     {
-        try 
+        FramePlugin plugin = frame.gui.retrievePlugin(pluginClass);
+        if (plugin != null)
         {
-            return addPlugin(menu, createPlugin(pluginClass), label, isEnabled);
+            return addPlugin(menu, plugin, label, isEnabled);
         }
-        catch (Exception ex)
+        else
         {
-            ex.printStackTrace();
             return null;
         }
     }
@@ -1103,19 +1099,5 @@ public class GuiBuilder
             }
         }
         return new ImageIcon(image);
-    }
-    
-    private static final FramePlugin createPlugin(Class<? extends FramePlugin> pluginClass)
-    {
-        try
-        {
-            // assumes there is a default constructor
-            Constructor<? extends FramePlugin> cons = pluginClass.getConstructor();
-            return cons.newInstance();
-        }
-        catch(Throwable ex)
-        {
-            throw new RuntimeException("Could not initialize plugin from class: " + pluginClass.getName());
-        }       
     }
 }

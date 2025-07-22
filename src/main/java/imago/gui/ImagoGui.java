@@ -187,6 +187,12 @@ public class ImagoGui
      */
     ImagoFrame emptyFrame = null;
 
+    
+    /**
+     * A list of plugins that have been loaded.
+     */
+    Map<Class<? extends FramePlugin>, FramePlugin> plugins = new HashMap<>();
+    
     ArrayList<PluginHandler> pluginHandlers = new ArrayList<PluginHandler>();
     
 
@@ -248,6 +254,43 @@ public class ImagoGui
 
     // ===================================================================
     // General methods
+    
+    /**
+     * Returns an instance of the plugin with the specified class. If the plugin
+     * has already been loaded, it is returned. Otherwise, a new instance is
+     * created, by calling the empty constructor. If the plugin could not be
+     * loaded, return null, and displays the encountered error messages on the
+     * error stream.
+     * 
+     * @param pluginClass
+     *            the class of the plugin to retrieve
+     * @return an instance of the plugin from the specified class
+     */
+    public FramePlugin retrievePlugin(Class<? extends FramePlugin> pluginClass)
+    {
+        FramePlugin plugin = plugins.get(pluginClass);
+        if (plugin != null)
+        {
+            return plugin;
+        }
+
+        try
+        {
+            // retrieve empty constructor of the plugin
+            Constructor<?> cons = pluginClass.getConstructor();
+            
+            // Instantiate a new plugin from the constructor
+            plugin = (FramePlugin) cons.newInstance();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace(System.err);
+            return null;
+        }
+
+        plugins.put(pluginClass, plugin);
+        return plugin;
+    }
 
     /**
      * Loads the plugins, or refresh the list of plugins loaded by the GUI.
