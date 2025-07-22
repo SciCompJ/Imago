@@ -285,10 +285,11 @@ public class ImagoGui
             // Instantiate a new plugin from the constructor
             plugin = createPluginInstance(pluginClass);
         }
-        catch (Exception ex)
+        catch (FramePluginInstantiationException ex)
         {
-            // If a problem occurred, displays the error, but do not break the application flow.
-            // returns a "null" plugin that will be ignored by the GUI builder.
+            // If the plugin could not be instantiated, displays the error, but
+            // do not break the application flow.
+            // Returns a "null" plugin that will be ignored by the GUI builder.
             ex.printStackTrace(System.err);
             plugin = null;
         }
@@ -297,7 +298,7 @@ public class ImagoGui
         return plugin;
     }
     
-    private FramePlugin createPluginInstance(Class<? extends FramePlugin> pluginClass)
+    private FramePlugin createPluginInstance(Class<? extends FramePlugin> pluginClass) throws FramePluginInstantiationException
     {
         Constructor<? extends FramePlugin> cons;
         try
@@ -307,7 +308,7 @@ public class ImagoGui
         }
         catch (Exception ex)
         {
-            throw new RuntimeException("Could not create constructor for Plugin: " + pluginClass.getName(), ex);
+            throw new FramePluginInstantiationException("Could not create constructor for Plugin: " + pluginClass.getName(), ex);
         }
         
         try
@@ -317,7 +318,7 @@ public class ImagoGui
         }
         catch (Exception ex)
         {
-            throw new RuntimeException("Could not instantiate Plugin: " + pluginClass.getName(), ex);
+            throw new FramePluginInstantiationException("Could not instantiate Plugin: " + pluginClass.getName(), ex);
         }
     }
 
