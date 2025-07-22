@@ -434,7 +434,7 @@ public class GuiBuilder
         addPlugin(filtersMenu, imago.plugin.image.process.BoxFilter3x3FloatPlugin.class, "Box Filter 2D 3x3 (float)", hasScalarImage);
 		addArrayOperatorPlugin(filtersMenu, new GaussianFilter5x5(), "Gaussian Filter 5x5", hasScalarImage && hasImage2D);
         addPlugin(filtersMenu, imago.plugin.image.process.ImageMedianFilterBox.class, "Median Filter...");
-        addPlugin(filtersMenu, imago.plugin.image.process.BinaryImageBoxMedianFilter.class, "Binary Median Filter...");
+        addPlugin(filtersMenu, imago.plugin.image.binary.BinaryImageBoxMedianFilter.class, "Binary Median Filter...");
         addPlugin(filtersMenu, imago.plugin.image.process.ImageMinMaxFilterBox.class, "Min/Max Filter...");
         filtersMenu.addSeparator();
         addPlugin(filtersMenu, imago.plugin.image.process.ImageVarianceFilterBox.class, "Variance Filter...");
@@ -504,7 +504,7 @@ public class GuiBuilder
         addPlugin(binaryMenu, imago.plugin.image.binary.ImageGeodesicDistanceMap.class, "Geodesic Distance Map...");
         binaryMenu.addSeparator();
         addPlugin(binaryMenu, imago.plugin.image.binary.BinaryImageSkeleton.class, "IJ Skeleton");
-        addPlugin(binaryMenu, imago.plugin.image.process.BinaryImageSplitCoalescentParticles.class, "Split Particles...");
+        addPlugin(binaryMenu, imago.plugin.image.binary.BinaryImageSplitCoalescentParticles.class, "Split Particles...");
         binaryMenu.addSeparator();
         addPlugin(binaryMenu, imago.plugin.image.binary.BinaryImageOverlay.class, "Binary Overlay...");
         addPlugin(binaryMenu, imago.plugin.image.binary.ApplyBinaryMask.class, "Apply Binary Mask...");
