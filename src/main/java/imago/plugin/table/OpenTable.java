@@ -55,12 +55,13 @@ public class OpenTable implements FramePlugin
             return;
         }
         
-        DelimitedTableReader reader = new DelimitedTableReader();
-        reader.setDelimiters(dlg.getNextString());
-        reader.setReadHeader(dlg.getNextBoolean());
-        reader.setSkipLines((int) dlg.getNextNumber());
-        reader.setReadRowNames(dlg.getNextBoolean());
-        
+        DelimitedTableReader reader = DelimitedTableReader.builder()
+                .delimiters(dlg.getNextString())
+                .readHeader(dlg.getNextBoolean())
+                .skipLines((int) dlg.getNextNumber())
+                .readRowNames(dlg.getNextBoolean())
+                .build();
+
         // try reading the table
         Table table;
         try

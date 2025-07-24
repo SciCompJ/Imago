@@ -12,8 +12,10 @@ import imago.gui.table.TableFrame;
 import imago.plugin.table.TableFramePlugin;
 
 /**
+ * Opens a dialog to choose a selection of columns, and returns a new Table
+ * containing only the selected columns.
+ * 
  * @author dlegland
- *
  */
 public class TableSelectColumns implements TableFramePlugin
 {
@@ -36,7 +38,7 @@ public class TableSelectColumns implements TableFramePlugin
         String[] colNames = table.getColumnNames();
 
         // Display dialog for choosing options
-        GenericDialog dlg = new GenericDialog(frame, "Line Plot");
+        GenericDialog dlg = new GenericDialog(frame, "Select Columns");
 
         // add one check box for each column
         int nCols2 = Math.min(nCols, 20);

@@ -122,10 +122,11 @@ public class ImportImage3DPolylineSeries implements FramePlugin
     
     private Table readTableFromFile(File file)
     {
-        DelimitedTableReader reader = new DelimitedTableReader();
-        reader.setReadHeader(true);
-        reader.setDelimiters(" \t");
-        reader.setReadRowNames(false);
+        DelimitedTableReader reader = DelimitedTableReader.builder()
+                .delimiters(" \t")
+                .readHeader(true)
+                .readRowNames(false)
+                .build();
         try
         {
             return reader.readTable(file);
