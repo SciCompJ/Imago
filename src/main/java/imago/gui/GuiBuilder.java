@@ -35,6 +35,7 @@ import imago.plugin.image.edit.ImageSetColorMapFactory;
 import imago.plugin.image.edit.ImageSetScaleFromLineSelection;
 import imago.plugin.image.file.OpenDemoImage;
 import imago.plugin.image.shape.ImageFlip;
+import imago.plugin.table.OpenDemoTable;
 import net.sci.array.Array;
 import net.sci.array.ArrayOperator;
 import net.sci.array.color.ColorMaps;
@@ -200,6 +201,10 @@ public class GuiBuilder
         
         fileMenu.addSeparator();
         addPlugin(fileMenu, imago.plugin.table.OpenTable.class, "Open Table...");
+        JMenu demoTables = new JMenu("Demo Tables");
+        addPlugin(demoTables, new OpenDemoTable("tables/fisherIris.csv"), "Fisher's Iris");
+        addPlugin(demoTables, new OpenDemoTable("tables/penguins_clean.csv"), "Penguins");
+        fileMenu.add(demoTables);
         addPlugin(fileMenu, imago.plugin.table.ShowDemoTable.class, "Show Demo Table");
         
         fileMenu.addSeparator();
@@ -621,7 +626,11 @@ public class GuiBuilder
         JMenu fileMenu = new JMenu("File");
         
         addPlugin(fileMenu, imago.plugin.table.OpenTable.class, "Open Table...");
-        
+        JMenu demoTables = new JMenu("Demo Tables");
+        addPlugin(demoTables, new OpenDemoTable("tables/fisherIris.csv"), "Fisher's Iris");
+        addPlugin(demoTables, new OpenDemoTable("tables/penguins_clean.csv"), "Penguins");
+        fileMenu.add(demoTables);
+
         fileMenu.addSeparator();
         addPlugin(fileMenu, imago.plugin.table.SaveTable.class, "Save Table...");
 
