@@ -32,7 +32,6 @@ import imago.plugin.edit.ChangeCurrentTool;
 import imago.plugin.image.ImageArrayOperatorPlugin;
 import imago.plugin.image.edit.ImageSetColorMapFactory;
 import imago.plugin.image.edit.ImageSetScaleFromLineSelection;
-import imago.plugin.image.file.OpenDemoImage;
 import imago.plugin.image.shape.ImageFlip;
 import imago.plugin.table.OpenDemoTable;
 import net.sci.array.Array;
@@ -158,11 +157,10 @@ public class GuiBuilder
         addPlugin(fileMenu, imago.plugin.image.file.OpenImage.class, "Open...");
         // Import demo images
         JMenu demoMenu = new JMenu("Demo Images");
-        addPlugin(demoMenu, OpenDemoImage.class, "fileName=images/grains.png", "Rice grains");
-        addPlugin(demoMenu, OpenDemoImage.class, "fileName=images/peppers.png", "Peppers");
-        addPlugin(demoMenu, OpenDemoImage.class, "fileName=files/lena_gray_512.tif", "Lena");
-//        addPlugin(demoMenu, new OpenDemoImage("files/lena_gray_512.tif"), "Lena");
-        addPlugin(demoMenu, OpenDemoImage.class, "fileName=images/sunflower.png", "Sunflower");
+        addPlugin(demoMenu, imago.plugin.image.file.OpenImage.class, "fileName=images/grains.png", "Rice grains");
+        addPlugin(demoMenu, imago.plugin.image.file.OpenImage.class, "fileName=images/peppers.png", "Peppers");
+        addPlugin(demoMenu, imago.plugin.image.file.OpenImage.class, "fileName=files/lena_gray_512.tif", "Lena");
+        addPlugin(demoMenu, imago.plugin.image.file.OpenImage.class, "fileName=images/sunflower.png", "Sunflower");
         addPlugin(demoMenu, imago.plugin.image.file.OpenDemoStack.class, "Demo Stack");
         addPlugin(demoMenu, imago.plugin.image.edit.CreateDistanceToOctahedronImage3D.class, "Octahedron Distance Map");
         addPlugin(demoMenu, imago.plugin.image.edit.CreateColorCubeImage3D.class, "3D Color Cube");

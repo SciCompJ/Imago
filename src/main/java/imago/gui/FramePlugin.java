@@ -3,6 +3,9 @@
  */
 package imago.gui;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 /**
  * Plugin for adding functionalities to Imago.
  * 
@@ -11,6 +14,29 @@ package imago.gui;
  */
 public interface FramePlugin
 {
+    /**
+     * Utility method that convert an options string, where options are
+     * delimited with comas, and each option is specified as a name-value pair,
+     * into a map.
+     * 
+     * Note that the map is insensitive to case of keys.
+     * 
+     * @param optionsString
+     *            the string to convert
+     * @return a Map representation of the options within the String
+     */
+    public static Map<String,String> parseOptionsString(String optionsString)
+    {
+        String[] options = optionsString.split(",");
+        TreeMap<String,String> map = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+        for (String option : options)
+        {
+            String[] tokens = option.split("=", 2);
+            map.put(tokens[0].trim(), tokens[1].trim());
+        }
+        return map;   
+    }
+    
     /**
      * Runs this plugin from the specified Imago frame.
      * 
