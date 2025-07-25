@@ -790,8 +790,6 @@ public class GuiBuilder
 
     private void addPlugin(JMenu menu, PluginHandler handler)
     {
-        System.out.println("add plugin entry: " + handler.getName());
-        
         // If menu path is specified, retrieve or create the hierarchy of menus
         String menuPath = handler.getMenuPath();
         if (!menuPath.isEmpty())
@@ -810,7 +808,6 @@ public class GuiBuilder
                 menu = getSubMenu(menu, name);
             }
         }
-        
         
         addPlugin(menu, handler.getPlugin(), handler.getName());
     }
