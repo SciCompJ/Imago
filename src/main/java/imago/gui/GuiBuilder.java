@@ -739,7 +739,7 @@ public class GuiBuilder
         
         // Add the user plugins
         menu.addSeparator();
-        for (PluginHandler handler : frame.gui.pluginHandlers)
+        for (PluginHandler handler : frame.gui.getPluginManager().pluginHandlers)
         {
             addPlugin(menu, handler);
         }
@@ -766,13 +766,13 @@ public class GuiBuilder
     
     private JMenuItem addImageOperatorPlugin(JMenu menu, Class<? extends ImageOperator> opClass, String label, boolean enabled)
     {
-        FramePlugin plugin = frame.gui.retrievePlugin(opClass);
+        FramePlugin plugin = frame.gui.getPluginManager().retrievePlugin(opClass);
         return addPlugin(menu, plugin, label, enabled);
     }
 
     private JMenuItem addArrayOperatorPlugin(JMenu menu, Class<? extends ArrayOperator> opClass, String label, boolean enabled)
     {
-        FramePlugin plugin = frame.gui.retrievePlugin(opClass);
+        FramePlugin plugin = frame.gui.getPluginManager().retrievePlugin(opClass);
         return addPlugin(menu, plugin, label, enabled);
     }
 
@@ -836,13 +836,13 @@ public class GuiBuilder
 
     private JMenuItem addPlugin(JMenu menu, Class<? extends FramePlugin> pluginClass, String label)
     {
-        FramePlugin plugin = frame.gui.retrievePlugin(pluginClass);
+        FramePlugin plugin = frame.gui.getPluginManager().retrievePlugin(pluginClass);
         return addPlugin(menu, plugin, label, plugin.isEnabled(frame));
     }
     
     private JMenuItem addPlugin(JMenu menu, Class<? extends FramePlugin> pluginClass, String label, boolean isEnabled)
     {
-        FramePlugin plugin = frame.gui.retrievePlugin(pluginClass);
+        FramePlugin plugin = frame.gui.getPluginManager().retrievePlugin(pluginClass);
         return addPlugin(menu, plugin, label, isEnabled);
     }
 
