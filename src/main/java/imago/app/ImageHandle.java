@@ -9,7 +9,10 @@ import java.util.Collection;
 import imago.app.scene.GroupNode;
 import imago.app.scene.Node;
 import imago.app.shape.Shape;
+import imago.util.imagej.ImagejRoi;
+import imago.util.imagej.ImagejRoiDecoder;
 import net.sci.image.Image;
+import net.sci.image.io.tiff.ImagejMetadata;
 
 
 /**
@@ -146,12 +149,49 @@ public class ImageHandle extends ObjectHandle
 
 		// setup image data
 		this.image = image;
+		importImageMetaData();
+		
+		// setup default display
 		if (image.getDimension() > 2) 
 		{
 			this.currentSliceIndex = (int) Math.round(image.getSize(2) / 2);
 		}
 	}
 	
+    /**
+     * Updates the viewer to display specific meta data (e.g., ImageJ ROI)
+     * stored within the file.
+     * 
+     * @param imageHandle
+     *            the ImageHandle 
+     */
+    private void importImageMetaData()
+    {
+        if (image.metadata.containsKey("imagej"))
+        {
+            // populate shapes with imagej overlay
+            ImagejMetadata metadata = (ImagejMetadata) image.metadata.get("imagej");
+            if (metadata.overlayData != null)
+            {
+                // convert Image overlays as Shape instances within the ImageHandle
+                int nOverlay = metadata.overlayData.length;
+                for (int i = 0; i < nOverlay; i++)
+                {
+                    ImagejRoi roi = ImagejRoiDecoder.decode(metadata.overlayData[i]);
+                    addShape(roi.asShape());
+                }
+            }
+//            
+//            if (metadata.roiData != null)
+//            {
+//                // Convert the current ROI as a Selection for the viewer
+//                ImagejRoi roi = ImagejRoiDecoder.decode(metadata.roiData);
+//                Shape shape = roi.asShape();
+//                this.imageViewer.setSelection(shape.getGeometry());
+//                this.imageViewer.refreshDisplay();
+//            }
+        }
+    }
 
 	// =============================================================
 	// Accessors

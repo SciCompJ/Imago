@@ -18,16 +18,20 @@ import javax.swing.JSplitPane;
 
 import imago.app.ImageHandle;
 import imago.app.ImagoApp;
+import imago.app.shape.Shape;
 import imago.gui.GuiBuilder;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.image.tools.DisplayCurrentValueTool;
 import imago.gui.panels.StatusBar;
+import imago.util.imagej.ImagejRoi;
+import imago.util.imagej.ImagejRoiDecoder;
 import net.sci.algo.AlgoEvent;
 import net.sci.algo.AlgoListener;
 import net.sci.array.ArrayOperator;
 import net.sci.image.Image;
 import net.sci.image.ImageArrayOperator;
+import net.sci.image.io.tiff.ImagejMetadata;
 import net.sci.util.MathUtils;
 
 
@@ -130,52 +134,55 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
     }
     
     
-	// ===================================================================
-	// Class variables
-    
+    // ===================================================================
+    // Class variables
+
     /** The image viewer. */
     ImageViewer imageViewer;
     
     /** The panel containing display options: Z,T slice index...*/ 
     ImageDisplayOptionsPanel imageDisplayOptionsPanel;
-    
+
     /** Used to display information about image, cursor, current process... */
-	StatusBar statusBar;
-	
-	/**
-	 * Provides a split view between the options panel and the image viewer.
-	 */
-	JSplitPane splitPane;
-	
-	
-	// ===================================================================
-	// Constructor
+    StatusBar statusBar;
 
-	public ImageFrame(ImagoGui gui, ImageHandle handle) 
-	{
-	    super(gui, "Image Frame");
+    /**
+     * Provides a split view between the options panel and the image viewer.
+     */
+    JSplitPane splitPane;
+    
 
-	    // First, create the viewer (used to build option panel and initialize menu bar) 
-	    createImageViewer(handle);
-	    // add listener to changes in ImageHandler
-	    handle.addImageHandleListener(imageViewer);
-	    
-	    // create menu
-	    GuiBuilder builder = new GuiBuilder(this);
-	    builder.createMenuBar();
+    // ===================================================================
+    // Constructor
 
-	    // Create the different panels
+    public ImageFrame(ImagoGui gui, ImageHandle imageHandle)
+    {
+        super(gui, "Image Frame");
+
+        // First, create the viewer (used to build option panel and initialize
+        // menu bar)
+        createImageViewer(imageHandle);
+        importImageMetaData(imageHandle.getImage());
+
+        // add listener to changes in ImageHandler
+        imageHandle.addImageHandleListener(imageViewer);
+
+        // create menu
+        GuiBuilder builder = new GuiBuilder(this);
+        builder.createMenuBar();
+
+        // Create the different panels
         this.imageDisplayOptionsPanel = new ImageDisplayOptionsPanel(this.imageViewer);
         this.statusBar = new StatusBar();
 
-		// layout the frame
-		setupLayout();
-		jFrame.doLayout();
-		
-		updateTitle();
-		
-		// setup window listener
-		this.jFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        // layout the frame
+        setupLayout();
+        jFrame.doLayout();
+
+        updateTitle();
+
+        // setup window listener
+        this.jFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.jFrame.addWindowListener(new WindowAdapter()
         {
             @Override
@@ -183,12 +190,12 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
             {
                 gui.removeFrame(ImageFrame.this);
                 ImageFrame.this.jFrame.dispose();
-            }           
+            }
         });
-		
-		putFrameMiddleScreen();
-	}
-    
+
+        putFrameMiddleScreen();
+    }
+
     private void createImageViewer(ImageHandle imageHandle)
     {
         // create the image viewer depending on image type
@@ -228,43 +235,70 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
             this.imageViewer = sliceViewer;
         }
     }
-
+    
+    /**
+     * Updates the viewer to display specific meta data (e.g., ImageJ ROI)
+     * stored within the file.
+     * 
+     * @param imageHandle
+     *            the ImageHandle 
+     */
+    private void importImageMetaData(Image image)
+    {
+        // populate viewer with image meta data
+        if (image.metadata.containsKey("imagej"))
+        {
+            ImagejMetadata metadata = (ImagejMetadata) image.metadata.get("imagej");
+            
+            if (metadata.roiData != null)
+            {
+                // Convert the current ROI as a Selection for the viewer
+                ImagejRoi roi = ImagejRoiDecoder.decode(metadata.roiData);
+                Shape shape = roi.asShape();
+                this.imageViewer.setSelection(shape.getGeometry());
+                this.imageViewer.refreshDisplay();
+            }
+        }
+    }
+    
     private void setupLayout() 
 	{
         this.imageDisplayOptionsPanel.setPreferredSize(new Dimension(0, 0));
         this.imageDisplayOptionsPanel.setMinimumSize(new Dimension(0, 0));
-        
-		// put into global layout
-		JPanel mainPanel = new JPanel(new BorderLayout());
-		mainPanel.add((JPanel) imageViewer.getWidget(), BorderLayout.CENTER);
-		mainPanel.add(this.statusBar, BorderLayout.SOUTH);
-		
-		// setup the layout for the option panel:
-		// uses JSplitPanel, initial visibility depends on image dimensionality
-        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, imageDisplayOptionsPanel, mainPanel);
-        splitPane.setResizeWeight(imageViewer.imageHandle.getImage().getDimension() < 4 ? 0.0 : 0.25);
+
+        // put into global layout
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.add((JPanel) imageViewer.getWidget(), BorderLayout.CENTER);
+        mainPanel.add(this.statusBar, BorderLayout.SOUTH);
+
+        // setup the layout for the option panel:
+        // uses JSplitPanel, initial visibility depends on image dimensionality
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, imageDisplayOptionsPanel,
+                mainPanel);
+        splitPane.setResizeWeight(
+                imageViewer.imageHandle.getImage().getDimension() < 4 ? 0.0 : 0.25);
         splitPane.setOneTouchExpandable(true);
         splitPane.setContinuousLayout(true);
 
         this.jFrame.setContentPane(splitPane);
-	}
-	
-	private void putFrameMiddleScreen()
-	{
-		// set up frame size depending on screen size
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		int width = Math.min(800, screenSize.width - 100);
-		int height = Math.min(600, screenSize.width - 100);
-		Dimension frameSize = new Dimension(width, height);
-		this.jFrame.setSize(frameSize);
+    }
 
-		// set up frame position depending on frame size
-		int posX = (screenSize.width - width) / 4;
-		int posY = (screenSize.height - height) / 4;
-		this.jFrame.setLocation(posX, posY);
-	}
-	
+    private void putFrameMiddleScreen()
+    {
+        // set up frame size depending on screen size
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int width = Math.min(800, screenSize.width - 100);
+        int height = Math.min(600, screenSize.width - 100);
+        Dimension frameSize = new Dimension(width, height);
+        this.jFrame.setSize(frameSize);
+
+        // set up frame position depending on frame size
+        int posX = (screenSize.width - width) / 4;
+        int posY = (screenSize.height - height) / 4;
+        this.jFrame.setLocation(posX, posY);
+    }
     
+
     // ===================================================================
     // General methods
     
@@ -414,93 +448,95 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         this.statusBar.setProgressBarPercent(0);
         return status;
     }
-    
-	/**
+
+    /**
      * Updates the title of the frame with a sting containing document name,
      * image dimensions and type.
      */
-	public void updateTitle()
-	{
-		// use document name for base title
+    public void updateTitle()
+    {
+        // use document name for base title
         String name = this.imageViewer.imageHandle.getName();
         Image image = getImageHandle().getImage();
         if (!image.getExtension().isEmpty())
         {
-        	name = name + "." + image.getExtension(); 
+            name = name + "." + image.getExtension();
         }
 
         // string containing image dimensions
-		String dimString = "(unknown size)";
-		int dims[] = image.getSize();
-		if (dims.length > 0)
-		{
-		    dimString = "" + dims[0];
-		    for (int d = 1; d < dims.length; d++)
-		    {
-		        dimString += "x" + dims[d];
-		    }
-		}
-		
-		// image type
-		String typeString = image.getType().toString();
-		
-		// setup title
-		String titleString = name + " - " + dimString + " - " + typeString;
-		this.setTitle(titleString);
-	}
-	
-	public ImageHandle getImageHandle()
-	{
-		return this.imageViewer.imageHandle;
-	}
-	
-	public ImageViewer getImageViewer()
-	{
-		return this.imageViewer;
-	}
-	
-	/**
-	 * Updates the view to the image stored in document.
-	 * @param view the new view to the image.
-	 */
+        String dimString = "(unknown size)";
+        int dims[] = image.getSize();
+        if (dims.length > 0)
+        {
+            dimString = "" + dims[0];
+            for (int d = 1; d < dims.length; d++)
+            {
+                dimString += "x" + dims[d];
+            }
+        }
+
+        // image type
+        String typeString = image.getType().toString();
+
+        // setup title
+        String titleString = name + " - " + dimString + " - " + typeString;
+        this.setTitle(titleString);
+    }
+
+    public ImageHandle getImageHandle()
+    {
+        return this.imageViewer.imageHandle;
+    }
+
+    public ImageViewer getImageViewer()
+    {
+        return this.imageViewer;
+    }
+
+    /**
+     * Updates the view to the image stored in document.
+     * 
+     * @param view
+     *            the new view to the image.
+     */
     public void setImageViewer(ImageViewer view)
     {
         ImageTool currentTool = null;
-        
+
         if (this.imageViewer != null)
         {
             currentTool = this.imageViewer.getCurrentTool();
         }
-        
+
         this.imageViewer = view;
         setupLayout();
         jFrame.doLayout();
-        
+
         if (currentTool != null)
         {
             this.imageViewer.setCurrentTool(currentTool);
         }
     }
-    
-	public StatusBar getStatusBar() 
-	{
-		return statusBar;
-	}
 
-	/**
+    public StatusBar getStatusBar()
+    {
+        return statusBar;
+    }
+
+    /**
      * Completes the default implementation to display the progression in the
      * status bar.
      * 
      * @param evt
      *            the algorithm event
      */
-	@Override
-	public void algoProgressChanged(AlgoEvent evt)
-	{
-	    super.algoProgressChanged(evt);
-		int progress = (int) (evt.getProgressRatio() * 100);
-		this.getStatusBar().setProgressBarPercent(progress);
-	}
+    @Override
+    public void algoProgressChanged(AlgoEvent evt)
+    {
+        super.algoProgressChanged(evt);
+        int progress = (int) (evt.getProgressRatio() * 100);
+        this.getStatusBar().setProgressBarPercent(progress);
+    }
 
     /**
      * Completes the default implementation to display the algorithm status in
@@ -509,11 +545,11 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
      * @param evt
      *            the algorithm event
      */
-	@Override
-	public void algoStatusChanged(AlgoEvent evt)
-	{
+    @Override
+    public void algoStatusChanged(AlgoEvent evt)
+    {
         super.algoProgressChanged(evt);
-		System.out.println("status: " + evt.getStatus());
-		this.getStatusBar().setCurrentStepLabel(evt.getStatus());
-	}
+        System.out.println("status: " + evt.getStatus());
+        this.getStatusBar().setCurrentStepLabel(evt.getStatus());
+    }
 }

@@ -55,11 +55,7 @@ public class OpenImage implements FramePlugin
                 if (image == null) return;
 
                 // add the image document to GUI
-                ImageFrame newFrame = ImageFrame.create(image, frame);
-
-                // process optional meta data
-                ReadImageTiff.importImageMetaData(newFrame.getImageViewer());
-
+                ImageFrame.create(image, frame);
                 return;
             }
         }
@@ -98,10 +94,7 @@ public class OpenImage implements FramePlugin
         }
         
         // add the image document to GUI
-        ImageFrame newFrame = ImageFrame.create(image, frame);
-        
-        // process optional meta data
-        ReadImageTiff.importImageMetaData(newFrame.getImageViewer());
+        ImageFrame.create(image, frame);
     }
     
     private Image readImage(ImagoFrame frame, String pathToFile)
