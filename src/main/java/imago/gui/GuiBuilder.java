@@ -30,7 +30,6 @@ import imago.gui.image.tools.SelectionTool;
 import imago.gui.table.TableFrame;
 import imago.plugin.edit.ChangeCurrentTool;
 import imago.plugin.image.ImageArrayOperatorPlugin;
-import imago.plugin.image.ImageOperatorPlugin;
 import imago.plugin.image.edit.ImageSetColorMapFactory;
 import imago.plugin.image.edit.ImageSetScaleFromLineSelection;
 import imago.plugin.image.file.OpenDemoImage;
@@ -46,10 +45,6 @@ import net.sci.image.ImageOperator;
 import net.sci.image.ImageType;
 import net.sci.image.contrast.DynamicAdjustment;
 import net.sci.image.contrast.ImageInverter;
-import net.sci.image.contrast.VectorArrayNorm;
-import net.sci.image.filtering.GaussianFilter5x5;
-import net.sci.image.filtering.SobelGradient;
-import net.sci.image.filtering.SobelGradientNorm;
 /**
  * Setup the menu for a given frame.
  * 
@@ -440,7 +435,7 @@ public class GuiBuilder
         JMenu filtersMenu = new JMenu("Filters");
         addPlugin(filtersMenu, imago.plugin.image.process.ImageBoxFilter.class, "Box Filter...");
         addPlugin(filtersMenu, imago.plugin.image.process.BoxFilter3x3FloatPlugin.class, "Box Filter 2D 3x3 (float)", hasScalarImage);
-		addArrayOperatorPlugin(filtersMenu, new GaussianFilter5x5(), "Gaussian Filter 5x5", hasScalarImage && hasImage2D);
+        addArrayOperatorPlugin(filtersMenu, net.sci.image.filtering.GaussianFilter5x5.class, "Gaussian Filter 5x5", hasScalarImage && hasImage2D);
         addPlugin(filtersMenu, imago.plugin.image.process.ImageMedianFilterBox.class, "Median Filter...");
         addPlugin(filtersMenu, imago.plugin.image.binary.BinaryImageBoxMedianFilter.class, "Binary Median Filter...");
         addPlugin(filtersMenu, imago.plugin.image.process.ImageMinMaxFilterBox.class, "Min/Max Filter...");
@@ -450,14 +445,10 @@ public class GuiBuilder
         
 		// Gradient filters
         JMenu gradientFiltersMenu = new JMenu("Gradient Filters");
-        addImageOperatorPlugin(gradientFiltersMenu, new SobelGradient(), "Sobel Gradient", hasScalarImage);
-        addImageOperatorPlugin(gradientFiltersMenu, new SobelGradientNorm(), "Sobel Gradient Norm", hasScalarImage);
-        addImageOperatorPlugin(gradientFiltersMenu, new VectorArrayNorm(), "Vector Image Norm", hasVectorImage);
-        // addMenuItem(menu, new ImageOperatorAction(frame, "vectorAngle",
-		// new VectorImageAngle()),
-		// "Array<?> Angle", hasImage);
+        addImageOperatorPlugin(gradientFiltersMenu, net.sci.image.filtering.SobelGradient.class, "Sobel Gradient", hasScalarImage);
+        addImageOperatorPlugin(gradientFiltersMenu, net.sci.image.filtering.SobelGradientNorm.class, "Sobel Gradient Norm", hasScalarImage);
+        addImageOperatorPlugin(gradientFiltersMenu, net.sci.image.contrast.VectorArrayNorm.class, "Vector Image Norm", hasVectorImage);
         menu.add(gradientFiltersMenu);
-//		menu.addSeparator();
         
 		JMenu morphologyMenu = new JMenu("Mathematical Morphology");
         addPlugin(morphologyMenu, imago.plugin.image.process.ImageMorphologicalFilter.class, "Morphological Filters...");
@@ -773,9 +764,15 @@ public class GuiBuilder
         return item;
     }
     
-    private JMenuItem addImageOperatorPlugin(JMenu menu, ImageOperator operator, String label, boolean enabled)
+    private JMenuItem addImageOperatorPlugin(JMenu menu, Class<? extends ImageOperator> opClass, String label, boolean enabled)
     {
-        FramePlugin plugin = new ImageOperatorPlugin(operator);
+        FramePlugin plugin = frame.gui.retrievePlugin(opClass);
+        return addPlugin(menu, plugin, label, enabled);
+    }
+
+    private JMenuItem addArrayOperatorPlugin(JMenu menu, Class<? extends ArrayOperator> opClass, String label, boolean enabled)
+    {
+        FramePlugin plugin = frame.gui.retrievePlugin(opClass);
         return addPlugin(menu, plugin, label, enabled);
     }
 
@@ -840,13 +837,13 @@ public class GuiBuilder
     private JMenuItem addPlugin(JMenu menu, Class<? extends FramePlugin> pluginClass, String label)
     {
         FramePlugin plugin = frame.gui.retrievePlugin(pluginClass);
-        return plugin != null ? addPlugin(menu, plugin, label, plugin.isEnabled(frame)) : null;
+        return addPlugin(menu, plugin, label, plugin.isEnabled(frame));
     }
     
     private JMenuItem addPlugin(JMenu menu, Class<? extends FramePlugin> pluginClass, String label, boolean isEnabled)
     {
         FramePlugin plugin = frame.gui.retrievePlugin(pluginClass);
-        return plugin != null ? addPlugin(menu, plugin, label, isEnabled) : null;
+        return addPlugin(menu, plugin, label, isEnabled);
     }
 
     private JMenuItem addPlugin(JMenu menu, FramePlugin plugin, String label)
@@ -856,6 +853,7 @@ public class GuiBuilder
 
     private JMenuItem addPlugin(JMenu menu, FramePlugin plugin, String label, boolean enabled)
     {
+        if (plugin == null) return null;
         JMenuItem item = createPluginMenuItem(plugin, label);
         item.setEnabled(enabled);
         menu.add(item);

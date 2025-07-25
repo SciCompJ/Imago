@@ -40,6 +40,10 @@ import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.gui.frames.ImagoEmptyFrame;
 import imago.gui.image.ImageFrame;
+import imago.plugin.image.ImageArrayOperatorPlugin;
+import imago.plugin.image.ImageOperatorPlugin;
+import net.sci.array.ArrayOperator;
+import net.sci.image.ImageOperator;
 
 /**
  * The GUI Manager, that create frames, stores the set of open frames, and keeps
@@ -191,7 +195,7 @@ public class ImagoGui
     /**
      * A list of plugins that have been loaded.
      */
-    Map<Class<? extends FramePlugin>, FramePlugin> plugins = new HashMap<>();
+    Map<Class<?>, FramePlugin> plugins = new HashMap<>();
     
     ArrayList<PluginHandler> pluginHandlers = new ArrayList<PluginHandler>();
     
@@ -254,47 +258,76 @@ public class ImagoGui
 
     // ===================================================================
     // General methods
-    
+
     /**
-     * Returns an instance of the plugin with the specified class. If the plugin
-     * has already been loaded, it is returned. Otherwise, a new instance is
-     * created, by calling the empty constructor. If the plugin could not be
-     * loaded, return null, and displays the encountered error messages on the
-     * error stream.
+     * Returns an instance of the plugin associated to the specified class. If the
+     * plugin has already been loaded, it is returned. Otherwise, a new
+     * FramePlugin is created, using a strategy that depends on the class:
+     * <ul>
+     * <li>if the class implements {@code FramePlugin}, calls the empty
+     * constructor</li>
+     * <li>if the class implements {@code ArrayOperator}, calls the empty
+     * constructor and encapsulated the operator within an instance of
+     * {@code ImageArrayOperatorPlugin></li>
+     * <li>if the class implements {@code ImageOperator}, calls the empty
+     * constructor and encapsulated the operator within an instance of {@code
+     * ImageOperatorPlugin></li>
+     * </ul>
+     * If the plugin could not be created or loaded, return null, and prints the
+     * encountered error messages on the error stream.
      * 
-     * @param pluginClass
-     *            the class of the plugin to retrieve
+     * @param pluginClass the class of the plugin to retrieve
+     * 
      * @return an instance of the plugin from the specified class
      */
-    public FramePlugin retrievePlugin(Class<? extends FramePlugin> pluginClass)
+    @SuppressWarnings("unchecked")
+    public FramePlugin retrievePlugin(Class<?> clazz)
     {
-        FramePlugin plugin = plugins.get(pluginClass);
+        FramePlugin plugin = plugins.get(clazz);
         if (plugin != null)
         {
             return plugin;
         }
-
         // If there was already an attempt to create the plugin, do not try again 
-        if (plugins.containsKey(pluginClass))
+        if (plugins.containsKey(clazz))
         {
             return null;
         }
         
         try
         {
-            // Instantiate a new plugin from the constructor
-            plugin = createPluginInstance(pluginClass);
+            if (FramePlugin.class.isAssignableFrom(clazz))
+            {
+                // most common case: the class corresponds to an implementation
+                // of FramePlugin
+                // simply try to instantiate a new plugin from the constructor
+                plugin = createPluginInstance((Class<? extends FramePlugin>) clazz);
+            }
+            else if (ArrayOperator.class.isAssignableFrom(clazz))
+            {
+                // Instantiate a new plugin from the constructor
+                plugin = createArrayOperatorPluginInstance((Class<? extends ArrayOperator>) clazz);
+            }
+            else if (ImageOperator.class.isAssignableFrom(clazz))
+            {
+                // Instantiate a new plugin from the constructor
+                plugin = createImageOperatorPluginInstance((Class<? extends ImageOperator>) clazz);
+            }
+            else
+            {
+                System.err.println("Could not find how to create plugin for item with class: " + clazz.getName());
+            }
         }
         catch (FramePluginInstantiationException ex)
         {
-            // If the plugin could not be instantiated, displays the error, but
-            // do not break the application flow.
+            // If the plugin could not be instantiated, displays the error,
+            // but do not break the application flow.
             // Returns a "null" plugin that will be ignored by the GUI builder.
             ex.printStackTrace(System.err);
             plugin = null;
         }
-
-        plugins.put(pluginClass, plugin);
+        
+        plugins.put(clazz, plugin);
         return plugin;
     }
     
@@ -319,6 +352,64 @@ public class ImagoGui
         catch (Exception ex)
         {
             throw new FramePluginInstantiationException("Could not instantiate Plugin: " + pluginClass.getName(), ex);
+        }
+    }
+
+    private ImageArrayOperatorPlugin createArrayOperatorPluginInstance(Class<? extends ArrayOperator> opClass) throws FramePluginInstantiationException
+    {
+        Constructor<? extends ArrayOperator> cons;
+        try
+        {
+            // retrieve empty constructor of the operator
+            cons = opClass.getConstructor();
+        }
+        catch (Exception ex)
+        {
+            throw new FramePluginInstantiationException("Could not create empty constructor for ArrayOperator: " + opClass.getName(), ex);
+        }
+        
+        try
+        {
+            // Instantiate a new plugin from the constructor
+            ArrayOperator op = (ArrayOperator) cons.newInstance();
+            
+            // encapsulates the operator within a Plugin, such that the
+            // operator can be run on the array of the image contained within
+            // the frame calling this plugin.
+            return new ImageArrayOperatorPlugin(op);
+        }
+        catch (Exception ex)
+        {
+            throw new FramePluginInstantiationException("Could not instantiate Plugin: " + opClass.getName(), ex);
+        }
+    }
+
+    private ImageOperatorPlugin createImageOperatorPluginInstance(Class<? extends ImageOperator> opClass) throws FramePluginInstantiationException
+    {
+        Constructor<? extends ImageOperator> cons;
+        try
+        {
+            // retrieve empty constructor of the operator
+            cons = opClass.getConstructor();
+        }
+        catch (Exception ex)
+        {
+            throw new FramePluginInstantiationException("Could not create empty constructor for ImageOperator: " + opClass.getName(), ex);
+        }
+        
+        try
+        {
+            // Instantiate a new plugin from the constructor
+            ImageOperator op = (ImageOperator) cons.newInstance();
+            
+            // encapsulates the operator within a Plugin, such that the
+            // operator can be run on the array of the image contained within
+            // the frame calling this plugin.
+            return new ImageOperatorPlugin(op);
+        }
+        catch (Exception ex)
+        {
+            throw new FramePluginInstantiationException("Could not instantiate Plugin: " + opClass.getName(), ex);
         }
     }
 
