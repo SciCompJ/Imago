@@ -22,16 +22,27 @@ import java.awt.event.ActionEvent;
 public class RunPluginAction extends ImagoAction
 {
     /**
-     * 
+     * the serial version ID. 
      */
     private static final long serialVersionUID = 1L;
     
+    // ===================================================================
+    // Class variables
+
     /**
      * The plugin to run when an action is performed.
      */
     FramePlugin plugin;
     
+    String optionsString = null;
+    
+    
+    // ===================================================================
+    // Constructors
+
     /**
+     * Simple constructor.
+     * 
      * @param frame
      *            the frame from which the plugin will be called
      * @param plugin
@@ -42,6 +53,29 @@ public class RunPluginAction extends ImagoAction
         super(frame, "");
         this.plugin = plugin;
     }
+
+    /**
+     * Constructor that also specifies options string.
+     * 
+     * @param frame
+     *            the frame from which the plugin will be called
+     * @param plugin
+     *            the plugin to run
+     * @param optionsString
+     *            a string containing the list of options given to the plugin.
+     *            Options are provided as name-value pairs, and are separated
+     *            with comas.
+     */
+    public RunPluginAction(ImagoFrame frame, FramePlugin plugin, String optionsString)
+    {
+        super(frame, "");
+        this.plugin = plugin;
+        this.optionsString = optionsString;
+    }
+
+    
+    // ===================================================================
+    // Implementation of the ActionListener interface
 
     /* (non-Javadoc)
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -83,7 +117,7 @@ public class RunPluginAction extends ImagoAction
                 // run the plugin
                 try 
                 {
-                    plugin.run(frame, null);
+                    plugin.run(frame, optionsString);
                 }
                 catch (Exception ex)
                 {
@@ -95,5 +129,7 @@ public class RunPluginAction extends ImagoAction
         
         t.start();
     }
+    
+//    private static final ImagoFrame
 
 }

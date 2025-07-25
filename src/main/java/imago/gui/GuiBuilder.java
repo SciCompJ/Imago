@@ -158,10 +158,11 @@ public class GuiBuilder
         addPlugin(fileMenu, imago.plugin.image.file.OpenImage.class, "Open...");
         // Import demo images
         JMenu demoMenu = new JMenu("Demo Images");
-        addPlugin(demoMenu, new OpenDemoImage("images/grains.png"), "Rice grains");
-        addPlugin(demoMenu, new OpenDemoImage("images/peppers.png"), "Peppers");
-        addPlugin(demoMenu, new OpenDemoImage("files/lena_gray_512.tif"), "Lena");
-        addPlugin(demoMenu, new OpenDemoImage("images/sunflower.png"), "Sunflower");
+        addPlugin(demoMenu, OpenDemoImage.class, "fileName=images/grains.png", "Rice grains");
+        addPlugin(demoMenu, OpenDemoImage.class, "fileName=images/peppers.png", "Peppers");
+        addPlugin(demoMenu, OpenDemoImage.class, "fileName=files/lena_gray_512.tif", "Lena");
+//        addPlugin(demoMenu, new OpenDemoImage("files/lena_gray_512.tif"), "Lena");
+        addPlugin(demoMenu, OpenDemoImage.class, "fileName=images/sunflower.png", "Sunflower");
         addPlugin(demoMenu, imago.plugin.image.file.OpenDemoStack.class, "Demo Stack");
         addPlugin(demoMenu, imago.plugin.image.edit.CreateDistanceToOctahedronImage3D.class, "Octahedron Distance Map");
         addPlugin(demoMenu, imago.plugin.image.edit.CreateColorCubeImage3D.class, "3D Color Cube");
@@ -848,6 +849,25 @@ public class GuiBuilder
         return addPlugin(menu, plugin, label, plugin.isEnabled(frame));
     }
 
+    private JMenuItem addPlugin(JMenu menu, Class<? extends FramePlugin> itemClass, String optionsString, String label)
+    {
+        // retrieve plugin
+        FramePlugin plugin = frame.gui.getPluginManager().retrievePlugin(itemClass);
+        if (plugin == null) return null;
+        
+        // create action that will catch action events
+        RunPluginAction action = new RunPluginAction(frame, plugin, optionsString);
+        
+        // setup menu item
+        JMenuItem item = new JMenuItem(action);
+        item.setText(label);
+        item.setIcon(this.emptyIcon);
+        item.setMargin(new Insets(0, 0, 0, 0));
+        item.setEnabled(plugin.isEnabled(frame));
+        menu.add(item);
+        return item;
+    }
+    
     private JMenuItem addPlugin(JMenu menu, FramePlugin plugin, String label, boolean enabled)
     {
         if (plugin == null) return null;

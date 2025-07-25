@@ -26,6 +26,13 @@ public class OpenDemoImage implements FramePlugin
 {
     String fileName;
     
+    /**
+     * Empty constructor, to allow calling the plugin with an options string containing the filename.
+     */
+    public OpenDemoImage()
+    {
+    }
+    
     public OpenDemoImage(String imageName)
     {
         this.fileName = imageName;
@@ -38,21 +45,30 @@ public class OpenDemoImage implements FramePlugin
      * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     @Override
-    public void run(ImagoFrame frame, String args)
+    public void run(ImagoFrame frame, String options)
     {
-        File file = new File(this.fileName);
+        // use inner field as default
+        String fileName = this.fileName;
+        
+        // parse option string
+        if (options != null && !options.isEmpty())
+        {
+            // keep first argument, and remove option name
+            fileName = options.split(",")[0].split("=")[1].trim();
+        }
+        File file = new File(fileName);
         
         // First try to read the image from within the jar
         try
         {
-            Image image = readImageIO();
+            Image image = readImageIO(fileName);
             // add the image document to GUI
             ImageFrame.create(image, frame);
             return;
         }
         catch(Exception ex)
         {
-            ex.printStackTrace();
+            // could not find within jar, so continue with local file system
         }
         
         // If image could not be found, try with more standard method
@@ -78,7 +94,7 @@ public class OpenDemoImage implements FramePlugin
         ImageFrame.create(image, frame);
     }
     
-    private Image readImageIO() throws IOException
+    private Image readImageIO(String fileName) throws IOException
     {
         InputStream stream = this.getClass().getClassLoader().getResourceAsStream(fileName);
         if (stream == null)
