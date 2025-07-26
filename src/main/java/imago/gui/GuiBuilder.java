@@ -196,10 +196,9 @@ public class GuiBuilder
         fileMenu.addSeparator();
         addPlugin(fileMenu, imago.plugin.table.OpenTable.class, "Open Table...");
         JMenu demoTables = new JMenu("Demo Tables");
-        addPlugin(demoTables, new OpenDemoTable("tables/fisherIris.csv"), "Fisher's Iris");
-        addPlugin(demoTables, new OpenDemoTable("tables/penguins_clean.csv"), "Penguins");
+        addPlugin(demoTables, imago.plugin.table.OpenTable.class, "fileName=tables/fisherIris.csv", "Fisher's Iris");
+        addPlugin(demoTables, imago.plugin.table.OpenTable.class, "fileName=tables/penguins_clean.csv", "Penguins (without NA)");
         fileMenu.add(demoTables);
-        addPlugin(fileMenu, imago.plugin.table.ShowDemoTable.class, "Show Demo Table");
         
         fileMenu.addSeparator();
         if (!(frame instanceof ImagoEmptyFrame))
@@ -207,7 +206,6 @@ public class GuiBuilder
             addPlugin(fileMenu, imago.plugin.CloseCurrentFrame.class, "Close");
             addPlugin(fileMenu, imago.plugin.CloseWithChildren.class, "Close With Children");
         }
-        
         addPlugin(fileMenu, imago.plugin.QuitApplication.class, "Quit");
         return fileMenu;
     }
