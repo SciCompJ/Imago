@@ -536,6 +536,10 @@ public class GuiBuilder
         addPlugin(menu, imago.plugin.image.analyze.ImagePlotChannels.class, "Channel Profile", hasImage);
 
         menu.addSeparator();
+        JMenu regFeatMenu = new JMenu("Region Features");
+        addPlugin(regFeatMenu, imago.plugin.image.analyze.RegionMorphology2D.class, "Regions Morphology", hasImage2D && hasLabelImage);
+        menu.add(regFeatMenu);
+        
         JMenu regions2dMenu = new JMenu("Regions (2D)");
         regions2dMenu.setEnabled(hasImage2D && hasLabelImage);
         addPlugin(regions2dMenu, imago.plugin.image.analyze.LabelImageIntrinsicVolumes.class, "Regions Intrinsic Volumes", hasImage2D && hasLabelImage);
