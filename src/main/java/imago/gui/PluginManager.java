@@ -348,11 +348,17 @@ public class PluginManager
         String menuItemLabel = tokens[1].trim();
         String className = tokens[2].trim();
 
+        // load the plugin
         FramePlugin plugin = loadPluginFromJar(file, className);
 
+        // remove double quotes from plugin name
+        if (menuItemLabel.startsWith("\"") && menuItemLabel.endsWith("\""))
+        {
+            menuItemLabel = menuItemLabel.substring(1, menuItemLabel.length()-1);
+        }
+        
         // encapsulate the plugin within a Handler
-        PluginHandler handler = new PluginHandler(plugin, menuItemLabel, menuPath);
-        return handler;
+        return new PluginHandler(plugin, menuItemLabel, menuPath);
     }
 
     private FramePlugin loadPluginFromJar(File file, String className) throws IOException
