@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
@@ -42,8 +43,8 @@ public class OpenTable implements FramePlugin
                 if (table == null) return;
 
                 // setup meta-data
-                table.setName(fileName);
-                
+                table.setName(Path.of(fileName).getFileName().toString());
+
                 // add the new frame to the GUI
                 TableFrame.create(table, frame);
                 return;
@@ -99,7 +100,7 @@ public class OpenTable implements FramePlugin
             return;
         }
         
-        table.setName(file.getName());
+        table.setName(file.toPath().getFileName().toString());
         
         // add the new frame to the GUI
         TableFrame.create(table, frame);
