@@ -3,7 +3,6 @@
  */
 package imago.gui;
 
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dialog;
@@ -12,6 +11,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -434,6 +434,113 @@ public class GenericDialog
 		
 		return cb;
 	}
+	
+    /**
+     * Adds a group of check boxes using a grid layout.
+     * 
+     * @param rows
+     *            the number of rows
+     * @param columns
+     *            the number of columns
+     * @param labels
+     *            the labels
+     * @param defaultValues
+     *            the initial states
+     */
+    public void addCheckboxGroup(int rows, int columns, String[] labels, boolean[] defaultValues)
+    {
+        addCheckboxGroup(rows, columns, labels, defaultValues, null);
+    }
+    
+    /**
+     * Adds a group of check boxes using a grid layout.
+     * 
+     * @param nRows
+     *            the number of rows
+     * @param nCols
+     *            the number of columns
+     * @param labels
+     *            the labels
+     * @param defaultValues
+     *            the initial states
+     * @param headings
+     *            the column headings Example:
+     *            http://imagej.net/ij/plugins/multi-column-dialog/index.html
+     */
+    public void addCheckboxGroup(int nRows, int nCols, String[] labels, boolean[] defaultValues, String[] headings)
+    {
+        // create sub panel containing the widgets
+        JPanel panel = new JPanel();
+        int nRows2 = headings != null ? nRows + 1 : nRows;
+        panel.setLayout(new GridLayout(nRows2, nCols, 6, 0));
+        
+        // process optional headings for groups of checkboxes
+        if (headings != null)
+        {
+            Font boldFont = new Font("SansSerif", Font.BOLD, 12);
+            for (int iCol = 0; iCol < nCols; iCol++)
+            {
+                if (iCol > headings.length - 1 || headings[iCol] == null)
+                    panel.add(new JLabel(""));
+                else
+                {
+                    JLabel label = new JLabel(headings[iCol]);
+                    label.setFont(boldFont);
+                    panel.add(label);
+                }
+            }
+        }
+        
+        // ensure global array of check boxes is initialized
+        if (checkBoxes == null) checkBoxes = new ArrayList<>(12);
+        
+        // add checkboxes, by iterating on rows within panel
+        int index = 0;
+        for (int iRow = 0; iRow < nRows; iRow++)
+        {
+            for (int iCol = 0; iCol < nCols; iCol++)
+            {
+                // retrieve label from index
+                if (iCol * nRows + iRow >= labels.length) break;
+                String label = labels[index];
+                
+                // case of empty label
+                if (label == null || label.length() == 0)
+                {
+                    panel.add(new JLabel(""));
+                    index++;
+                    continue;
+                }
+                
+                // create CheckBox with formatted label
+                if (label.indexOf('_') != -1) label = label.replace('_', ' ');
+                JCheckBox cb = new JCheckBox(label);
+                checkBoxes.add(cb);
+                
+                cb.setSelected(defaultValues[index]);
+//                cb.addItemListener(this);
+//                if (IJ.recording() || macro) saveLabel(cb, labels[i1]);
+//                if (IJ.isLinux())
+//                {
+//                    Panel panel2 = new Panel();
+//                    panel2.setLayout(new BorderLayout());
+//                    panel2.add("West", cb);
+//                    panel.add(panel2);
+//                }
+//                else
+                    panel.add(cb);
+                index++;
+            }
+        }
+        
+        // layout for sub-panel
+        c.gridx = 0;
+        c.gridy++;
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        c.anchor = GridBagConstraints.WEST;
+        c.insets = getInsets(10, 0, 0, 0);
+        this.dialog.add(panel, c);
+    }
 
 	/**
      * Adds a Combo Box that contains different choices.
@@ -742,49 +849,50 @@ public class GenericDialog
 		return String.format(Locale.US, format, value);
 	}
 
-	/** Adds a message consisting of one or more lines of text. */
-    public void addMessage(String text) 
+    /** Adds a message consisting of one or more lines of text. */
+    public void addMessage(String text)
     {
-    	addMessage(text, null, null);
-    }
-
-    /** Adds a message consisting of one or more lines of text,
-    	which will be displayed using the specified font. */
-    public void addMessage(String text, Font font) 
-    {
-    	addMessage(text, font, null);
+        addMessage(text, null, null);
     }
     
-    /** Adds a message consisting of one or more lines of text,
-    	which will be displayed using the specified font and color. */
+    /**
+     * Adds a message consisting of one or more lines of text, which will be
+     * displayed using the specified font.
+     */
+    public void addMessage(String text, Font font)
+    {
+        addMessage(text, font, null);
+    }
+    
+    /**
+     * Adds a message consisting of one or more lines of text, which will be
+     * displayed using the specified font and color.
+     */
     public void addMessage(String text, Font font, Color color)
     {
-    	// Creates a new label component
-    	Component theLabel = null;
-    	if (text.indexOf('\n')>=0)
-			theLabel = new JMultiLineLabel(text);
-		else
-			theLabel = new JLabel(text);
-		//theLabel.addKeyListener(this);
-		if (font!=null)
-			theLabel.setFont(font);
-		if (color!=null)
-			theLabel.setForeground(color);
-
-		// add the label to the grid layout
-		c.gridx = 0;
-		c.gridy = currentRow;
-		c.gridwidth = 2;
-		c.anchor = GridBagConstraints.WEST;
-		c.insets = getInsets(text.equals("") ? 0 : 10, 20, 0, 0);
-		c.fill = GridBagConstraints.HORIZONTAL;
-		gridLayout.setConstraints(theLabel, c);
-		this.dialog.add(theLabel);
-
-		c.fill = GridBagConstraints.NONE;
-		currentRow++;
+        // Creates a new label component
+        Component theLabel = null;
+        if (text.indexOf('\n') >= 0)
+            theLabel = new JMultiLineLabel(text);
+        else
+            theLabel = new JLabel(text);
+        // theLabel.addKeyListener(this);
+        if (font != null) theLabel.setFont(font);
+        if (color != null) theLabel.setForeground(color);
+        
+        // add the label to the grid layout
+        c.gridx = 0;
+        c.gridy = currentRow;
+        c.gridwidth = 2;
+        c.anchor = GridBagConstraints.WEST;
+        c.insets = getInsets(text.equals("") ? 0 : 10, 20, 0, 0);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        gridLayout.setConstraints(theLabel, c);
+        this.dialog.add(theLabel);
+        
+        c.fill = GridBagConstraints.NONE;
+        currentRow++;
     }
-    
 
 	/**
 	 * Helper functions that returns the insets of the next element to be added.
@@ -953,13 +1061,7 @@ public class GenericDialog
 			throw new RuntimeException("no Check Box was added");
 		}
 			
-		JCheckBox cb = checkBoxes.get(checkBoxIndex);
-		
-		boolean state = cb.isSelected();
-		
-		checkBoxIndex++;
-
-		return state;
+		return checkBoxes.get(checkBoxIndex++).isSelected();
 	}
 
   	/** 
