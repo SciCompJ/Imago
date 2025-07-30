@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 
 import javax.imageio.ImageIO;
 import javax.swing.filechooser.FileFilter;
@@ -48,10 +49,10 @@ public class OpenImage implements FramePlugin
         // If options is given, use it to choose the file
         if (options != null && !options.isEmpty())
         {
-            String fileName = FramePlugin.parseOptionsString(options).get("fileName");
-            if (fileName != null)
+            String filePath = FramePlugin.parseOptionsString(options).get("fileName");
+            if (filePath != null)
             {
-                Image image = readImage(frame, fileName);
+                Image image = readImage(frame, filePath);
                 if (image == null) return;
 
                 // add the image document to GUI
@@ -80,8 +81,7 @@ public class OpenImage implements FramePlugin
         // Check the chosen file is valid
         if (!file.isFile())
         {
-            ImagoGui.showErrorDialog(frame,
-                    "Could not find the selected file: " + file.getName(),
+            ImagoGui.showErrorDialog(frame, "Could not find the selected file: " + file.getName(),
                     "Image I/O Error");
             return;
         }
@@ -97,12 +97,12 @@ public class OpenImage implements FramePlugin
         ImageFrame.create(image, frame);
     }
     
-    private Image readImage(ImagoFrame frame, String pathToFile)
+    private Image readImage(ImagoFrame frame, String filePath)
     {
         // First try to read the image from within the jar
         try
         {
-            return readImageIO(pathToFile);
+            return readResource(filePath);
         }
         catch(Exception ex)
         {
@@ -112,12 +112,12 @@ public class OpenImage implements FramePlugin
         // If image could not be found, try with more standard method
         try 
         {
-            return Image.readImage(new File(pathToFile));
+            return Image.readImage(new File(filePath));
         }
         catch (FileNotFoundException ex)
         {
             // ex.printStackTrace(System.err);
-            frame.showErrorDialog("Could not find the file: " + pathToFile);
+            frame.showErrorDialog("Could not find the file: " + filePath);
         }
         catch (IOException ex)
         {
@@ -128,19 +128,24 @@ public class OpenImage implements FramePlugin
         return null;
     }
     
-    private Image readImageIO(String fileName) throws IOException
+    private Image readResource(String path) throws IOException
     {
-        InputStream stream = this.getClass().getClassLoader().getResourceAsStream(fileName);
+        // open a stream to the resource
+        InputStream stream = this.getClass().getClassLoader().getResourceAsStream(path);
         if (stream == null)
         {
-            throw new IllegalArgumentException("Could not find image file: " + fileName);
+            throw new IllegalArgumentException("Could not find resource with path: " + path);
         }
+        
+        // read AWT image from input stream
         BufferedImage bufImg = ImageIO.read(stream);
         
         // Convert to Image class
         Image image = ImageIOImageReader.convertBufferedImage(bufImg);
-        image.setNameFromFileName(fileName);
-        image.setFilePath(fileName);
+        
+        // setup metadata
+        image.setName(Path.of(path).getFileName().toString());
+        image.setFilePath(path);
 
         return image;
     }
