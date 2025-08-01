@@ -12,16 +12,17 @@ import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.table.TableFrame;
-import net.sci.table.Column;
 import net.sci.table.Table;
+import net.sci.table.Tables;
 
 /**
+ * Creates a new table based on the concatenation of the columns of two input
+ * tables.
+ * 
  * @author dlegland
- *
  */
-public class MergeTablesByColumns implements FramePlugin
+public class ConcatenateTableColumns implements FramePlugin
 {
-    
     /* (non-Javadoc)
      * @see imago.gui.Plugin#run(imago.gui.ImagoFrame, java.lang.String)
      */
@@ -65,26 +66,7 @@ public class MergeTablesByColumns implements FramePlugin
             throw new RuntimeException("Both tables must have same number of rows");
         }
         
-        // concatenate columns
-        ArrayList<Column> columns = new ArrayList<Column>(table1.columnCount() + table2.columnCount());
-        for (Column col : table1.columns())
-        {
-            columns.add(col);
-        }
-        for (Column col : table2.columns())
-        {
-            columns.add(col);
-        }
-        
-        // create table
-        Table res = Table.create(columns.toArray(new Column[] {}));
-//        Table res = Table.create(table1.rowCount(), columns.size());
-//        for (int i = 0; i < columns.size(); i++)
-//        {
-//            res.setColumnValues(i, columns.get(i).getValues());
-//        }
-        res.setName(table1.getName() + "+" + table2.getName());
-        res.setRowNames(table1.getRowNames());
+        Table res = Tables.concatenateColumns(table1, table2);
         
         // add the new frame to the GUI
         TableFrame.create(res, frame);

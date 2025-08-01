@@ -201,17 +201,23 @@ public class TableFrame extends ImagoFrame
         int nRows = table.rowCount();
         int nCols = table.columnCount();
         
-        // If row names are specified, add another column as first column
-        int columnOffset = 0;
+        // retrieve and check row axis
         Axis rowAxis = table.getRowAxis();
+        boolean hasValidRowAxis = false;
         if (rowAxis != null)
         {
-            columnOffset++;
+            if (((CategoricalAxis) rowAxis).itemNames() != null)
+            {
+                hasValidRowAxis = true;
+            }
         }
 
+        // If row names are specified, add another column as first column
+        int columnOffset = hasValidRowAxis ? 1 : 0;
+        
         // Ensure the table has valid column names
         String[] colNames = new String[nCols + columnOffset];
-        if (rowAxis != null)
+        if (hasValidRowAxis)
         {
             colNames[0] = "Row Names";
             if (rowAxis.getName() != null && !rowAxis.getName().isBlank())
@@ -230,7 +236,7 @@ public class TableFrame extends ImagoFrame
         {
             Object[] row = data[iRow];
             
-            if (rowAxis != null)
+            if (hasValidRowAxis)
             {
                 row[0] = ((CategoricalAxis) rowAxis).itemName(iRow);
             }
