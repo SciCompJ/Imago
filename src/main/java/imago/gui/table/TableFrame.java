@@ -184,9 +184,10 @@ public class TableFrame extends ImagoFrame
         mainPanel.setBackground(Color.GREEN);
         
         JTable jtable = createJTable();
+        jtable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         
         //add the table to the frame
-        JScrollPane scrollPane = new JScrollPane(jtable);
+        JScrollPane scrollPane = new JScrollPane(jtable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         mainPanel.add(scrollPane, BorderLayout.CENTER);
         
         // decorate the scroll panel with row index
