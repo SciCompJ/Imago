@@ -13,9 +13,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import imago.app.ImagoApp;
 import imago.app.TableHandle;
@@ -24,6 +26,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import net.sci.axis.Axis;
 import net.sci.axis.CategoricalAxis;
+import net.sci.table.NumericColumn;
 import net.sci.table.Table;
 
 /**
@@ -227,7 +230,19 @@ public class TableFrame extends ImagoFrame
         }
         for (int iCol = 0; iCol < table.columnCount(); iCol++)
         {
-            colNames[iCol + columnOffset] = table.getColumnName(iCol);
+            String colName = table.getColumnName(iCol);
+            
+            // in case of numeric column, tries to append the unit name, 
+            // using html formatting to display it on another line
+            if (table.column(iCol) instanceof NumericColumn numCol)
+            {
+                String unitName = numCol.getUnitName();
+                if (unitName != null && !unitName.isBlank())
+                {
+                    colName = String.format("<html><center>%s<br>(%s)</center></html>", colName, numCol.getUnitName());
+                }
+            }
+            colNames[iCol + columnOffset] = colName;
         }
         
         // Convert numeric values to table of objects
@@ -250,6 +265,11 @@ public class TableFrame extends ImagoFrame
         
         // create JTable object
         JTable jtable = new JTable(data, colNames);
+        
+        // some setup
+        DefaultTableCellRenderer renderer = (DefaultTableCellRenderer) jtable.getTableHeader().getDefaultRenderer();
+        renderer.setHorizontalAlignment(JLabel.CENTER);
+        jtable.getTableHeader().setPreferredSize(new Dimension(jtable.getColumnModel().getTotalColumnWidth(), 32));
         
         return jtable;
     }
