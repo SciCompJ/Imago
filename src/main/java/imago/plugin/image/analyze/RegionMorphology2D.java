@@ -15,14 +15,15 @@ import imago.gui.table.TableFrame;
 import net.sci.image.Image;
 import net.sci.image.regionfeatures.Feature;
 import net.sci.image.regionfeatures.RegionFeatures;
-import net.sci.image.regionfeatures.RegionFeatures.UnitDisplay;
 import net.sci.image.regionfeatures.morpho2d.Area;
 import net.sci.image.regionfeatures.morpho2d.Bounds;
 import net.sci.image.regionfeatures.morpho2d.Centroid;
 import net.sci.image.regionfeatures.morpho2d.Circularity;
+import net.sci.image.regionfeatures.morpho2d.Convexity;
 import net.sci.image.regionfeatures.morpho2d.EllipseElongation;
 import net.sci.image.regionfeatures.morpho2d.EquivalentEllipse;
 import net.sci.image.regionfeatures.morpho2d.EulerNumber;
+import net.sci.image.regionfeatures.morpho2d.MaxFeretDiameter;
 import net.sci.image.regionfeatures.morpho2d.Perimeter;
 import net.sci.table.Table;
 
@@ -32,9 +33,6 @@ import net.sci.table.Table;
  */
 public class RegionMorphology2D implements FramePlugin
 {
-    public static final String[] unitDisplayLabels = new String[] { "None", "Column Names", "New Columns", "New Table" };
-    public static final UnitDisplay[] unitDisplayValues = new UnitDisplay[] { UnitDisplay.NONE, UnitDisplay.COLUMN_NAMES, UnitDisplay.NEW_COLUMNS, UnitDisplay.NEW_TABLE };
-    
     Options initialOptions = null;
     
     /**
@@ -83,22 +81,11 @@ public class RegionMorphology2D implements FramePlugin
         // create a Region feature analyzer from options
         RegionFeatures analyzer = options.createAnalyzer(image);
         analyzer.addAlgoListener(frame);
-        Table[] tables = analyzer.createTables();
-        
-        Table featuresTable = tables[0];
-//        if (options.includeImageName)
-//        {
-//            featuresTable = insertImageNameColumn(featuresTable, image.getName());
-//        }
+        Table featuresTable = analyzer.createTable();
         
         // show result
         featuresTable.setName(image.getName() + "-Morphometry");
-        TableFrame tableFrame = TableFrame.create(featuresTable, frame);
-        
-        if (options.unitDisplay == UnitDisplay.NEW_TABLE)
-        {
-            TableFrame.create(tables[1], tableFrame);
-        }
+        TableFrame.create(featuresTable, frame);
     }
     
     private static final Options chooseOptions(ImagoFrame frame, Image labelMap, Options initialChoice)
@@ -112,7 +99,7 @@ public class RegionMorphology2D implements FramePlugin
                 "Circularity", "Euler_Number",
                 "Bounding_Box", "Centroid",
                 "Equivalent_Ellipse", "Ellipse_Elongation",
-//                "Convexity", "Max_Feret_Diameter",
+                "Convexity", "Max_Feret_Diameter",
 //                "Oriented_Box", "Oriented_Box_Elongation",
 //                "Geodesic_Diameter", "Tortuosity",
 //                "Max_Inscribed_Disk", "Average_Thickness",
@@ -123,7 +110,7 @@ public class RegionMorphology2D implements FramePlugin
                 features.contains(Circularity.class), features.contains(EulerNumber.class),
                 features.contains(Bounds.class), features.contains(Centroid.class),
                 features.contains(EquivalentEllipse.class), features.contains(EllipseElongation.class),
-//                features.contains(Convexity.class), features.contains(MaxFeretDiameter.class),
+                features.contains(Convexity.class), features.contains(MaxFeretDiameter.class),
 //                features.contains(OrientedBoundingBox.class), features.contains(OrientedBoxElongation.class),
 //                features.contains(GeodesicDiameter.class), features.contains(Tortuosity.class),
 //                features.contains(LargestInscribedDisk.class), features.contains(AverageThickness.class),
@@ -132,7 +119,6 @@ public class RegionMorphology2D implements FramePlugin
         gd.addCheckboxGroup(featureNames.length / 2 + 1, 2, featureNames, states, new String[] {"Features:", ""});
         
         gd.addMessage("");
-        gd.addChoice("Unit_Display", unitDisplayLabels, unitDisplayLabels[1]);
         gd.addCheckBox("Include_Image_Name", initialChoice.includeImageName);
         
         // Display dialog and wait for user validation
@@ -154,8 +140,8 @@ public class RegionMorphology2D implements FramePlugin
         if (gd.getNextBoolean()) features.add(Centroid.class);
         if (gd.getNextBoolean()) features.add(EquivalentEllipse.class);
         if (gd.getNextBoolean()) features.add(EllipseElongation.class);
-//        if (gd.getNextBoolean()) features.add(Convexity.class);
-//        if (gd.getNextBoolean()) features.add(MaxFeretDiameter.class);
+        if (gd.getNextBoolean()) features.add(Convexity.class);
+        if (gd.getNextBoolean()) features.add(MaxFeretDiameter.class);
 //        if (gd.getNextBoolean()) features.add(OrientedBoundingBox.class);
 //        if (gd.getNextBoolean()) features.add(OrientedBoxElongation.class);
 //        if (gd.getNextBoolean()) features.add(GeodesicDiameter.class);
@@ -164,7 +150,6 @@ public class RegionMorphology2D implements FramePlugin
 //        if (gd.getNextBoolean()) features.add(AverageThickness.class);
 //        if (gd.getNextBoolean()) features.add(GeodesicElongation.class);
         
-        options.unitDisplay = unitDisplayValues[gd.getNextChoiceIndex()];
         options.includeImageName = gd.getNextBoolean();
 
         return options;
@@ -181,8 +166,6 @@ public class RegionMorphology2D implements FramePlugin
          * Display calibration unit within table column names, when appropriate.
          */
         boolean displayUnits = false;
-        
-        UnitDisplay unitDisplay = UnitDisplay.COLUMN_NAMES; 
         
         /**
          * Can be useful when concatenating results obtained on different images
@@ -201,7 +184,6 @@ public class RegionMorphology2D implements FramePlugin
         {
             RegionFeatures analyzer = RegionFeatures.initialize(image);
             features.stream().forEachOrdered(feature -> analyzer.add(feature));
-            analyzer.unitDisplay = this.unitDisplay;
             return analyzer;
         }
     }

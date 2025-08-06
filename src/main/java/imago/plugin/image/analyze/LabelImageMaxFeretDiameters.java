@@ -17,7 +17,7 @@ import net.sci.array.numeric.IntArray2D;
 import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.image.Image;
 import net.sci.image.analyze.region2d.MaxFeretDiameter;
-import net.sci.image.analyze.region2d.PointPair2D;
+import net.sci.geom.geom2d.PointPair2D;
 import net.sci.table.Table;
 
 /**
