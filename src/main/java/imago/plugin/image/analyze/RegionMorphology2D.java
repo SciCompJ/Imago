@@ -16,6 +16,7 @@ import net.sci.image.Image;
 import net.sci.image.regionfeatures.Feature;
 import net.sci.image.regionfeatures.RegionFeatures;
 import net.sci.image.regionfeatures.morpho2d.Area;
+import net.sci.image.regionfeatures.morpho2d.AverageThickness;
 import net.sci.image.regionfeatures.morpho2d.Bounds;
 import net.sci.image.regionfeatures.morpho2d.Centroid;
 import net.sci.image.regionfeatures.morpho2d.Circularity;
@@ -23,13 +24,22 @@ import net.sci.image.regionfeatures.morpho2d.Convexity;
 import net.sci.image.regionfeatures.morpho2d.EllipseElongation;
 import net.sci.image.regionfeatures.morpho2d.EquivalentEllipse;
 import net.sci.image.regionfeatures.morpho2d.EulerNumber;
+import net.sci.image.regionfeatures.morpho2d.GeodesicDiameter;
+import net.sci.image.regionfeatures.morpho2d.GeodesicElongation;
+import net.sci.image.regionfeatures.morpho2d.LargestInscribedDisk;
 import net.sci.image.regionfeatures.morpho2d.MaxFeretDiameter;
+import net.sci.image.regionfeatures.morpho2d.OrientedBoundingBox;
+import net.sci.image.regionfeatures.morpho2d.OrientedBoxElongation;
 import net.sci.image.regionfeatures.morpho2d.Perimeter;
+import net.sci.image.regionfeatures.morpho2d.Tortuosity;
 import net.sci.table.Table;
 
 
 /**
+ * The interactive plugin for computing morphological features from 2D regions
+ * represented as label maps.
  * 
+ * @see RegionFeatures
  */
 public class RegionMorphology2D implements FramePlugin
 {
@@ -65,8 +75,8 @@ public class RegionMorphology2D implements FramePlugin
             initialOptions = new Options();
             initialOptions.features.add(Area.class);
             initialOptions.features.add(Perimeter.class);
-            initialOptions.features.add(EulerNumber.class);
-            initialOptions.features.add(Circularity.class);
+            initialOptions.features.add(EquivalentEllipse.class);
+            initialOptions.features.add(EllipseElongation.class);
         }
         
         // Choose analysis options from interactive dialog
@@ -100,10 +110,10 @@ public class RegionMorphology2D implements FramePlugin
                 "Bounding_Box", "Centroid",
                 "Equivalent_Ellipse", "Ellipse_Elongation",
                 "Convexity", "Max_Feret_Diameter",
-//                "Oriented_Box", "Oriented_Box_Elongation",
-//                "Geodesic_Diameter", "Tortuosity",
-//                "Max_Inscribed_Disk", "Average_Thickness",
-//                "Geodesic_Elongation",
+                "Oriented_Box", "Oriented_Box_Elongation",
+                "Geodesic_Diameter", "Tortuosity",
+                "Max_Inscribed_Disk", "Average_Thickness",
+                "Geodesic_Elongation",
         };
         boolean[] states = new boolean[] {
                 features.contains(Area.class), features.contains(Perimeter.class),
@@ -111,10 +121,10 @@ public class RegionMorphology2D implements FramePlugin
                 features.contains(Bounds.class), features.contains(Centroid.class),
                 features.contains(EquivalentEllipse.class), features.contains(EllipseElongation.class),
                 features.contains(Convexity.class), features.contains(MaxFeretDiameter.class),
-//                features.contains(OrientedBoundingBox.class), features.contains(OrientedBoxElongation.class),
-//                features.contains(GeodesicDiameter.class), features.contains(Tortuosity.class),
-//                features.contains(LargestInscribedDisk.class), features.contains(AverageThickness.class),
-//                features.contains(GeodesicElongation.class),
+                features.contains(OrientedBoundingBox.class), features.contains(OrientedBoxElongation.class),
+                features.contains(GeodesicDiameter.class), features.contains(Tortuosity.class),
+                features.contains(LargestInscribedDisk.class), features.contains(AverageThickness.class),
+                features.contains(GeodesicElongation.class),
         };
         gd.addCheckboxGroup(featureNames.length / 2 + 1, 2, featureNames, states, new String[] {"Features:", ""});
         
@@ -131,7 +141,6 @@ public class RegionMorphology2D implements FramePlugin
         // Extract features to quantify from image
         Options options = new Options();
         features = options.features;
-        // if (gd.getNextBoolean()) features.add(Feature.PIXEL_COUNT);
         if (gd.getNextBoolean()) features.add(Area.class);
         if (gd.getNextBoolean()) features.add(Perimeter.class);
         if (gd.getNextBoolean()) features.add(Circularity.class);
@@ -142,13 +151,13 @@ public class RegionMorphology2D implements FramePlugin
         if (gd.getNextBoolean()) features.add(EllipseElongation.class);
         if (gd.getNextBoolean()) features.add(Convexity.class);
         if (gd.getNextBoolean()) features.add(MaxFeretDiameter.class);
-//        if (gd.getNextBoolean()) features.add(OrientedBoundingBox.class);
-//        if (gd.getNextBoolean()) features.add(OrientedBoxElongation.class);
-//        if (gd.getNextBoolean()) features.add(GeodesicDiameter.class);
-//        if (gd.getNextBoolean()) features.add(Tortuosity.class);
-//        if (gd.getNextBoolean()) features.add(LargestInscribedDisk.class);
-//        if (gd.getNextBoolean()) features.add(AverageThickness.class);
-//        if (gd.getNextBoolean()) features.add(GeodesicElongation.class);
+        if (gd.getNextBoolean()) features.add(OrientedBoundingBox.class);
+        if (gd.getNextBoolean()) features.add(OrientedBoxElongation.class);
+        if (gd.getNextBoolean()) features.add(GeodesicDiameter.class);
+        if (gd.getNextBoolean()) features.add(Tortuosity.class);
+        if (gd.getNextBoolean()) features.add(LargestInscribedDisk.class);
+        if (gd.getNextBoolean()) features.add(AverageThickness.class);
+        if (gd.getNextBoolean()) features.add(GeodesicElongation.class);
         
         options.includeImageName = gd.getNextBoolean();
 
