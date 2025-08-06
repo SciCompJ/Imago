@@ -14,40 +14,46 @@ import net.sci.image.binary.skeleton.ImageJSkeleton;
 
 
 /**
- * Compute the skeleton of the current biary image.
+ * Compute the skeleton of the current binary image.
  * 
- * Uses ImageJ's algorithm.
+ * Uses an adaptation of ImageJ's algorithm.
+ * 
+ * @see imago.plugin.image.process.LabelMapSkeleton
  * 
  * @author David Legland
- *
  */
 public class BinaryImageSkeleton implements FramePlugin
 {
-	public BinaryImageSkeleton() 
-	{
-	}
-	
-	@Override
-	public void run(ImagoFrame frame, String args) 
-	{
-		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-		Image image = doc.getImage();
+    /**
+     * Default empty constructor.
+     */
+    public BinaryImageSkeleton()
+    {
+    }
 
-		Array<?> array = image.getData();
-		if (!(array instanceof BinaryArray2D))
-		{
-			return;
-		}
-		
-		ImageJSkeleton skel = new ImageJSkeleton();
+    @Override
+    public void run(ImagoFrame frame, String args)
+    {
+        // get current frame
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
+        Image image = doc.getImage();
+
+        Array<?> array = image.getData();
+        if (!(array instanceof BinaryArray2D))
+        {
+            return;
+        }
+
+        ImageJSkeleton skel = new ImageJSkeleton();
         BinaryArray2D res = skel.process2d((BinaryArray2D) array);
 
+        // create result image
         Image resultImage = new Image(res, image);
-        
-		// add the image document to GUI
+        resultImage.setName(image.getName() + "-skel");
+
+        // add the image document to GUI
         ImageFrame.create(resultImage, frame);
-	}
+    }
 
     /**
      * Returns true if the current frame contains a binary image.
@@ -60,14 +66,12 @@ public class BinaryImageSkeleton implements FramePlugin
     public boolean isEnabled(ImagoFrame frame)
     {
         // check frame class
-        if (!(frame instanceof ImageFrame))
-            return false;
-        
+        if (!(frame instanceof ImageFrame)) return false;
+
         // check image
         ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();
-        if (image == null)
-            return false;
+        if (image == null) return false;
 
         return image.isBinaryImage();
     }

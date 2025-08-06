@@ -511,6 +511,8 @@ public class GuiBuilder
         addPlugin(labelMenu, imago.plugin.image.process.LabelMapCropLabel.class, "Crop Label...", hasLabelImage);
         addPlugin(labelMenu, imago.plugin.image.process.LabelMapSizeOpening.class, "Size Opening...", hasLabelImage);
         labelMenu.addSeparator();
+        addPlugin(labelMenu, imago.plugin.image.process.LabelMapSkeleton.class, "Skeleton (2D)");
+        labelMenu.addSeparator();
         addPlugin(labelMenu, imago.plugin.image.vectorize.BinaryImageBoundaryGraph.class, "Boundary Graph", hasImage2D && hasBinaryImage);
         addPlugin(labelMenu, imago.plugin.image.vectorize.LabelMapToBoundaryPolygons.class, "Region Boundaries to Polygons", hasImage2D && hasLabelImage);
         menu.add(labelMenu);
