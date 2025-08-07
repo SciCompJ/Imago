@@ -3,18 +3,22 @@
  */
 package imago.plugin.table.plot;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
+import org.knowm.xchart.XYSeries;
 import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
-import org.knowm.xchart.style.Styler.ChartTheme;
+import org.knowm.xchart.style.markers.SeriesMarkers;
 
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.chart.ChartFrame;
 import imago.gui.table.TableFrame;
 import imago.plugin.table.TableFramePlugin;
+import net.sci.geom.geom2d.Point2D;
+import net.sci.geom.geom2d.curve.Ellipse2D;
 import net.sci.table.CategoricalColumn;
 import net.sci.table.NumericColumn;
 import net.sci.table.Table;
@@ -59,6 +63,7 @@ public class TableGroupScatterPlot implements TableFramePlugin
         dlg.addChoice("X-Axis Column", colNames, colNames[0]);
         dlg.addChoice("Y-Axis Column", colNames, colNames[1]);
         dlg.addChoice("Groups Column", colNames, colNames[2]);
+        dlg.addCheckBox("Show ellipses", true);
         
         dlg.showDialog();
         if (dlg.wasCanceled())
@@ -69,6 +74,7 @@ public class TableGroupScatterPlot implements TableFramePlugin
         indColX = dlg.getNextChoiceIndex();
         indColY = dlg.getNextChoiceIndex();
         indColG = dlg.getNextChoiceIndex();
+        boolean showEllipses = dlg.getNextBoolean();
    
         if (!(table.column(indColX) instanceof NumericColumn))
         {
@@ -109,6 +115,9 @@ public class TableGroupScatterPlot implements TableFramePlugin
             chartTitle = "data";
         }
         
+        // a series of colors for markers
+        Color[] colors = new Color[] {Color.RED, new Color(0, 128, 0), Color.BLUE, new Color(128, 0, 0), new Color(0, 128, 0), new Color(0, 0, 128), new Color(128, 128, 0)};
+        
         // Create Chart
         XYChart chart = new XYChartBuilder()
                 .width(600)
@@ -116,11 +125,9 @@ public class TableGroupScatterPlot implements TableFramePlugin
                 .title(chartTitle)
                 .xAxisTitle(colNames[indColX])
                 .yAxisTitle(colNames[indColY])
-                .theme(ChartTheme.Matlab)
                 .build();
         
         chart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
-        chart.getStyler().setMarkerSize(4);
         chart.getStyler().setLegendVisible(true);
         
         String[] levelNames = groups.levelNames();
@@ -128,10 +135,42 @@ public class TableGroupScatterPlot implements TableFramePlugin
         {
             double[] xarr = xData.get(i).stream().mapToDouble(Double::doubleValue).toArray();
             double[] yarr = yData.get(i).stream().mapToDouble(Double::doubleValue).toArray();
-            chart.addSeries(levelNames[i], xarr, yarr);
+            Color color = colors[i % colors.length];
+            
+            if (xarr.length > 0)
+            {
+                XYSeries scatterSeries = chart.addSeries(levelNames[i], xarr, yarr);
+                scatterSeries.setMarkerColor(color);
+                
+                if (showEllipses)
+                {
+                    Ellipse2D elli = Ellipse2D.equivalentEllipse(xarr, yarr);
+                    double[] xElli = new double[63];
+                    double[] yElli = new double[63];
+                    fillCoords(elli, xElli, yElli);
+                    
+                    XYSeries eqElli = chart.addSeries(levelNames[i]+"-elli", xElli, yElli);
+                    eqElli.setLineColor(color);
+                    eqElli.setXYSeriesRenderStyle(XYSeriesRenderStyle.Line);
+                    eqElli.setMarker(SeriesMarkers.NONE);
+                    eqElli.setShowInLegend(false);
+                }
+            }
         }
         
         // Show it
         ChartFrame.create(chart, "Scatter Plot", frame);
 	}
+    
+    private static final void fillCoords(Ellipse2D elli, double[] xData, double[] yData)
+    {
+        int np = xData.length;
+        double dt = (elli.t1() - elli.t0()) / (np - 1);
+        for (int i = 0; i < np; i++)
+        {
+            Point2D p = elli.point(i * dt);
+            xData[i] = p.x();
+            yData[i] = p.y();
+        }
+    }
 }
