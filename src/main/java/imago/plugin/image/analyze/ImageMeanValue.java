@@ -16,7 +16,7 @@ import net.sci.array.numeric.VectorArray;
 import net.sci.array.numeric.VectorArray2D;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.geom2d.polygon.DefaultPolygon2D;
+import net.sci.geom.polygon2d.DefaultPolygon2D;
 import net.sci.image.Image;
 import net.sci.table.NumericTable;
 

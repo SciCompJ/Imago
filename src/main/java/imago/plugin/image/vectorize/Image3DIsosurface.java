@@ -22,13 +22,13 @@ import imago.gui.shape.ShapeManager;
 import net.sci.array.Array;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray3D;
-import net.sci.geom.geom2d.polygon.Polyline2D;
 import net.sci.geom.geom3d.Plane3D;
 import net.sci.geom.geom3d.Point3D;
 import net.sci.geom.geom3d.Vector3D;
 import net.sci.geom.geom3d.polyline.Polyline3D;
 import net.sci.geom.mesh3d.DefaultTriMesh3D;
 import net.sci.geom.mesh3d.process.IntersectionMeshPlane;
+import net.sci.geom.polygon2d.Polyline2D;
 import net.sci.image.Image;
 import net.sci.image.vectorize.MorphologicalMarchingCubes;
 

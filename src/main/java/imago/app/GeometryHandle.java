@@ -11,13 +11,13 @@ import net.sci.geom.MultiPoint;
 import net.sci.geom.Point;
 import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.StraightLine2D;
-import net.sci.geom.geom2d.polygon.Polygon2D;
-import net.sci.geom.geom2d.polygon.Polyline2D;
 import net.sci.geom.geom3d.LineSegment3D;
 import net.sci.geom.geom3d.Polygon3D;
 import net.sci.geom.geom3d.StraightLine3D;
 import net.sci.geom.geom3d.polyline.Polyline3D;
 import net.sci.geom.mesh3d.Mesh3D;
+import net.sci.geom.polygon2d.Polygon2D;
+import net.sci.geom.polygon2d.Polyline2D;
 
 
 /**

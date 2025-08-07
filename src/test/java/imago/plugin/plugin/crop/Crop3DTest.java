@@ -24,7 +24,7 @@ import imago.app.scene.io.JsonSceneReader;
 import imago.gui.image.ImageFrame;
 import net.sci.array.numeric.UInt8Array2D;
 import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.geom2d.polygon.LinearRing2D;
+import net.sci.geom.polygon2d.LinearRing2D;
 import net.sci.image.Image;
 
 /**
@@ -35,7 +35,7 @@ public class Crop3DTest
 {
 
     /**
-     * Test method for {@link imago.plugin.plugin.crop.Crop3D#addPolygon(int, net.sci.geom.geom2d.polygon.Polygon2D)}.
+     * Test method for {@link imago.plugin.plugin.crop.Crop3D#addPolygon(int, net.sci.geom.polygon2d.Polygon2D)}.
      */
     @Test
     public final void testAddPolygon()

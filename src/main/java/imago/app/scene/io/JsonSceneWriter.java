@@ -15,7 +15,7 @@ import imago.app.scene.*;
 import imago.app.shape.Style;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.geom2d.polygon.Polyline2D;
+import net.sci.geom.polygon2d.Polyline2D;
 
 /**
  * Writes the contents of nodes into text file using the JSON format.

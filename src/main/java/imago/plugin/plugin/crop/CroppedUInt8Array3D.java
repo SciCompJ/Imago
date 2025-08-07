@@ -13,7 +13,7 @@ import net.sci.geom.geom2d.Bounds2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.StraightLine2D;
 import net.sci.geom.geom2d.Vector2D;
-import net.sci.geom.geom2d.polygon.LinearRing2D;
+import net.sci.geom.polygon2d.LinearRing2D;
 
 /**
  * Virtual array that combines a reference 3D array and a series of crop

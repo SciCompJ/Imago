@@ -20,7 +20,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
 import imago.gui.image.ImageViewer;
 import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.geom2d.polygon.LineString2D;
+import net.sci.geom.polygon2d.LineString2D;
 import net.sci.image.Image;
 import net.sci.table.Table;
 import net.sci.table.io.DelimitedTableReader;

@@ -17,8 +17,8 @@ import imago.app.scene.ShapeNode;
 import imago.app.shape.Style;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.geom2d.polygon.LineString2D;
-import net.sci.geom.geom2d.polygon.LinearRing2D;
+import net.sci.geom.polygon2d.LineString2D;
+import net.sci.geom.polygon2d.LinearRing2D;
 
 /**
  * Reads the content of a scene from a text file in JSON format.

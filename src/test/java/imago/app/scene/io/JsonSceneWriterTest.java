@@ -17,7 +17,7 @@ import imago.app.scene.ImageSerialSectionsNode;
 import imago.app.scene.ImageSliceNode;
 import imago.app.scene.ShapeNode;
 import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.geom2d.polygon.LinearRing2D;
+import net.sci.geom.polygon2d.LinearRing2D;
 
 /**
  * @author dlegland

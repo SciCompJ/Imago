@@ -10,7 +10,7 @@ import java.util.TreeMap;
 
 import net.sci.algo.AlgoEvent;
 import net.sci.algo.AlgoStub;
-import net.sci.geom.geom2d.polygon.LinearRing2D;
+import net.sci.geom.polygon2d.LinearRing2D;
 
 /**
  * Algorithm for interpolating polygons from a series of manually selected

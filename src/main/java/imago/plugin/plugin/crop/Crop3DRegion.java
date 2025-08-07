@@ -8,9 +8,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
-//import imago.app.scene.ImageSerialSectionsNode;
-//import imago.app.scene.ImageSliceNode;
-import net.sci.geom.geom2d.polygon.LinearRing2D;
+import net.sci.geom.polygon2d.LinearRing2D;
 
 /**
  * The data necessary for cropping a region within a 3D image.

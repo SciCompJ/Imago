@@ -13,7 +13,7 @@ import com.google.gson.stream.JsonWriter;
 import imago.app.scene.ImageSerialSectionsNode;
 import imago.app.scene.Node;
 import imago.app.scene.io.JsonSceneWriter;
-import net.sci.geom.geom2d.polygon.LinearRing2D;
+import net.sci.geom.polygon2d.LinearRing2D;
 import net.sci.image.Image;
 
 /**

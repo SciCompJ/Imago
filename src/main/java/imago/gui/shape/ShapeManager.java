@@ -31,7 +31,7 @@ import imago.gui.ImagoGui;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.geom2d.polygon.LineString2D;
+import net.sci.geom.polygon2d.LineString2D;
 
 /**
  * A frame, unique within the GUI, that allows to display and edit all the

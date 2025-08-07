@@ -46,7 +46,7 @@ import imago.gui.image.tools.SelectPolygonTool;
 import imago.plugin.image.file.ImageFileFilters;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.curve.Ellipse2D;
-import net.sci.geom.geom2d.polygon.Polygon2D;
+import net.sci.geom.polygon2d.Polygon2D;
 import net.sci.image.Image;
 import net.sci.image.io.TiffImageReader;
 

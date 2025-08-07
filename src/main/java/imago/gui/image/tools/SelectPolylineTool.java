@@ -12,7 +12,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.geom2d.polygon.Polyline2D;
+import net.sci.geom.polygon2d.Polyline2D;
 
 /**
  * Select a polyline region of interest on a planar viewer.

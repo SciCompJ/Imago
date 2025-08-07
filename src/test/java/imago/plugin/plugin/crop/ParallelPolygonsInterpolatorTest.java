@@ -8,9 +8,9 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.geom2d.polygon.LinearRing2D;
-import net.sci.geom.geom2d.polygon.Polyline2D;
-import net.sci.geom.geom2d.polygon.Polyline2D.Vertex;
+import net.sci.geom.polygon2d.LinearRing2D;
+import net.sci.geom.polygon2d.Polyline2D;
+import net.sci.geom.polygon2d.Polyline2D.Vertex;
 
 /**
  * @author dlegland

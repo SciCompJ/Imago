@@ -12,9 +12,9 @@ import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.MultiPoint2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.curve.Ellipse2D;
-import net.sci.geom.geom2d.polygon.Box2D;
-import net.sci.geom.geom2d.polygon.Polygon2D;
-import net.sci.geom.geom2d.polygon.Polyline2D;
+import net.sci.geom.polygon2d.Box2D;
+import net.sci.geom.polygon2d.Polygon2D;
+import net.sci.geom.polygon2d.Polyline2D;
 
 /**
  * 

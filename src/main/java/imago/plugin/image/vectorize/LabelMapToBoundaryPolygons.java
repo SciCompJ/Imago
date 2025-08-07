@@ -14,7 +14,7 @@ import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
 import net.sci.array.numeric.IntArray;
 import net.sci.array.numeric.IntArray2D;
-import net.sci.geom.geom2d.polygon.Polygon2D;
+import net.sci.geom.polygon2d.Polygon2D;
 import net.sci.image.Image;
 import net.sci.image.vectorize.LabelMapBoundaryPolygons;
 

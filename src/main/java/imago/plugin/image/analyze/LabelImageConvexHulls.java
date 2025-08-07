@@ -15,7 +15,7 @@ import java.util.Map;
 
 import net.sci.array.Array;
 import net.sci.array.numeric.IntArray;
-import net.sci.geom.geom2d.polygon.Polygon2D;
+import net.sci.geom.polygon2d.Polygon2D;
 import net.sci.image.Image;
 import net.sci.image.analyze.region2d.ConvexHull;
 import net.sci.table.Table;

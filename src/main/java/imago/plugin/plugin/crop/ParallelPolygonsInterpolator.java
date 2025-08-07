@@ -8,9 +8,9 @@ import java.util.Collections;
 
 import net.sci.array.numeric.Float64Array2D;
 import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.geom2d.polygon.LinearRing2D;
-import net.sci.geom.geom2d.polygon.Polyline2D.Vertex;
 import net.sci.geom.geom3d.Point3D;
+import net.sci.geom.polygon2d.LinearRing2D;
+import net.sci.geom.polygon2d.Polyline2D.Vertex;
 
 /**
  * Computes an intermediate polygons from two polygons embedded into parallel

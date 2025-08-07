@@ -24,7 +24,7 @@ import imago.app.scene.Node;
 import imago.app.scene.ShapeNode;
 import imago.app.shape.Style;
 import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.geom2d.polygon.LinearRing2D;
+import net.sci.geom.polygon2d.LinearRing2D;
 
 /**
  * @author dlegland

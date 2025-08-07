@@ -16,7 +16,7 @@ import com.google.gson.stream.JsonReader;
 
 import imago.app.scene.io.JsonSceneReader;
 import net.sci.geom.Geometry;
-import net.sci.geom.geom2d.polygon.LinearRing2D;
+import net.sci.geom.polygon2d.LinearRing2D;
 
 /**
  * Reads Crop3D data from a file in JSON format.

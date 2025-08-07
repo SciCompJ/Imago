@@ -43,8 +43,8 @@ import imago.gui.image.StackSliceViewer;
 import imago.gui.image.tools.SelectPolygonTool;
 import imago.plugin.image.file.ImageFileFilters;
 import net.sci.geom.Geometry;
-import net.sci.geom.geom2d.polygon.LineString2D;
-import net.sci.geom.geom2d.polygon.Polyline2D;
+import net.sci.geom.polygon2d.LineString2D;
+import net.sci.geom.polygon2d.Polyline2D;
 import net.sci.image.Image;
 import net.sci.image.io.TiffImageReader;
 

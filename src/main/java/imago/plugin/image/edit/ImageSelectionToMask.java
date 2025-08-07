@@ -12,7 +12,7 @@ import imago.gui.image.PlanarImageViewer;
 import net.sci.array.Array;
 import net.sci.array.binary.BinaryArray2D;
 import net.sci.geom.geom2d.Geometry2D;
-import net.sci.geom.geom2d.polygon.Polygon2D;
+import net.sci.geom.polygon2d.Polygon2D;
 import net.sci.image.Image;
 
 /**
