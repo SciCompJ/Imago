@@ -495,7 +495,8 @@ public class GuiBuilder
 		JMenu binaryMenu = new JMenu("Binary Images");
         addPlugin(binaryMenu, imago.plugin.image.binary.BinaryImageConnectedComponentsLabeling.class, "Connected Components Labeling");
         binaryMenu.addSeparator();
-        addPlugin(binaryMenu, imago.plugin.image.binary.BinaryImageChamferDistanceMap.class, "Distance Map", hasBinaryImage);
+        addPlugin(binaryMenu, imago.plugin.image.binary.BinaryImageEuclideanDistanceMap.class, "Distance Map");
+        addPlugin(binaryMenu, imago.plugin.image.binary.BinaryImageChamferDistanceMap.class, "Chamfer Distance Map");
         addPlugin(binaryMenu, imago.plugin.image.binary.BinaryImage3DDepthMap.class, "3D Binary Image Depth Map");
         addPlugin(binaryMenu, imago.plugin.image.binary.ImageGeodesicDistanceMap.class, "Geodesic Distance Map...");
         binaryMenu.addSeparator();
