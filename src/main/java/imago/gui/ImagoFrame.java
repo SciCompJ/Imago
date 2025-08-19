@@ -8,12 +8,8 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
-import imago.gui.image.ImageFrame;
-import imago.gui.table.TableFrame;
 import net.sci.algo.AlgoEvent;
 import net.sci.algo.AlgoListener;
-import net.sci.image.Image;
-import net.sci.table.Table;
 
 /**
  * The superclass of all Imago frames. 
@@ -127,38 +123,6 @@ public abstract class ImagoFrame implements AlgoListener
 	public void showErrorDialog(String message, String title) 
 	{
         ImagoGui.showErrorDialog(this, message, title);
-	}
-	
-	/**
-     * Creates a new frame for displaying image, using this frame as basis for
-     * placement.
-     * 
-     * @deprecated replaced by {@link imago.gui.image.ImageFrame#create(Image, ImagoFrame)}
-     * 
-     * @param image
-     *            the image to display.
-     * @return a new instance of ImageFrame.
-     */
-    @Deprecated
-	public ImageFrame createImageFrame(Image image)
-	{
-	    return ImageFrame.create(image, this);
-	}
-	
-	/**
-     * Creates a new frame for displaying table, using this frame as basis for
-     * placement.
-     * 
-     * @deprecated replaced by {@link imago.gui.table.TableFrame#create(Table, ImagoFrame)}
-     * 
-     * @param table
-     *            the table to display.
-     * @return a new instance of ImageFrame.
-     */
-	@Deprecated
-	public TableFrame createTableFrame(Table table)
-	{
-        return TableFrame.create(table, this);
 	}
 	
 

@@ -46,7 +46,7 @@ import net.sci.register.image.TransformedImage2D;
  * 
  * @author dlegland
  *
- * @deprecated (?) replaced by ImageRotatedCr�p 
+ * @deprecated (?) replaced by ImageRotatedCrop 
  */
 @Deprecated
 public class ImageRotatedCrop2D implements FramePlugin
@@ -264,7 +264,6 @@ public class ImageRotatedCrop2D implements FramePlugin
             this.setLocation(posX, posY);
         }
         
-        
         public void updateCrop()
         {
             int[] dims = new int[] {boxSizeX, boxSizeY};
@@ -276,7 +275,7 @@ public class ImageRotatedCrop2D implements FramePlugin
             // retrieve frame for displaying result
             if (this.resultFrame == null)
             {
-                this.resultFrame = this.parentFrame.createImageFrame(resultImage);
+                this.resultFrame = ImageFrame.create(resultImage, parentFrame);
             }
             
             // update display frame
