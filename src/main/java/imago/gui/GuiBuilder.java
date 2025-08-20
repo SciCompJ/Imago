@@ -268,8 +268,8 @@ public class GuiBuilder
         
         // First general info and calibration about images
         addPlugin(menu, imago.plugin.image.edit.RenameImage.class, "Rename...", hasImage);
-        addPlugin(menu, imago.plugin.image.edit.PrintImageInfos.class, "Print Image Info", hasImage);
         addPlugin(menu, imago.plugin.image.edit.ImageSetScale.class, "Image Scale...", hasImage);
+        addPlugin(menu, imago.plugin.image.edit.PrintImageInfos.class, "Print Image Info", hasImage);
         addPlugin(menu, imago.plugin.image.edit.PrintImageTiffTags.class, "Show TIFF Tags", hasImage);
 
         // Management of image representation
@@ -306,10 +306,11 @@ public class GuiBuilder
         menu.addSeparator();
         JMenu convertImageTypeMenu = new JMenu("Change Image Type");
         convertImageTypeMenu.setEnabled(hasImage);
-        addPlugin(convertImageTypeMenu, imago.plugin.image.convert.ConvertImageToBinary.class, "Binary");
+        addPlugin(convertImageTypeMenu, imago.plugin.image.edit.SetImageType.class, "Set Image Display Type...", hasImage);
+        addPlugin(convertImageTypeMenu, imago.plugin.image.edit.SetImageTypeToLabel.class, "Set Image Type to Label Image", hasScalarImage);
         convertImageTypeMenu.addSeparator();
-        addPlugin(convertImageTypeMenu, imago.plugin.image.convert.ConvertImageToLabel.class, "Label");
-        addPlugin(convertImageTypeMenu, imago.plugin.image.edit.SetImageTypeToLabel.class, "Set to Label Image", hasScalarImage);
+        addPlugin(convertImageTypeMenu, imago.plugin.image.convert.ConvertImageToBinary.class, "Convert to Binary");
+        addPlugin(convertImageTypeMenu, imago.plugin.image.convert.ConvertImageToLabel.class, "Convert to Label");
         menu.add(convertImageTypeMenu);
         
         JMenu convertDataTypeMenu = new JMenu("Convert Data Type");
