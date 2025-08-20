@@ -4,8 +4,6 @@
 package imago.app;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import net.sci.geom.Geometry;
 import net.sci.image.Image;
@@ -67,260 +65,42 @@ public class ImagoApp
 	}
 
 	
-
-    // =============================================================
-    // Management of image handles
-    
-    /**
-     * Creates a new handle for an image, adds it to the workspace, and returns
-     * the created handle.
-     * 
-     * @deprecated replaced by ImageHandle.create(ImagoApp, Image)
-     * 
-     * @param image
-     *            the image instance.
-     * @return the handle to manage the image.
-     */
-	@Deprecated
-    public ImageHandle createImageHandle(Image image)
-    {
-        return createImageHandle(image, null);
-    }
-
-    /**
-     * Creates a new handle for an image, adds it to the workspace, and returns
-     * the created handle.
-     * 
-     * @deprecated replaced by ImageHandle.create(ImagoApp, Image, ImageHandle)
-     * 
-     * @param image
-     *            the image instance.
-     * @param parent
-     *            a parent handle, used to initialize handles fields.
-     * @return the handle to manage the image.
-     */
-    @Deprecated
-    public ImageHandle createImageHandle(Image image, ImageHandle parent)
-    {
-        String tag = workspace.findNextFreeTag("img");
-        String name = createHandleName(image.getName());
-        ImageHandle handle = new ImageHandle(image, name, tag);
-        if (parent != null)
-        {
-        	handle.copyDisplaySettings(parent);
-        }
-        workspace.addHandle(handle);
-        return handle;
-    }
-
-    @Deprecated
-	public int imageHandleNumber()
-	{
-		return getImageHandles().size();
-	}
-	
-    /**
-     * @deprecated replaced by ImageHandle.getAll(ImagoApp)
-     */
-    @Deprecated
-	public Collection<ImageHandle> getImageHandles()
-	{
-	    ArrayList<ImageHandle> res = new ArrayList<ImageHandle>();
-	    for (ObjectHandle handle : workspace.getHandles())
-	    {
-	        if (handle instanceof ImageHandle)
-	        {
-	            res.add((ImageHandle) handle);
-	        }
-	    }
-	    return res;
-	}
-	
-
-	/**
-	 * Get the names of all open image documents.
-	 * 
-     * @deprecated replaced by ImageHandle.getAllNames(ImagoApp)
-     * 
-	 * @return the list of names of documents containing images.
-	 */
-    @Deprecated
-	public Collection<String> getImageHandleNames()
-	{
-        ArrayList<String> res = new ArrayList<String>();
-        for (ObjectHandle handle : workspace.getHandles())
-        {
-            if (handle instanceof ImageHandle)
-            {
-                res.add(handle.getName());
-            }
-        }
-        return res;
-	}
-	
-    /**
-     * @deprecated replaced by ImageHandle.findFromName(ImagoApp, String)
-     */
-    @Deprecated
-	public ImageHandle getImageHandleFromName(String handleName)
-	{
-		for (ImageHandle handle : getImageHandles())
-		{
-			if (handle.getName().equals(handleName))
-				return handle;
-		}
-		
-		throw new IllegalArgumentException("App does not contain any image handle with name: " + handleName);
-	}
-
-
-	// =============================================================
-    // Management of Table handles
-    
-    /**
-     * Creates a new handle for a table, adds it to the workspace, and returns
-     * the created handle.
-     * 
-     * @param table
-     *            the table instance.
-     * @return the handle to manage the table.
-     */
-    @Deprecated
-    public TableHandle createTableHandle(Table table)
-    {
-        return createTableHandle(table, null);
-    }
-    
-    /**
-     * Creates a new handle for a table, adds it to the workspace, and returns
-     * the created handle.
-     * 
-     * @param table
-     *            the table instance.
-     * @param parent
-     *            a parent handle, used to initialize handles fields.
-     * @return the handle to manage the image.
-     */
-    @Deprecated
-    public TableHandle createTableHandle(Table table, TableHandle parent)
-    {
-        String tag = workspace.findNextFreeTag("tab");
-        String name = createHandleName(table.getName());
-        TableHandle handle = new TableHandle(table, name, tag);
-        workspace.addHandle(handle);
-        return handle;
-    }
-
-    @Deprecated
-	public Collection<TableHandle> getTableHandles()
-	{
-	    ArrayList<TableHandle> res = new ArrayList<TableHandle>();
-        for (ObjectHandle handle : workspace.getHandles())
-	    {
-	        if (handle instanceof TableHandle)
-	        {
-	            res.add((TableHandle) handle);
-	        }
-	    }
-	    return res;
-	}
-	
-	
-    // =============================================================
-    // Management of geometry handles
-
-    /**
-     * Creates a new handle for a geometry, adds it to the workspace, and returns
-     * the created handle.
-     * 
-     * @deprecated replaced by GeometryHandle.create(ImagoApp, Geometry)
-     * @param geom
-     *            the geometry instance.
-     * @return the handle to manage the table.
-     */
-    @Deprecated
-    public GeometryHandle createGeometryHandle(Geometry geom)
-    {
-        String baseTag = GeometryHandle.createTag(geom);
-        String name = baseTag;
-        String tag = workspace.findNextFreeTag(baseTag);
-        GeometryHandle handle = new GeometryHandle(geom, name, tag);
-        workspace.addHandle(handle);
-        return handle;
-    }
-    
-    /**
-     * @deprecated replaced by GeometryHandle.getAll(ImagoApp)
-     * 
-     * @return
-     */
-    @Deprecated
-    public Collection<GeometryHandle> getGeometryHandles()
-    {
-        ArrayList<GeometryHandle> res = new ArrayList<GeometryHandle>();
-        for (ObjectHandle handle : workspace.getHandles())
-        {
-            if (handle instanceof GeometryHandle)
-            {
-                res.add((GeometryHandle) handle);
-            }
-        }
-        return res;
-    }
-    
-	
     // =============================================================
     // Global management of handles
 
     /**
-     * Creates a new handle to the input argument, creates the appropriate tag,
-     * and adds it to the list of handles in the workspace.
+     * Creates a new handle for the input item, by creating the appropriate name
+     * and tag, and adds the handle to the list of handles in the workspace.
      * <p>
      * 
-     * This methods tries to create the appropriate sub-class of ObjectHAndle,
-     * depending on the class of the input object. For example if
-     * <code>object</code> is an instance of the <code>Image</code> class, an
-     * instance of <code>ImageHandle</code> will be created.
+     * This methods tries to create the appropriate sub-class of
+     * {@code ObjectHandle}, depending on the class of the input item. For
+     * example if {@code item} is an instance of the {@code Image} class, an
+     * instance of {@code ImageHandle} will be created.
      * 
-     * @param object
-     *            the object to add.
+     * @param item
+     *            the item to add.
      * @param name
      *            the name associated to this object.
      * @param baseTag
      *            the string pattern used to build handle tag.
      * @return the handle created for this object.
      */
-    public ObjectHandle createHandle(Object object, String name, String baseTag)
+    public ObjectHandle createHandle(Object item, String name, String baseTag)
     {
-        if (name == null)
-        {
-            name = "NoName";
-        }
-        
-        ObjectHandle handle;
+        // setup indexation variables
+        name = createHandleName(name != null ? name : "NoName");
         String tag = workspace.findNextFreeTag(baseTag);
-        name = createHandleName(name);
         
-        if (object instanceof Image)
+        // create handle based on class of item
+        ObjectHandle handle = switch(item)
         {
-            handle = new ImageHandle((Image) object, name, tag);
-        }
-        else if (object instanceof Table)
-        {
-            handle = new TableHandle((Table) object, name, tag);
-        }
-        else if (object instanceof Geometry)
-        {
-            handle = new GeometryHandle((Geometry) object, name, tag);
-        }
-        else if (object instanceof String)
-        {
-            handle = new StringHandle((String) object, name, tag);
-        }
-        else
-        {
-            handle  = new GenericHandle(object, name, tag);
-        }
+            case Image image -> new ImageHandle(image, name, tag);
+            case Table table -> new TableHandle(table, name, tag);
+            case Geometry geom -> new GeometryHandle(geom, name, tag);
+            case String string -> new StringHandle(string, name, tag);
+            default -> new GenericHandle(item, name, tag);
+        };
         
         workspace.addHandle(handle);
         
