@@ -11,6 +11,8 @@ import net.sci.geom.MultiPoint;
 import net.sci.geom.Point;
 import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.StraightLine2D;
+import net.sci.geom.geom2d.curve.Circle2D;
+import net.sci.geom.geom2d.curve.Ellipse2D;
 import net.sci.geom.geom3d.LineSegment3D;
 import net.sci.geom.geom3d.Polygon3D;
 import net.sci.geom.geom3d.StraightLine3D;
@@ -136,7 +138,9 @@ public class GeometryHandle extends ObjectHandle
         if (geom instanceof Point || geom instanceof MultiPoint) return "pnt";
         if (geom instanceof LineSegment2D || geom instanceof StraightLine2D) return "line";
         if (geom instanceof LineSegment3D || geom instanceof StraightLine3D) return "line";
-        return "geom";    
+        if (geom instanceof Circle2D) return "disk";
+        if (geom instanceof Ellipse2D) return "elli";
+        return "geom";
     }
     
     

@@ -3,13 +3,16 @@
  */
 package imago.plugin.image.analyze;
 
+import imago.app.GeometryHandle;
 import imago.app.ImageHandle;
+import imago.app.ImagoApp;
 import imago.app.ObjectHandle;
 import imago.app.shape.Shape;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.image.ImageFrame;
+import imago.gui.shape.ShapeManager;
 import imago.gui.table.TableFrame;
 import imago.gui.FramePlugin;
 
@@ -19,6 +22,7 @@ import net.sci.array.Array;
 import net.sci.array.numeric.IntArray2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.curve.Ellipse2D;
+import net.sci.geom.geom2d.curve.MultiCurve2D;
 import net.sci.image.Calibration;
 import net.sci.image.Image;
 import net.sci.image.analyze.RegionAnalysis2D;
@@ -79,6 +83,7 @@ public class LabelImageEquivalentEllipses implements FramePlugin
         String[] imageNameArray = imageNames.toArray(new String[]{});
         String firstImageName = doc.getName();
         dlg.addChoice("Image to Overlay ", imageNameArray, firstImageName);
+        dlg.addCheckBox("Add to Shape Manager", true);
         dlg.showDialog();
         
         if (dlg.wasCanceled()) 
@@ -91,6 +96,7 @@ public class LabelImageEquivalentEllipses implements FramePlugin
         boolean showTable = dlg.getNextBoolean();
         boolean overlay = dlg.getNextBoolean();
         String imageToOverlay = dlg.getNextChoice();
+        boolean addToShapeManager = dlg.getNextBoolean();
         
         // Extract ellipses
         IntArray2D<?> array2d = (IntArray2D<?>) array;
@@ -136,6 +142,23 @@ public class LabelImageEquivalentEllipses implements FramePlugin
                 handle.addShape(new Shape(ellipses[i]));
             }
             handle.notifyImageHandleChange();
+        }
+        
+        if (addToShapeManager)
+        {
+            MultiCurve2D curves = new MultiCurve2D(ellipses);
+            ImagoApp app = gui.getAppli();
+            GeometryHandle geomHandle = GeometryHandle.create(app, curves);
+            
+            // opens a dialog to choose name
+            String name = geomHandle.getName();
+            name = ImagoGui.showInputDialog(frame, "Name of new geometry:", "Choose Geometry Name", name);
+            geomHandle.setName(name);
+            
+            // ensure ShapeManager is visible
+            ShapeManager manager = ShapeManager.getInstance(frame.getGui());
+            manager.repaint();
+            manager.setVisible(true);
         }
     }
 }

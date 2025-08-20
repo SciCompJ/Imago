@@ -25,7 +25,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
 
 import imago.app.GeometryHandle;
+import imago.app.ImageHandle;
 import imago.app.ImagoApp;
+import imago.app.shape.Shape;
+import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import net.sci.geom.geom2d.Geometry2D;
@@ -120,6 +123,7 @@ public class ShapeManager extends ImagoFrame
         JMenu editMenu = new JMenu("Edit");
         createMenuItem(editMenu, "Rename...", this::onRename);
         createMenuItem(editMenu, "Compute Bounds", this::onComputeBounds);
+        createMenuItem(editMenu, "Copy to Image Shapes", this::onCopyToImageShapes);
         editMenu.addSeparator();
         createMenuItem(editMenu, "Remove", this::onRemove);
         menuBar.add(editMenu);
@@ -231,6 +235,33 @@ public class ShapeManager extends ImagoFrame
         handle.setName(newName);
         
         updateInfoTable();
+    }
+    
+    private void onCopyToImageShapes(ActionEvent evt)
+    {
+        ImagoApp appli = this.gui.getAppli();
+        
+        GenericDialog dlg = new GenericDialog(this, "Move To Image");
+        String[] imageNames = ImageHandle.getAllNames(appli).toArray(new String[]{});
+        dlg.addChoice("Image to Update", imageNames, imageNames[0]);
+        dlg.showDialog();
+        
+        if (dlg.wasCanceled()) 
+        {
+            return;
+        }
+        
+        // Parse dialog options
+        String imageName = dlg.getNextChoice();
+        ImageHandle imageHandle = ImageHandle.findFromName(appli, imageName);
+        
+        for (GeometryHandle handle : getSelectedHandles())
+        {
+            Shape shape = new Shape(handle.getGeometry());
+            imageHandle.addShape(shape);
+        }
+        
+        imageHandle.notifyImageHandleChange(ImageHandle.Event.SHAPES_MASK | ImageHandle.Event.CHANGE_MASK);
     }
     
     private void onRemove(ActionEvent evt)
