@@ -26,11 +26,13 @@ import imago.gui.image.tools.DisplayCurrentValueTool;
 import imago.gui.panels.StatusBar;
 import imago.util.imagej.ImagejRoi;
 import imago.util.imagej.ImagejRoiDecoder;
+import net.sci.algo.Algo;
 import net.sci.algo.AlgoEvent;
 import net.sci.algo.AlgoListener;
 import net.sci.array.ArrayOperator;
 import net.sci.image.Image;
 import net.sci.image.ImageArrayOperator;
+import net.sci.image.ImageOperator;
 import net.sci.image.io.tiff.ImagejMetadata;
 import net.sci.util.MathUtils;
 
@@ -316,8 +318,9 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
      * <li>Display elapsed time in status bar</li>
      * </ol>
      * 
-     * @see net.sci.algo.AlgoListener
+     * @see #runImageOperator(String, ImageOperator, Image)
      * @see #showElapsedTime(String, double, Image)
+     * @see net.sci.algo.AlgoListener
      * 
      * @param opName
      *            the name of the operator to run. Used to populate the status
@@ -390,6 +393,61 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         return runOperator(opName, op, image);
     }
     
+    /**
+     * Utility methods that runs an ImageOperator on an image and return the
+     * result image, by managing the algorithm events and displaying elapsed
+     * time at the end.
+     * 
+     * Performs the following operations:
+     * <ol>
+     * <li>(optional) Add the frame as algorithm listener to the operator, in order to
+     * monitor the process</li>
+     * <li>Run the operator on the input image, generating a new image</li>
+     * <li>Reset progress monitoring</li>
+     * <li>Display elapsed time in status bar</li>
+     * </ol>
+     * 
+     * @see net.sci.algo.AlgoListener
+     * @see #showElapsedTime(String, double, Image)
+     * 
+     * @param op
+     *            the image operator to run.
+     * @param image
+     *            the image containing the data array to process
+     * @return a new Image instance encapsulating the result of array processing
+     */
+    public Image runImageOperator(String opName, ImageOperator op, Image image)
+    {
+        // reset status bar
+        this.getStatusBar().setCurrentStepLabel("Run: " + opName);
+        this.getStatusBar().setProgressBarPercent(0);
+        
+        // initialize listener and timer
+        if (op instanceof Algo)
+        {
+            ((Algo) op).addAlgoListener(this);
+        }
+        long t0 = System.nanoTime();
+        
+        // run process, switching to the best appropriate method depending on
+        // the class of the operator
+        Image result = op.process(image);
+        long t1 = System.nanoTime();
+        
+        // cleanup listener and status bar
+        if (op instanceof Algo)
+        {
+            ((Algo) op).removeAlgoListener(this);
+        }
+        this.getStatusBar().setProgressBarPercent(0);
+        
+        // display elapsed time
+        showElapsedTime(opName, (t1 - t0) / 1_000_000.0, image);
+        
+        return result;
+    }
+    
+
     /**
      * Display elapsed time, converted into seconds, and computes the number of
      * processed elements per second. Also returns the created message.
