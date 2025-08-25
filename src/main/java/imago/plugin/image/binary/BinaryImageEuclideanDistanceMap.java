@@ -10,9 +10,7 @@ import imago.gui.image.ImageFrame;
 import net.sci.array.Array;
 import net.sci.array.binary.BinaryArray;
 import net.sci.image.Image;
-import net.sci.image.binary.distmap.DistanceTransform;
-import net.sci.image.binary.distmap.SaitoToriwakiDistanceTransform2D;
-import net.sci.image.binary.distmap.SaitoToriwakiDistanceTransform3D;
+import net.sci.image.binary.distmap.SaitoToriwakiDistanceTransform;
 
 /**
  * Distance map to nearest background pixel/voxel, using Euclidean distance
@@ -52,15 +50,10 @@ public class BinaryImageEuclideanDistanceMap implements FramePlugin
         }
 
         // parse dialog results
-        DistanceTransform op = switch (nd)
-        {
-            case 2 -> new SaitoToriwakiDistanceTransform2D();
-            case 3 -> new SaitoToriwakiDistanceTransform3D();
-            default -> throw new RuntimeException("Dimension must be either 2 or 3.");
-        };
+        SaitoToriwakiDistanceTransform op = new SaitoToriwakiDistanceTransform();
 
         // Compute distance map
-        Image resultImage = imageFrame.runOperator("Distance Transform", op, image);
+        Image resultImage = imageFrame.runImageOperator("Distance Transform", op, image);
         resultImage.setName(image.getName() + "-dist");
 
         // add the image document to GUI
