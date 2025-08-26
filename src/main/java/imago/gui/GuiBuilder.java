@@ -292,6 +292,8 @@ public class GuiBuilder
         addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.BLUE), "Blue");
         addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.FIRE), "Fire");
         addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.GLASBEY), "Glasbey");
+        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.GLASBEY_DARK), "Glasbey (Dark)");
+        addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.GLASBEY_BRIGHT), "Glasbey (Bright)");
         addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.HSV), "HSV");
         addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.BLUE_WHITE_RED), "Blue-White-Red");
         colormapMenu.addSeparator();
