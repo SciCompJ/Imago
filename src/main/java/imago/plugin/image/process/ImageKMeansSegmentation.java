@@ -3,14 +3,11 @@
  */
 package imago.plugin.image.process;
 
-import imago.app.ImageHandle;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
-import net.sci.array.Array;
 import net.sci.image.Image;
-import net.sci.image.ImageType;
 import net.sci.image.segmentation.KMeansSegmentation;
 
 
@@ -34,8 +31,8 @@ public class ImageKMeansSegmentation implements FramePlugin
 	public void run(ImagoFrame frame, String args) 
 	{
 		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-		Image image = doc.getImage();
+	    ImageFrame imageFrame = (ImageFrame) frame;
+		Image image = imageFrame.getImageHandle().getImage();
 
 		// Creates generic dialog
         GenericDialog gd = new GenericDialog(frame, "KMeans");
@@ -51,11 +48,10 @@ public class ImageKMeansSegmentation implements FramePlugin
         
         // compute k-means
         KMeansSegmentation algo = new KMeansSegmentation(nc);
-        Array<?> labelMap = algo.process(image.getData());
         
         // create result image
-		Image resultImage = new Image(labelMap, ImageType.LABEL);
-		resultImage.setCalibration(image.getCalibration());
+        Image resultImage = imageFrame.runImageOperator("k-means segmentation", algo, image);
+        resultImage.setName(image.getName() + "-kmeans" + nc);
 				
 		// add the image document to GUI
 		ImageFrame.create(resultImage, frame);
