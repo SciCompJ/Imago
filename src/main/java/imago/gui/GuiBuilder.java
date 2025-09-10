@@ -538,7 +538,7 @@ public class GuiBuilder
         addPlugin(menu, imago.plugin.image.process.ImageBivariateHistogram.class, "Bivariate Histogram");
 		menu.addSeparator();
         addPlugin(menu, imago.plugin.image.analyze.ImageLineProfile.class, "Line Profile", hasImage);
-        menu.addSeparator();
+        addPlugin(menu, imago.plugin.image.analyze.ImageAnalyzeWithinROI.class, "Intensity within ROI", hasImage);
         addPlugin(menu, imago.plugin.image.analyze.ImagePlotChannels.class, "Channel Profile", hasImage);
 
         menu.addSeparator();
