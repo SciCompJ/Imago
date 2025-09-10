@@ -652,6 +652,7 @@ public class GuiBuilder
         addPlugin(editMenu, imago.plugin.table.edit.TableSelectColumns.class, "Select Columns...");
         addPlugin(editMenu, imago.plugin.table.edit.TableKeepNumericColumns.class, "Keep Numeric Columns");
         addPlugin(editMenu, imago.plugin.table.edit.ConcatenateTableColumns.class, "Concatenate Columns...");
+        addPlugin(editMenu, imago.plugin.table.edit.TableParseGroupFromRowNames.class, "Parse Group From Row Names...");
         editMenu.addSeparator();
         addPlugin(editMenu, imago.plugin.table.edit.TableFilterRows.class, "Filter/Select Rows...");
         addPlugin(editMenu, imago.plugin.table.edit.TableSortRows.class, "Sort Rows...");
