@@ -18,6 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 import imago.app.ImagoApp;
 import imago.app.TableHandle;
@@ -134,6 +136,9 @@ public class TableFrame extends ImagoFrame
      */
     Table table;
 
+    JTable jTable;
+    JTable rowTable;
+    
     
     // ===================================================================
     // Constructor
@@ -158,7 +163,6 @@ public class TableFrame extends ImagoFrame
         this.jFrame.pack();
         this.setVisible(true);
  
-        
         jFrame.doLayout();
         updateTitle();
         
@@ -183,23 +187,103 @@ public class TableFrame extends ImagoFrame
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(Color.GREEN);
         
-        JTable jtable = createJTable();
-        jtable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        this.jTable = createJTable(table);
+        jTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         
         //add the table to the frame
-        JScrollPane scrollPane = new JScrollPane(jtable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane scrollPane = new JScrollPane(this.jTable, 
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         mainPanel.add(scrollPane, BorderLayout.CENTER);
         
         // decorate the scroll panel with row index
         // (if row names are specified, they are included as an additional column)
-        JTable rowTable = new RowNumberTable(jtable);
+        rowTable = new RowNumberTable(this.jTable);
         scrollPane.setRowHeaderView(rowTable);
         scrollPane.setCorner(JScrollPane.UPPER_LEFT_CORNER, rowTable.getTableHeader());
         
         this.jFrame.setContentPane(mainPanel);
     }
     
-    private JTable createJTable()
+    private static final JTable createJTable(Table table)
+    {
+        // convert table to TableModel
+        TableModel model = createModel(table);
+        JTable jtable = new JTable(model);
+        
+        // some setup
+        DefaultTableCellRenderer renderer = (DefaultTableCellRenderer) jtable.getTableHeader().getDefaultRenderer();
+        renderer.setHorizontalAlignment(JLabel.CENTER);
+        jtable.getTableHeader().setPreferredSize(new Dimension(jtable.getColumnModel().getTotalColumnWidth(), 32));
+        
+        return jtable;
+    }
+    
+    private void putFrameMiddleScreen()
+    {
+        // set up frame size depending on screen size
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int width = Math.min(800, screenSize.width - 100);
+        int height = Math.min(700, screenSize.width - 100);
+        Dimension frameSize = new Dimension(width, height);
+        this.jFrame.setSize(frameSize);
+
+        // set up frame position depending on frame size
+        int posX = (screenSize.width - width) / 4;
+        int posY = (screenSize.height - height) / 4;
+        this.jFrame.setLocation(posX, posY);
+    }
+    
+
+    // ===================================================================
+    // General methods
+    
+    public void updateTitle()
+    {
+        // table name
+        String name = this.handle.getName();
+        if (name == null || name.isEmpty()) 
+        {
+            name = "No Name";
+        }
+        
+        String dimString = "(unknown size)";
+        int dim[] = this.table.size();
+        dimString = dim[0] + "x" + dim[1];
+        
+        String titleString = name + " - " + dimString;
+        this.setTitle(titleString);
+    }
+    
+    /**
+     * Refreshes the display of the table, by updating the inner table model
+     * according to the changes in the {@code Table} class.
+     */
+    public void updateTableDisplay()
+    {
+        // refresh table model
+        TableModel model = createModel(table);
+        this.jTable.setModel(model);
+        
+        this.jTable.repaint();
+        this.rowTable.repaint();
+    }
+    
+    public TableHandle getTableHandle()
+    {
+        return this.handle;
+    }
+    
+    public Table getTable()
+    {
+        return this.table;
+    }
+    
+    
+    // ===================================================================
+    // Utility methods
+
+    private static final TableModel createModel(Table table)
     {
         // table size
         int nRows = table.rowCount();
@@ -218,9 +302,10 @@ public class TableFrame extends ImagoFrame
 
         // If row names are specified, add another column as first column
         int columnOffset = hasValidRowAxis ? 1 : 0;
+        int nCols2 = nCols + columnOffset;
         
         // Ensure the table has valid column names
-        String[] colNames = new String[nCols + columnOffset];
+        String[] colNames = new String[nCols2];
         if (hasValidRowAxis)
         {
             colNames[0] = "Row Names";
@@ -264,63 +349,7 @@ public class TableFrame extends ImagoFrame
             data[iRow] = row;
         };
         
-        // create JTable object
-        JTable jtable = new JTable(data, colNames);
-        
-        // some setup
-        DefaultTableCellRenderer renderer = (DefaultTableCellRenderer) jtable.getTableHeader().getDefaultRenderer();
-        renderer.setHorizontalAlignment(JLabel.CENTER);
-        jtable.getTableHeader().setPreferredSize(new Dimension(jtable.getColumnModel().getTotalColumnWidth(), 32));
-        
-        return jtable;
+        // create model
+        return new DefaultTableModel(data, colNames);
     }
-    
-    private void putFrameMiddleScreen()
-    {
-        // set up frame size depending on screen size
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int width = Math.min(800, screenSize.width - 100);
-        int height = Math.min(700, screenSize.width - 100);
-        Dimension frameSize = new Dimension(width, height);
-        this.jFrame.setSize(frameSize);
-
-        // set up frame position depending on frame size
-        int posX = (screenSize.width - width) / 4;
-        int posY = (screenSize.height - height) / 4;
-        this.jFrame.setLocation(posX, posY);
-    }
-
-    // ===================================================================
-    // General methods
-    
-    public void updateTitle()
-    {
-        // table name
-        String name = this.handle.getName();
-        if (name == null || name.isEmpty()) 
-        {
-            name = "No Name";
-        }
-        
-        String dimString = "(unknown size)";
-        int dim[] = this.table.size();
-        dimString = dim[0] + "x" + dim[1];
-        
-        String titleString = name + " - " + dimString;
-        this.setTitle(titleString);
-    }
-    
-    public TableHandle getTableHandle()
-    {
-        return this.handle;
-    }
-    
-    public Table getTable()
-    {
-        return this.table;
-    }
-    
-    // ===================================================================
-    // Display management methods
-
 }
