@@ -115,9 +115,7 @@ public class SetImageChannelNames implements FramePlugin
         {
             renameButton = createButton("Rename", evt -> onRename());
             importButton = createButton("Import", evt -> onImport());
-//            importButton.setEnabled(false);
             exportButton = createButton("Export", evt -> onExport());
-//            exportButton.setEnabled(false);
             
             okButton = createButton("OK", evt -> onOK());
             cancelButton = createButton("Cancel", evt -> onCancel());
@@ -244,8 +242,6 @@ public class SetImageChannelNames implements FramePlugin
 
         public void onImport()
         {
-            System.out.println("import...");
-            
             // open a dialog to choose a text file
             File file = parentFrame.getGui().chooseFileToOpen(parentFrame,
                     "Read Channel Names", textFileFilter);
@@ -271,9 +267,12 @@ public class SetImageChannelNames implements FramePlugin
                 throw new RuntimeException(ex);
             }
 
+            int nChannels = this.image.getCalibration().getChannelAxis().length();
             int nTokens = tokens.size();
-            if (nTokens != this.image.getCalibration().getChannelAxis().length())
+            if (nTokens != nChannels)
             {
+                String msg = String.format("The number of channels within text file (%d)\nmust match the number of channels within image (%d)", nTokens, nChannels);
+                ImagoGui.showErrorDialog(parentFrame, msg, "Data Import Error");
                 return;
             }
             
@@ -289,8 +288,6 @@ public class SetImageChannelNames implements FramePlugin
 
         public void onExport() 
         {
-            System.out.println("export...");
-            
             // open a dialog to choose a text file
             File file = parentFrame.getGui().chooseFileToSave(parentFrame,
                     "Write Channel Names", "channels.txt", textFileFilter);
