@@ -318,7 +318,7 @@ public class GuiBuilder
         JMenu convertDataTypeMenu = new JMenu("Convert Data Type");
         convertDataTypeMenu.setEnabled(hasImage);
         addPlugin(convertDataTypeMenu, imago.plugin.image.convert.ConvertImageToUInt8.class, "UInt8");
-        addPlugin(convertDataTypeMenu, imago.plugin.image.convert.CreateScaledUInt8View.class, "UInt8 (change dynamic)", hasScalarImage);
+        addPlugin(convertDataTypeMenu, imago.plugin.image.convert.CreateScaledUInt8View.class, "UInt8 (adjust dynamic)", hasScalarImage);
         addPlugin(convertDataTypeMenu, imago.plugin.image.convert.ConvertImageToUInt16.class, "UInt16", hasScalarImage);
         convertDataTypeMenu.addSeparator();
         addPlugin(convertDataTypeMenu, imago.plugin.image.convert.ConvertImageToInt16.class, "Int16", hasScalarImage);
@@ -329,7 +329,12 @@ public class GuiBuilder
         menu.add(convertDataTypeMenu);
         
         // image dimensionality conversion plugins
-        addPlugin(menu, imago.plugin.image.convert.ConvertStackToMovie.class, "Convert stack to movie", hasImage3D);
+        JMenu convertDimensionMenu = new JMenu("Convert Dimension(s)");
+        convertDimensionMenu.setEnabled(hasImage);
+        addPlugin(convertDimensionMenu, imago.plugin.image.convert.ConvertStackToMovie.class, "Convert Image 3D to movie", hasImage3D);
+        addPlugin(convertDimensionMenu, imago.plugin.image.convert.ConvertScalarImageToVector.class, "Convert Scalar to Vector", hasImage3D);
+        addPlugin(convertDimensionMenu, imago.plugin.image.convert.ConvertVectorImageToScalar.class, "Convert Vector To Scalar", hasVectorImage);
+        menu.add(convertDimensionMenu);
 
         // Color images operators
         menu.addSeparator();
@@ -351,8 +356,6 @@ public class GuiBuilder
         addPlugin(vectorMenu, imago.plugin.image.process.VectorImageAngle.class, "Vector Image Angle");
         addPlugin(vectorMenu, imago.plugin.image.convert.VectorImageConvertToRGB.class, "Convert to RGB", hasVectorImage);
         addPlugin(vectorMenu, imago.plugin.image.convert.CreateVectorImageRGB8View.class, "Create RGB View", hasVectorImage);
-        addPlugin(vectorMenu, imago.plugin.image.convert.ConvertChannelsToDimension.class, "Convert Channels to Dimension", hasVectorImage);
-        addPlugin(vectorMenu, imago.plugin.image.convert.ConvertDimensionToChannels.class, "Convert Dimension to Channels", hasScalarImage);
         addPlugin(vectorMenu, imago.plugin.image.edit.SetImageChannelNames.class, "Set Channel Names...", hasVectorImage || hasColorImage);
         addPlugin(vectorMenu, imago.plugin.image.convert.VectorImageToTable.class, "Convert To Table", hasVectorImage);
         menu.add(vectorMenu);
@@ -393,8 +396,6 @@ public class GuiBuilder
         addPlugin(stackMenu, imago.plugin.image.shape.ImageOrthogonalProjection.class, "Orthogonal Projection...", hasImage3D && hasScalarImage);
         stackMenu.addSeparator();
         addPlugin(stackMenu, imago.plugin.image.process.Image3DSetOrthoSlicesDisplay.class, "Set Orthoslices Display", hasImage3D);
-        stackMenu.addSeparator();
-        addPlugin(stackMenu, imago.plugin.image.convert.ConvertImage3DToVectorImage.class, "Convert Z-Dim To Vector", hasImage3D);
 		menu.add(stackMenu);
 
         menu.addSeparator();

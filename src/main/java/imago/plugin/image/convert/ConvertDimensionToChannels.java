@@ -15,46 +15,55 @@ import net.sci.image.Image;
 
 
 /**
- * @author David Legland
- *
+ * Converts an image containing scalar data into an image with one dimension
+ * less containing vector data, by converting the last dimension into channels.
+ * 
+ * @deprecated replaced by ConvertScalarImageToVector
  */
+@Deprecated
 public class ConvertDimensionToChannels implements FramePlugin
 {
-	public ConvertDimensionToChannels() 
-	{
-		super();
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
-	public void run(ImagoFrame frame, String args)
-	{
-		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-		Image image = doc.getImage();
-		
-		if (image == null)
-		{
-			return;
-		}
-		Array<?> array = image.getData();
-		if (array == null)
-		{
-			return;
-		}
-		if (!(array instanceof ScalarArray))
-		{
+    /**
+     * Default empty constructor.
+     */
+    public ConvertDimensionToChannels()
+    {
+        super();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void run(ImagoFrame frame, String args)
+    {
+        // get current frame
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
+        Image image = doc.getImage();
+
+        if (image == null)
+        {
+            return;
+        }
+        Array<?> array = image.getData();
+        if (array == null)
+        {
+            return;
+        }
+        if (!(array instanceof ScalarArray))
+        {
             ImagoGui.showErrorDialog(frame, "Requires a scalar array", "Data Type Error");
-			return;
-		}
+            return;
+        }
 
         // dimensions of input array
         int nd = array.dimensionality();
         int[] dims = array.size();
-        int nChannels = dims[nd-1];
-        
+        int nChannels = dims[nd - 1];
+
         // create result array
         int[] dims2 = new int[nd - 1];
         System.arraycopy(dims, 0, dims2, 0, nd - 1);
