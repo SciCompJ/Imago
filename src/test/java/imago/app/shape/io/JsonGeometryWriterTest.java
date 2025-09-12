@@ -1,0 +1,45 @@
+/**
+ * 
+ */
+package imago.app.shape.io;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+import org.junit.jupiter.api.Test;
+
+import com.google.gson.stream.JsonWriter;
+
+import net.sci.geom.geom2d.Point2D;
+import net.sci.geom.polygon2d.LinearRing2D;
+
+/**
+ * 
+ */
+class JsonGeometryWriterTest
+{
+    /**
+     * Test method for {@link imago.app.shape.io.JsonGeometryWriter#writeGeometry(net.sci.geom.Geometry)}.
+     * @throws IOException 
+     */
+    @Test
+    final void test_writeGeometry_LinearRing() throws IOException
+    {
+        LinearRing2D ring = LinearRing2D.create();
+        ring.addVertex(new Point2D(10, 10));;
+        ring.addVertex(new Point2D(20, 10));;
+        ring.addVertex(new Point2D(20, 20));;
+        ring.addVertex(new Point2D(10, 20));;
+
+        StringWriter stringWriter = new StringWriter();
+        JsonWriter jsonWriter = new JsonWriter(new PrintWriter(stringWriter));
+        jsonWriter.setIndent("  ");
+        JsonGeometryWriter writer = new JsonGeometryWriter(jsonWriter);
+        
+        writer.writeGeometry(ring);
+        
+        System.out.println(stringWriter.toString());
+    }
+    
+}
