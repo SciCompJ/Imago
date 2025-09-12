@@ -8,6 +8,10 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -22,12 +26,17 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+
+import com.google.gson.stream.JsonWriter;
 
 import imago.app.GeometryHandle;
 import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.app.shape.Shape;
+import imago.app.shape.io.JsonGeometryWriter;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
@@ -75,6 +84,12 @@ public class ShapeManager extends ImagoFrame
         return manager;
     }
     
+    
+    // ===================================================================
+    // Static members
+    
+    private static FileFilter jsonFileFilter = new FileNameExtensionFilter("All JSON files (*.json)", "json");
+    
 
     // ===================================================================
     // Class members 
@@ -117,6 +132,7 @@ public class ShapeManager extends ImagoFrame
         JMenuBar menuBar = new JMenuBar();
         
         JMenu fileMenu = new JMenu("File");
+        createMenuItem(fileMenu, "Save As...", this::onSaveAsJson);
         createMenuItem(fileMenu, "Close", this::onClose);
         menuBar.add(fileMenu);
         
@@ -204,6 +220,41 @@ public class ShapeManager extends ImagoFrame
     // ===================================================================
     // Menu item callbacks
     
+    private void onSaveAsJson(ActionEvent evt)
+    {
+        // open a dialog to read a .json file
+        String defaultFileName = "data.geom.json";
+        File file = this.gui.chooseFileToSave(this,
+                "Read json file containing geometry", defaultFileName, jsonFileFilter);
+        if (file == null)
+        {
+            return;
+        }
+    
+        GeometryHandle handle = getSelectedHandle();
+        
+        try 
+        {
+            FileWriter fileWriter = new FileWriter(file.getAbsoluteFile());
+            // configure JSON
+            JsonWriter jsonWriter = new JsonWriter(new PrintWriter(fileWriter));
+            jsonWriter.setIndent("  ");
+
+            // create a json Geometry writer from the file
+            JsonGeometryWriter writer = new JsonGeometryWriter(jsonWriter);
+            
+            writer.writeGeometry(handle.getGeometry());
+            jsonWriter.close();
+        }
+        catch (IOException ex)
+        {
+            throw new RuntimeException(ex);
+        }
+        
+        updateInfoTable();
+    }
+    
+
     private void onClose(ActionEvent evt)
     {
         this.jFrame.setVisible(false);
