@@ -8,7 +8,9 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -30,16 +32,19 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
+import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 import imago.app.GeometryHandle;
 import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.app.shape.Shape;
+import imago.app.shape.io.JsonGeometryReader;
 import imago.app.shape.io.JsonGeometryWriter;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
+import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
@@ -132,7 +137,11 @@ public class ShapeManager extends ImagoFrame
         JMenuBar menuBar = new JMenuBar();
         
         JMenu fileMenu = new JMenu("File");
-        createMenuItem(fileMenu, "Save As...", this::onSaveAsJson);
+        createMenuItem(fileMenu, "Import Roi List...", this::onImportRoiListFromJson);
+        fileMenu.addSeparator();
+        createMenuItem(fileMenu, "Save Roi List...", this::onSaveRoiListAsJson);
+        createMenuItem(fileMenu, "Save Single Geometry...", this::onSaveGeometryAsJson);
+        fileMenu.addSeparator();
         createMenuItem(fileMenu, "Close", this::onClose);
         menuBar.add(fileMenu);
         
@@ -220,10 +229,127 @@ public class ShapeManager extends ImagoFrame
     // ===================================================================
     // Menu item callbacks
     
-    private void onSaveAsJson(ActionEvent evt)
+    private void onImportRoiListFromJson(ActionEvent evt)
     {
         // open a dialog to read a .json file
-        String defaultFileName = "data.geom.json";
+        File file = this.gui.chooseFileToOpen(this,
+                "Import Roi List", jsonFileFilter);
+        if (file == null)
+        {
+            return;
+        }
+        // Check the chosen file exists
+        if (!file.exists())
+        {
+            return;
+        }
+        
+        ImagoApp app = this.gui.getAppli();
+        
+        try 
+        {
+            FileReader fileReader = new FileReader(file.getAbsoluteFile());
+            // configure JSON
+            JsonReader jsonReader = new JsonReader(new BufferedReader(fileReader));
+            JsonGeometryReader geometryReader = new JsonGeometryReader(jsonReader);
+            
+            jsonReader.beginObject();
+            
+            @SuppressWarnings("unused")
+            String typeKey = jsonReader.nextName();
+            @SuppressWarnings("unused")
+            String type = jsonReader.nextString();
+            
+            @SuppressWarnings("unused")
+            String itemListKey = jsonReader.nextName();
+            jsonReader.beginArray();
+            while(jsonReader.hasNext())
+            {
+                jsonReader.beginObject();
+                @SuppressWarnings("unused")
+                String nameKey = jsonReader.nextName();
+                String name = jsonReader.nextString();
+                
+                jsonReader.nextName();
+                Geometry geom = geometryReader.readGeometry();
+                
+                GeometryHandle handle = GeometryHandle.create(app, geom);
+                handle.setName(name);
+                
+                jsonReader.endObject();
+            }
+            jsonReader.endArray();
+            
+            jsonReader.endObject();
+
+            jsonReader.close();
+        }
+        catch (IOException ex)
+        {
+            throw new RuntimeException(ex);
+        }
+        
+        updateInfoTable();
+
+    }
+    
+    private void onSaveRoiListAsJson(ActionEvent evt)
+    {
+        // open a dialog to read a .json file
+        String defaultFileName = "data.rois";
+        File file = this.gui.chooseFileToSave(this,
+                "Save Roi List", defaultFileName, jsonFileFilter);
+        if (file == null)
+        {
+            return;
+        }
+    
+        try 
+        {
+            FileWriter fileWriter = new FileWriter(file.getAbsoluteFile());
+            // configure JSON
+            JsonWriter jsonWriter = new JsonWriter(new PrintWriter(fileWriter));
+            jsonWriter.setIndent("  ");
+            
+            // write ROI List top-lvel node
+            jsonWriter.beginObject();
+            jsonWriter.name("type");
+            jsonWriter.value("RoiList");
+            jsonWriter.name("items");
+            jsonWriter.beginArray();
+
+            boolean hasSelection = infoTable.getSelectionModel().getSelectedItemsCount() > 0;
+            Collection<GeometryHandle> handles = hasSelection ? getSelectedHandles() : getAllHandles();
+            
+            // create a json Geometry writer from the file
+            JsonGeometryWriter geomWriter = new JsonGeometryWriter(jsonWriter);
+            
+            for (GeometryHandle handle : handles)
+            {
+                jsonWriter.beginObject();
+                jsonWriter.name("name");
+                jsonWriter.value(handle.getName());
+                jsonWriter.name("geometry");
+                geomWriter.writeGeometry(handle.getGeometry());
+                jsonWriter.endObject();
+            }
+            
+            jsonWriter.endArray();
+            jsonWriter.endObject();
+            jsonWriter.close();
+        }
+        catch (IOException ex)
+        {
+            throw new RuntimeException(ex);
+        }
+        
+        updateInfoTable();
+    }
+    
+    private void onSaveGeometryAsJson(ActionEvent evt)
+    {
+        // open a dialog to read a .json file
+        String defaultFileName = "data.geom";
         File file = this.gui.chooseFileToSave(this,
                 "Read json file containing geometry", defaultFileName, jsonFileFilter);
         if (file == null)
@@ -357,6 +483,18 @@ public class ShapeManager extends ImagoFrame
      */
     private void onGeomItemListChanged(ListSelectionEvent evt)
     {
+    }
+    
+    private Collection<GeometryHandle> getAllHandles()
+    {
+        int nGeom = infoTable.getModel().getRowCount();
+        ArrayList<GeometryHandle> handles = new ArrayList<GeometryHandle>(nGeom);
+        for (int index = 0; index < nGeom; index++)
+        {
+            String id = (String) this.tableModel.getValueAt(index, 0);
+            handles.add((GeometryHandle) this.gui.getAppli().getWorkspace().getHandle(id));
+        }
+        return handles;
     }
     
     private GeometryHandle getSelectedHandle()
