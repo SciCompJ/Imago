@@ -6,11 +6,13 @@ package imago.app.shape.io;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Collection;
 import java.util.Locale;
 
 import com.google.gson.stream.JsonWriter;
 
 import net.sci.geom.Geometry;
+import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.polygon2d.Polygon2D;
 import net.sci.geom.polygon2d.Polyline2D;
@@ -54,7 +56,7 @@ public class JsonGeometryWriter
     
     JsonWriter writer;
     
-    String coordinateNumberFormat = "%.3f";
+    String coordinateNumberFormat = "%.1f";
     
     
     // =============================================================
@@ -122,73 +124,73 @@ public class JsonGeometryWriter
      * @throws IOException
      *             if a writing problem occurred.
      */
-    public void writeGeometry(Geometry geom, String numberFormat) throws IOException
+    private void writeGeometry(Geometry geom, String numberFormat) throws IOException
     {
         this.writer.beginObject();
         
         // switch processing depending on geometry type
-        if (geom instanceof Point2D point)
+        switch (geom)
         {
-            writeString("type", "Point2D");
-            writer.name("x").jsonValue(format(numberFormat, point.x()));
-            writer.name("y").jsonValue(format(numberFormat, point.y()));
-        }
-        else if (geom instanceof Polyline2D poly)
-        {
-            writeString("type", poly.isClosed() ? "LinearRing2D" : "LineString2D");
-            writer.name("coords");
-            writer.beginArray();
-            
-            String pattern = "[ " + numberFormat + ", " + numberFormat + " ]";
-            for (Point2D p : poly.vertexPositions())
+            case Point2D point -> 
             {
-                writer.jsonValue(String.format(Locale.ENGLISH, pattern, p.x(), p.y()));
-                // writer.jsonValue("[ " + vertex.getX() + ", " + vertex.getY()
-                // + "]");
+                writer.name("type").value("Point2D");
+                writer.name("coordinates");
+                writeCoordinates(point, numberFormat);
             }
-            writer.endArray();
-        }
-        else if (geom instanceof Polygon2D poly)
-        {
-            writeString("type", "SimplePolygon2D");
-            writer.name("coords");
-            writer.beginArray();
-            
-            String pattern = "[ " + numberFormat + ", " + numberFormat + " ]";
-            for (Point2D p : poly.vertexPositions())
+            case Polyline2D poly -> 
             {
-                writer.jsonValue(String.format(Locale.ENGLISH, pattern, p.x(), p.y()));
+                writer.name("type").value(poly.isClosed() ? "LinearRing2D" : "LineString2D");
+                writer.name("coordinates");
+                writeCoordinatesArray(poly.vertexPositions(), numberFormat);
             }
-            writer.endArray();
-        }
-        else
-        {
-            // Default behavior for unknown geometries
-            String geomType = geom.getClass().getSimpleName();
-            writeString("type", geomType);
-            System.err.println("Warning: can not write data for geometry type " + geomType);
+            case Polygon2D poly -> 
+            {
+                writer.name("type").value("SimplePolygon2D");
+                writer.name("coordinates");
+                writeCoordinatesArray(poly.vertexPositions(), numberFormat);
+            }
+            case LineSegment2D seg -> 
+            {
+                writer.name("type").value("LineSegment2D");
+
+                Point2D p1 = seg.getP1();
+                writer.name("p1").beginObject();
+                writer.name("coordinates");
+                writeCoordinates(p1, numberFormat);
+                writer.endObject();
+                
+                Point2D p2 = seg.getP2();
+                writer.name("p2").beginObject();
+                writer.name("coordinates");
+                writeCoordinates(p2, numberFormat);
+                writer.endObject();
+            }
+            default -> 
+            {
+                // Default behavior for unknown geometries
+                String geomType = geom.getClass().getSimpleName();
+                writer.name("type").value(geomType);
+                System.err.println("Warning: can not write data for geometry type " + geomType);
+            }
         }
         
         this.writer.endObject();
     }
     
-    private static final String format(String pattern, double value)
+    private void writeCoordinates(Point2D p, String numberFormat) throws IOException
     {
-        return String.format(Locale.ENGLISH, pattern, value);
+        String pattern = "[ " + numberFormat + ", " + numberFormat + " ]";
+        writer.jsonValue(String.format(Locale.ENGLISH, pattern, p.x(), p.y()));
     }
     
-    /**
-     * Saves a string identified by a name.
-     * 
-     * @param name
-     *            the name of the tag.
-     * @param value
-     *            the value of the tag as a string.
-     * @throws IOException
-     *             if a writing problem occurred.
-     */
-    private void writeString(String name, String value) throws IOException
+    private void writeCoordinatesArray(Collection<Point2D> coords, String numberFormat) throws IOException
     {
-        this.writer.name(name).value(value);
+        String pattern = "[ " + numberFormat + ", " + numberFormat + " ]";
+        writer.beginArray();
+        for (Point2D p : coords)
+        {
+            writer.jsonValue(String.format(Locale.ENGLISH, pattern, p.x(), p.y()));
+        }
+        writer.endArray();
     }
 }

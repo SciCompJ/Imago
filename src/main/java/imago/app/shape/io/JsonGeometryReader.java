@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import com.google.gson.stream.JsonReader;
 
 import net.sci.geom.Geometry;
+import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.polygon2d.LineString2D;
 import net.sci.geom.polygon2d.LinearRing2D;
@@ -71,11 +72,7 @@ public class JsonGeometryReader
         {
             // read x field
             reader.nextName();
-            double x = reader.nextDouble();
-            // read y field
-            reader.nextName();
-            double y = reader.nextDouble();
-            geom = new Point2D(x, y);
+            geom = readCoordinates2d();
         }
         else if (type.equalsIgnoreCase("LineString2D"))
         {
@@ -98,10 +95,37 @@ public class JsonGeometryReader
             ArrayList<Point2D> coords = readPoint2DArray();
             geom = Polygon2D.create(coords);
         }
+        else if (type.equalsIgnoreCase("LineSegment2D"))
+        {
+            // read coords field
+            reader.nextName();
+            Point2D p1 = readPoint2D();
+            
+            reader.nextName();
+            Point2D p2 = readPoint2D();
+            geom = new LineSegment2D(p1, p2);
+        }
         else
         {
             throw new RuntimeException("Unable to parse geometry with type: " + type);
         }
+        reader.endObject();
+        
+        return geom;
+    }
+    
+    /**
+     * Reads a JSON value corresponding to the two coordinates of a Point2D.
+     * 
+     * @return new resulting Point2D
+     * @throws IOException
+     *             if a reading problem occurred.
+     */
+    private Point2D readPoint2D() throws IOException
+    {
+        reader.beginObject();
+        reader.nextName();
+        Point2D geom = readCoordinates2d();
         reader.endObject();
         
         return geom;
@@ -121,15 +145,20 @@ public class JsonGeometryReader
         reader.beginArray();
         while (reader.hasNext())
         {
-            reader.beginArray();
-            double x = reader.nextDouble();
-            double y = reader.nextDouble();
-            reader.endArray();
-            points.add(new Point2D(x, y));
+            points.add(readCoordinates2d());
         }
         reader.endArray();
         
         return points;
+    }
+    
+    private Point2D readCoordinates2d() throws IOException
+    {
+        reader.beginArray();
+        double x = reader.nextDouble();
+        double y = reader.nextDouble();
+        reader.endArray();
+        return new Point2D(x, y);
     }
     
     /**

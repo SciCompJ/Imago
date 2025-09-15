@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import com.google.gson.stream.JsonReader;
 
 import net.sci.geom.Geometry;
+import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.polygon2d.LinearRing2D;
 import net.sci.geom.polygon2d.Polygon2D;
@@ -35,9 +36,9 @@ class JsonGeometryReaderTest
         String json = JsonGeometryWriter.toJson(point);
         
         JsonReader jsonReader = new JsonReader(new StringReader(json));
-        JsonGeometryReader sceneReader = new JsonGeometryReader(jsonReader);
+        JsonGeometryReader geometryReader = new JsonGeometryReader(jsonReader);
         
-        Geometry res = sceneReader.readGeometry();
+        Geometry res = geometryReader.readGeometry();
         
         assertInstanceOf(Point2D.class, res);
         assertTrue(point.almostEquals((Point2D) res, 0.0001));
@@ -60,9 +61,9 @@ class JsonGeometryReaderTest
         String json = JsonGeometryWriter.toJson(ring);
         
         JsonReader jsonReader = new JsonReader(new StringReader(json));
-        JsonGeometryReader sceneReader = new JsonGeometryReader(jsonReader);
+        JsonGeometryReader geometryReader = new JsonGeometryReader(jsonReader);
         
-        Geometry res = sceneReader.readGeometry();
+        Geometry res = geometryReader.readGeometry();
         assertInstanceOf(LinearRing2D.class, res);
     }
     
@@ -83,15 +84,36 @@ class JsonGeometryReaderTest
         String json = JsonGeometryWriter.toJson(poly);
         
         JsonReader jsonReader = new JsonReader(new StringReader(json));
-        JsonGeometryReader sceneReader = new JsonGeometryReader(jsonReader);
+        JsonGeometryReader geometryReader = new JsonGeometryReader(jsonReader);
         
-        Geometry res = sceneReader.readGeometry();
+        Geometry res = geometryReader.readGeometry();
         assertTrue(res instanceof Polygon2D);
         LinearRing2D ring = ((Polygon2D) res).boundary();
         assertTrue(ring.contains(new Point2D(10, 10), 0.01));
         assertTrue(ring.contains(new Point2D(20, 10), 0.01));
         assertTrue(ring.contains(new Point2D(20, 20), 0.01));
         assertTrue(ring.contains(new Point2D(10, 20), 0.01));
+    }
+    
+    /**
+     * Test method for {@link imago.app.shape.io.JsonGeometryReader#readGeometry()}.
+     * @throws IOException 
+     */
+    @Test
+    final void test_readGeometry_LineSegment2D() throws IOException
+    {
+        // a ring for the slice with index 10
+        Point2D p1 = new Point2D(40, 20);
+        Point2D p2 = new Point2D(80, 50);
+        LineSegment2D seg = new LineSegment2D(p1, p2);
+        
+        String json = JsonGeometryWriter.toJson(seg);
+        
+        JsonReader jsonReader = new JsonReader(new StringReader(json));
+        JsonGeometryReader sceneReader = new JsonGeometryReader(jsonReader);
+        
+        Geometry res = sceneReader.readGeometry();
+        assertInstanceOf(LineSegment2D.class, res);
     }
     
 }
