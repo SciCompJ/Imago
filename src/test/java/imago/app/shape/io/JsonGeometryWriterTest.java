@@ -9,8 +9,6 @@ import java.io.StringWriter;
 
 import org.junit.jupiter.api.Test;
 
-import com.google.gson.stream.JsonWriter;
-
 import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.polygon2d.LinearRing2D;
@@ -34,13 +32,13 @@ class JsonGeometryWriterTest
         ring.addVertex(new Point2D(10, 20));;
 
         StringWriter stringWriter = new StringWriter();
-        JsonWriter jsonWriter = new JsonWriter(new PrintWriter(stringWriter));
-        jsonWriter.setIndent("  ");
-        JsonGeometryWriter writer = new JsonGeometryWriter(jsonWriter);
+        JsonGeometryWriter writer = new JsonGeometryWriter(new PrintWriter(stringWriter));
+        writer.setIndent("  ");
         
         writer.writeGeometry(ring);
         
         System.out.println(stringWriter.toString());
+        writer.close();
     }
     
     /**
@@ -55,13 +53,12 @@ class JsonGeometryWriterTest
         LineSegment2D seg = new LineSegment2D(p1, p2);
 
         StringWriter stringWriter = new StringWriter();
-        JsonWriter jsonWriter = new JsonWriter(new PrintWriter(stringWriter));
-        jsonWriter.setIndent("  ");
-        JsonGeometryWriter writer = new JsonGeometryWriter(jsonWriter);
+        JsonGeometryWriter writer = new JsonGeometryWriter(new PrintWriter(stringWriter));
+        writer.setIndent("  ");
         
         writer.writeGeometry(seg);
         
         System.out.println(stringWriter.toString());
+        writer.close();
     }
-    
 }

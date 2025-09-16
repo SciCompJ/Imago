@@ -307,36 +307,36 @@ public class ShapeManager extends ImagoFrame
         try 
         {
             FileWriter fileWriter = new FileWriter(file.getAbsoluteFile());
+            // create a json Geometry writer from the file
+            JsonGeometryWriter writer = new JsonGeometryWriter(new PrintWriter(fileWriter));
             // configure JSON
-            JsonWriter jsonWriter = new JsonWriter(new PrintWriter(fileWriter));
-            jsonWriter.setIndent("  ");
+            writer.setIndent("  ");
             
             // write ROI List top-lvel node
-            jsonWriter.beginObject();
-            jsonWriter.name("type");
-            jsonWriter.value("RoiList");
-            jsonWriter.name("items");
-            jsonWriter.beginArray();
+            writer.beginObject();
+            writer.name("type");
+            writer.value("RoiList");
+            writer.name("items");
+            writer.beginArray();
 
+            // choose selected geometries, or all geometries
             boolean hasSelection = infoTable.getSelectionModel().getSelectedItemsCount() > 0;
             Collection<GeometryHandle> handles = hasSelection ? getSelectedHandles() : getAllHandles();
             
-            // create a json Geometry writer from the file
-            JsonGeometryWriter geomWriter = new JsonGeometryWriter(jsonWriter);
-            
+            // iterate over geometries
             for (GeometryHandle handle : handles)
             {
-                jsonWriter.beginObject();
-                jsonWriter.name("name");
-                jsonWriter.value(handle.getName());
-                jsonWriter.name("geometry");
-                geomWriter.writeGeometry(handle.getGeometry());
-                jsonWriter.endObject();
+                writer.beginObject();
+                writer.name("name");
+                writer.value(handle.getName());
+                writer.name("geometry");
+                writer.writeGeometry(handle.getGeometry());
+                writer.endObject();
             }
             
-            jsonWriter.endArray();
-            jsonWriter.endObject();
-            jsonWriter.close();
+            writer.endArray();
+            writer.endObject();
+            writer.close();
         }
         catch (IOException ex)
         {
@@ -367,10 +367,10 @@ public class ShapeManager extends ImagoFrame
             jsonWriter.setIndent("  ");
 
             // create a json Geometry writer from the file
-            JsonGeometryWriter writer = new JsonGeometryWriter(jsonWriter);
+            JsonGeometryWriter writer = new JsonGeometryWriter(new PrintWriter(fileWriter));
             
             writer.writeGeometry(handle.getGeometry());
-            jsonWriter.close();
+            writer.close();
         }
         catch (IOException ex)
         {
