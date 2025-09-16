@@ -42,6 +42,7 @@ import imago.app.shape.io.JsonGeometryWriter;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
+import imago.gui.image.ImageFrame;
 import imago.util.imagej.ImagejRoi;
 import imago.util.imagej.ImagejRoiDecoder;
 import net.sci.geom.Geometry;
@@ -152,9 +153,11 @@ public class ShapeManager extends ImagoFrame
         JMenu editMenu = new JMenu("Edit");
         createMenuItem(editMenu, "Rename...", this::onRename);
         createMenuItem(editMenu, "Compute Bounds", this::onComputeBounds);
-        createMenuItem(editMenu, "Copy to Image Shapes", this::onCopyToImageShapes);
         editMenu.addSeparator();
         createMenuItem(editMenu, "Remove", this::onRemove);
+        editMenu.addSeparator();
+        createMenuItem(editMenu, "Set As Image Selection", this::onSetAsImageSelection);
+        createMenuItem(editMenu, "Copy to Image Shapes", this::onCopyToImageShapes);
         menuBar.add(editMenu);
         
         getWidget().setJMenuBar(menuBar);
@@ -448,6 +451,37 @@ public class ShapeManager extends ImagoFrame
         handle.setName(newName);
         
         updateInfoTable();
+    }
+    
+    private void onSetAsImageSelection(ActionEvent evt)
+    {
+        Geometry geom = getSelectedHandle().getGeometry();
+        ImagoApp appli = this.gui.getAppli();
+        
+        GenericDialog dlg = new GenericDialog(this, "Set Image Selection");
+        String[] imageNames = ImageHandle.getAllNames(appli).toArray(new String[]{});
+        dlg.addChoice("Image", imageNames, imageNames[0]);
+        dlg.showDialog();
+        
+        if (dlg.wasCanceled()) 
+        {
+            return;
+        }
+        
+        // Parse dialog options
+        String imageName = dlg.getNextChoice();
+        ImageHandle imageHandle = ImageHandle.findFromName(appli, imageName);
+        
+        for (ImageFrame frame : ImageFrame.getImageFrames(gui))
+        {
+            if (frame.getImageHandle() == imageHandle)
+            {
+                frame.getImageViewer().setSelection(geom);
+                frame.repaint();
+            }
+        }
+        
+        imageHandle.notifyImageHandleChange(ImageHandle.Event.SHAPES_MASK | ImageHandle.Event.CHANGE_MASK);
     }
     
     private void onCopyToImageShapes(ActionEvent evt)
