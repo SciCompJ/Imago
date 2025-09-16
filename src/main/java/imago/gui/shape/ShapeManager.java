@@ -32,9 +32,6 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-
 import imago.app.GeometryHandle;
 import imago.app.ImageHandle;
 import imago.app.ImagoApp;
@@ -93,7 +90,9 @@ public class ShapeManager extends ImagoFrame
     // ===================================================================
     // Static members
     
+    private static FileFilter roisFileFilter = new FileNameExtensionFilter("Imago ROI list files (*.rois)", "rois");
     private static FileFilter jsonFileFilter = new FileNameExtensionFilter("All JSON files (*.json)", "json");
+    private static FileFilter geomFileFilter = new FileNameExtensionFilter("JSON Single Geometry files (*.geom)", "geom");
     
 
     // ===================================================================
@@ -233,7 +232,7 @@ public class ShapeManager extends ImagoFrame
     {
         // open a dialog to read a .json file
         File file = this.gui.chooseFileToOpen(this,
-                "Import Roi List", jsonFileFilter);
+                "Import Roi List", roisFileFilter, jsonFileFilter);
         if (file == null)
         {
             return;
@@ -246,43 +245,37 @@ public class ShapeManager extends ImagoFrame
         
         ImagoApp app = this.gui.getAppli();
         
-        try 
+        try (FileReader fr = new FileReader(file.getAbsoluteFile());
+                JsonGeometryReader reader = new JsonGeometryReader(new BufferedReader(fr)))
         {
-            FileReader fileReader = new FileReader(file.getAbsoluteFile());
-            // configure JSON
-            JsonReader jsonReader = new JsonReader(new BufferedReader(fileReader));
-            JsonGeometryReader geometryReader = new JsonGeometryReader(jsonReader);
-            
-            jsonReader.beginObject();
+            reader.beginObject();
             
             @SuppressWarnings("unused")
-            String typeKey = jsonReader.nextName();
+            String typeKey = reader.nextName();
             @SuppressWarnings("unused")
-            String type = jsonReader.nextString();
+            String type = reader.nextString();
             
             @SuppressWarnings("unused")
-            String itemListKey = jsonReader.nextName();
-            jsonReader.beginArray();
-            while(jsonReader.hasNext())
+            String itemListKey = reader.nextName();
+            reader.beginArray();
+            while(reader.hasNext())
             {
-                jsonReader.beginObject();
+                reader.beginObject();
                 @SuppressWarnings("unused")
-                String nameKey = jsonReader.nextName();
-                String name = jsonReader.nextString();
+                String nameKey = reader.nextName();
+                String name = reader.nextString();
                 
-                jsonReader.nextName();
-                Geometry geom = geometryReader.readGeometry();
+                reader.nextName();
+                Geometry geom = reader.readGeometry();
                 
                 GeometryHandle handle = GeometryHandle.create(app, geom);
                 handle.setName(name);
                 
-                jsonReader.endObject();
+                reader.endObject();
             }
-            jsonReader.endArray();
+            reader.endArray();
             
-            jsonReader.endObject();
-
-            jsonReader.close();
+            reader.endObject();
         }
         catch (IOException ex)
         {
@@ -290,7 +283,6 @@ public class ShapeManager extends ImagoFrame
         }
         
         updateInfoTable();
-
     }
     
     private void onSaveRoiListAsJson(ActionEvent evt)
@@ -298,7 +290,7 @@ public class ShapeManager extends ImagoFrame
         // open a dialog to read a .json file
         String defaultFileName = "data.rois";
         File file = this.gui.chooseFileToSave(this,
-                "Save Roi List", defaultFileName, jsonFileFilter);
+                "Save Roi List", defaultFileName, roisFileFilter, jsonFileFilter);
         if (file == null)
         {
             return;
@@ -306,8 +298,8 @@ public class ShapeManager extends ImagoFrame
     
         try 
         {
-            FileWriter fileWriter = new FileWriter(file.getAbsoluteFile());
             // create a json Geometry writer from the file
+            FileWriter fileWriter = new FileWriter(file.getAbsoluteFile());
             JsonGeometryWriter writer = new JsonGeometryWriter(new PrintWriter(fileWriter));
             // configure JSON
             writer.setIndent("  ");
@@ -351,7 +343,7 @@ public class ShapeManager extends ImagoFrame
         // open a dialog to read a .json file
         String defaultFileName = "data.geom";
         File file = this.gui.chooseFileToSave(this,
-                "Read json file containing geometry", defaultFileName, jsonFileFilter);
+                "Save to JSON file", defaultFileName, geomFileFilter, jsonFileFilter);
         if (file == null)
         {
             return;
@@ -361,13 +353,11 @@ public class ShapeManager extends ImagoFrame
         
         try 
         {
-            FileWriter fileWriter = new FileWriter(file.getAbsoluteFile());
-            // configure JSON
-            JsonWriter jsonWriter = new JsonWriter(new PrintWriter(fileWriter));
-            jsonWriter.setIndent("  ");
-
             // create a json Geometry writer from the file
+            FileWriter fileWriter = new FileWriter(file.getAbsoluteFile());
             JsonGeometryWriter writer = new JsonGeometryWriter(new PrintWriter(fileWriter));
+            // configure JSON
+            writer.setIndent("  ");
             
             writer.writeGeometry(handle.getGeometry());
             writer.close();
