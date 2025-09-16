@@ -14,6 +14,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -41,6 +42,8 @@ import imago.app.shape.io.JsonGeometryWriter;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
+import imago.util.imagej.ImagejRoi;
+import imago.util.imagej.ImagejRoiDecoder;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.LineSegment2D;
@@ -93,6 +96,7 @@ public class ShapeManager extends ImagoFrame
     private static FileFilter roisFileFilter = new FileNameExtensionFilter("Imago ROI list files (*.rois)", "rois");
     private static FileFilter jsonFileFilter = new FileNameExtensionFilter("All JSON files (*.json)", "json");
     private static FileFilter geomFileFilter = new FileNameExtensionFilter("JSON Single Geometry files (*.geom)", "geom");
+    private static FileFilter ijroiFileFilter = new FileNameExtensionFilter("ImageJ ROI files (*.roi)", "roi");
     
 
     // ===================================================================
@@ -137,6 +141,7 @@ public class ShapeManager extends ImagoFrame
         
         JMenu fileMenu = new JMenu("File");
         createMenuItem(fileMenu, "Import Roi List...", this::onImportRoiListFromJson);
+        createMenuItem(fileMenu, "Import ImageJ ROI...", this::onImportImagejRoi);
         fileMenu.addSeparator();
         createMenuItem(fileMenu, "Save Roi List...", this::onSaveRoiListAsJson);
         createMenuItem(fileMenu, "Save Single Geometry...", this::onSaveGeometryAsJson);
@@ -227,6 +232,47 @@ public class ShapeManager extends ImagoFrame
     
     // ===================================================================
     // Menu item callbacks
+    
+    private void onImportImagejRoi(ActionEvent evt) 
+    {
+        // open a dialog to read a .json file
+        File file = this.gui.chooseFileToOpen(this,
+                "Import ImageJ Roi", ijroiFileFilter);
+        if (file == null)
+        {
+            return;
+        }
+        // Check the chosen file exists
+        if (!file.exists())
+        {
+            return;
+        }
+        
+        // import ROI Geometry from file
+        Geometry geom;
+        try 
+        {
+            byte[] array = Files.readAllBytes(file.toPath());
+            ImagejRoi roi = ImagejRoiDecoder.decode(array);
+            geom = roi.asShape().getGeometry();
+        }
+        catch (IOException ex)
+        {
+            throw new RuntimeException(ex);
+        }
+        
+        // create handle
+        ImagoApp app = this.gui.getAppli();
+        GeometryHandle handle = GeometryHandle.create(app, geom);
+        
+        // setup metadata
+        String fileName = file.getName();
+        fileName = fileName.substring(0, fileName.lastIndexOf('.'));
+        handle.setName(file.getName());
+        
+        // update display
+        updateInfoTable();
+    }
     
     private void onImportRoiListFromJson(ActionEvent evt)
     {
