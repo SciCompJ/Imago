@@ -222,6 +222,7 @@ public class GuiBuilder
         addPlugin(selectionMenu, imago.plugin.image.edit.ImageCopySelectionToWorkspace.class, "Copy To Workspace");
         addPlugin(selectionMenu, imago.plugin.image.edit.ImportSelectionFromWorkspace.class, "Import From Workspace");
         addPlugin(selectionMenu, imago.plugin.image.edit.ImageSelectionToSceneGraph.class, "Add Selection to Scene Graph");
+        addPlugin(selectionMenu, imago.plugin.image.edit.ShowShapeManagerFrame.class, "Display Shape Manager");
         selectionMenu.addSeparator();
         addPlugin(selectionMenu, imago.plugin.image.edit.ImageClearSelection.class, "Clear Selection");
         editMenu.add(selectionMenu);

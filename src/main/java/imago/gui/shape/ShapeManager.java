@@ -55,6 +55,12 @@ import net.sci.geom.polygon2d.LineString2D;
  * A frame, unique within the GUI, that allows to display and edit all the
  * geometries managed within the workspace.
  * 
+ * The ShapeManager instance associated to a given ImagoFrame can be retrieved
+ * as:
+ * {@snippet lang = java :
+ * ShapeManager manager = ShapeManager.getInstance(frame.getGui());
+ * }
+ * 
  * @see imago.app.GeometryHandle
  * @see imago.app.Workspace
  * 
@@ -88,6 +94,11 @@ public class ShapeManager extends ImagoFrame
             instances.put(gui, manager);
         }
         return manager;
+    }
+    
+    public static final boolean hasInstance(ImagoGui gui)
+    {
+        return instances.get(gui) != null;
     }
     
     
