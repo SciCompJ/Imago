@@ -3,17 +3,19 @@
  */
 package imago.plugin.image.edit;
 
+import imago.app.GeometryHandle;
 import imago.app.ImageHandle;
 import imago.app.ImagoApp;
+import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.image.ImageFrame;
 import imago.gui.image.ImageViewer;
 import imago.gui.image.PlanarImageViewer;
-import imago.gui.FramePlugin;
+import imago.gui.shape.ShapeManager;
+import imago.util.StringUtils;
 import net.sci.array.Array;
 import net.sci.geom.Geometry;
-import net.sci.geom.polygon2d.Polygon2D;
 import net.sci.image.Image;
 
 /**
@@ -24,25 +26,28 @@ import net.sci.image.Image;
  */
 public class ImageCopySelectionToWorkspace implements FramePlugin
 {
-	public ImageCopySelectionToWorkspace()
-	{
-	}
+    String lastName = null;
+    
+    /**
+     * Default empty constructor.
+     */
+    public ImageCopySelectionToWorkspace()
+    {
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
     public void run(ImagoFrame frame, String args)
-	{
-		// Check type is image frame
-        if (!(frame instanceof ImageFrame))
-            return;
+    {
+        // Check type is image frame
+        if (!(frame instanceof ImageFrame)) return;
         ImageFrame iframe = (ImageFrame) frame;
-        
-        
+
         ImageViewer viewer = iframe.getImageViewer();
         if (!(viewer instanceof PlanarImageViewer))
         {
@@ -50,36 +55,47 @@ public class ImageCopySelectionToWorkspace implements FramePlugin
             return;
         }
 
-		// get current image data
-		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-		Image image	= doc.getImage();
-		Array<?> array = image.getData();
+        // get current image data
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
+        Image image = doc.getImage();
+        Array<?> array = image.getData();
 
-		if (array.dimensionality() != 2)
-		{
-		    throw new RuntimeException("Requires an image containing 2D Array");
-		}
+        if (array.dimensionality() != 2)
+        {
+            throw new RuntimeException("Requires an image containing 2D Array");
+        }
 
-		
         PlanarImageViewer piv = (PlanarImageViewer) viewer;
         Geometry selection = piv.getSelection();
-        if (!(selection instanceof Polygon2D))
-        {
-            System.out.println("requires selection to be a simple polygon");
-            return;
-        }
         
         ImagoApp app = frame.getGui().getAppli();
         
         GenericDialog dlg = new GenericDialog(frame, "Add Selection To Workspace");
-        dlg.addTextField("Name", "polygon", 20);
+        String baseName = "roi-01";
+        if (this.lastName != null)
+        {
+            baseName = StringUtils.addNumericIncrement(this.lastName);
+        }
+        dlg.addTextField("Name", baseName, 20);
         dlg.showDialog();
         if (dlg.wasCanceled())
         {
             return;
         }
         
+        // retrieve name associated to handle
         String name = dlg.getNextString();
-        app.createHandle(selection, name, "poly");
+        this.lastName = name;
+        
+        // create handle, using tag based on geometry
+        String baseTag = GeometryHandle.createTag(selection);
+        app.createHandle(selection, name, baseTag);
+        
+        // optionally display shape manager
+        if (ShapeManager.hasInstance(frame.getGui()))
+        {
+            ShapeManager manager = ShapeManager.getInstance(frame.getGui());
+            manager.repaint();
+        }
 	}
 }

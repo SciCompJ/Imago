@@ -23,6 +23,7 @@ import imago.gui.image.ImageFrame;
 import imago.gui.image.ImageViewer;
 import imago.gui.image.PlanarImageViewer;
 import imago.gui.table.TableFrame;
+import imago.util.StringUtils;
 import net.sci.array.Array;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray2D;
@@ -103,7 +104,9 @@ public class ImageAnalyzeWithinROI implements FramePlugin
             pushButton = createButton("Add Measurement", evt ->
             {
                 performMeasurement();
-                updateRowNameTextField();
+                String currentName = this.rowNameTextField.getText();
+                String newName = StringUtils.addNumericIncrement(currentName);
+                this.rowNameTextField.setText(newName);
                 this.jFrame.repaint();
             });
             JPanel rowNamePanel = new JPanel(new FlowLayout());
@@ -221,29 +224,6 @@ public class ImageAnalyzeWithinROI implements FramePlugin
             // setup table metadata
             table.setName(imageFrame.getImageHandle().getName() + "-measures");
             return table;
-        }
-        
-        private void updateRowNameTextField()
-        {
-            String currentName = this.rowNameTextField.getText();
-            
-            // remove trailing digits
-            int endIndex = currentName.length();
-            while (endIndex > 0 && Character.isDigit(currentName.charAt(endIndex-1))) endIndex--;
-            
-            // determine current number at the end of the string
-            int count = 0;
-            if (endIndex != currentName.length())
-            {
-                String subString = currentName.substring(endIndex);
-                count = Integer.parseInt(subString);
-            }
-
-            // remove potential dash
-            if (endIndex > 0 && currentName.charAt(endIndex-1)=='-') endIndex--;
-            
-            String newName = String.format(currentName.substring(0, endIndex) + "-%02d", count+1);
-            this.rowNameTextField.setText(newName);
         }
     }
 
