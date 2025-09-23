@@ -46,10 +46,17 @@ import imago.gui.image.ImageFrame;
 import imago.util.imagej.ImagejRoi;
 import imago.util.imagej.ImagejRoiDecoder;
 import net.sci.geom.Geometry;
+import net.sci.geom.MultiPoint;
+import net.sci.geom.Point;
+import net.sci.geom.geom2d.Curve2D;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
+import net.sci.geom.geom2d.curve.Circle2D;
+import net.sci.geom.geom2d.curve.Ellipse2D;
 import net.sci.geom.polygon2d.LineString2D;
+import net.sci.geom.polygon2d.Polygon2D;
+import net.sci.geom.polygon2d.Polyline2D;
 
 /**
  * A frame, unique within the GUI, that allows to display and edit all the
@@ -447,10 +454,34 @@ public class ShapeManager extends ImagoFrame
         {
             
             this.tableModel.setValueAt(handle.getTag(), i, 0);
-            this.tableModel.setValueAt(handle.getGeometry().getClass().getSimpleName(), i, 1);
+            this.tableModel.setValueAt(getGeometryType(handle.getGeometry()), i, 1);
             this.tableModel.setValueAt(handle.getName(), i, 2);
             i++;
         }
+    }
+    
+    /**
+     * Chooses a generic name for the specified geometry.
+     * 
+     * @param geom
+     *            an instance of Geometry
+     * @return a short name describing the geometry, or by default its class
+     *         name.
+     */
+    private static String getGeometryType(Geometry geom)
+    {
+        return switch (geom)
+        {
+            case Point p -> "Point";
+            case MultiPoint p -> "MultiPoint";
+            case Polygon2D p -> "Polygon";
+            case Polyline2D p -> "Polyline";
+            case Circle2D c -> "Circle";
+            case Ellipse2D elli -> "Ellipse";
+            case LineSegment2D seg -> "Segment";
+            case Curve2D c -> "Curve";
+            default -> geom.getClass().getSimpleName();
+        };
     }
     
     private void onRename(ActionEvent evt)
