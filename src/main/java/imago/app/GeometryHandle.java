@@ -6,14 +6,14 @@ package imago.app;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import net.sci.geom.Curve;
 import net.sci.geom.Geometry;
 import net.sci.geom.MultiPoint;
 import net.sci.geom.Point;
 import net.sci.geom.geom2d.LineSegment2D;
-import net.sci.geom.geom2d.StraightLine2D;
+import net.sci.geom.geom2d.PointShape2D;
 import net.sci.geom.geom2d.curve.Circle2D;
 import net.sci.geom.geom2d.curve.Ellipse2D;
-import net.sci.geom.geom3d.LineSegment3D;
 import net.sci.geom.geom3d.Polygon3D;
 import net.sci.geom.geom3d.StraightLine3D;
 import net.sci.geom.geom3d.polyline.Polyline3D;
@@ -132,14 +132,18 @@ public class GeometryHandle extends ObjectHandle
      */
     public static final String createTag(Geometry geom)
     {
-        if (geom instanceof Polygon2D || geom instanceof Polyline2D) return "poly";
-        if (geom instanceof Polygon3D || geom instanceof Polyline3D) return "poly";
+        if (geom instanceof Polygon2D || geom instanceof Polygon3D) return "pgon";
+        if (geom instanceof Polyline2D || geom instanceof Polyline3D) return "plin";
         if (geom instanceof Mesh3D) return "mesh";
         if (geom instanceof Point || geom instanceof MultiPoint) return "pnt";
-        if (geom instanceof LineSegment2D || geom instanceof StraightLine2D) return "line";
-        if (geom instanceof LineSegment3D || geom instanceof StraightLine3D) return "line";
-        if (geom instanceof Circle2D) return "disk";
+        if (geom instanceof PointShape2D) return "pnt";
+        if (geom instanceof LineSegment2D) return "seg";
+        if (geom instanceof StraightLine3D) return "line";
+        if (geom instanceof LineSegment2D) return "seg";
+        if (geom instanceof StraightLine3D) return "lin";
+        if (geom instanceof Circle2D) return "circ";
         if (geom instanceof Ellipse2D) return "elli";
+        if (geom instanceof Curve) return "curv";
         return "geom";
     }
     
