@@ -17,7 +17,7 @@ import org.knowm.xchart.style.Styler.ChartTheme;
 import org.knowm.xchart.style.markers.SeriesMarkers;
 
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImagoChartFrame;
+import imago.chart.ChartFrame;
 import imago.table.TableFrame;
 import imago.table.plugin.TableFramePlugin;
 import net.sci.table.NumericColumn;
@@ -101,7 +101,7 @@ public class TablePairPlot implements TableFramePlugin
         }
         
         // Show the chart matrix
-        ImagoChartFrame.displayChartMatrix(frame, "Scatter Plot", charts);
+        ChartFrame.displayChartMatrix(frame, "Scatter Plot", charts);
     }
     
     /**

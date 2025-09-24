@@ -16,12 +16,12 @@ import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
 import org.knowm.xchart.style.Styler.LegendPosition;
 import org.knowm.xchart.style.markers.SeriesMarkers;
 
+import imago.chart.ChartFrame;
+import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImagoChartFrame;
 import imago.image.ImageFrame;
 import imago.image.ImageViewer;
 import imago.image.PlanarImageViewer;
-import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.color.RGB8Array;
 import net.sci.array.numeric.VectorArray;
@@ -124,8 +124,8 @@ public class ImagePlotChannels implements FramePlugin
         XYSeries series = chart.addSeries("Intensity", xData, values);
         series.setMarker(SeriesMarkers.NONE);
         
-        // Show it
-        ImagoChartFrame.displayChart(parentFrame, "Intensity Profile", chart);
+        // Show the chart into a new frame
+        ChartFrame.create(chart, "Intensity Profile", parentFrame);
     }
     
     /**
@@ -162,8 +162,8 @@ public class ImagePlotChannels implements FramePlugin
         }
         chart.addSeries("values", channelNames, valueList);
        
-        // Show it
-        ImagoChartFrame.displayChart(parentFrame, "RGB values", chart);
+        // Show the chart into a new frame
+        ChartFrame.create(chart, "RGB values", parentFrame);
    }
     
 

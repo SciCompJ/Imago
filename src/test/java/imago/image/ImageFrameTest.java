@@ -5,7 +5,6 @@ package imago.image;
 
 import org.junit.Test;
 
-import imago.image.ImageFrame;
 import net.sci.array.numeric.UInt8Array2D;
 import net.sci.image.Image;
 import net.sci.image.ImageType;
