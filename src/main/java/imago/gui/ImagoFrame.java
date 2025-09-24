@@ -17,8 +17,8 @@ import net.sci.algo.AlgoListener;
  * 
  * Most frames implementations are located in the {@link imago.gui.frames} package.
 
- * @see imago.gui.image.ImageFrame
- * @see imago.gui.table.TableFrame
+ * @see imago.image.ImageFrame
+ * @see imago.table.TableFrame
  * @see imago.gui.frames.ImagoTextFrame
  * 
  * @author David Legland

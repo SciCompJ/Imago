@@ -14,26 +14,26 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import imago.app.ImageHandle;
-import imago.gui.action.RunPluginAction;
-import imago.gui.chart.ChartFrame;
+import imago.chart.ChartFrame;
 import imago.gui.frames.ImagoEmptyFrame;
-import imago.gui.image.ImageFrame;
-import imago.gui.image.tools.DrawBrushValueTool;
-import imago.gui.image.tools.DrawValueTool;
-import imago.gui.image.tools.FloodFillTool;
-import imago.gui.image.tools.SelectEllipseTool;
-import imago.gui.image.tools.SelectLineSegmentTool;
-import imago.gui.image.tools.SelectPolygonTool;
-import imago.gui.image.tools.SelectPolylineTool;
-import imago.gui.image.tools.SelectRectangleTool;
-import imago.gui.image.tools.SelectionTool;
-import imago.gui.table.TableFrame;
-import imago.plugin.edit.ChangeCurrentTool;
-import imago.plugin.image.ImageArrayOperatorPlugin;
-import imago.plugin.image.edit.ImageSetColorMapFactory;
-import imago.plugin.image.edit.ImageSetScaleFromLineSelection;
-import imago.plugin.image.shape.ImageFlip;
-import imago.plugin.table.OpenDemoTable;
+import imago.image.ImageFrame;
+import imago.image.action.RunPluginAction;
+import imago.image.plugin.ImageArrayOperatorPlugin;
+import imago.image.plugin.edit.ChangeCurrentTool;
+import imago.image.plugin.edit.ImageSetColorMapFactory;
+import imago.image.plugin.edit.ImageSetScaleFromLineSelection;
+import imago.image.plugin.shape.ImageFlip;
+import imago.image.tools.DrawBrushValueTool;
+import imago.image.tools.DrawValueTool;
+import imago.image.tools.FloodFillTool;
+import imago.image.tools.SelectEllipseTool;
+import imago.image.tools.SelectLineSegmentTool;
+import imago.image.tools.SelectPolygonTool;
+import imago.image.tools.SelectPolylineTool;
+import imago.image.tools.SelectRectangleTool;
+import imago.image.tools.SelectionTool;
+import imago.table.TableFrame;
+import imago.table.plugin.OpenDemoTable;
 import net.sci.array.Array;
 import net.sci.array.ArrayOperator;
 import net.sci.array.color.ColorMaps;
@@ -153,60 +153,60 @@ public class GuiBuilder
     private JMenu createFileMenu()
     {
         JMenu fileMenu = new JMenu("File");
-        addPlugin(fileMenu, imago.plugin.image.file.CreateNewImage.class, "New Image...");
-        addPlugin(fileMenu, imago.plugin.image.file.OpenImage.class, "Open...");
+        addPlugin(fileMenu, imago.image.plugin.file.CreateNewImage.class, "New Image...");
+        addPlugin(fileMenu, imago.image.plugin.file.OpenImage.class, "Open...");
         // Import demo images
         JMenu demoMenu = new JMenu("Demo Images");
-        addPlugin(demoMenu, imago.plugin.image.file.OpenImage.class, "fileName=images/grains.png", "Rice grains");
-        addPlugin(demoMenu, imago.plugin.image.file.OpenImage.class, "fileName=images/peppers.png", "Peppers");
-        addPlugin(demoMenu, imago.plugin.image.file.OpenImage.class, "fileName=files/lena_gray_512.tif", "Lena");
-        addPlugin(demoMenu, imago.plugin.image.file.OpenImage.class, "fileName=images/sunflower.png", "Sunflower");
-        addPlugin(demoMenu, imago.plugin.image.file.OpenDemoStack.class, "Demo Stack");
-        addPlugin(demoMenu, imago.plugin.image.edit.CreateDistanceToOctahedronImage3D.class, "Octahedron Distance Map");
-        addPlugin(demoMenu, imago.plugin.image.edit.CreateColorCubeImage3D.class, "3D Color Cube");
+        addPlugin(demoMenu, imago.image.plugin.file.OpenImage.class, "fileName=images/grains.png", "Rice grains");
+        addPlugin(demoMenu, imago.image.plugin.file.OpenImage.class, "fileName=images/peppers.png", "Peppers");
+        addPlugin(demoMenu, imago.image.plugin.file.OpenImage.class, "fileName=files/lena_gray_512.tif", "Lena");
+        addPlugin(demoMenu, imago.image.plugin.file.OpenImage.class, "fileName=images/sunflower.png", "Sunflower");
+        addPlugin(demoMenu, imago.image.plugin.file.OpenDemoStack.class, "Demo Stack");
+        addPlugin(demoMenu, imago.image.plugin.edit.CreateDistanceToOctahedronImage3D.class, "Octahedron Distance Map");
+        addPlugin(demoMenu, imago.image.plugin.edit.CreateColorCubeImage3D.class, "3D Color Cube");
         fileMenu.add(demoMenu);
         
         // Import less common file formats
         JMenu tiffFileMenu = new JMenu("Tiff Files");
-        addPlugin(tiffFileMenu, imago.plugin.image.file.ReadImageTiff.class, "Read TIFF...");
-        addPlugin(tiffFileMenu, imago.plugin.image.file.ReadTiffVirtualImage3D.class, "Read TIFF Virtual Image 3D...");
-        addPlugin(tiffFileMenu, imago.plugin.image.file.ReadTiffStackSlice.class, "Read TIFF Slice...");
+        addPlugin(tiffFileMenu, imago.image.plugin.file.ReadImageTiff.class, "Read TIFF...");
+        addPlugin(tiffFileMenu, imago.image.plugin.file.ReadTiffVirtualImage3D.class, "Read TIFF Virtual Image 3D...");
+        addPlugin(tiffFileMenu, imago.image.plugin.file.ReadTiffStackSlice.class, "Read TIFF Slice...");
         tiffFileMenu.addSeparator();
-        addPlugin(tiffFileMenu, imago.plugin.image.file.PrintImageFileTiffTags.class, "Print Tiff File Tags...");
+        addPlugin(tiffFileMenu, imago.image.plugin.file.PrintImageFileTiffTags.class, "Print Tiff File Tags...");
         fileMenu.add(tiffFileMenu);
         
         // Import less common file formats
         JMenu fileImportMenu = new JMenu("Import");
-        addPlugin(fileImportMenu, imago.plugin.image.file.ImportImageRawData.class, "Raw Data...");
-        addPlugin(fileImportMenu, imago.plugin.image.file.ImportImageSeries.class, "Import Image Series...");
+        addPlugin(fileImportMenu, imago.image.plugin.file.ImportImageRawData.class, "Raw Data...");
+        addPlugin(fileImportMenu, imago.image.plugin.file.ImportImageSeries.class, "Import Image Series...");
         fileImportMenu.addSeparator();
-        addPlugin(fileImportMenu, imago.plugin.image.file.ImportImageMetaImage.class, "MetaImage Data...");
-        addPlugin(fileImportMenu, imago.plugin.image.file.ShowMetaImageFileInfo.class, "Show MetaImage FileInfo...");
-        addPlugin(fileImportMenu, imago.plugin.image.file.ImportImageVgi.class, "VGI Image...");
+        addPlugin(fileImportMenu, imago.image.plugin.file.ImportImageMetaImage.class, "MetaImage Data...");
+        addPlugin(fileImportMenu, imago.image.plugin.file.ShowMetaImageFileInfo.class, "Show MetaImage FileInfo...");
+        addPlugin(fileImportMenu, imago.image.plugin.file.ImportImageVgi.class, "VGI Image...");
         fileMenu.add(fileImportMenu);
         
         if (frame instanceof ImageFrame)
         {
             fileMenu.addSeparator();
-            addPlugin(fileMenu, imago.plugin.image.file.SaveImageIO.class, "Save As...");
-            addPlugin(fileMenu, imago.plugin.image.file.SaveImageAsTiff.class, "Save As Tiff...");
-            addPlugin(fileMenu, imago.plugin.image.file.SaveImageMetaImage.class, "Save As MetaImage...");
+            addPlugin(fileMenu, imago.image.plugin.file.SaveImageIO.class, "Save As...");
+            addPlugin(fileMenu, imago.image.plugin.file.SaveImageAsTiff.class, "Save As Tiff...");
+            addPlugin(fileMenu, imago.image.plugin.file.SaveImageMetaImage.class, "Save As MetaImage...");
         }
         
         fileMenu.addSeparator();
-        addPlugin(fileMenu, imago.plugin.table.OpenTable.class, "Open Table...");
+        addPlugin(fileMenu, imago.table.plugin.OpenTable.class, "Open Table...");
         JMenu demoTables = new JMenu("Demo Tables");
-        addPlugin(demoTables, imago.plugin.table.OpenTable.class, "fileName=tables/fisherIris.csv", "Fisher's Iris");
-        addPlugin(demoTables, imago.plugin.table.OpenTable.class, "fileName=tables/penguins_clean.csv", "Penguins (without NA)");
+        addPlugin(demoTables, imago.table.plugin.OpenTable.class, "fileName=tables/fisherIris.csv", "Fisher's Iris");
+        addPlugin(demoTables, imago.table.plugin.OpenTable.class, "fileName=tables/penguins_clean.csv", "Penguins (without NA)");
         fileMenu.add(demoTables);
         
         fileMenu.addSeparator();
         if (!(frame instanceof ImagoEmptyFrame))
         {
-            addPlugin(fileMenu, imago.plugin.CloseCurrentFrame.class, "Close");
-            addPlugin(fileMenu, imago.plugin.CloseWithChildren.class, "Close With Children");
+            addPlugin(fileMenu, imago.gui.plugin.file.CloseCurrentFrame.class, "Close");
+            addPlugin(fileMenu, imago.gui.plugin.file.CloseWithChildren.class, "Close With Children");
         }
-        addPlugin(fileMenu, imago.plugin.QuitApplication.class, "Quit");
+        addPlugin(fileMenu, imago.gui.plugin.file.QuitApplication.class, "Quit");
         return fileMenu;
     }
     
@@ -219,42 +219,42 @@ public class GuiBuilder
         
         // selection sub-menu
         JMenu selectionMenu = new JMenu("Selection");
-        addPlugin(selectionMenu, imago.plugin.image.edit.ImageCopySelectionToWorkspace.class, "Copy To Workspace");
-        addPlugin(selectionMenu, imago.plugin.image.edit.ImportSelectionFromWorkspace.class, "Import From Workspace");
-        addPlugin(selectionMenu, imago.plugin.image.edit.ImageSelectionToSceneGraph.class, "Add Selection to Scene Graph");
-        addPlugin(selectionMenu, imago.plugin.image.edit.ShowShapeManagerFrame.class, "Display Shape Manager");
+        addPlugin(selectionMenu, imago.image.plugin.edit.ImageCopySelectionToWorkspace.class, "Copy To Workspace");
+        addPlugin(selectionMenu, imago.image.plugin.edit.ImportSelectionFromWorkspace.class, "Import From Workspace");
+        addPlugin(selectionMenu, imago.image.plugin.edit.ImageSelectionToSceneGraph.class, "Add Selection to Scene Graph");
+        addPlugin(selectionMenu, imago.image.plugin.edit.ShowShapeManagerFrame.class, "Display Shape Manager");
         selectionMenu.addSeparator();
-        addPlugin(selectionMenu, imago.plugin.image.edit.ImageClearSelection.class, "Clear Selection");
+        addPlugin(selectionMenu, imago.image.plugin.edit.ImageClearSelection.class, "Clear Selection");
         editMenu.add(selectionMenu);
 
         // crop tools
-        addPlugin(editMenu, imago.plugin.image.shape.ImageCropSelection.class, "Crop Selection", hasImage2D);
-        addPlugin(editMenu, imago.plugin.image.shape.ImageCropDialog.class, "Crop...", hasImage);
+        addPlugin(editMenu, imago.image.plugin.shape.ImageCropSelection.class, "Crop Selection", hasImage2D);
+        addPlugin(editMenu, imago.image.plugin.shape.ImageCropDialog.class, "Crop...", hasImage);
         
         // zoom management
         editMenu.addSeparator();
-        addPlugin(editMenu, imago.plugin.edit.ZoomIn.class, "Zoom In", hasImage);
-        addPlugin(editMenu, imago.plugin.edit.ZoomOut.class, "Zoom Out", hasImage);
-        addPlugin(editMenu, imago.plugin.edit.ZoomOne.class, "Zoom One", hasImage);
-        addPlugin(editMenu, imago.plugin.image.edit.RefreshDisplay.class, "Refresh Display", hasImage);
+        addPlugin(editMenu, imago.image.plugin.edit.ZoomIn.class, "Zoom In", hasImage);
+        addPlugin(editMenu, imago.image.plugin.edit.ZoomOut.class, "Zoom Out", hasImage);
+        addPlugin(editMenu, imago.image.plugin.edit.ZoomOne.class, "Zoom One", hasImage);
+        addPlugin(editMenu, imago.image.plugin.edit.RefreshDisplay.class, "Refresh Display", hasImage);
         
         // add utility
         editMenu.addSeparator();
         JMenu sceneGraphMenu = new JMenu("Scene Graph");
-        addPlugin(sceneGraphMenu, imago.plugin.image.edit.ShowSceneGraphTree.class, "Display Scene Graph Tree");
-        addPlugin(sceneGraphMenu, imago.plugin.image.edit.PrintImageSceneGraph.class, "Print Scene Graph Tree");
-        addPlugin(sceneGraphMenu, imago.plugin.image.edit.ToggleSceneGraphDisplay.class, "Toggle Scene Graph Display");
+        addPlugin(sceneGraphMenu, imago.image.plugin.edit.ShowSceneGraphTree.class, "Display Scene Graph Tree");
+        addPlugin(sceneGraphMenu, imago.image.plugin.edit.PrintImageSceneGraph.class, "Print Scene Graph Tree");
+        addPlugin(sceneGraphMenu, imago.image.plugin.edit.ToggleSceneGraphDisplay.class, "Toggle Scene Graph Display");
         editMenu.add(sceneGraphMenu);
         
-        addPlugin(editMenu, imago.plugin.edit.DocClearShapes.class, "Clear Shapes");
-        addPlugin(editMenu, imago.plugin.image.edit.AddPointShapeFromTable.class, "Add Point Shapes...");
+        addPlugin(editMenu, imago.image.plugin.edit.DocClearShapes.class, "Clear Shapes");
+        addPlugin(editMenu, imago.image.plugin.edit.AddPointShapeFromTable.class, "Add Point Shapes...");
         
         editMenu.addSeparator();
         JMenu settingsMenu = new JMenu("Settings");
-        addPlugin(settingsMenu, imago.plugin.edit.ChooseFileDialogWidgetToolkit.class, "Choose File Dialog Widget Toolkits...");
+        addPlugin(settingsMenu, imago.image.plugin.edit.ChooseFileDialogWidgetToolkit.class, "Choose File Dialog Widget Toolkits...");
         settingsMenu.addSeparator();
-        addPlugin(settingsMenu, imago.plugin.edit.ChooseBrushValue.class, "Choose Brush Value...");
-        addPlugin(settingsMenu, imago.plugin.edit.ChooseBrushRadius.class, "Choose Brush Radius...");
+        addPlugin(settingsMenu, imago.image.plugin.edit.ChooseBrushValue.class, "Choose Brush Value...");
+        addPlugin(settingsMenu, imago.image.plugin.edit.ChooseBrushRadius.class, "Choose Brush Radius...");
         
         editMenu.add(settingsMenu);
         return editMenu;
@@ -268,17 +268,17 @@ public class GuiBuilder
         JMenu menu = new JMenu("Image");
         
         // First general info and calibration about images
-        addPlugin(menu, imago.plugin.image.edit.RenameImage.class, "Rename...", hasImage);
-        addPlugin(menu, imago.plugin.image.edit.ImageSetScale.class, "Image Scale...", hasImage);
-        addPlugin(menu, imago.plugin.image.edit.PrintImageInfos.class, "Print Image Info", hasImage);
-        addPlugin(menu, imago.plugin.image.edit.PrintImageTiffTags.class, "Show TIFF Tags", hasImage);
+        addPlugin(menu, imago.image.plugin.edit.RenameImage.class, "Rename...", hasImage);
+        addPlugin(menu, imago.image.plugin.edit.ImageSetScale.class, "Image Scale...", hasImage);
+        addPlugin(menu, imago.image.plugin.edit.PrintImageInfos.class, "Print Image Info", hasImage);
+        addPlugin(menu, imago.image.plugin.edit.PrintImageTiffTags.class, "Show TIFF Tags", hasImage);
 
         // Management of image representation
         menu.addSeparator();
         JMenu displayRangeMenu = new JMenu("Display Range");
-        addPlugin(displayRangeMenu, imago.plugin.image.edit.SetImageDisplayRangeToDataType.class, "Set Data Type Display Range", hasScalarImage);
-        addPlugin(displayRangeMenu, imago.plugin.image.edit.SetImageDisplayRangeToData.class, "Set Image Display Range", hasScalarImage | hasVectorImage);
-        addPlugin(displayRangeMenu, imago.plugin.image.edit.SetImageDisplayRange.class, "Set Manual Display Range", hasScalarImage | hasVectorImage);
+        addPlugin(displayRangeMenu, imago.image.plugin.edit.SetImageDisplayRangeToDataType.class, "Set Data Type Display Range", hasScalarImage);
+        addPlugin(displayRangeMenu, imago.image.plugin.edit.SetImageDisplayRangeToData.class, "Set Image Display Range", hasScalarImage | hasVectorImage);
+        addPlugin(displayRangeMenu, imago.image.plugin.edit.SetImageDisplayRange.class, "Set Manual Display Range", hasScalarImage | hasVectorImage);
         menu.add(displayRangeMenu);
 
         addArrayOperatorPlugin(menu, new DynamicAdjustment(.01), "Adjust Grayscale Dynamic", hasScalarImage);
@@ -298,67 +298,67 @@ public class GuiBuilder
         addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.HSV), "HSV");
         addPlugin(colormapMenu, new ImageSetColorMapFactory(ColorMaps.BLUE_WHITE_RED), "Blue-White-Red");
         colormapMenu.addSeparator();
-        addPlugin(colormapMenu, imago.plugin.image.edit.ImageColorMapDisplay.class, "Show Color Map in Table", hasImage && !hasRGB8Image);
+        addPlugin(colormapMenu, imago.image.plugin.edit.ImageColorMapDisplay.class, "Show Color Map in Table", hasImage && !hasRGB8Image);
         menu.add(colormapMenu);
         
         boolean hasDistanceImage = ((ImageFrame) frame).getImageHandle().getImage().getType() == ImageType.DISTANCE;
-        addPlugin(menu, imago.plugin.image.edit.ImageSetBackgroundColor.class, "Set Background Color...", hasLabelImage || hasDistanceImage);
-        addPlugin(menu, imago.plugin.image.edit.DisplayImagePair.class, "Display Image Pair", hasImage);
+        addPlugin(menu, imago.image.plugin.edit.ImageSetBackgroundColor.class, "Set Background Color...", hasLabelImage || hasDistanceImage);
+        addPlugin(menu, imago.image.plugin.edit.DisplayImagePair.class, "Display Image Pair", hasImage);
 
         // Several options for converting images
         menu.addSeparator();
         JMenu convertImageTypeMenu = new JMenu("Change Image Type");
         convertImageTypeMenu.setEnabled(hasImage);
-        addPlugin(convertImageTypeMenu, imago.plugin.image.edit.SetImageType.class, "Set Image Display Type...", hasImage);
-        addPlugin(convertImageTypeMenu, imago.plugin.image.edit.SetImageTypeToLabel.class, "Set Image Type to Label Image", hasScalarImage);
+        addPlugin(convertImageTypeMenu, imago.image.plugin.edit.SetImageType.class, "Set Image Display Type...", hasImage);
+        addPlugin(convertImageTypeMenu, imago.image.plugin.edit.SetImageTypeToLabel.class, "Set Image Type to Label Image", hasScalarImage);
         convertImageTypeMenu.addSeparator();
-        addPlugin(convertImageTypeMenu, imago.plugin.image.convert.ConvertImageToBinary.class, "Convert to Binary");
-        addPlugin(convertImageTypeMenu, imago.plugin.image.convert.ConvertImageToLabel.class, "Convert to Label");
+        addPlugin(convertImageTypeMenu, imago.image.plugin.convert.ConvertImageToBinary.class, "Convert to Binary");
+        addPlugin(convertImageTypeMenu, imago.image.plugin.convert.ConvertImageToLabel.class, "Convert to Label");
         menu.add(convertImageTypeMenu);
         
         JMenu convertDataTypeMenu = new JMenu("Convert Data Type");
         convertDataTypeMenu.setEnabled(hasImage);
-        addPlugin(convertDataTypeMenu, imago.plugin.image.convert.ConvertImageToUInt8.class, "UInt8");
-        addPlugin(convertDataTypeMenu, imago.plugin.image.convert.CreateScaledUInt8View.class, "UInt8 (adjust dynamic)", hasScalarImage);
-        addPlugin(convertDataTypeMenu, imago.plugin.image.convert.ConvertImageToUInt16.class, "UInt16", hasScalarImage);
+        addPlugin(convertDataTypeMenu, imago.image.plugin.convert.ConvertImageToUInt8.class, "UInt8");
+        addPlugin(convertDataTypeMenu, imago.image.plugin.convert.CreateScaledUInt8View.class, "UInt8 (adjust dynamic)", hasScalarImage);
+        addPlugin(convertDataTypeMenu, imago.image.plugin.convert.ConvertImageToUInt16.class, "UInt16", hasScalarImage);
         convertDataTypeMenu.addSeparator();
-        addPlugin(convertDataTypeMenu, imago.plugin.image.convert.ConvertImageToInt16.class, "Int16", hasScalarImage);
-        addPlugin(convertDataTypeMenu, imago.plugin.image.convert.ConvertImageToInt32.class, "Int32", hasScalarImage);
+        addPlugin(convertDataTypeMenu, imago.image.plugin.convert.ConvertImageToInt16.class, "Int16", hasScalarImage);
+        addPlugin(convertDataTypeMenu, imago.image.plugin.convert.ConvertImageToInt32.class, "Int32", hasScalarImage);
         convertDataTypeMenu.addSeparator();
-        addPlugin(convertDataTypeMenu, imago.plugin.image.convert.ConvertImageToFloat32.class, "Float32", hasImage);
-        addPlugin(convertDataTypeMenu, imago.plugin.image.convert.ConvertImageToFloat64.class, "Float64", hasImage);
+        addPlugin(convertDataTypeMenu, imago.image.plugin.convert.ConvertImageToFloat32.class, "Float32", hasImage);
+        addPlugin(convertDataTypeMenu, imago.image.plugin.convert.ConvertImageToFloat64.class, "Float64", hasImage);
         menu.add(convertDataTypeMenu);
         
         // image dimensionality conversion plugins
         JMenu convertDimensionMenu = new JMenu("Convert Dimension(s)");
         convertDimensionMenu.setEnabled(hasImage);
-        addPlugin(convertDimensionMenu, imago.plugin.image.convert.ConvertStackToMovie.class, "Convert Image 3D to movie", hasImage3D);
-        addPlugin(convertDimensionMenu, imago.plugin.image.convert.ConvertScalarImageToVector.class, "Convert Scalar to Vector", hasImage3D);
-        addPlugin(convertDimensionMenu, imago.plugin.image.convert.ConvertVectorImageToScalar.class, "Convert Vector To Scalar", hasVectorImage);
+        addPlugin(convertDimensionMenu, imago.image.plugin.convert.ConvertStackToMovie.class, "Convert Image 3D to movie", hasImage3D);
+        addPlugin(convertDimensionMenu, imago.image.plugin.convert.ConvertScalarImageToVector.class, "Convert Scalar to Vector", hasImage3D);
+        addPlugin(convertDimensionMenu, imago.image.plugin.convert.ConvertVectorImageToScalar.class, "Convert Vector To Scalar", hasVectorImage);
         menu.add(convertDimensionMenu);
 
         // Color images operators
         menu.addSeparator();
         JMenu colorMenu = new JMenu("Color");
         // editMenu.add(convertTypeMenu);
-        addPlugin(colorMenu, imago.plugin.image.process.ImageSplitChannels.class, "Split Channels", hasVectorImage || hasColorImage);
-        addPlugin(colorMenu, imago.plugin.image.process.MergeChannelImages.class, "Merge Channels");
-        addPlugin(colorMenu, imago.plugin.image.convert.ConvertColorImageToGrayscale.class, "Convert To Grayscale", hasColorImage);
-        addPlugin(colorMenu, imago.plugin.image.process.ColorImageExtractChannel.class, "Select Channel...", hasColorImage);
-        addPlugin(colorMenu, imago.plugin.image.convert.ConvertUInt8ImageToRGB.class, "UInt8 to RGB8", hasScalarImage);
-        addPlugin(colorMenu, imago.plugin.image.convert.ConvertLabelMapToRGB8.class, "Label Map to RGB", hasLabelImage);
-        addPlugin(colorMenu, imago.plugin.image.convert.ConvertRGB8ImageToRGB16.class, "RGB8 to RGB16", hasRGB8Image);
-        addPlugin(colorMenu, imago.plugin.image.convert.ScalarImagesColorDifference.class, "Color difference between two scalar images");
+        addPlugin(colorMenu, imago.image.plugin.process.ImageSplitChannels.class, "Split Channels", hasVectorImage || hasColorImage);
+        addPlugin(colorMenu, imago.image.plugin.process.MergeChannelImages.class, "Merge Channels");
+        addPlugin(colorMenu, imago.image.plugin.convert.ConvertColorImageToGrayscale.class, "Convert To Grayscale", hasColorImage);
+        addPlugin(colorMenu, imago.image.plugin.process.ColorImageExtractChannel.class, "Select Channel...", hasColorImage);
+        addPlugin(colorMenu, imago.image.plugin.convert.ConvertUInt8ImageToRGB.class, "UInt8 to RGB8", hasScalarImage);
+        addPlugin(colorMenu, imago.image.plugin.convert.ConvertLabelMapToRGB8.class, "Label Map to RGB", hasLabelImage);
+        addPlugin(colorMenu, imago.image.plugin.convert.ConvertRGB8ImageToRGB16.class, "RGB8 to RGB16", hasRGB8Image);
+        addPlugin(colorMenu, imago.image.plugin.convert.ScalarImagesColorDifference.class, "Color difference between two scalar images");
         menu.add(colorMenu);
         
         JMenu vectorMenu = new JMenu("Vector");
-        addPlugin(vectorMenu, imago.plugin.image.process.VectorImageChannelView.class, "Channel View", hasVectorImage);
-        addPlugin(vectorMenu, imago.plugin.image.convert.CreateVectorImageNorm.class, "Vector Image Norm", hasVectorImage);
-        addPlugin(vectorMenu, imago.plugin.image.process.VectorImageAngle.class, "Vector Image Angle");
-        addPlugin(vectorMenu, imago.plugin.image.convert.VectorImageConvertToRGB.class, "Convert to RGB", hasVectorImage);
-        addPlugin(vectorMenu, imago.plugin.image.convert.CreateVectorImageRGB8View.class, "Create RGB View", hasVectorImage);
-        addPlugin(vectorMenu, imago.plugin.image.edit.SetImageChannelNames.class, "Set Channel Names...", hasVectorImage || hasColorImage);
-        addPlugin(vectorMenu, imago.plugin.image.convert.VectorImageToTable.class, "Convert To Table", hasVectorImage);
+        addPlugin(vectorMenu, imago.image.plugin.process.VectorImageChannelView.class, "Channel View", hasVectorImage);
+        addPlugin(vectorMenu, imago.image.plugin.convert.CreateVectorImageNorm.class, "Vector Image Norm", hasVectorImage);
+        addPlugin(vectorMenu, imago.image.plugin.process.VectorImageAngle.class, "Vector Image Angle");
+        addPlugin(vectorMenu, imago.image.plugin.convert.VectorImageConvertToRGB.class, "Convert to RGB", hasVectorImage);
+        addPlugin(vectorMenu, imago.image.plugin.convert.CreateVectorImageRGB8View.class, "Create RGB View", hasVectorImage);
+        addPlugin(vectorMenu, imago.image.plugin.edit.SetImageChannelNames.class, "Set Channel Names...", hasVectorImage || hasColorImage);
+        addPlugin(vectorMenu, imago.image.plugin.convert.VectorImageToTable.class, "Convert To Table", hasVectorImage);
         menu.add(vectorMenu);
 
         // Change the geometry of image, and and extract slices
@@ -371,47 +371,47 @@ public class GuiBuilder
         geometryMenu.addSeparator();
         addArrayOperatorPlugin(geometryMenu, new Rotate90(-1), "Rotate Counter-Clockwise", hasImage2D);
         addArrayOperatorPlugin(geometryMenu, new Rotate90(+1), "Rotate Clockwise", hasImage2D);
-        addPlugin(geometryMenu, imago.plugin.image.shape.ImageRotateAroundCenter.class, "Rotate...", hasImage2D);
-        addPlugin(geometryMenu, imago.plugin.image.shape.Image3DRotate90.class, "Rotate 3D by 90 degrees...", hasImage3D);
-        addPlugin(geometryMenu, imago.plugin.image.shape.ImageRotatedCrop.class, "Rotated Crop...", hasImage2D || hasImage3D);
+        addPlugin(geometryMenu, imago.image.plugin.shape.ImageRotateAroundCenter.class, "Rotate...", hasImage2D);
+        addPlugin(geometryMenu, imago.image.plugin.shape.Image3DRotate90.class, "Rotate 3D by 90 degrees...", hasImage3D);
+        addPlugin(geometryMenu, imago.image.plugin.shape.ImageRotatedCrop.class, "Rotated Crop...", hasImage2D || hasImage3D);
         geometryMenu.addSeparator();
-        addPlugin(geometryMenu, imago.plugin.image.shape.ImageReshape.class, "Reshape Image...", hasImage);
-        addPlugin(geometryMenu, imago.plugin.image.shape.ImagePermuteDims.class, "Permute Image Dimensions...", hasImage);
+        addPlugin(geometryMenu, imago.image.plugin.shape.ImageReshape.class, "Reshape Image...", hasImage);
+        addPlugin(geometryMenu, imago.image.plugin.shape.ImagePermuteDims.class, "Permute Image Dimensions...", hasImage);
         geometryMenu.addSeparator();
-        addPlugin(geometryMenu, imago.plugin.image.shape.ImageConcatenate.class, "Concatenate..."); 
-        addPlugin(geometryMenu, imago.plugin.image.shape.ImageAddBorders.class, "Add Borders...", hasScalarImage); 
-        addPlugin(geometryMenu, imago.plugin.image.shape.ImageSubsample.class, "Subsample...", hasImage);
-        addPlugin(geometryMenu, imago.plugin.image.shape.ImageDownsample.class, "Downsample...", hasImage);
+        addPlugin(geometryMenu, imago.image.plugin.shape.ImageConcatenate.class, "Concatenate..."); 
+        addPlugin(geometryMenu, imago.image.plugin.shape.ImageAddBorders.class, "Add Borders...", hasScalarImage); 
+        addPlugin(geometryMenu, imago.image.plugin.shape.ImageSubsample.class, "Subsample...", hasImage);
+        addPlugin(geometryMenu, imago.image.plugin.shape.ImageDownsample.class, "Downsample...", hasImage);
         geometryMenu.addSeparator();
-        addPlugin(geometryMenu, imago.plugin.image.process.ImageCropThumbnailList.class, "Crop Thumbnails from Positions...", hasImage);
+        addPlugin(geometryMenu, imago.image.plugin.process.ImageCropThumbnailList.class, "Crop Thumbnails from Positions...", hasImage);
         
         menu.add(geometryMenu);
         
         // Create the menu for 3D images
         JMenu stackMenu = new JMenu("3D Images");
         stackMenu.setEnabled(hasImage3D);
-        addPlugin(stackMenu, imago.plugin.image.shape.Image3DGetCurrentSlice.class, "Extract Current Slice", hasImage3D);
-        addPlugin(stackMenu, imago.plugin.image.shape.Image3DGetSlice.class, "Extract Slice...", hasImage3D);
-        addPlugin(stackMenu, imago.plugin.image.shape.Image3DOrthoslicesMontage.class, "OrthoSlices Montage...", hasImage3D);
-        addPlugin(stackMenu, imago.plugin.image.shape.Image3DSliceMontage.class, "Image 3D Montage...", hasImage3D);
-        addPlugin(stackMenu, imago.plugin.image.shape.ImageOrthogonalProjection.class, "Orthogonal Projection...", hasImage3D && hasScalarImage);
+        addPlugin(stackMenu, imago.image.plugin.shape.Image3DGetCurrentSlice.class, "Extract Current Slice", hasImage3D);
+        addPlugin(stackMenu, imago.image.plugin.shape.Image3DGetSlice.class, "Extract Slice...", hasImage3D);
+        addPlugin(stackMenu, imago.image.plugin.shape.Image3DOrthoslicesMontage.class, "OrthoSlices Montage...", hasImage3D);
+        addPlugin(stackMenu, imago.image.plugin.shape.Image3DSliceMontage.class, "Image 3D Montage...", hasImage3D);
+        addPlugin(stackMenu, imago.image.plugin.shape.ImageOrthogonalProjection.class, "Orthogonal Projection...", hasImage3D && hasScalarImage);
         stackMenu.addSeparator();
-        addPlugin(stackMenu, imago.plugin.image.process.Image3DSetOrthoSlicesDisplay.class, "Set Orthoslices Display", hasImage3D);
+        addPlugin(stackMenu, imago.image.plugin.process.Image3DSetOrthoSlicesDisplay.class, "Set Orthoslices Display", hasImage3D);
 		menu.add(stackMenu);
 
         menu.addSeparator();
-		addPlugin(menu, imago.plugin.image.process.ImageDuplicate.class, "Duplicate", hasImage);
+		addPlugin(menu, imago.image.plugin.process.ImageDuplicate.class, "Duplicate", hasImage);
 		addArrayOperatorPlugin(menu, new ImageInverter(), "Invert", "%s-inv");
         
         // submenu for creation of phantoms
         JMenu phantomMenu = new JMenu("Phantoms");
-        addPlugin(phantomMenu, imago.plugin.image.edit.ImageFillDisk.class, "Fill Disk...");
-        addPlugin(phantomMenu, imago.plugin.image.edit.ImageFillEllipse.class, "Fill Ellipse...");
-        addPlugin(phantomMenu, imago.plugin.image.edit.ImageFillBox.class, "Fill Box...");
-        addPlugin(phantomMenu, imago.plugin.image.edit.ImageFillEllipsoid.class, "Fill Ellipsoid...");
+        addPlugin(phantomMenu, imago.image.plugin.edit.ImageFillDisk.class, "Fill Disk...");
+        addPlugin(phantomMenu, imago.image.plugin.edit.ImageFillEllipse.class, "Fill Ellipse...");
+        addPlugin(phantomMenu, imago.image.plugin.edit.ImageFillBox.class, "Fill Box...");
+        addPlugin(phantomMenu, imago.image.plugin.edit.ImageFillEllipsoid.class, "Fill Ellipsoid...");
         phantomMenu.addSeparator();
-        addPlugin(phantomMenu, imago.plugin.image.edit.ImageSelectionToMask.class, "Selection To Mask");
-        addPlugin(phantomMenu, imago.plugin.image.edit.ImageSelectionToDistanceMap.class, "Selection To Distance Map");
+        addPlugin(phantomMenu, imago.image.plugin.edit.ImageSelectionToMask.class, "Selection To Mask");
+        addPlugin(phantomMenu, imago.image.plugin.edit.ImageSelectionToDistanceMap.class, "Selection To Distance Map");
         menu.add(phantomMenu);
         
 		return menu;
@@ -425,24 +425,24 @@ public class GuiBuilder
 		JMenu menu = new JMenu("Process");
 
 		JMenu mathsMenu = new JMenu("Math");
-        addPlugin(mathsMenu, imago.plugin.image.process.ImageApplyMathFunction.class, "Apply Function...", hasScalarImage);
-        addPlugin(mathsMenu, imago.plugin.image.process.ImageApplySingleValueOperator.class, "Math operator (image+value)...");
-        addPlugin(mathsMenu, imago.plugin.image.process.ImageApplyMathBinaryOperator.class, "Math operator (Image pair)...");
+        addPlugin(mathsMenu, imago.image.plugin.process.ImageApplyMathFunction.class, "Apply Function...", hasScalarImage);
+        addPlugin(mathsMenu, imago.image.plugin.process.ImageApplySingleValueOperator.class, "Math operator (image+value)...");
+        addPlugin(mathsMenu, imago.image.plugin.process.ImageApplyMathBinaryOperator.class, "Math operator (Image pair)...");
         mathsMenu.addSeparator();
-        addPlugin(mathsMenu, imago.plugin.image.process.ImageApplyLogicalBinaryOperator.class, "Logical operator (Image pair)...");
+        addPlugin(mathsMenu, imago.image.plugin.process.ImageApplyLogicalBinaryOperator.class, "Logical operator (Image pair)...");
 		menu.add(mathsMenu);
 		menu.addSeparator();
 
 		// Noise reduction filters
         JMenu filtersMenu = new JMenu("Filters");
-        addPlugin(filtersMenu, imago.plugin.image.process.ImageBoxFilter.class, "Box Filter...");
-        addPlugin(filtersMenu, imago.plugin.image.process.BoxFilter3x3FloatPlugin.class, "Box Filter 2D 3x3 (float)", hasScalarImage);
+        addPlugin(filtersMenu, imago.image.plugin.process.ImageBoxFilter.class, "Box Filter...");
+        addPlugin(filtersMenu, imago.image.plugin.process.BoxFilter3x3FloatPlugin.class, "Box Filter 2D 3x3 (float)", hasScalarImage);
         addArrayOperatorPlugin(filtersMenu, net.sci.image.filtering.GaussianFilter5x5.class, "Gaussian Filter 5x5", hasScalarImage && hasImage2D);
-        addPlugin(filtersMenu, imago.plugin.image.process.ImageMedianFilterBox.class, "Median Filter...");
-        addPlugin(filtersMenu, imago.plugin.image.binary.BinaryImageBoxMedianFilter.class, "Binary Median Filter...");
-        addPlugin(filtersMenu, imago.plugin.image.process.ImageMinMaxFilterBox.class, "Min/Max Filter...");
+        addPlugin(filtersMenu, imago.image.plugin.process.ImageMedianFilterBox.class, "Median Filter...");
+        addPlugin(filtersMenu, imago.image.plugin.binary.BinaryImageBoxMedianFilter.class, "Binary Median Filter...");
+        addPlugin(filtersMenu, imago.image.plugin.process.ImageMinMaxFilterBox.class, "Min/Max Filter...");
         filtersMenu.addSeparator();
-        addPlugin(filtersMenu, imago.plugin.image.process.ImageVarianceFilterBox.class, "Variance Filter...");
+        addPlugin(filtersMenu, imago.image.plugin.process.ImageVarianceFilterBox.class, "Variance Filter...");
 		menu.add(filtersMenu);
         
 		// Gradient filters
@@ -453,74 +453,74 @@ public class GuiBuilder
         menu.add(gradientFiltersMenu);
         
 		JMenu morphologyMenu = new JMenu("Mathematical Morphology");
-        addPlugin(morphologyMenu, imago.plugin.image.process.ImageMorphologicalFilter.class, "Morphological Filters...");
-        addPlugin(morphologyMenu, imago.plugin.image.binary.BinaryImageMorphologicalFilter.class, "Binary Morphological Filters...");
-        addPlugin(morphologyMenu, imago.plugin.image.binary.BinaryImageMorphologicalFilterBall.class, "Ball Binary Morphological Filters...");
+        addPlugin(morphologyMenu, imago.image.plugin.process.ImageMorphologicalFilter.class, "Morphological Filters...");
+        addPlugin(morphologyMenu, imago.image.plugin.binary.BinaryImageMorphologicalFilter.class, "Binary Morphological Filters...");
+        addPlugin(morphologyMenu, imago.image.plugin.binary.BinaryImageMorphologicalFilterBall.class, "Ball Binary Morphological Filters...");
 
 		morphologyMenu.addSeparator();
-        addPlugin(morphologyMenu, imago.plugin.image.process.ImageRegionalExtrema.class, "Regional Min./Max...", hasScalarImage);
-        addPlugin(morphologyMenu, imago.plugin.image.process.ImageExtendedExtrema.class, "Extended Min./Max...", hasScalarImage);
-        addPlugin(morphologyMenu, imago.plugin.image.process.ImageImposeExtrema.class, "Impose Min./Max...", hasScalarImage);
-        addPlugin(morphologyMenu, imago.plugin.image.process.ImageMorphologicalReconstruction.class, "Morphological Reconstruction...");
-        addPlugin(morphologyMenu, imago.plugin.image.binary.BinaryImageMorphologicalReconstruction.class, "Binary Morphological Reconstruction...");
-        addPlugin(morphologyMenu, imago.plugin.image.process.ImageIteratedGeodesicDilations.class, "Geodesic Dilation...");
+        addPlugin(morphologyMenu, imago.image.plugin.process.ImageRegionalExtrema.class, "Regional Min./Max...", hasScalarImage);
+        addPlugin(morphologyMenu, imago.image.plugin.process.ImageExtendedExtrema.class, "Extended Min./Max...", hasScalarImage);
+        addPlugin(morphologyMenu, imago.image.plugin.process.ImageImposeExtrema.class, "Impose Min./Max...", hasScalarImage);
+        addPlugin(morphologyMenu, imago.image.plugin.process.ImageMorphologicalReconstruction.class, "Morphological Reconstruction...");
+        addPlugin(morphologyMenu, imago.image.plugin.binary.BinaryImageMorphologicalReconstruction.class, "Binary Morphological Reconstruction...");
+        addPlugin(morphologyMenu, imago.image.plugin.process.ImageIteratedGeodesicDilations.class, "Geodesic Dilation...");
 		morphologyMenu.addSeparator();
-        addPlugin(morphologyMenu, imago.plugin.image.process.ImageFillHoles.class, "Fill Holes");
-        addPlugin(morphologyMenu, imago.plugin.image.binary.BinaryImageFillHoles.class, "Binary Fill Holes");
-        addPlugin(morphologyMenu, imago.plugin.image.process.ImageKillBorders.class, "Kill Borders");
-        addPlugin(morphologyMenu, imago.plugin.image.binary.BinaryImageKillBorders.class, "Binary Kill Borders");
+        addPlugin(morphologyMenu, imago.image.plugin.process.ImageFillHoles.class, "Fill Holes");
+        addPlugin(morphologyMenu, imago.image.plugin.binary.BinaryImageFillHoles.class, "Binary Fill Holes");
+        addPlugin(morphologyMenu, imago.image.plugin.process.ImageKillBorders.class, "Kill Borders");
+        addPlugin(morphologyMenu, imago.image.plugin.binary.BinaryImageKillBorders.class, "Binary Kill Borders");
         menu.add(morphologyMenu);
 		
         menu.addSeparator();
-        addPlugin(menu, imago.plugin.image.process.ImagePair2DRegister.class, "Simple Image Registration", hasScalarImage);
+        addPlugin(menu, imago.image.plugin.process.ImagePair2DRegister.class, "Simple Image Registration", hasScalarImage);
         
         menu.addSeparator();
-        addPlugin(menu, imago.plugin.image.vectorize.ImageFindNonZeroPixels.class, "Find Non-Zeros Elements", hasImage2D && hasScalarImage);
-        addPlugin(menu, imago.plugin.image.vectorize.ImageIsocontour.class, "Isocontour...");
-        addPlugin(menu, imago.plugin.image.vectorize.ExportIsosurface.class, "Export Isosurface...");
-        addPlugin(menu, imago.plugin.image.vectorize.Image3DIsosurface.class, "Compute Isosurface...");
-        addPlugin(menu, imago.plugin.image.process.Image3DKymograph.class, "Kymograph", hasImage3D && hasScalarImage);
+        addPlugin(menu, imago.image.plugin.vectorize.ImageFindNonZeroPixels.class, "Find Non-Zeros Elements", hasImage2D && hasScalarImage);
+        addPlugin(menu, imago.image.plugin.vectorize.ImageIsocontour.class, "Isocontour...");
+        addPlugin(menu, imago.image.plugin.vectorize.ExportIsosurface.class, "Export Isosurface...");
+        addPlugin(menu, imago.image.plugin.vectorize.Image3DIsosurface.class, "Compute Isosurface...");
+        addPlugin(menu, imago.image.plugin.process.Image3DKymograph.class, "Kymograph", hasImage3D && hasScalarImage);
 
         // operators specific to binary images
         menu.addSeparator();
         JMenu segmentationMenu = new JMenu("Segmentation");
-        addPlugin(segmentationMenu, imago.plugin.image.process.ImageOtsuThreshold.class, "Otsu Auto Threshold", hasScalarImage);
-        addPlugin(segmentationMenu, imago.plugin.image.process.ImageIsodataThreshold.class, "Isodata Auto Threshold", hasScalarImage);
-        addPlugin(segmentationMenu, imago.plugin.image.process.ImageManualThreshold.class, "Manual Threshold", hasScalarImage);
-        addPlugin(segmentationMenu, imago.plugin.image.process.ImageHysteresisThreshold.class, "Hysteresis Threshold", hasScalarImage);
+        addPlugin(segmentationMenu, imago.image.plugin.process.ImageOtsuThreshold.class, "Otsu Auto Threshold", hasScalarImage);
+        addPlugin(segmentationMenu, imago.image.plugin.process.ImageIsodataThreshold.class, "Isodata Auto Threshold", hasScalarImage);
+        addPlugin(segmentationMenu, imago.image.plugin.process.ImageManualThreshold.class, "Manual Threshold", hasScalarImage);
+        addPlugin(segmentationMenu, imago.image.plugin.process.ImageHysteresisThreshold.class, "Hysteresis Threshold", hasScalarImage);
         segmentationMenu.addSeparator();
-        addPlugin(segmentationMenu, imago.plugin.image.process.ImageKMeansSegmentation.class, "K-Means Segmentation", hasImage);
+        addPlugin(segmentationMenu, imago.image.plugin.process.ImageKMeansSegmentation.class, "K-Means Segmentation", hasImage);
         segmentationMenu.addSeparator();
-        addPlugin(segmentationMenu, imago.plugin.image.process.ImageWatershed.class, "Watershed", hasScalarImage);
-        addPlugin(segmentationMenu, imago.plugin.image.process.ImageMarkerControlledWatershed.class, "Marker-Based Watershed", hasScalarImage);
+        addPlugin(segmentationMenu, imago.image.plugin.process.ImageWatershed.class, "Watershed", hasScalarImage);
+        addPlugin(segmentationMenu, imago.image.plugin.process.ImageMarkerControlledWatershed.class, "Marker-Based Watershed", hasScalarImage);
         menu.add(segmentationMenu);
 
         // operators specific to binary images
         menu.addSeparator();
 		JMenu binaryMenu = new JMenu("Binary Images");
-        addPlugin(binaryMenu, imago.plugin.image.binary.BinaryImageConnectedComponentsLabeling.class, "Connected Components Labeling");
+        addPlugin(binaryMenu, imago.image.plugin.binary.BinaryImageConnectedComponentsLabeling.class, "Connected Components Labeling");
         binaryMenu.addSeparator();
-        addPlugin(binaryMenu, imago.plugin.image.binary.BinaryImageEuclideanDistanceMap.class, "Distance Map");
-        addPlugin(binaryMenu, imago.plugin.image.binary.BinaryImageChamferDistanceMap.class, "Chamfer Distance Map");
-        addPlugin(binaryMenu, imago.plugin.image.binary.BinaryImage3DDepthMap.class, "3D Binary Image Depth Map");
-        addPlugin(binaryMenu, imago.plugin.image.binary.ImageGeodesicDistanceMap.class, "Geodesic Distance Map...");
+        addPlugin(binaryMenu, imago.image.plugin.binary.BinaryImageEuclideanDistanceMap.class, "Distance Map");
+        addPlugin(binaryMenu, imago.image.plugin.binary.BinaryImageChamferDistanceMap.class, "Chamfer Distance Map");
+        addPlugin(binaryMenu, imago.image.plugin.binary.BinaryImage3DDepthMap.class, "3D Binary Image Depth Map");
+        addPlugin(binaryMenu, imago.image.plugin.binary.ImageGeodesicDistanceMap.class, "Geodesic Distance Map...");
         binaryMenu.addSeparator();
-        addPlugin(binaryMenu, imago.plugin.image.binary.BinaryImageSkeleton.class, "IJ Skeleton");
-        addPlugin(binaryMenu, imago.plugin.image.binary.BinaryImageSplitCoalescentParticles.class, "Split Particles...");
+        addPlugin(binaryMenu, imago.image.plugin.binary.BinaryImageSkeleton.class, "IJ Skeleton");
+        addPlugin(binaryMenu, imago.image.plugin.binary.BinaryImageSplitCoalescentParticles.class, "Split Particles...");
         binaryMenu.addSeparator();
-        addPlugin(binaryMenu, imago.plugin.image.binary.BinaryImageOverlay.class, "Binary Overlay...");
-        addPlugin(binaryMenu, imago.plugin.image.binary.ApplyBinaryMask.class, "Apply Binary Mask...");
+        addPlugin(binaryMenu, imago.image.plugin.binary.BinaryImageOverlay.class, "Binary Overlay...");
+        addPlugin(binaryMenu, imago.image.plugin.binary.ApplyBinaryMask.class, "Apply Binary Mask...");
         menu.add(binaryMenu);
         
         // operators specific to binary images
         JMenu labelMenu = new JMenu("Binary / Label Images");
-        addPlugin(labelMenu, imago.plugin.image.process.LabelMapCropLabel.class, "Crop Label...", hasLabelImage);
-        addPlugin(labelMenu, imago.plugin.image.process.LabelMapSizeOpening.class, "Size Opening...", hasLabelImage);
+        addPlugin(labelMenu, imago.image.plugin.process.LabelMapCropLabel.class, "Crop Label...", hasLabelImage);
+        addPlugin(labelMenu, imago.image.plugin.process.LabelMapSizeOpening.class, "Size Opening...", hasLabelImage);
         labelMenu.addSeparator();
-        addPlugin(labelMenu, imago.plugin.image.process.LabelMapSkeleton.class, "Skeleton (2D)");
+        addPlugin(labelMenu, imago.image.plugin.process.LabelMapSkeleton.class, "Skeleton (2D)");
         labelMenu.addSeparator();
-        addPlugin(labelMenu, imago.plugin.image.vectorize.BinaryImageBoundaryGraph.class, "Boundary Graph", hasImage2D && hasBinaryImage);
-        addPlugin(labelMenu, imago.plugin.image.vectorize.LabelMapToBoundaryPolygons.class, "Region Boundaries to Polygons", hasImage2D && hasLabelImage);
+        addPlugin(labelMenu, imago.image.plugin.vectorize.BinaryImageBoundaryGraph.class, "Boundary Graph", hasImage2D && hasBinaryImage);
+        addPlugin(labelMenu, imago.image.plugin.vectorize.LabelMapToBoundaryPolygons.class, "Region Boundaries to Polygons", hasImage2D && hasLabelImage);
         menu.add(labelMenu);
 		
 		return menu;
@@ -533,46 +533,46 @@ public class GuiBuilder
 	{
 		JMenu menu = new JMenu("Analyze");
 
-        addPlugin(menu, imago.plugin.image.analyze.ImageHistogram.class, "Histogram", hasImage);
-        addPlugin(menu, imago.plugin.image.analyze.ImageRoiHistogram.class, "ROI Histogram", hasImage && hasImage2D);
-        addPlugin(menu, imago.plugin.image.analyze.ImageMeanValue.class, "Mean Value", hasImage);
-        addPlugin(menu, imago.plugin.image.analyze.ColorImageBivariateHistograms.class, "Bivariate Color Histograms", hasColorImage);
-        addPlugin(menu, imago.plugin.image.process.ImageBivariateHistogram.class, "Bivariate Histogram");
+        addPlugin(menu, imago.image.plugin.analyze.ImageHistogram.class, "Histogram", hasImage);
+        addPlugin(menu, imago.image.plugin.analyze.ImageRoiHistogram.class, "ROI Histogram", hasImage && hasImage2D);
+        addPlugin(menu, imago.image.plugin.analyze.ImageMeanValue.class, "Mean Value", hasImage);
+        addPlugin(menu, imago.image.plugin.analyze.ColorImageBivariateHistograms.class, "Bivariate Color Histograms", hasColorImage);
+        addPlugin(menu, imago.image.plugin.process.ImageBivariateHistogram.class, "Bivariate Histogram");
 		menu.addSeparator();
-        addPlugin(menu, imago.plugin.image.analyze.ImageLineProfile.class, "Line Profile", hasImage);
-        addPlugin(menu, imago.plugin.image.analyze.ImageAnalyzeWithinROI.class, "Intensity within ROI", hasImage);
-        addPlugin(menu, imago.plugin.image.analyze.ImagePlotChannels.class, "Channel Profile", hasImage);
+        addPlugin(menu, imago.image.plugin.analyze.ImageLineProfile.class, "Line Profile", hasImage);
+        addPlugin(menu, imago.image.plugin.analyze.ImageAnalyzeWithinROI.class, "Intensity within ROI", hasImage);
+        addPlugin(menu, imago.image.plugin.analyze.ImagePlotChannels.class, "Channel Profile", hasImage);
 
         menu.addSeparator();
         JMenu regFeatMenu = new JMenu("Region Features");
-        addPlugin(regFeatMenu, imago.plugin.image.analyze.RegionMorphology2D.class, "Regions Morphology", hasImage2D && hasLabelImage);
+        addPlugin(regFeatMenu, imago.image.plugin.analyze.RegionMorphology2D.class, "Regions Morphology", hasImage2D && hasLabelImage);
         menu.add(regFeatMenu);
         
         JMenu regions2dMenu = new JMenu("Regions (2D)");
         regions2dMenu.setEnabled(hasImage2D && hasLabelImage);
-        addPlugin(regions2dMenu, imago.plugin.image.analyze.LabelImageIntrinsicVolumes.class, "Regions Intrinsic Volumes", hasImage2D && hasLabelImage);
-        addPlugin(regions2dMenu, imago.plugin.image.analyze.LabelImageEquivalentDisks.class, "Regions Equivalent Disks", hasImage2D && hasLabelImage);
-        addPlugin(regions2dMenu, imago.plugin.image.analyze.LabelImageEquivalentEllipses.class, "Regions Equivalent Ellipses", hasImage2D && hasLabelImage);
-        addPlugin(regions2dMenu, imago.plugin.image.analyze.LabelImageOrientedBoxes.class, "Regions Oriented Boxes", hasImage2D && hasLabelImage);
-        addPlugin(regions2dMenu, imago.plugin.image.analyze.LabelImageConvexHulls.class, "Regions Conxex Hulls", hasImage2D && hasLabelImage);
-        addPlugin(regions2dMenu, imago.plugin.image.analyze.LabelImageMaxFeretDiameters.class, "Regions Max. Feret Diameters", hasImage2D && hasLabelImage);
-        addPlugin(regions2dMenu, imago.plugin.image.analyze.LabelImageGeodesicDiameters.class, "Regions Geodesic Diameters", hasImage2D && hasLabelImage);
+        addPlugin(regions2dMenu, imago.image.plugin.analyze.LabelImageIntrinsicVolumes.class, "Regions Intrinsic Volumes", hasImage2D && hasLabelImage);
+        addPlugin(regions2dMenu, imago.image.plugin.analyze.LabelImageEquivalentDisks.class, "Regions Equivalent Disks", hasImage2D && hasLabelImage);
+        addPlugin(regions2dMenu, imago.image.plugin.analyze.LabelImageEquivalentEllipses.class, "Regions Equivalent Ellipses", hasImage2D && hasLabelImage);
+        addPlugin(regions2dMenu, imago.image.plugin.analyze.LabelImageOrientedBoxes.class, "Regions Oriented Boxes", hasImage2D && hasLabelImage);
+        addPlugin(regions2dMenu, imago.image.plugin.analyze.LabelImageConvexHulls.class, "Regions Conxex Hulls", hasImage2D && hasLabelImage);
+        addPlugin(regions2dMenu, imago.image.plugin.analyze.LabelImageMaxFeretDiameters.class, "Regions Max. Feret Diameters", hasImage2D && hasLabelImage);
+        addPlugin(regions2dMenu, imago.image.plugin.analyze.LabelImageGeodesicDiameters.class, "Regions Geodesic Diameters", hasImage2D && hasLabelImage);
         regions2dMenu.addSeparator();
-        addPlugin(regions2dMenu, imago.plugin.image.analyze.LabelImageAdjacencies.class, "Regions Adjacencies", hasImage2D && hasLabelImage);
+        addPlugin(regions2dMenu, imago.image.plugin.analyze.LabelImageAdjacencies.class, "Regions Adjacencies", hasImage2D && hasLabelImage);
         menu.add(regions2dMenu);
 
         JMenu regions3dMenu = new JMenu("Regions (3D)");
         regions3dMenu.setEnabled(hasImage3D && hasLabelImage);
-        addPlugin(regions3dMenu, imago.plugin.image.analyze.LabelImageEquivalentEllipsoids.class, "Regions Equivalent Ellipsoids", hasImage3D && hasLabelImage);
+        addPlugin(regions3dMenu, imago.image.plugin.analyze.LabelImageEquivalentEllipsoids.class, "Regions Equivalent Ellipsoids", hasImage3D && hasLabelImage);
         menu.add(regions3dMenu);
 
-        addPlugin(menu, imago.plugin.image.analyze.LabelImageBoundingBoxes.class, "Bounding Boxes", (hasImage2D || hasImage3D) && hasLabelImage);
-        addPlugin(menu, imago.plugin.image.analyze.LabelImageCentroids.class, "Regions Centroids", (hasImage2D || hasImage3D) && hasLabelImage);
+        addPlugin(menu, imago.image.plugin.analyze.LabelImageBoundingBoxes.class, "Bounding Boxes", (hasImage2D || hasImage3D) && hasLabelImage);
+        addPlugin(menu, imago.image.plugin.analyze.LabelImageCentroids.class, "Regions Centroids", (hasImage2D || hasImage3D) && hasLabelImage);
 
         menu.addSeparator();
         JMenu textureMenu = new JMenu("Texture Analysis");
-        addPlugin(textureMenu, imago.plugin.image.analyze.GrayLevelImageCooccurenceMatrix.class, "Gray Level Co-Occurence Matrix", hasImage2D && hasScalarImage);
-        addPlugin(textureMenu, imago.plugin.image.analyze.ImageGrayscaleGranulometry.class, "Grayscale granulometry", hasImage2D && hasScalarImage);
+        addPlugin(textureMenu, imago.image.plugin.analyze.GrayLevelImageCooccurenceMatrix.class, "Gray Level Co-Occurence Matrix", hasImage2D && hasScalarImage);
+        addPlugin(textureMenu, imago.image.plugin.analyze.ImageGrayscaleGranulometry.class, "Grayscale granulometry", hasImage2D && hasScalarImage);
         menu.add(textureMenu);
         
         return menu;
@@ -625,18 +625,18 @@ public class GuiBuilder
     {
         JMenu fileMenu = new JMenu("File");
         
-        addPlugin(fileMenu, imago.plugin.table.OpenTable.class, "Open Table...");
+        addPlugin(fileMenu, imago.table.plugin.OpenTable.class, "Open Table...");
         JMenu demoTables = new JMenu("Demo Tables");
         addPlugin(demoTables, new OpenDemoTable("tables/fisherIris.csv"), "Fisher's Iris");
         addPlugin(demoTables, new OpenDemoTable("tables/penguins_clean.csv"), "Penguins");
         fileMenu.add(demoTables);
 
         fileMenu.addSeparator();
-        addPlugin(fileMenu, imago.plugin.table.SaveTable.class, "Save Table...");
+        addPlugin(fileMenu, imago.table.plugin.SaveTable.class, "Save Table...");
 
         fileMenu.addSeparator();
-        addPlugin(fileMenu, imago.plugin.CloseCurrentFrame.class, "Close", !(frame instanceof ImagoEmptyFrame));
-        addPlugin(fileMenu, imago.plugin.QuitApplication.class, "Quit");
+        addPlugin(fileMenu, imago.gui.plugin.file.CloseCurrentFrame.class, "Close", !(frame instanceof ImagoEmptyFrame));
+        addPlugin(fileMenu, imago.gui.plugin.file.QuitApplication.class, "Quit");
 
         return fileMenu;
     }
@@ -649,24 +649,24 @@ public class GuiBuilder
     {
         JMenu editMenu = new JMenu("Edit");
         
-        addPlugin(editMenu, imago.plugin.table.edit.RenameTable.class, "Rename...");
+        addPlugin(editMenu, imago.table.plugin.edit.RenameTable.class, "Rename...");
         editMenu.addSeparator();
-        addPlugin(editMenu, imago.plugin.table.edit.TableSelectColumns.class, "Select Columns...");
-        addPlugin(editMenu, imago.plugin.table.edit.TableKeepNumericColumns.class, "Keep Numeric Columns");
-        addPlugin(editMenu, imago.plugin.table.edit.ConcatenateTableColumns.class, "Concatenate Columns...");
-        addPlugin(editMenu, imago.plugin.table.edit.TableParseGroupFromRowNames.class, "Parse Group From Row Names...");
+        addPlugin(editMenu, imago.table.plugin.edit.TableSelectColumns.class, "Select Columns...");
+        addPlugin(editMenu, imago.table.plugin.edit.TableKeepNumericColumns.class, "Keep Numeric Columns");
+        addPlugin(editMenu, imago.table.plugin.edit.ConcatenateTableColumns.class, "Concatenate Columns...");
+        addPlugin(editMenu, imago.table.plugin.edit.TableParseGroupFromRowNames.class, "Parse Group From Row Names...");
         editMenu.addSeparator();
-        addPlugin(editMenu, imago.plugin.table.edit.TableFilterRows.class, "Filter/Select Rows...");
-        addPlugin(editMenu, imago.plugin.table.edit.TableSortRows.class, "Sort Rows...");
-        addPlugin(editMenu, imago.plugin.table.edit.ConcatenateTableRows.class, "Concatenate Rows...");
+        addPlugin(editMenu, imago.table.plugin.edit.TableFilterRows.class, "Filter/Select Rows...");
+        addPlugin(editMenu, imago.table.plugin.edit.TableSortRows.class, "Sort Rows...");
+        addPlugin(editMenu, imago.table.plugin.edit.ConcatenateTableRows.class, "Concatenate Rows...");
         editMenu.addSeparator();
-        addPlugin(editMenu, imago.plugin.table.edit.TransposeTable.class, "Transpose");
+        addPlugin(editMenu, imago.table.plugin.edit.TransposeTable.class, "Transpose");
         editMenu.addSeparator();
-        addPlugin(editMenu, imago.plugin.table.edit.FoldTableToImage.class, "Fold Table to Image");
+        addPlugin(editMenu, imago.table.plugin.edit.FoldTableToImage.class, "Fold Table to Image");
         editMenu.addSeparator();
-        addPlugin(editMenu, imago.plugin.table.edit.PrintTableInfo.class, "Print Table Info");
-        addPlugin(editMenu, imago.plugin.table.edit.NumericTableSummary.class, "Table Summary");
-        addPlugin(editMenu, imago.plugin.table.edit.PrintTableToConsole.class, "Print to Console");
+        addPlugin(editMenu, imago.table.plugin.edit.PrintTableInfo.class, "Print Table Info");
+        addPlugin(editMenu, imago.table.plugin.edit.NumericTableSummary.class, "Table Summary");
+        addPlugin(editMenu, imago.table.plugin.edit.PrintTableToConsole.class, "Print to Console");
         
         return editMenu;
     }
@@ -678,13 +678,13 @@ public class GuiBuilder
     private JMenu createTablePlotMenu()
     {
         JMenu plotMenu = new JMenu("Plot");
-        addPlugin(plotMenu, imago.plugin.table.plot.TableScatterPlot.class, "Scatter Plot...");
-        addPlugin(plotMenu, imago.plugin.table.plot.TableGroupScatterPlot.class, "Scatter Plot By Group...");
-        addPlugin(plotMenu, imago.plugin.table.plot.TablePairPlot.class, "Pair Plot");
+        addPlugin(plotMenu, imago.table.plugin.plot.TableScatterPlot.class, "Scatter Plot...");
+        addPlugin(plotMenu, imago.table.plugin.plot.TableGroupScatterPlot.class, "Scatter Plot By Group...");
+        addPlugin(plotMenu, imago.table.plugin.plot.TablePairPlot.class, "Pair Plot");
         plotMenu.addSeparator();
-        addPlugin(plotMenu, imago.plugin.table.plot.TableLinePlot.class, "Line Plot...");
+        addPlugin(plotMenu, imago.table.plugin.plot.TableLinePlot.class, "Line Plot...");
         plotMenu.addSeparator();
-        addPlugin(plotMenu, imago.plugin.table.plot.PlotTableColumnHistogram.class, "Histogram...");
+        addPlugin(plotMenu, imago.table.plugin.plot.PlotTableColumnHistogram.class, "Histogram...");
         return plotMenu;
     }
     
@@ -696,13 +696,13 @@ public class GuiBuilder
     {
         JMenu processMenu = new JMenu("Process");
         
-        addPlugin(processMenu, imago.plugin.table.process.AggregateTableWithColumn.class, "Aggregate by group...");
+        addPlugin(processMenu, imago.table.plugin.process.AggregateTableWithColumn.class, "Aggregate by group...");
         processMenu.addSeparator();
-        addPlugin(processMenu, imago.plugin.table.process.TablePca.class, "Principal Components Analysis");
+        addPlugin(processMenu, imago.table.plugin.process.TablePca.class, "Principal Components Analysis");
         processMenu.addSeparator();
-        addPlugin(processMenu, imago.plugin.table.process.TableKMeans.class, "K-Means...");
+        addPlugin(processMenu, imago.table.plugin.process.TableKMeans.class, "K-Means...");
         processMenu.addSeparator();
-        addPlugin(processMenu, imago.plugin.table.process.TableConfusionMatrix.class, "Confusion Matrix...");
+        addPlugin(processMenu, imago.table.plugin.process.TableConfusionMatrix.class, "Confusion Matrix...");
         
         return processMenu;
     }
@@ -714,10 +714,10 @@ public class GuiBuilder
     {
         JMenu fileMenu = new JMenu("File");
         
-        addPlugin(fileMenu, imago.plugin.chart.SaveChart.class, "Save Chart...");
+        addPlugin(fileMenu, imago.chart.plugin.SaveChart.class, "Save Chart...");
 
         fileMenu.addSeparator();
-        addPlugin(fileMenu, imago.plugin.CloseCurrentFrame.class, "Close", !(frame instanceof ImagoEmptyFrame));
+        addPlugin(fileMenu, imago.gui.plugin.file.CloseCurrentFrame.class, "Close", !(frame instanceof ImagoEmptyFrame));
         return fileMenu;
     }
     
@@ -731,21 +731,21 @@ public class GuiBuilder
         
         JMenu devMenu = new JMenu("Developer");
         menu.add(devMenu);
-        addPlugin(devMenu, imago.plugin.developer.DisplayExceptionDialog.class, "Show Demo Exception");
+        addPlugin(devMenu, imago.gui.plugin.developer.DisplayExceptionDialog.class, "Show Demo Exception");
         // The two following plugins are used for debugging
 //        addPlugin(devMenu, imago.plugin.developer.FailingConstructorPlugin.class, "(X) Can not Instantiate");
 //        addPlugin(devMenu, imago.plugin.developer.RunThrowExceptionPlugin.class, "(X) Can not Run");
         devMenu.addSeparator();
-        addPlugin(devMenu, imago.plugin.edit.PrintFrameList.class, "Print Frame List");
-        addPlugin(devMenu, imago.plugin.edit.PrintDocumentList.class, "Print Document List");
-        addPlugin(devMenu, imago.plugin.edit.PrintWorkspaceContent.class, "Print Workspace Content");
+        addPlugin(devMenu, imago.image.plugin.edit.PrintFrameList.class, "Print Frame List");
+        addPlugin(devMenu, imago.image.plugin.edit.PrintDocumentList.class, "Print Document List");
+        addPlugin(devMenu, imago.image.plugin.edit.PrintWorkspaceContent.class, "Print Workspace Content");
         
         // Add some domain-specific plugins, to be transformed into user plugins in the future
         menu.addSeparator();
         JMenu perigrainMenu = new JMenu("Perigrain");
-        addPlugin(perigrainMenu, imago.plugin.plugin.crop.Crop3DPlugin.class, "Crop 3D");
-        addPlugin(perigrainMenu, imago.plugin.plugin.crop.CreateSurface3DPlugin.class, "Surface 3D");
-        addPlugin(perigrainMenu, imago.plugin.plugin.ImportImage3DPolylineSeries.class, "Import Polyline Series");
+        addPlugin(perigrainMenu, imago.gui.plugin.plugin.crop.Crop3DPlugin.class, "Crop 3D");
+        addPlugin(perigrainMenu, imago.gui.plugin.plugin.crop.CreateSurface3DPlugin.class, "Surface 3D");
+        addPlugin(perigrainMenu, imago.gui.plugin.plugin.ImportImage3DPolylineSeries.class, "Import Polyline Series");
         menu.add(perigrainMenu);
         
         // Add the user plugins

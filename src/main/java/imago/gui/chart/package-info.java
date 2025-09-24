@@ -1,7 +1,0 @@
-/**
- * 
- */
-/**
- * 
- */
-package imago.gui.chart;

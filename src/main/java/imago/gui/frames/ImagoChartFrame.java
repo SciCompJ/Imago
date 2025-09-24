@@ -20,9 +20,10 @@ import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 
 /**
- *  Should be replaced by imago.gui.chart.ChartFrame.
+ *  Should be replaced by imago.chart.ChartFrame.
  *
  */
+@Deprecated
 public class ImagoChartFrame extends ImagoFrame 
 {
 	// ===================================================================

@@ -27,7 +27,7 @@ import javax.swing.filechooser.FileFilter;
 import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.gui.frames.ImagoEmptyFrame;
-import imago.gui.image.ImageFrame;
+import imago.image.ImageFrame;
 
 /**
  * The GUI Manager, that create frames, stores the set of open frames, and keeps
