@@ -3,9 +3,9 @@
  */
 package imago.image.plugin.edit;
 
-import imago.app.ImageHandle;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import imago.gui.FramePlugin;
 import net.sci.array.color.ColorMap;
 import net.sci.image.Image;

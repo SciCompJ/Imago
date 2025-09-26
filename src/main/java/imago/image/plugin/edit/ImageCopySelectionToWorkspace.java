@@ -3,15 +3,15 @@
  */
 package imago.image.plugin.edit;
 
-import imago.app.GeometryHandle;
-import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import imago.image.ImageViewer;
 import imago.image.PlanarImageViewer;
+import imago.shapemanager.GeometryHandle;
 import imago.shapemanager.ShapeManager;
 import imago.util.StringUtils;
 import net.sci.array.Array;

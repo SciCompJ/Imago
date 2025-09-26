@@ -5,11 +5,11 @@ package imago.image.plugin.process;
 
 import java.util.ArrayList;
 
-import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import imago.gui.FramePlugin;
 import net.sci.array.color.RGB8Array;
 import net.sci.array.numeric.UInt8Array;

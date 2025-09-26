@@ -3,11 +3,11 @@
  */
 package imago.image.plugin.edit;
 
-import imago.app.ImageHandle;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import imago.image.PlanarImageViewer;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.LineSegment2D;

@@ -30,11 +30,11 @@ import javax.swing.ListSelectionModel;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import imago.app.ImageHandle;
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import net.sci.array.Array;
 import net.sci.array.numeric.VectorArray;
 import net.sci.axis.CategoricalAxis;

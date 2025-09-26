@@ -5,7 +5,6 @@ package imago.image.plugin.analyze;
 
 import java.util.Collection;
 
-import imago.app.ImageHandle;
 import imago.app.ObjectHandle;
 import imago.app.shape.Shape;
 import imago.gui.FramePlugin;
@@ -13,6 +12,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import imago.table.TableFrame;
 import net.sci.array.Array;
 import net.sci.array.numeric.IntArray2D;

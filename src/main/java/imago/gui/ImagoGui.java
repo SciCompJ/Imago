@@ -24,10 +24,10 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
-import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.gui.frames.ImagoEmptyFrame;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 
 /**
  * The GUI Manager, that create frames, stores the set of open frames, and keeps

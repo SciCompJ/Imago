@@ -9,18 +9,31 @@ import java.util.Collection;
 
 /**
  * Superclass for all the entities manipulated by the Imago application.
- * Derived classes refer to images, tables, geometries...
+ * Instances of {@code ObjectHandle} can encapsulate images, tables,
+ * geometries...
  *
- * Manages a name, a tag, and a flag for modification.
+ * Manages several generic variables:
+ * <ul>
+ * <li>the item; storage is left to subclasses</li>
+ * <li>a tag to identify the item uniquely within the application</li>
+ * <li>a name, to identify item within GUI</li>
+ * <li>a flag for modification.</li>
+ * </ul>
  * 
- * @author dlegland
- *
+ * The {@code GenericHandle} class provides a default implementation for
+ * encapsulating items of any type. The different sub-modules (image, table...)
+ * can manage specific handles.
  */
 public abstract class ObjectHandle
 {
     // =============================================================
     // Static methods
     
+    /**
+     * Retrieves the list of names of all the handles within the application.
+     * @param handles
+     * @return
+     */
     public static final Collection<String> getNames(Collection<? extends ObjectHandle> handles)
     {
         ArrayList<String> names = new ArrayList<String>(handles.size());
@@ -68,13 +81,16 @@ public abstract class ObjectHandle
      */
     protected String tag;
     
-    
     /**
      * The name of the object (used for display in GUI).
      * Can be updated. The ImagoApp class contains methods to ensure handles keep unique names.
      */
     protected String name;
     
+    /**
+     * A boolean flag indicating whether the underlying item has been modified.
+     * Default value is false.
+     */
     protected boolean modified = false;
     
     

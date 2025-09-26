@@ -5,7 +5,6 @@ package imago.image.plugin.edit;
 
 import javax.swing.JComboBox;
 
-import imago.app.ImageHandle;
 import imago.app.shape.MarkerType;
 import imago.app.shape.Shape;
 import imago.gui.FramePlugin;
@@ -13,6 +12,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import imago.table.TableFrame;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.table.Column;

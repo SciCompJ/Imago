@@ -9,9 +9,9 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import imago.app.ImageHandle;
 import imago.gui.ImagoFrame;
 import imago.gui.frames.ImagoTextFrame;
+import imago.image.ImageHandle;
 import imago.gui.FramePlugin;
 
 /**

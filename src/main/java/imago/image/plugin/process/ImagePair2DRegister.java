@@ -36,11 +36,11 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.google.gson.stream.JsonWriter;
 
-import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.gui.util.GuiHelper;
+import imago.image.ImageHandle;
 import imago.imagepair.ImagePairFrame;
 import imago.imagepair.ImagePairViewer;
 import net.sci.array.numeric.ScalarArray2D;

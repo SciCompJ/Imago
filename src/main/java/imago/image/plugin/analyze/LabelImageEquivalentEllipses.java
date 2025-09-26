@@ -3,8 +3,6 @@
  */
 package imago.image.plugin.analyze;
 
-import imago.app.GeometryHandle;
-import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.app.ObjectHandle;
 import imago.app.shape.Shape;
@@ -12,6 +10,8 @@ import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
+import imago.shapemanager.GeometryHandle;
 import imago.shapemanager.ShapeManager;
 import imago.table.TableFrame;
 import imago.gui.FramePlugin;

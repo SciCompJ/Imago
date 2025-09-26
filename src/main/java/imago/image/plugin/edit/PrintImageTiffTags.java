@@ -14,9 +14,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import imago.app.ImageHandle;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import imago.table.RowNumberTable;
 import imago.gui.FramePlugin;
 import net.sci.image.Image;

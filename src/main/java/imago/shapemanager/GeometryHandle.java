@@ -1,11 +1,14 @@
 /**
  * 
  */
-package imago.app;
+package imago.shapemanager;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+import imago.app.ImagoApp;
+import imago.app.ObjectHandle;
+import imago.app.Workspace;
 import net.sci.geom.Curve;
 import net.sci.geom.Geometry;
 import net.sci.geom.MultiPoint;

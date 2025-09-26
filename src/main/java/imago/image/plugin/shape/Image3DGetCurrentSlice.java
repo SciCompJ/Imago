@@ -3,9 +3,9 @@
  */
 package imago.image.plugin.shape;
 
-import imago.app.ImageHandle;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import imago.image.ImageViewer;
 import imago.image.StackSliceViewer;
 import imago.gui.FramePlugin;

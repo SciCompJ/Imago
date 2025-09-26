@@ -33,8 +33,6 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
-import imago.app.GeometryHandle;
-import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.app.shape.Shape;
 import imago.app.shape.io.JsonGeometryReader;
@@ -43,6 +41,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import imago.util.imagej.ImagejRoi;
 import imago.util.imagej.ImagejRoiDecoder;
 import net.sci.geom.Geometry;
@@ -68,7 +67,7 @@ import net.sci.geom.polygon2d.Polyline2D;
  * ShapeManager manager = ShapeManager.getInstance(frame.getGui());
  * }
  * 
- * @see imago.app.GeometryHandle
+ * @see imago.shapemanager.GeometryHandle
  * @see imago.app.Workspace
  * 
  * @author dlegland

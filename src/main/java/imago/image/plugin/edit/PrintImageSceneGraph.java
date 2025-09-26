@@ -3,10 +3,10 @@
  */
 package imago.image.plugin.edit;
 
-import imago.app.ImageHandle;
 import imago.app.scene.Node;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import imago.gui.FramePlugin;
 
 /**

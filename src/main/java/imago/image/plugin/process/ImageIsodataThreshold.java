@@ -3,10 +3,10 @@
  */
 package imago.image.plugin.process;
 
-import imago.app.ImageHandle;
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import net.sci.image.Image;
 import net.sci.image.segmentation.IsodataThreshold;
 

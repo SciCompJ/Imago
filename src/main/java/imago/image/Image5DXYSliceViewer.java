@@ -3,8 +3,6 @@
  */
 package imago.image;
 
-import imago.app.ImageHandle;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;

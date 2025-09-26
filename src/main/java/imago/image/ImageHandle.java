@@ -1,11 +1,14 @@
 /**
  * 
  */
-package imago.app;
+package imago.image;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+import imago.app.ImagoApp;
+import imago.app.ObjectHandle;
+import imago.app.Workspace;
 import imago.app.scene.GroupNode;
 import imago.app.scene.Node;
 import imago.app.shape.Shape;
@@ -16,10 +19,9 @@ import net.sci.image.io.tiff.ImagejMetadata;
 
 
 /**
- * An Imago document, that contains an image, and eventually some annotations.
+ * An handle that contains an image, and eventually some annotations. Also
+ * provides a management of changes to image.
  * 
- * @author David Legland
- *
  */
 public class ImageHandle extends ObjectHandle
 {

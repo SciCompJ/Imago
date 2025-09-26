@@ -13,7 +13,6 @@ import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import imago.app.ImageHandle;
 import imago.app.scene.GroupNode;
 import imago.app.scene.Node;
 import imago.app.scene.ShapeNode;

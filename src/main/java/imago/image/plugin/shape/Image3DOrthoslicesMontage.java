@@ -5,11 +5,11 @@ package imago.image.plugin.shape;
 
 import java.util.ArrayList;
 
-import imago.app.ImageHandle;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import net.sci.array.Array;
 import net.sci.array.Array2D;
 import net.sci.array.shape.SimpleSlicer;

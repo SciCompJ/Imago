@@ -3,11 +3,11 @@
  */
 package imago.image.plugin.binary;
 
-import imago.app.ImageHandle;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import net.sci.array.Array;
 import net.sci.image.Image;
 import net.sci.image.binary.SplitCoalescentParticles;

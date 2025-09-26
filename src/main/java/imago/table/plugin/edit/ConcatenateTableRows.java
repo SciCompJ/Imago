@@ -6,12 +6,12 @@ package imago.table.plugin.edit;
 import java.util.ArrayList;
 
 import imago.app.ImagoApp;
-import imago.app.TableHandle;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.table.TableFrame;
+import imago.table.TableHandle;
 import net.sci.table.Table;
 import net.sci.table.Tables;
 

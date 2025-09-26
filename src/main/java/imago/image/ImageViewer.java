@@ -4,8 +4,7 @@
 package imago.image;
 
 
-import imago.app.ImageHandle;
-import imago.app.ImageHandle.Event;
+import imago.image.ImageHandle.Event;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.VectorArray;
 import net.sci.geom.Geometry;

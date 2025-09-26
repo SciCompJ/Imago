@@ -3,10 +3,10 @@
  */
 package imago.image.plugin.analyze;
 
-import imago.app.ImageHandle;
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import net.sci.array.Array;
 import net.sci.array.color.RGB8Array;
 import net.sci.array.numeric.Int32Array2D;

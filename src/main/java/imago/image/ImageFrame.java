@@ -16,7 +16,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
-import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.app.shape.Shape;
 import imago.gui.GuiBuilder;

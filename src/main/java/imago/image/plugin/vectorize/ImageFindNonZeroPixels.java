@@ -5,13 +5,13 @@ package imago.image.plugin.vectorize;
 
 import java.util.Collection;
 
-import imago.app.GeometryHandle;
-import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.app.shape.Shape;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
+import imago.shapemanager.GeometryHandle;
 import imago.shapemanager.ShapeManager;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;

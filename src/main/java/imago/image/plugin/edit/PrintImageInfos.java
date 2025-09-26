@@ -6,11 +6,11 @@ package imago.image.plugin.edit;
 import java.awt.Dimension;
 import java.util.ArrayList;
 
-import imago.app.ImageHandle;
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.gui.frames.ImagoTextFrame;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import net.sci.array.Array;
 import net.sci.array.binary.RunLengthBinaryArray2D;
 import net.sci.array.binary.RunLengthBinaryArray3D;

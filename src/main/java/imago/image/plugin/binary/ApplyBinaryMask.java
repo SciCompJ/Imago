@@ -5,12 +5,12 @@ package imago.image.plugin.binary;
 
 import java.util.Collection;
 
-import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import net.sci.array.Array;
 import net.sci.array.Arrays;
 import net.sci.array.binary.BinaryArray;

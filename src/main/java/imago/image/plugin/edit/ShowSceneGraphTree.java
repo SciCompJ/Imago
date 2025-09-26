@@ -3,12 +3,12 @@
  */
 package imago.image.plugin.edit;
 
-import imago.app.ImageHandle;
 import imago.app.scene.Node;
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.gui.frames.SceneGraphDisplayFrame;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 
 /**
  * Opens a new frame to display scene graph of current Image Handle.

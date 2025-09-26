@@ -22,7 +22,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import imago.app.ImagoApp;
-import imago.app.TableHandle;
 import imago.gui.GuiBuilder;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;

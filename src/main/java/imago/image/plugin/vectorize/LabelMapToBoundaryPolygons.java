@@ -6,11 +6,11 @@ package imago.image.plugin.vectorize;
 import java.util.ArrayList;
 import java.util.Map;
 
-import imago.app.ImageHandle;
 import imago.app.shape.Shape;
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import net.sci.array.Array;
 import net.sci.array.numeric.IntArray;
 import net.sci.array.numeric.IntArray2D;

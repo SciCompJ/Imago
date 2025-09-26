@@ -5,11 +5,11 @@ package imago.image.plugin.edit;
 
 import java.util.Collection;
 
-import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
+import imago.image.ImageHandle;
 import imago.imagepair.ImagePairFrame;
 import net.sci.image.Image;
 

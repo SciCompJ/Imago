@@ -21,7 +21,6 @@ import java.util.TreeMap;
 
 import com.google.gson.stream.JsonReader;
 
-import imago.app.ImageHandle;
 import imago.app.scene.GroupNode;
 import imago.app.scene.ImageSerialSectionsNode;
 import imago.app.scene.ImageSliceNode;
@@ -30,6 +29,7 @@ import imago.app.scene.ShapeNode;
 import imago.app.scene.io.JsonSceneReader;
 import imago.app.shape.Style;
 import imago.gui.ImagoFrame;
+import imago.image.ImageHandle;
 import imago.image.ImageViewer;
 import net.sci.algo.AlgoEvent;
 import net.sci.algo.AlgoListener;

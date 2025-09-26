@@ -3,10 +3,10 @@
  */
 package imago.image.plugin.binary;
 
-import imago.app.ImageHandle;
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import net.sci.array.Array;
 import net.sci.array.binary.BinaryArray;
 import net.sci.image.Image;

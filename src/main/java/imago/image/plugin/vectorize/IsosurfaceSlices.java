@@ -6,7 +6,6 @@ package imago.image.plugin.vectorize;
 import java.awt.Color;
 import java.util.Collection;
 
-import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.app.scene.GroupNode;
 import imago.app.scene.ImageSerialSectionsNode;
@@ -16,6 +15,7 @@ import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import net.sci.array.Array;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray3D;

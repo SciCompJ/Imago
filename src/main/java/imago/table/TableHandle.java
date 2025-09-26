@@ -1,11 +1,14 @@
 /**
  * 
  */
-package imago.app;
+package imago.table;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+import imago.app.ImagoApp;
+import imago.app.ObjectHandle;
+import imago.app.Workspace;
 import net.sci.table.Table;
 
 /**

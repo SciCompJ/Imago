@@ -6,10 +6,10 @@ package imago.image.plugin.analyze;
 import java.util.Collection;
 import java.util.Map;
 
-import imago.app.ImageHandle;
 import imago.app.shape.Shape;
 import imago.gui.*;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import imago.table.TableFrame;
 import net.sci.array.Array;
 import net.sci.array.numeric.IntArray2D;

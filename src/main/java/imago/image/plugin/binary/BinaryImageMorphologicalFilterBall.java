@@ -5,11 +5,11 @@ package imago.image.plugin.binary;
 
 import java.util.Locale;
 
-import imago.app.ImageHandle;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import net.sci.array.Array;
 import net.sci.array.ArrayOperator;
 import net.sci.array.binary.BinaryArray;

@@ -8,6 +8,8 @@ import net.sci.image.Image;
 
 import org.junit.Test;
 
+import imago.image.ImageHandle;
+
 public class ImagoAppTest {
 
 	@Test

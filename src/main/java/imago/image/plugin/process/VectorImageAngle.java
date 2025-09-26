@@ -3,11 +3,11 @@
  */
 package imago.image.plugin.process;
 
-import imago.app.ImageHandle;
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import net.sci.array.Array;
 import net.sci.array.numeric.Float32Array;
 import net.sci.array.numeric.ScalarArray;

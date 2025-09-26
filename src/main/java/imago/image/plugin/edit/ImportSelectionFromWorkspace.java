@@ -5,16 +5,16 @@ package imago.image.plugin.edit;
 
 import java.util.Collection;
 
-import imago.app.GeometryHandle;
-import imago.app.ImageHandle;
 import imago.app.ImagoApp;
 import imago.app.ObjectHandle;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import imago.image.ImageViewer;
 import imago.image.PlanarImageViewer;
+import imago.shapemanager.GeometryHandle;
 import net.sci.array.Array;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;

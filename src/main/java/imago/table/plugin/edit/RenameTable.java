@@ -3,11 +3,11 @@
  */
 package imago.table.plugin.edit;
 
-import imago.app.TableHandle;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.table.TableFrame;
+import imago.table.TableHandle;
 
 /**
  * Rename the name of the current image, ensuring unicity of its name.

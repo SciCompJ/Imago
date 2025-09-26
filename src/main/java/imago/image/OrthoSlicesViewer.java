@@ -19,7 +19,6 @@ import javax.swing.JScrollPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import imago.app.ImageHandle;
 import net.sci.geom.Geometry;
 import net.sci.image.ImageType;
 import net.sci.image.shape.ImageSlicer;

@@ -15,13 +15,13 @@ import org.junit.Test;
 
 import com.google.gson.stream.JsonReader;
 
-import imago.app.ImageHandle;
 import imago.app.scene.GroupNode;
 import imago.app.scene.ImageSerialSectionsNode;
 import imago.app.scene.Node;
 import imago.app.scene.ShapeNode;
 import imago.app.scene.io.JsonSceneReader;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import net.sci.array.numeric.UInt8Array2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.polygon2d.LinearRing2D;

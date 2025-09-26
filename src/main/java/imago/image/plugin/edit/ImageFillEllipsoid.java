@@ -3,11 +3,11 @@
  */
 package imago.image.plugin.edit;
 
-import imago.app.ImageHandle;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import net.sci.array.Array;
 import net.sci.array.numeric.ScalarArray3D;
 import net.sci.geom.geom3d.Point3D;

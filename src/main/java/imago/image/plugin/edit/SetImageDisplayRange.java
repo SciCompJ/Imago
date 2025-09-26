@@ -5,10 +5,10 @@ package imago.image.plugin.edit;
 
 import java.util.Locale;
 
-import imago.app.ImageHandle;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import imago.image.ImageViewer;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
