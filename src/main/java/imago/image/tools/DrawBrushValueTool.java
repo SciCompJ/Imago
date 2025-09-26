@@ -7,12 +7,12 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 
 import imago.app.UserPreferences;
-import imago.image.ImageDisplay;
 import imago.image.ImageFrame;
 import imago.image.ImageTool;
 import imago.image.ImageViewer;
-import imago.image.PlanarImageViewer;
-import imago.image.StackSliceViewer;
+import imago.image.viewers.ImageDisplay;
+import imago.image.viewers.PlanarImageViewer;
+import imago.image.viewers.StackSliceViewer;
 import net.sci.array.Array;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray2D;

@@ -21,7 +21,7 @@ import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
 import imago.image.ImageViewer;
-import imago.image.PlanarImageViewer;
+import imago.image.viewers.PlanarImageViewer;
 import net.sci.array.Array;
 import net.sci.array.color.RGB8Array;
 import net.sci.array.numeric.VectorArray;

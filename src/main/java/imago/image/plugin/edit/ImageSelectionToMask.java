@@ -8,7 +8,7 @@ import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import imago.image.ImageViewer;
-import imago.image.PlanarImageViewer;
+import imago.image.viewers.PlanarImageViewer;
 import net.sci.array.Array;
 import net.sci.array.binary.BinaryArray2D;
 import net.sci.geom.geom2d.Geometry2D;

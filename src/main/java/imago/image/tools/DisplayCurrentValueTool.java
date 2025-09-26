@@ -8,10 +8,10 @@ import java.awt.event.MouseEvent;
 import java.util.Locale;
 
 import imago.gui.panels.StatusBar;
-import imago.image.ImageDisplay;
 import imago.image.ImageFrame;
 import imago.image.ImageTool;
 import imago.image.ImageViewer;
+import imago.image.viewers.ImageDisplay;
 import net.sci.array.Array;
 import net.sci.array.color.RGB16Array;
 import net.sci.array.color.RGB8Array;

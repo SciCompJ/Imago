@@ -22,8 +22,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import imago.gui.panels.CollapsiblePanel;
-import imago.image.ImageDisplay;
 import imago.image.ImageTool;
+import imago.image.viewers.ImageDisplay;
 import imago.imagepair.composite.CheckerBoardComposite;
 import imago.imagepair.composite.DifferenceOfIntensitiesComposite;
 import imago.imagepair.composite.ImagePairComposite;

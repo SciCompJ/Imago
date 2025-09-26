@@ -6,9 +6,9 @@ package imago.image.tools;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 
-import imago.image.ImageDisplay;
 import imago.image.ImageFrame;
 import imago.image.ImageTool;
+import imago.image.viewers.ImageDisplay;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.polygon2d.Box2D;
 

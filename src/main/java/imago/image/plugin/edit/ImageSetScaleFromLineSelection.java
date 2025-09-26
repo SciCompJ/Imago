@@ -8,7 +8,7 @@ import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
-import imago.image.PlanarImageViewer;
+import imago.image.viewers.PlanarImageViewer;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.image.Calibration;

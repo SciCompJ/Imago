@@ -6,7 +6,7 @@ package imago.image.plugin.analyze;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
 import imago.image.ImageViewer;
-import imago.image.PlanarImageViewer;
+import imago.image.viewers.PlanarImageViewer;
 import imago.table.TableFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;

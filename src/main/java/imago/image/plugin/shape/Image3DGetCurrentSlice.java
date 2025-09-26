@@ -7,7 +7,7 @@ import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import imago.image.ImageViewer;
-import imago.image.StackSliceViewer;
+import imago.image.viewers.StackSliceViewer;
 import imago.gui.FramePlugin;
 import net.sci.image.Image;
 import net.sci.image.shape.ImageSlicer;

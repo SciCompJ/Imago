@@ -7,9 +7,9 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 
 import imago.app.UserPreferences;
-import imago.image.ImageDisplay;
 import imago.image.ImageFrame;
 import imago.image.ImageTool;
+import imago.image.viewers.ImageDisplay;
 import net.sci.array.Array;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray2D;

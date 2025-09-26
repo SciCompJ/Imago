@@ -6,12 +6,12 @@ package imago.image.tools;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 
-import imago.image.ImageDisplay;
 import imago.image.ImageFrame;
 import imago.image.ImageTool;
 import imago.image.ImageViewer;
-import imago.image.PlanarImageViewer;
-import imago.image.StackSliceViewer;
+import imago.image.viewers.ImageDisplay;
+import imago.image.viewers.PlanarImageViewer;
+import imago.image.viewers.StackSliceViewer;
 import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
 

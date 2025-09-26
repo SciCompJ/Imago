@@ -13,7 +13,7 @@ import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import imago.image.ImageViewer;
-import imago.image.PlanarImageViewer;
+import imago.image.viewers.PlanarImageViewer;
 import imago.shapemanager.GeometryHandle;
 import net.sci.array.Array;
 import net.sci.geom.Geometry;
