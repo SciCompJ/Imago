@@ -25,6 +25,10 @@ import net.sci.image.io.RawImageReader.DataType;
  */
 public class ImportImageRawData implements FramePlugin
 {
+    
+    /**
+     * Default empty constructor.
+     */
     public ImportImageRawData()
     {
     }
@@ -58,6 +62,7 @@ public class ImportImageRawData implements FramePlugin
         gd.addNumericField("Size Z ", 1, 0);
         gd.addChoice("Data Type ", EnumSet.allOf(DataType.class), DataType.UINT8);
         gd.addChoice("Byte Order ", new String[]{"Little Endian", "Big Endian"}, "Little Endian");
+        gd.addCheckBox("Virtual Image", false);
         gd.showDialog();
         
         if (gd.getOutput() == GenericDialog.Output.CANCEL) 
@@ -71,34 +76,44 @@ public class ImportImageRawData implements FramePlugin
         int sizeZ = (int) gd.getNextNumber();
         DataType type = DataType.fromLabel(gd.getNextChoice());
         ByteOrder byteOrder = gd.getNextChoiceIndex() == 0 ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN;
-
-        int[] size = sizeZ == 1 ? new int[]{sizeX, sizeY} : new int[]{sizeX, sizeY, sizeZ}; 
+        boolean virtualImage = gd.getNextBoolean();
         
-        RawImageReader reader; 
+        // dimensions of image data array
+        int[] dims = sizeZ == 1 ? new int[]{sizeX, sizeY} : new int[]{sizeX, sizeY, sizeZ};
+        
+        // check validity of virtual image option
+        if (virtualImage && dims.length != 3)
+        {
+            System.out.println("virtual images are available only for 3D image data");
+            virtualImage = false;
+        }
+            
+        if (virtualImage)
+        {
+            if (type != DataType.UINT8 && type != DataType.UINT16 && type != DataType.FLOAT32)
+            {
+                ImagoGui.showErrorDialog(frame,
+                        "Can not create virtual image for type: " + type.name(),
+                        "Image Import Error");
+                return;
+            }
+        }
+
+        System.out.println("import raw data from file: " + file.getName());
+        RawImageReader reader;
         try
         {
-            reader = new RawImageReader(file, size, type, byteOrder);
+            reader = new RawImageReader(file, dims, type, byteOrder);
+            
+            Image image = virtualImage ? reader.readVirtualImage3D() : reader.readImage();
+
+            // add the image document to GUI
+            ImageFrame.create(image, frame);
         } 
         catch (IOException ex)
         {
             System.err.println(ex);
             return;
         }
-        
-        
-        // apply operator on current image
-        Image image;
-        try
-        {
-            image = reader.readImage();
-        }
-        catch (IOException ex)
-        {
-            System.err.println(ex);
-            return;
-        }
-        
-        // add the image document to GUI
-        ImageFrame.create(image, frame);
     }
 }
