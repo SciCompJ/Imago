@@ -546,6 +546,7 @@ public class GuiBuilder
         menu.addSeparator();
         JMenu regFeatMenu = new JMenu("Region Features");
         addPlugin(regFeatMenu, imago.image.plugin.analyze.RegionMorphology2D.class, "Regions Morphology", hasImage2D && hasLabelImage);
+        addPlugin(regFeatMenu, imago.image.plugin.analyze.RegionFeatureOverlay2D.class, "Regions Feature Overlay", hasImage2D && hasLabelImage);
         menu.add(regFeatMenu);
         
         JMenu regions2dMenu = new JMenu("Regions (2D)");
