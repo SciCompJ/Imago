@@ -93,6 +93,10 @@ public class OpenImage implements FramePlugin
             return;
         }
         
+        // setup metadata
+        String fileName = file.getName();
+        image.setNameFromFileName(fileName);
+        
         // add the image document to GUI
         ImageFrame.create(image, frame);
     }
@@ -144,8 +148,8 @@ public class OpenImage implements FramePlugin
         Image image = ImageIOImageReader.convertBufferedImage(bufImg);
         
         // setup metadata
-        image.setName(Path.of(path).getFileName().toString());
-        image.setFilePath(path);
+        String fileName = Path.of(path).getFileName().toString();
+        image.setNameFromFileName(fileName);
 
         return image;
     }

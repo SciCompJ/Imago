@@ -162,6 +162,10 @@ public class ImportImageSeries implements FramePlugin
         
         Image image = new Image(array, firstImage);
         
+        // setup image metadata
+        String fileName = fileList[firstImageIndex].getName();
+        image.setNameFromFileName(fileName);
+
         // add the image document to GUI
         ImageFrame.create(image, frame);
     }

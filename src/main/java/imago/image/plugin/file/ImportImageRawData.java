@@ -103,9 +103,13 @@ public class ImportImageRawData implements FramePlugin
         RawImageReader reader;
         try
         {
+            // try to read image
             reader = new RawImageReader(file, dims, type, byteOrder);
-            
             Image image = virtualImage ? reader.readVirtualImage3D() : reader.readImage();
+            
+            // setup image metadata
+            String fileName = file.getName();
+            image.setNameFromFileName(fileName);
 
             // add the image document to GUI
             ImageFrame.create(image, frame);

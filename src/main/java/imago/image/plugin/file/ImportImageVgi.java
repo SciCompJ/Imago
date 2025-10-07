@@ -47,33 +47,40 @@ public class ImportImageVgi implements FramePlugin
             return;
         }
         
-		// Create a MetaImage Format reader with the chosen file
-		VgiImageReader reader;
-		try
-		{
-			reader = new VgiImageReader(file);
-		} 
-		catch (IOException ex)
-		{
-			System.err.println(ex);
-			return;
-		}
+        // Create a MetaImage Format reader with the chosen file
+        VgiImageReader reader;
+        try
+        {
+            reader = new VgiImageReader(file);
+        }
+        catch (IOException ex)
+        {
+            System.err.println(ex);
+            return;
+        }
+        
+        // Try to read the image from the file
+        Image image;
+        try
+        {
+            image = reader.readImage();
+        }
+        catch (IOException ex)
+        {
+            System.err.println(ex);
+            return;
+        }
+        catch (Exception ex)
+        {
+            System.err.println(ex);
+            return;
+        }
+        
+        // setup image metadata
+        String fileName = file.getName();
+        image.setNameFromFileName(fileName);
 
-		// Try to read the image from the file
-		Image image;
-		try
-		{
-			image = reader.readImage();
-		} catch (IOException ex)
-		{
-			System.err.println(ex);
-			return;
-		} catch (Exception ex)
-		{
-			System.err.println(ex);
-			return;
-		}
-		
+
 		// add the image document to GUI
         ImageFrame.create(image, frame);
 	}
