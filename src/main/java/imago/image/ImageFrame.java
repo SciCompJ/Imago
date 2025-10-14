@@ -31,6 +31,7 @@ import imago.util.imagej.ImagejRoiDecoder;
 import net.sci.algo.Algo;
 import net.sci.algo.AlgoEvent;
 import net.sci.algo.AlgoListener;
+import net.sci.array.Array;
 import net.sci.array.ArrayOperator;
 import net.sci.image.Image;
 import net.sci.image.ImageArrayOperator;
@@ -522,8 +523,14 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         {
             name = name + "." + image.getExtension();
         }
+        
+        // in case the image data is implemented as an array View, add the token "(V)" before the name
+        if (image.getData() instanceof Array.View<?>)
+        {
+            name = "(V) " + name;
+        }
 
-        // string containing image dimensions
+        // add a string containing image dimensions
         String dimString = "(unknown size)";
         int dims[] = image.getSize();
         if (dims.length > 0)
