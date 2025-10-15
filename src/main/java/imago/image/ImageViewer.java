@@ -104,6 +104,8 @@ public abstract class ImageViewer implements ImageHandle.Listener
         {
             this.slicingPosition[d] = (int) Math.floor(image.getSize(d) / 2);
         }
+        
+//        this.imageHandle.addImageHandleListener(this);
     }
 
     

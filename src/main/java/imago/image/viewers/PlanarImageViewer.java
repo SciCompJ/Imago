@@ -174,6 +174,7 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
         // remove previous tool
         if (currentTool != null)
         {
+            currentTool.deselect();
             imageDisplay.removeMouseListener(currentTool);
             imageDisplay.removeMouseMotionListener(currentTool);
         }
@@ -184,6 +185,7 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
         {
             imageDisplay.addMouseListener(currentTool);
             imageDisplay.addMouseMotionListener(currentTool);
+            currentTool.select();
         }
     }
     

@@ -114,6 +114,12 @@ public class ImageManualThreshold implements FramePlugin
         resultImage.setName(image.getName() + suffix);
         
 		// add the image document to GUI
-        ImageFrame.create(resultImage, frame);
+        ImageFrame newFrame = ImageFrame.create(resultImage, frame);
+        
+        // if image is a view, add listener
+        if (outputTypeIndex == 2)
+        {
+            ((ImageFrame) frame).getImageHandle().addImageHandleListener(newFrame.getImageViewer());
+        }
 	}
 }

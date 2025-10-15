@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 
 import imago.app.UserPreferences;
 import imago.image.ImageFrame;
+import imago.image.ImageHandle;
 import imago.image.ImageTool;
 import imago.image.ImageViewer;
 import imago.image.viewers.ImageDisplay;
@@ -225,6 +226,8 @@ public class DrawBrushValueTool extends ImageTool
         
         // refresh display
         updateCursor(xi, yi);
+        
+        this.frame.getImageViewer().getImageHandle().notifyImageHandleChange(ImageHandle.Event.CHANGE_MASK | ImageHandle.Event.IMAGE_MASK);
         this.frame.getImageViewer().refreshDisplay();
         this.frame.repaint();
     }
@@ -245,6 +248,7 @@ public class DrawBrushValueTool extends ImageTool
             ((StackSliceViewer) viewer).getImageDisplay().setCustomCursor(cursor);
         }        
     }
+    
     private static void drawLineOnArray(ScalarArray2D<?> array, int x1, int y1, int x2, int y2, double radius, double value)
     {
         // array size
