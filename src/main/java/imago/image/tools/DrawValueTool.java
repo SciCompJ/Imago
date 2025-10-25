@@ -72,6 +72,10 @@ public class DrawValueTool extends ImageTool
         {
             return;
         }
+        if (!array.isModifiable())
+        {
+            return;
+        }
         
 //        System.out.println("[DrawValue] Mouse pressed at (" + x + " ; " + y);
         

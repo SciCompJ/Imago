@@ -93,6 +93,10 @@ public class DrawBrushValueTool extends ImageTool
         {
             return;
         }
+        if (!array.isModifiable())
+        {
+            return;
+        }
         
         // Coordinate of mouse cursor
         ImageDisplay display = (ImageDisplay) evt.getSource();
@@ -207,18 +211,21 @@ public class DrawBrushValueTool extends ImageTool
             return;
         }
         
-        // check position is within array bounds
-        int sizeX = array.size(0);
-        int sizeY = array.size(1);
-        if (xi < 0 || yi < 0) return;
-        if (xi >= sizeX || yi >= sizeY) return;
-        
-        // retrieve brush settings
-        UserPreferences prefs = this.frame.getGui().getAppli().userPreferences;
-        double value = prefs.brushValue;
-        double radius = prefs.brushRadius;
-        
-        drawLineOnArray(array2d, xprev, yprev, xi, yi, radius, value);
+        if (array.isModifiable())
+        {
+            // check position is within array bounds
+            int sizeX = array.size(0);
+            int sizeY = array.size(1);
+            if (xi < 0 || yi < 0) return;
+            if (xi >= sizeX || yi >= sizeY) return;
+
+            // retrieve brush settings
+            UserPreferences prefs = this.frame.getGui().getAppli().userPreferences;
+            double value = prefs.brushValue;
+            double radius = prefs.brushRadius;
+
+            drawLineOnArray(array2d, xprev, yprev, xi, yi, radius, value);
+        }
         
         // keep coordinates for next mouse move
         xprev = xi;
