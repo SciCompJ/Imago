@@ -197,6 +197,15 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
                 ImageFrame.this.jFrame.dispose();
             }
         });
+        
+        // if image is a view, add listeners to parent handles
+        // TODO: remove listeners when frame is closed
+        Array<?> array = imageHandle.getImage().getData();
+        if (array instanceof Array.View<?>)
+        {
+            ImageHandle.getAllParents(gui.getAppli(), array).stream()
+                    .forEach(h -> h.addImageHandleListener(imageViewer));
+        }
 
         putFrameMiddleScreen();
     }

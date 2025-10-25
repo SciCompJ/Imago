@@ -5,6 +5,8 @@ package imago.image;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 
 import imago.app.ImagoApp;
 import imago.app.ObjectHandle;
@@ -14,6 +16,7 @@ import imago.app.scene.Node;
 import imago.app.shape.Shape;
 import imago.util.imagej.ImagejRoi;
 import imago.util.imagej.ImagejRoiDecoder;
+import net.sci.array.Array;
 import net.sci.image.Image;
 import net.sci.image.io.tiff.ImagejMetadata;
 
@@ -91,6 +94,46 @@ public class ImageHandle extends ObjectHandle
             if (handle instanceof ImageHandle)
             {
                 res.add(handle.getName());
+            }
+        }
+        return res;
+    }
+    
+    /**
+     * Retrieves all the ImageHandle instances within the specified app that
+     * contain an image whose data array is a parent (from the
+     * {@code Array.View} interface) of the specified array.
+     * 
+     * @param app
+     *            the instance of ImagoApp containing the handles
+     * @param array
+     *            the array to consider.
+     * @return the list of ImageHandle instances that refer to a parent of the
+     *         array. If the array is not a view, the result is empty.
+     */
+    public static final Collection<ImageHandle> getAllParents(ImagoApp app, Array<?> array)
+    {
+        if (!(array instanceof Array.View<?>))
+        {
+            return new ArrayList<ImageHandle>();
+        }
+
+        Collection<Array<?>> parentArrays = getAllParents((Array.View<?>) array);
+
+        return ImageHandle.getAll(app).stream()
+                .filter(h -> parentArrays.contains(h.getImage().getData()))
+                .collect(Collectors.toList());
+    }
+    
+    private static final Collection<Array<?>> getAllParents(Array.View<?> array)
+    {
+        HashSet<Array<?>> res = new HashSet<>();
+        for (Array<?> parent : array.parentArrays())
+        {
+            res.add(parent);
+            if (parent instanceof Array.View)
+            {
+                res.addAll(getAllParents((Array.View<?>) parent));
             }
         }
         return res;
