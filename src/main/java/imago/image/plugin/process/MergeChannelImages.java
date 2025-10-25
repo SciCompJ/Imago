@@ -11,6 +11,7 @@ import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import imago.gui.FramePlugin;
+import net.sci.array.color.MergeChannelsRGB8Array;
 import net.sci.array.color.RGB8Array;
 import net.sci.array.numeric.UInt8Array;
 import net.sci.image.Image;
@@ -21,79 +22,87 @@ import net.sci.image.Image;
  */
 public class MergeChannelImages implements FramePlugin
 {
-	public MergeChannelImages()
-	{
-	}
+    public MergeChannelImages()
+    {
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
-	public void run(ImagoFrame frame, String args)
-	{
-		// get pointer to app for finding images 
-		ImagoApp app = frame.getGui().getAppli();
-		
-		// collect the names of documents containing UInt8 images
-		ArrayList<String> imageNames = findUInt8ArrayNameList(app);
-		
-		// do not continue if no UInt8 image is loaded
-		if (imageNames.size() == 0)
-		{
-			return;
-		}
-		
-		// Convert image name list to String array
-		String[] imageNameArray = imageNames.toArray(new String[]{});
-		String firstImageName = imageNameArray[0];
-				
-		// Create Dialog for choosing image names
-		GenericDialog dialog = new GenericDialog(frame, "Merge Channels");
-		dialog.addChoice("Red channel:", imageNameArray, firstImageName);
-		dialog.addChoice("Green channel:", imageNameArray, firstImageName);
-		dialog.addChoice("Blue channel:", imageNameArray, firstImageName);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void run(ImagoFrame frame, String args)
+    {
+        // get pointer to app for finding images
+        ImagoApp app = frame.getGui().getAppli();
 
-		// Display dialog and wait for OK or Cancel
-		dialog.showDialog();
-		if (dialog.wasCanceled())
-		{
-			return;
-		}
-		
-		// Retrieve images from document names
-		Image redChannelImage 	= ImageHandle.findFromName(app, dialog.getNextChoice()).getImage();
-		Image greenChannelImage = ImageHandle.findFromName(app, dialog.getNextChoice()).getImage();
-		Image blueChannelImage 	= ImageHandle.findFromName(app, dialog.getNextChoice()).getImage();
-		
-		// extract arrays containing image data
-		UInt8Array redChannel 	= (UInt8Array) redChannelImage.getData();
-		UInt8Array greenChannel = (UInt8Array) greenChannelImage.getData();
-		UInt8Array blueChannel 	= (UInt8Array) blueChannelImage.getData();
-		
-		// concatenate the three channels to create an RGB8 array
-		RGB8Array rgbArray = RGB8Array.mergeChannels(redChannel, greenChannel, blueChannel);
-		
-		// create the image corresponding to channels concatenation
-		Image rgbImage = new Image(rgbArray, redChannelImage);
-		rgbImage.setName(redChannelImage.getName() + "-mergeChannels");
+        // collect the names of documents containing UInt8 images
+        ArrayList<String> imageNames = findUInt8ArrayNameList(app);
 
-		// add the image document to GUI
-		ImageFrame.create(rgbImage, frame);
-	}
-	
-	private ArrayList<String> findUInt8ArrayNameList(ImagoApp app)
-	{
-	    ArrayList<String> imageNames = new ArrayList<>();
-	    ImageHandle.getAll(app).stream()
-            .filter(doc -> {
-                Image img = doc.getImage();
-                if (img == null) return false;
-                return img.getData() instanceof UInt8Array;
-            })
-            .forEach(doc -> imageNames.add(doc.getName()));
+        // do not continue if no UInt8 image is loaded
+        if (imageNames.size() == 0)
+        {
+            return;
+        }
+
+        // Convert image name list to String array
+        String[] imageNameArray = imageNames.toArray(new String[] {});
+        String firstImageName = imageNameArray[0];
+
+        // Create Dialog for choosing image names
+        GenericDialog dialog = new GenericDialog(frame, "Merge Channels");
+        dialog.addChoice("Red channel:", imageNameArray, firstImageName);
+        dialog.addChoice("Green channel:", imageNameArray, firstImageName);
+        dialog.addChoice("Blue channel:", imageNameArray, firstImageName);
+        dialog.addCheckBox("Create View", true);
+
+        // Display dialog and wait for OK or Cancel
+        dialog.showDialog();
+        if (dialog.wasCanceled())
+        {
+            return;
+        }
+
+        // Retrieve images from document names
+        Image redChannelImage = ImageHandle.findFromName(app, dialog.getNextChoice()).getImage();
+        Image greenChannelImage = ImageHandle.findFromName(app, dialog.getNextChoice()).getImage();
+        Image blueChannelImage = ImageHandle.findFromName(app, dialog.getNextChoice()).getImage();
+
+        // extract arrays containing image data
+        UInt8Array redChannel = (UInt8Array) redChannelImage.getData();
+        UInt8Array greenChannel = (UInt8Array) greenChannelImage.getData();
+        UInt8Array blueChannel = (UInt8Array) blueChannelImage.getData();
+        boolean createView = dialog.getNextBoolean();
+
+        // concatenate the three channels to create an RGB8 array
+        RGB8Array rgbArray = null;
+        if (createView)
+        {
+            rgbArray = new MergeChannelsRGB8Array(redChannel, greenChannel, blueChannel);
+        }
+        else
+        {
+            rgbArray = RGB8Array.mergeChannels(redChannel, greenChannel, blueChannel);
+        }
+
+        // create the image corresponding to channels concatenation
+        Image rgbImage = new Image(rgbArray, redChannelImage);
+        rgbImage.setName(redChannelImage.getName() + "-mergeChannels");
+
+        // add the image document to GUI
+        ImageFrame.create(rgbImage, frame);
+    }
+
+    private ArrayList<String> findUInt8ArrayNameList(ImagoApp app)
+    {
+        ArrayList<String> imageNames = new ArrayList<>();
+        ImageHandle.getAll(app).stream().filter(doc -> {
+            Image img = doc.getImage();
+            if (img == null) return false;
+            return img.getData() instanceof UInt8Array;
+        }).forEach(doc -> imageNames.add(doc.getName()));
         return imageNames;
-	}
+    }
 }
