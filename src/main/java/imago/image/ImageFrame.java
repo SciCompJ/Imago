@@ -533,11 +533,9 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
             name = name + "." + image.getExtension();
         }
         
-        // in case the image data is implemented as an array View, add the token "(V)" before the name
-        if (image.getData() instanceof Array.View<?>)
-        {
-            name = "(V) " + name;
-        }
+        // compute prefix to prepend to name
+        String prefix = computeImageTitlePrefix(image.getData());
+        name = prefix + name;
 
         // add a string containing image dimensions
         String dimString = "(unknown size)";
@@ -557,6 +555,18 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         // setup title
         String titleString = name + " - " + dimString + " - " + typeString;
         this.setTitle(titleString);
+    }
+    
+    private final static String computeImageTitlePrefix(Array<?> array)
+    {
+        String imageFlags = "";
+        // in case the image data is implemented as an array View, add the token "(V)" before the name
+        if (array instanceof Array.View<?>) imageFlags += "V";
+        // in case the image data is not modifiable, add the token "(U)" before the name
+        if (!array.isModifiable()) imageFlags += "U";
+        
+        // format
+        return imageFlags.isEmpty() ? "" : "(" + imageFlags + ") ";
     }
 
     public ImageHandle getImageHandle()
