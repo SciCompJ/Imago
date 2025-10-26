@@ -193,13 +193,11 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
             @Override
             public void windowClosing(WindowEvent evt)
             {
-                gui.removeFrame(ImageFrame.this);
-                ImageFrame.this.jFrame.dispose();
+                close();
             }
         });
         
         // if image is a view, add listeners to parent handles
-        // TODO: remove listeners when frame is closed
         Array<?> array = imageHandle.getImage().getData();
         if (array instanceof Array.View<?>)
         {
@@ -637,5 +635,29 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         super.algoProgressChanged(evt);
         System.out.println("status: " + evt.getStatus());
         this.getStatusBar().setCurrentStepLabel(evt.getStatus());
+    }
+    
+    /**
+     * Override the default behavior to also remove image viewer from listeners
+     * of other images.
+     */
+    @Override
+    public void close()
+    {
+        // remove image viewer from list of listener of other images
+        Array<?> array = getImageHandle().getImage().getData();
+        if (array instanceof Array.View<?>)
+        {
+            ImageHandle.getAllParents(gui.getAppli(), array).stream()
+                    .forEach(h -> h.addImageHandleListener(imageViewer));
+        }
+        
+        // call parent method to remove frame
+        super.close();
+        
+        // clear widgets to ensure resources are disposed
+        this.imageViewer = null;
+        this.imageDisplayOptionsPanel = null;
+        this.splitPane = null;
     }
 }
