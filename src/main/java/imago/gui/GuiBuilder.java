@@ -704,6 +704,8 @@ public class GuiBuilder
         addPlugin(processMenu, imago.table.plugin.process.TableKMeans.class, "K-Means...");
         processMenu.addSeparator();
         addPlugin(processMenu, imago.table.plugin.process.TableConfusionMatrix.class, "Confusion Matrix...");
+        processMenu.addSeparator();
+        addPlugin(processMenu, imago.table.plugin.process.CreateLabelClassMap.class, "Create Label Class Map...");
         
         return processMenu;
     }
