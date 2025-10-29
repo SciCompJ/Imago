@@ -10,6 +10,8 @@ import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
+import net.sci.array.color.RGB16Array;
+import net.sci.array.color.RGB8Array;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.VectorArray;
 import net.sci.image.Image;
@@ -79,7 +81,14 @@ public class VectorImageChannelView implements FramePlugin
         // allocate memory for result array
         ScalarArray<?> channelArray = vectorArray.channel(channelIndex);
         
-        Image resultImage = new Image(channelArray, ImageType.DIVERGING, image);
+        // choose type of channel according to type of parent image
+        Image resultImage = switch (vectorArray)
+        {
+            case RGB8Array rgbArray -> new Image(channelArray, ImageType.GRAYSCALE, image);
+            case RGB16Array rgbArray -> new Image(channelArray, ImageType.GRAYSCALE, image);
+            default -> new Image(channelArray, ImageType.DIVERGING, image);
+        };
+
         String name = String.format("%s-channel%02d", image.getName(), channelIndex);
         resultImage.setName(name);
         
