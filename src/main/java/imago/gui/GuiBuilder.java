@@ -371,8 +371,8 @@ public class GuiBuilder
         geometryMenu.addSeparator();
         addArrayOperatorPlugin(geometryMenu, new Rotate90(-1), "Rotate Counter-Clockwise", hasImage2D);
         addArrayOperatorPlugin(geometryMenu, new Rotate90(+1), "Rotate Clockwise", hasImage2D);
+        addPlugin(geometryMenu, imago.image.plugin.shape.ImageRotateBy90Degrees.class, "Rotate by 90 degrees...");
         addPlugin(geometryMenu, imago.image.plugin.shape.ImageRotateAroundCenter.class, "Rotate...", hasImage2D);
-        addPlugin(geometryMenu, imago.image.plugin.shape.Image3DRotate90.class, "Rotate 3D by 90 degrees...", hasImage3D);
         addPlugin(geometryMenu, imago.image.plugin.shape.ImageRotatedCrop.class, "Rotated Crop...", hasImage2D || hasImage3D);
         geometryMenu.addSeparator();
         addPlugin(geometryMenu, imago.image.plugin.shape.ImageReshape.class, "Reshape Image...", hasImage);
