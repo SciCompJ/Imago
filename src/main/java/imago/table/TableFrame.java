@@ -5,6 +5,7 @@ package imago.table;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
@@ -236,6 +237,29 @@ public class TableFrame extends ImagoFrame
 
     // ===================================================================
     // General methods
+    
+    public void repaint()
+    {
+        // recompute display of table
+        JTable jTable = createJTable(table);
+
+        // Setup layout
+        Container panel = jFrame.getContentPane();
+        panel.removeAll();
+
+        JScrollPane scrollPane = new JScrollPane(jTable);
+        JTable rowTable = new RowNumberTable(jTable);
+        scrollPane.setRowHeaderView(rowTable);
+        scrollPane.setCorner(JScrollPane.UPPER_LEFT_CORNER, rowTable.getTableHeader());
+
+        panel.add(jTable.getTableHeader(), BorderLayout.NORTH);
+        panel.add(scrollPane, BorderLayout.CENTER);
+        panel.validate();
+        
+        super.repaint();
+        
+        updateTitle();
+    }
     
     public void updateTitle()
     {
