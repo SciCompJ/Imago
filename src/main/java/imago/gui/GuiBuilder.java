@@ -697,6 +697,8 @@ public class GuiBuilder
     {
         JMenu processMenu = new JMenu("Process");
         
+        addPlugin(processMenu, imago.table.plugin.process.ApplyFunctionToColumn.class, "Apply Function to Columns...");
+        processMenu.addSeparator();
         addPlugin(processMenu, imago.table.plugin.process.AggregateTableWithColumn.class, "Aggregate by group...");
         processMenu.addSeparator();
         addPlugin(processMenu, imago.table.plugin.process.TablePca.class, "Principal Components Analysis");
