@@ -3,46 +3,56 @@
  */
 package imago.image.plugin.analyze;
 
-import java.awt.Color;
+//import java.awt.Color;
 
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.StandardXYBarPainter;
-import org.jfree.chart.renderer.xy.XYBarRenderer;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.data.statistics.SimpleHistogramBin;
-import org.jfree.data.statistics.SimpleHistogramDataset;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
+//import org.jfree.chart.ChartFactory;
+//import org.jfree.chart.ChartPanel;
+//import org.jfree.chart.JFreeChart;
+//import org.jfree.chart.axis.NumberAxis;
+//import org.jfree.chart.plot.PlotOrientation;
+//import org.jfree.chart.plot.XYPlot;
+//import org.jfree.chart.renderer.xy.StandardXYBarPainter;
+//import org.jfree.chart.renderer.xy.XYBarRenderer;
+//import org.jfree.chart.renderer.xy.XYItemRenderer;
+//import org.jfree.data.statistics.SimpleHistogramBin;
+//import org.jfree.data.statistics.SimpleHistogramDataset;
+//import org.jfree.data.xy.XYSeries;
+//import org.jfree.data.xy.XYSeriesCollection;
+import org.knowm.xchart.XYChart;
+import org.knowm.xchart.XYChartBuilder;
+import org.knowm.xchart.XYSeries;
+import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
+import org.knowm.xchart.style.Styler.LegendPosition;
+import org.knowm.xchart.style.colors.XChartSeriesColors;
+import org.knowm.xchart.style.markers.SeriesMarkers;
 
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImagoChartFrame;
+//import imago.gui.frames.ImagoChartFrame;
 import imago.image.ImageFrame;
 import imago.image.ImageViewer;
 import imago.image.viewers.PlanarImageViewer;
+import imago.chart.ChartFrame;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.color.RGB8Array2D;
 import net.sci.array.numeric.ScalarArray2D;
+import net.sci.array.numeric.process.Histogram;
 import net.sci.geom.geom2d.Domain2D;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.image.Image;
-import net.sci.image.analyze.RegionHistogram;
-import net.sci.table.NumericTable;
+import net.sci.image.analyze.ImageHistograms;
 
 /**
- * Computes and display histogram computed within current ROI.
+ * Computes and display histogram within current (2D) ROI.
  * 
  * @author David Legland
  *
  */
 public class ImageRoiHistogram implements FramePlugin
 {
-
+    /**
+     * Default empty constructor.
+     */
     public ImageRoiHistogram()
     {
     }
@@ -67,7 +77,7 @@ public class ImageRoiHistogram implements FramePlugin
             System.out.println("requires an instance of planar image viewer");
             return;
         }
-        
+
         PlanarImageViewer piv = (PlanarImageViewer) viewer;
         Geometry2D selection = piv.getSelection();
         if (!(selection instanceof Domain2D))
@@ -75,304 +85,114 @@ public class ImageRoiHistogram implements FramePlugin
             System.out.println("requires selection to be a planar domain");
             return;
         }
-        
-        NumericTable table = computeHistogram(image, (Domain2D) selection);
 
-        showHistogram(frame, table);
+        Histogram.Result[] histos = computeHistograms(image, (Domain2D) selection);
+        showHistogram(frame, histos);
     }
 
-	private NumericTable computeHistogram(Image image, Domain2D domain)
-	{
-		Array<?> array = image.getData();
-		if (array instanceof ScalarArray2D)
-		{
-			double[] range = image.getDisplaySettings().getDisplayRange();
-			System.out.println(String.format("Display range for histogram: (%f ; %f)", range[0], range[1]));
-			return histogram((ScalarArray2D<?>) array, domain, range, 256);
-		}
-		else if (array instanceof RGB8Array2D)			
-		{
-			return histogram((RGB8Array2D) array, domain);
-		}
-		else
-		{
-			throw new RuntimeException("Unable to compute histogram for array class: " + array.getClass());
-		}
-	}
-	
-	/**
-	 * Computes histogram of a scalar array, and returns the result in a data
-	 * table. The result is stored in a data table with two columns. The first
-	 * column contains the position of the bin center. The second column
-	 * contains the count of array element for the corresponding bin.
-	 * 
-	 * @param array
-	 *            the input array
-	 * @param range
-	 *            the range of values for histogram computation
-	 * @param nBins
-	 *            the number of bins of the resulting histogram
-	 * @return a new instance of DefaultNumericTable containing the resulting histogram
-	 */
-	public static final NumericTable histogram(ScalarArray2D<?> array, Domain2D domain, double[] range, int nBins)
-	{
-		// compute the sizeX of an individual bin
-		double binWidth = (range[1] - range[0]) / (nBins - 1);
-		
-		// allocate memory for result
-		int[] histo = RegionHistogram.histogram2d(array, domain, range, nBins);
+    private Histogram.Result[] computeHistograms(Image image, Domain2D domain)
+    {
+        Array<?> array = image.getData();
+        if (array instanceof ScalarArray2D)
+        {
+            double[] range = image.getDisplaySettings().getDisplayRange();
+            System.out.println(
+                    String.format("Display range for histogram: (%f ; %f)", range[0], range[1]));
 
-		// format the result into data table
-		NumericTable table = NumericTable.create(nBins, 2);
-		for (int i = 0; i < nBins; i++)
-		{
-			table.setValue(i, 0, range[0] + i * binWidth);
-			table.setValue(i, 1, histo[i]);
-		}
-		
-		table.setColumnNames(new String[]{"Intensity", "Count"});
-		
-		return table;
-	}
-	
-	/**
-	 * Computes histogram of an array of RGB8 elements, and returns the result
-	 * in a data table.
-	 * 
-	 * The data table has four columns. The first column contains the bin center
-	 * (from 0 to 255). The three other columns contain the count of the
-	 * corresponding red, green and blue channels respectively.
-	 * 
-	 * @param array
-	 *            the input array of RGB8 elements
-	 * @return a new instance of DefaultNumericTable containing the resulting histogram.
-	 */
-	public static final NumericTable histogram(RGB8Array2D array, Domain2D domain)
-	{
-		// allocate memory for result
-		int[][] histo = RegionHistogram.histogram2d(array, domain);
+            Histogram.Result histo = ImageHistograms.histogramScalar((ScalarArray2D<?>) array,
+                    domain, range, 256);
+            return new Histogram.Result[] { histo };
+        }
+        else if (array instanceof RGB8Array2D)
+        {
+            return ImageHistograms.histogramsRGB8((RGB8Array2D) array, domain);
+        }
+        else
+        {
+            throw new RuntimeException(
+                    "Unable to compute histogram for array class: " + array.getClass());
+        }
+    }
 
-		// format the result into data table
-		NumericTable table = NumericTable.create(256, 4);
-		for (int i = 0; i < 256; i++)
-		{
-			table.setValue(i, 0, i);
-			table.setValue(i, 1, histo[0][i]);
-			table.setValue(i, 2, histo[1][i]);
-			table.setValue(i, 3, histo[2][i]);
-		}
-		
-		table.setColumnNames(new String[]{"Value", "Red", "Green", "Blue"});
-		
-		return table;
-	}
+    private void showHistogram(ImagoFrame parentFrame, Histogram.Result[] histos)
+    {
+        switch (histos.length)
+        {
+            case 1 -> showGray8Histogram(parentFrame, histos[0]);
+            case 3 -> showRGB8Histogram(parentFrame, histos);
+            default -> throw new RuntimeException(
+                    "Unable to display histogram of images with " + histos.length + " columns");
+        }
+    }
 
-	// private void showHistogram(DefaultNumericTable histo) {
-	// int nChannels = histo.geColumnNumber();
-	// int nValues = histo.getRowNumber();
-	//
-	// XYSeriesCollection xyDataset = new XYSeriesCollection();
-	//
-	// for (int c = 0; c < nChannels; c++) {
-	// XYSeries seriesXY = new XYSeries("Channel " + c);
-	// for (int i = 0; i < nValues; i++) {
-	// seriesXY.add(i, histo.get(c, i));
-	// }
-	// xyDataset.addSeries(seriesXY);
-	// }
-	//
-	// // Title of the plot
-	// ImageFrame iframe = (ImageFrame) frame;
-	// MetaImage image = iframe.getDocument().getMetaImage();
-	// String imageName = image.getName();
-	// String titleString = "Histogram of " + imageName;
-	//
-	//
-	// // creates the chart
-	//
-	// JFreeChart chart = ChartFactory.createXYLineChart(
-	// titleString, "Intensity", "Pixel Count", xyDataset,
-	// PlotOrientation.VERTICAL, true, true, true);
-	// chart.getPlot().setBackgroundPaint(Color.WHITE);
-	//
-	// chart.fireChartChanged();
-	//
-	// // we put the chart into a panel
-	// ChartPanel chartPanel = new ChartPanel(chart,
-	// 500, 200, 500, 200, 500, 500,
-	// true, false, true, true, true, true);
-	//
-	// // default size
-	// chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
-	//
-	// // creates a new frame to contains the chart panel
-	// ImagoChartFrame frame = new ImagoChartFrame(this.gui, "Histogram");
-	// frame.setContentPane(chartPanel);
-	// frame.pack();
-	// frame.setVisible(true);
-	// }
+    /**
+     * Display histogram of 256 gray scale images.
+     */
+    private void showGray8Histogram(ImagoFrame parentFrame, Histogram.Result histo)
+    {
+        // Create Chart
+        XYChart chart = new XYChartBuilder()
+                .width(600)
+                .height(500)
+                .xAxisTitle("Value")
+                .yAxisTitle("Count")
+                .build();
 
-	private void showHistogram(ImagoFrame parentFrame, NumericTable histo)
-	{
-		int nChannels = histo.columnCount();
-		if (nChannels == 2)
-		{
-			showGray8Histogram(parentFrame, histo);
-		} 
-		else if (nChannels == 4)
-		{
-			showRGB8Histogram(parentFrame, histo);
-		}
-		else
-		{
-			throw new RuntimeException("Unable to manage histogram with " + nChannels + " columns");
-		}
-	}
+        // Additional chart style
+        chart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
+        chart.getStyler().setLegendPosition(LegendPosition.InsideNE);
 
-	/**
-	 * Display histogram of 256 gray scale images.
-	 */
-	private void showGray8Histogram(ImagoFrame parentFrame, NumericTable histo)
-	{
-		int nValues = histo.rowCount();
+        // create curve for intensity channel
+        double[] data = convertToDouble(histo.counts());
+        XYSeries series = chart.addSeries("Intensity", histo.binCenters(), data);
+        series.setMarker(SeriesMarkers.NONE);
 
-		// count element number
-		int nElements = 0;
-		for (int i = 0; i < nValues; i++)
-		{
-			nElements += histo.getValue(i, 1);
-		}
-		
-		double binWidth = histo.getValue(1, 0) - histo.getValue(0, 0);
-		double halfWidth = binWidth * .49;
-		
-		// determine if first bin (usually background) should be displayed
-		// TODO: same for last bin ?
-		boolean showFirstBin = histo.getValue(0, 1) < .1 * nElements;
+        // Show it
+        ChartFrame.create(chart, "Histogram", parentFrame);
+    }
 
-		// Create resulting data set instance
-		SimpleHistogramDataset dataset = new SimpleHistogramDataset("Image Values");
+    private void showRGB8Histogram(ImagoFrame parentFrame, Histogram.Result[] histos)
+    {
+        // Create Chart
+        XYChart chart = new XYChartBuilder()
+                .width(600)
+                .height(500)
+                .xAxisTitle("Value")
+                .yAxisTitle("Count")
+                .build();
 
-		// create a new histogram bin for each value
-		int firstIndex = showFirstBin ? 0 : 1; 
-		for (int i = firstIndex; i < nValues; i++)
-		{
-			double binStart = histo.getValue(i, 0) - halfWidth;
-			double binEnd = histo.getValue(i, 0) + halfWidth;
-			SimpleHistogramBin bin = new SimpleHistogramBin(binStart, binEnd, true, false);
-			bin.setItemCount((int) histo.getValue(i, 1));
-			dataset.addBin(bin);
-		}
+        // Additional chart style
+        chart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
+        chart.getStyler().setLegendPosition(LegendPosition.InsideNE);
 
-		// Title of the plot
-		ImageFrame iframe = (ImageFrame) parentFrame;
-		Image image = iframe.getImageHandle().getImage();
-		String imageName = image.getName();
-		String titleString;
-		if (imageName == null)
-			titleString = "Image Histogram";
-		else
-			titleString = "Histogram of " + imageName;
+        // create curve for each channel
+        int nChannels = histos.length;
+        String[] channelNames = new String[] { "Red", "Green", "Blue" };
+        XYSeries[] series = new XYSeries[nChannels];
+        for (int c = 0; c < nChannels; c++)
+        {
+            Histogram.Result histo = histos[c];
+            double[] data = convertToDouble(histo.counts());
+            series[c] = chart.addSeries(channelNames[c], histo.binCenters(), data);
+            series[c].setMarker(SeriesMarkers.NONE);
+        }
 
-		// creates the chart
-		JFreeChart chart = ChartFactory.createHistogram(titleString,
-				"Pixel value", "Pixel Count", dataset, PlotOrientation.VERTICAL,
-				true, true, true);
-		chart.getPlot().setBackgroundPaint(Color.WHITE);
+        // changes default colors of color histograms
+        series[0].setLineColor(XChartSeriesColors.RED);
+        series[1].setLineColor(XChartSeriesColors.GREEN);
+        series[2].setLineColor(XChartSeriesColors.BLUE);
 
-		XYBarRenderer renderer = (XYBarRenderer) chart.getXYPlot()
-				.getRenderer();
-		renderer.setBasePaint(Color.BLUE);
-		renderer.setBarPainter(new StandardXYBarPainter());
-		renderer.setShadowVisible(false);
+        // Show it
+        ChartFrame.create(chart, "Histogram", parentFrame);
+    }
 
-		chart.fireChartChanged();
-
-		// we put the chart into a panel
-		ChartPanel chartPanel = new ChartPanel(chart, 512, 200, 512, 200, 512,
-				512, false, false, true, true, true, true);
-
-		// default size
-		chartPanel.setPreferredSize(new java.awt.Dimension(512, 270));
-
-		// creates a new frame to contains the chart panel
-		ImagoChartFrame frame = new ImagoChartFrame(parentFrame, "Histogram");
-		frame.getWidget().setContentPane(chartPanel);
-		frame.getWidget().pack();
-		frame.setVisible(true);
-	}
-
-	private void showRGB8Histogram(ImagoFrame parentFrame, NumericTable histo)
-	{
-		int nChannels = histo.columnCount() - 1;
-		int nValues = histo.rowCount();
-
-		XYSeriesCollection dataset = new XYSeriesCollection();
-		String[] colNames = histo.getColumnNames();
-
-		for (int c = 0; c < nChannels; c++)
-		{
-//			// count element number
-//			int nElements = 0;
-//			for (int i = 0; i < nValues; i++)
-//				nElements += histo.getValue(i, c + 1);
-
-			// create a new series for each channel
-			XYSeries series = new XYSeries(colNames[c + 1]);
-			for (int i = 0; i < nValues; i++)
-			{
-				series.add(i, histo.getValue(i, c + 1));
-			}
-
-			// add the series to the data set
-			dataset.addSeries(series);
-		}
-
-		// Title of the plot
-		ImageFrame iframe = (ImageFrame) parentFrame;
-		Image image = iframe.getImageHandle().getImage();
-		String imageName = image.getName();
-		String titleString;
-		if (imageName == null)
-			titleString = "Image Histogram";
-		else
-			titleString = "Histogram of " + imageName;
-
-		// creates the chart
-		JFreeChart chart = ChartFactory.createXYStepChart(titleString,
-				"Pixel value", // domain axis label
-				"Pixel Count", // range axis label
-				dataset, // data
-				PlotOrientation.VERTICAL, true, true, true);
-
-		// get a reference to the plot for further customisation
-		XYPlot plot = chart.getXYPlot();
-		plot.setDomainAxis(new NumberAxis());
-
-		// change the auto tick unit selection to integer units only.
-		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-
-		// set the color for each series
-		XYItemRenderer renderer = plot.getRenderer();
-		renderer.setSeriesPaint(0, Color.RED);
-		renderer.setSeriesPaint(1, Color.GREEN);
-		renderer.setSeriesPaint(2, Color.BLUE);
-
-		
-		chart.fireChartChanged();
-
-		// put the chart into a panel
-		ChartPanel chartPanel = new ChartPanel(chart, 512, 200, 512, 200, 512,
-				512, false, false, true, true, true, true);
-
-		// default size
-		chartPanel.setPreferredSize(new java.awt.Dimension(512, 270));
-
-		// creates a new frame to contains the chart panel
-		ImagoChartFrame frame = new ImagoChartFrame(parentFrame, "Histogram");
-		frame.getWidget().setContentPane(chartPanel);
-		frame.getWidget().pack();
-		frame.setVisible(true);
-	}
+    private static final double[] convertToDouble(int[] array)
+    {
+        double[] res = new double[array.length];
+        for (int i = 0; i < array.length; i++)
+        {
+            res[i] = array[i];
+        }
+        return res;
+    }
 }
