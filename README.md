@@ -30,6 +30,6 @@ from [one of the latest releases](https://github.com/SciCompJ/Imago/releases).
 Unzip the archive, make sure a recent version (21+ required) of java is installed,
 open a terminal, and either 1) run the imago.bat script (Windows user) or run the following command:
 
-    java -Xmx4g -Xms4g -cp Imago-0.1.3.jar;lib/cs4j-0.3.0.jar;lib/jcommon-1.0.17.jar;lib/xchart-3.8.0/xchart-3.8.0.jar;lib/jfreechart-1.0.14.jar;lib/gson-2.8.6.jar;. imago.Imago
+    java -Xmx4g -Xms4g -cp Imago-0.3.0.jar;lib/cs4j-0.4.2.jar;lib/jcommon-1.0.17.jar;lib/xchart-3.8.0/xchart-3.8.0.jar;lib/jfreechart-1.0.14.jar;lib/gson-2.8.6.jar;. imago.Imago
 
 (you may jave to adapt memory settings or dependency versions)
