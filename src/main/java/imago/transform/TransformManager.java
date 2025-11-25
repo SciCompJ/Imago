@@ -3,32 +3,34 @@
  */
 package imago.transform;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 
-import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
 import imago.app.ImagoApp;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.frames.ImagoTextFrame;
+import imago.transform.io.DelimitedFileAffineTransformReader;
 import net.sci.geom.Transform;
 import net.sci.geom.geom2d.AffineTransform2D;
 import net.sci.geom.geom3d.AffineTransform3D;
@@ -76,6 +78,12 @@ public class TransformManager extends ImagoFrame
     
     
     // ===================================================================
+    // Static members
+    
+    private static FileFilter textFileFilter = new FileNameExtensionFilter("Text files (*.txt)", "txt");
+
+    
+    // ===================================================================
     // Class members 
     
     /**
@@ -116,12 +124,8 @@ public class TransformManager extends ImagoFrame
         JMenuBar menuBar = new JMenuBar();
         
         JMenu fileMenu = new JMenu("File");
-//        createMenuItem(fileMenu, "Import Roi List...", this::onImportRoiListFromJson);
-//        createMenuItem(fileMenu, "Import ImageJ ROI...", this::onImportImagejRoi);
-//        fileMenu.addSeparator();
-//        createMenuItem(fileMenu, "Save Roi List...", this::onSaveRoiListAsJson);
-//        createMenuItem(fileMenu, "Save Single Geometry...", this::onSaveGeometryAsJson);
-//        fileMenu.addSeparator();
+        createMenuItem(fileMenu, "Import Affine from Coeffs...", this::onImportAffineTransformFromCoefficientsFile);
+        fileMenu.addSeparator();
         createMenuItem(fileMenu, "Close", this::onClose);
         menuBar.add(fileMenu);
         
@@ -168,11 +172,6 @@ public class TransformManager extends ImagoFrame
         scrollPane.setPreferredSize(new Dimension(120, 120));
         infoTable.setFillsViewportHeight(true);
         
-        // The panel for displaying info on selected geometry
-        JPanel infoPanel = new JPanel(new BorderLayout());
-        infoPanel.setBorder(BorderFactory.createTitledBorder("Geometry Info"));
-        infoPanel.add(scrollPane, BorderLayout.CENTER);
-
         // put into global layout
         this.jFrame.setContentPane(scrollPane);
     }
@@ -208,6 +207,41 @@ public class TransformManager extends ImagoFrame
 
     // ===================================================================
     // Menu item callbacks
+    
+    private void onImportAffineTransformFromCoefficientsFile(ActionEvent evt)
+    {
+        // open a dialog to read a .json file
+        File file = this.gui.chooseFileToOpen(this,
+                "Import Transform coefficients file", textFileFilter);
+        if (file == null)
+        {
+            return;
+        }
+        // Check the chosen file exists
+        if (!file.exists())
+        {
+            return;
+        }
+        
+        Transform transfo;
+        try (DelimitedFileAffineTransformReader reader = new DelimitedFileAffineTransformReader(file))
+        {
+            transfo = reader.readTransform();
+        }
+        catch (IOException ex)
+        {
+            throw new RuntimeException(ex);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+        
+        ImagoApp app = this.gui.getAppli();
+        TransformHandle.create(app, transfo, file.getName());
+        
+        updateInfoTable();
+    }
     
     private void onClose(ActionEvent evt)
     {
@@ -247,7 +281,7 @@ public class TransformManager extends ImagoFrame
         if (handle == null) return;
         
         ArrayList<String> textLines = new ArrayList<String>();
-        textLines.add("Coefficients of transform: " + handle.getName() + "  (id=" + handle.getTag() + ")");
+        textLines.add("Coefficients of transform: " + handle.getName() + " (id=" + handle.getTag() + ")");
         
         Transform transfo = handle.getTransform();
         String numberFormat = "%10.5f";
