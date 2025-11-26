@@ -8,7 +8,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
 
@@ -48,8 +47,6 @@ import net.sci.util.MathUtils;
  * @see ImageViewer
  * @see imago.gui.panels.StatusBar
  * @see imago.gui.panel.DisplayOptionsPanel
- * 
- * @author David Legland
  * 
  */
 public class ImageFrame extends ImagoFrame implements AlgoListener
@@ -102,16 +99,10 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
     
     public static final Collection<ImageFrame> getImageFrames(ImagoGui gui)
     {
-        ArrayList<ImageFrame> res = new ArrayList<ImageFrame>();
-        for (ImagoFrame frame : gui.getFrames())
-        {
-            if (frame instanceof ImageFrame)
-            {
-                res.add((ImageFrame) frame);
-            }
-        }
-        
-        return res;
+        return gui.getFrames().stream()
+                .filter(f -> f instanceof ImageFrame)
+                .map(f -> (ImageFrame) f)
+                .toList();
     }
     
     /**
@@ -165,7 +156,7 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
 
         // First, create the viewer (used to build option panel and initialize
         // menu bar)
-        createImageViewer(imageHandle);
+        this.imageViewer = createImageViewer(imageHandle);
         importImageMetaData(imageHandle.getImage());
 
         // add listener to changes in ImageHandler
@@ -206,7 +197,7 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         putFrameMiddleScreen();
     }
 
-    private void createImageViewer(ImageHandle imageHandle)
+    private ImageViewer createImageViewer(ImageHandle imageHandle)
     {
         // create the image viewer depending on image type
         Image image = imageHandle.getImage();
@@ -220,7 +211,7 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
             viewer.getImageDisplay().addMouseListener(cursorDisplay);
             viewer.getImageDisplay().addMouseMotionListener(cursorDisplay);
 
-            this.imageViewer = viewer;
+            return viewer;
         }
         else if (image.getDimension() == 3) 
         {
@@ -231,7 +222,7 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
             sliceViewer.getImageDisplay().addMouseListener(cursorDisplay);
             sliceViewer.getImageDisplay().addMouseMotionListener(cursorDisplay);
 
-            this.imageViewer = sliceViewer;
+            return sliceViewer;
         }
         else 
         {
@@ -242,7 +233,7 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
             sliceViewer.getImageDisplay().addMouseListener(cursorDisplay);
             sliceViewer.getImageDisplay().addMouseMotionListener(cursorDisplay);
 
-            this.imageViewer = sliceViewer;
+            return sliceViewer;
         }
     }
     
