@@ -5,9 +5,9 @@ package imago.image.plugin.process;
 
 import imago.app.ImagoApp;
 import imago.gui.*;
-import imago.gui.plugin.options.ValuePairFunction;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
+import imago.image.plugin.process.options.ValuePairFunction;
 import net.sci.array.Arrays;
 import net.sci.array.numeric.Float32Array;
 import net.sci.array.numeric.Float64Array;

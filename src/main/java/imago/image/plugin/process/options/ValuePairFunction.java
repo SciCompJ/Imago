@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.gui.plugin.options;
+package imago.image.plugin.process.options;
 
 import java.util.function.BiFunction;
 
