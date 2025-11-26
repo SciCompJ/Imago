@@ -13,6 +13,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
@@ -21,7 +23,7 @@ import org.knowm.xchart.XYChart;
 import org.knowm.xchart.internal.chartpart.Chart;
 
 import imago.app.ImagoApp;
-import imago.gui.GuiBuilder;
+import imago.gui.FrameMenuBuilder;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 
@@ -170,8 +172,7 @@ public class ChartFrame extends ImagoFrame
         this.chart = chart;
 
         // create menu
-        GuiBuilder builder = new GuiBuilder(this);
-        builder.createMenuBar();
+        setupMenuBar();
         
         this.setTitle("Chart Example");
         this.jFrame.pack();
@@ -222,6 +223,23 @@ public class ChartFrame extends ImagoFrame
         }
         
         putFrameMiddleScreen();
+    }
+    
+    private void setupMenuBar()
+    {
+        FrameMenuBuilder menuBuilder = new FrameMenuBuilder(this);
+        JMenuBar menuBar = new JMenuBar();
+        
+        JMenu fileMenu = new JMenu("File");
+        menuBuilder.addPlugin(fileMenu, imago.chart.plugin.SaveChart.class, "Save Chart...");
+        fileMenu.addSeparator();
+        menuBuilder.addPlugin(fileMenu, imago.gui.plugin.file.CloseCurrentFrame.class, "Close");
+        menuBar.add(fileMenu);
+        
+        menuBar.add(menuBuilder.createPluginsMenu());
+        menuBar.add(menuBuilder.createHelpMenu());
+        
+        this.jFrame.setJMenuBar(menuBar);
     }
     
     private void putFrameMiddleScreen()

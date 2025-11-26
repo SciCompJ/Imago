@@ -3,12 +3,12 @@
  */
 package imago.image.plugin.edit;
 
+import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.image.ImageFrame;
+import imago.image.ImageFrameMenuBuilder;
 import imago.image.ImageHandle;
-import imago.gui.FramePlugin;
-import imago.gui.GuiBuilder;
 import net.sci.array.Array;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.numeric.IntArray;
@@ -34,8 +34,8 @@ public class SetImageTypeToLabel implements FramePlugin
     public void run(ImagoFrame frame, String args)
     {
         // get current frame
-        ImageFrame viewer = (ImageFrame) frame;
-        ImageHandle handle = viewer.getImageHandle();
+        ImageFrame imageFrame = (ImageFrame) frame;
+        ImageHandle handle = imageFrame.getImageHandle();
         Image image = handle.getImage();
 
         if (image == null)
@@ -64,8 +64,8 @@ public class SetImageTypeToLabel implements FramePlugin
         handle.notifyImageHandleChange(ImageHandle.Event.IMAGE_MASK | ImageHandle.Event.CHANGE_MASK);
         
         // need to refresh GUI menu
-        new GuiBuilder(frame).createMenuBar();
-        viewer.updateTitle();
+        new ImageFrameMenuBuilder(imageFrame).setupMenuBar();
+        imageFrame.updateTitle();
         frame.getWidget().validate();
     }
 }

@@ -23,7 +23,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import imago.app.ImagoApp;
-import imago.gui.GuiBuilder;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import net.sci.axis.Axis;
@@ -153,8 +152,7 @@ public class TableFrame extends ImagoFrame
         this.table = handle.getTable();
 
         // create menu
-        GuiBuilder builder = new GuiBuilder(this);
-        builder.createMenuBar();
+        new TableFrameMenuBuilder(this).setupMenuBar();
         
         // layout the frame
         setupLayout();

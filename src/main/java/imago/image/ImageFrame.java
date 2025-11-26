@@ -18,7 +18,6 @@ import javax.swing.JSplitPane;
 
 import imago.app.ImagoApp;
 import imago.app.shape.Shape;
-import imago.gui.GuiBuilder;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.panels.StatusBar;
@@ -173,8 +172,7 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         imageHandle.addImageHandleListener(imageViewer);
 
         // create menu
-        GuiBuilder builder = new GuiBuilder(this);
-        builder.createMenuBar();
+        new ImageFrameMenuBuilder(this).setupMenuBar();
 
         // Create the different panels
         this.imageDisplayOptionsPanel = new ImageDisplayOptionsPanel(this.imageViewer);

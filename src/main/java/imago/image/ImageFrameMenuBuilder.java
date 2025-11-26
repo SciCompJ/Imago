@@ -1,22 +1,14 @@
 /**
  * 
  */
-package imago.gui;
+package imago.image;
 
-import java.awt.Component;
-import java.awt.Insets;
-import java.awt.image.BufferedImage;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-import imago.chart.ChartFrame;
-import imago.gui.frames.ImagoEmptyFrame;
-import imago.image.ImageFrame;
-import imago.image.ImageHandle;
+import imago.gui.FrameMenuBuilder;
+import imago.gui.FramePlugin;
 import imago.image.plugin.ImageArrayOperatorPlugin;
 import imago.image.plugin.edit.ChangeCurrentTool;
 import imago.image.plugin.edit.ImageSetColorMapFactory;
@@ -31,8 +23,6 @@ import imago.image.tools.SelectPolygonTool;
 import imago.image.tools.SelectPolylineTool;
 import imago.image.tools.SelectRectangleTool;
 import imago.image.tools.SelectionTool;
-import imago.table.TableFrame;
-import imago.table.plugin.OpenDemoTable;
 import net.sci.array.Array;
 import net.sci.array.ArrayOperator;
 import net.sci.array.color.ColorMaps;
@@ -43,20 +33,16 @@ import net.sci.image.ImageOperator;
 import net.sci.image.ImageType;
 import net.sci.image.contrast.DynamicAdjustment;
 import net.sci.image.contrast.ImageInverter;
+
 /**
- * Setup the menu for a given frame.
- * 
- * @author David Legland
- *
+ * Utility class for building menu bar of ImageFrame instances.
  */
-public class GuiBuilder
+public class ImageFrameMenuBuilder extends FrameMenuBuilder
 {
-    /** 
-     * The frame to setup.
-     */
-    ImagoFrame frame;
+    // ===================================================================
+    // class members
     
-    boolean hasDoc = false;
+    boolean hasHandle = false;
     boolean hasImage = false;
     boolean hasImage2D = false;
     boolean hasImage3D = false;
@@ -66,50 +52,31 @@ public class GuiBuilder
     boolean hasVectorImage = false;
     boolean hasColorImage = false;
     boolean hasRGB8Image = false;
+
     
-    Icon emptyIcon;
+    // ===================================================================
+    // Constructor
     
-    /**
-     * Creates a builder for the specified frame.
-     * 
-     * @param frame
-     *            the frame to build.
-     */
-    public GuiBuilder(ImagoFrame frame)
+    public ImageFrameMenuBuilder(ImageFrame frame)
     {
-        this.frame = frame;
-        this.emptyIcon = createEmptyIcon();
+        super(frame);
     }
     
-    public void createMenuBar()
+    
+    // ===================================================================
+    // menu creation methods
+    
+    public void setupMenuBar()
     {
         computeFlags();
         
         JMenuBar menuBar = new JMenuBar();
-        if (frame instanceof ImageFrame)
-        {
-            menuBar.add(createFileMenu());
-            menuBar.add(createImageEditMenu());
-            menuBar.add(createImageMenu());
-            menuBar.add(createImageProcessMenu());
-            menuBar.add(createImageAnalyzeMenu());
-            menuBar.add(createImageToolsMenu());
-        }
-        else if (frame instanceof TableFrame)
-        {
-            menuBar.add(createTableFileMenu());
-            menuBar.add(createTableEditMenu());
-            menuBar.add(createTablePlotMenu());
-            menuBar.add(createTableProcessMenu());
-        }
-        else if (frame instanceof ChartFrame)
-        {
-            menuBar.add(createChartFileMenu());
-        }
-        else if (frame instanceof ImagoEmptyFrame)
-        {
-            menuBar.add(createFileMenu());
-        }
+        menuBar.add(createFileMenu());
+        menuBar.add(createImageEditMenu());
+        menuBar.add(createImageMenu());
+        menuBar.add(createImageProcessMenu());
+        menuBar.add(createImageAnalyzeMenu());
+        menuBar.add(createImageToolsMenu());
         menuBar.add(createPluginsMenu());
         menuBar.add(createHelpMenu());
         
@@ -118,31 +85,27 @@ public class GuiBuilder
     
     private void computeFlags()
     {
-        ImageHandle doc = null;
-        if (frame instanceof ImageFrame)
-        {
-            doc = ((ImageFrame) frame).getImageHandle();
-            
-            this.hasDoc = doc != null;
-            if (!hasDoc) 
-                return;
-            
-            Image image = doc.getImage();
-            this.hasImage = image != null;
-            if (!hasImage) 
-                return;
-
-            Array<?> array = doc.getImage().getData();
-            this.hasImage2D = array.dimensionality() == 2;
-            this.hasImage3D = array.dimensionality() == 3;
-            
-            this.hasScalarImage = image.isScalarImage();
-            this.hasLabelImage = image.isLabelImage();
-            this.hasBinaryImage = image.isBinaryImage();
-            this.hasVectorImage = image.isVectorImage();
-            this.hasColorImage = image.isColorImage();
-            this.hasRGB8Image = array instanceof RGB8Array;
-        }
+        ImageHandle handle = ((ImageFrame) frame).getImageHandle();
+        
+        this.hasHandle = handle != null;
+        if (!hasHandle) 
+            return;
+        
+        Image image = handle.getImage();
+        this.hasImage = image != null;
+        if (!hasImage) 
+            return;
+        
+        Array<?> array = handle.getImage().getData();
+        this.hasImage2D = array.dimensionality() == 2;
+        this.hasImage3D = array.dimensionality() == 3;
+        
+        this.hasScalarImage = image.isScalarImage();
+        this.hasLabelImage = image.isLabelImage();
+        this.hasBinaryImage = image.isBinaryImage();
+        this.hasVectorImage = image.isVectorImage();
+        this.hasColorImage = image.isColorImage();
+        this.hasRGB8Image = array instanceof RGB8Array;
     }
     
     /**
@@ -184,13 +147,10 @@ public class GuiBuilder
         addPlugin(fileImportMenu, imago.image.plugin.file.ImportImageVgi.class, "VGI Image...");
         fileMenu.add(fileImportMenu);
         
-        if (frame instanceof ImageFrame)
-        {
-            fileMenu.addSeparator();
-            addPlugin(fileMenu, imago.image.plugin.file.SaveImageIO.class, "Save As...");
-            addPlugin(fileMenu, imago.image.plugin.file.SaveImageAsTiff.class, "Save As Tiff...");
-            addPlugin(fileMenu, imago.image.plugin.file.SaveImageMetaImage.class, "Save As MetaImage...");
-        }
+        fileMenu.addSeparator();
+        addPlugin(fileMenu, imago.image.plugin.file.SaveImageIO.class, "Save As...");
+        addPlugin(fileMenu, imago.image.plugin.file.SaveImageAsTiff.class, "Save As Tiff...");
+        addPlugin(fileMenu, imago.image.plugin.file.SaveImageMetaImage.class, "Save As MetaImage...");
         
         fileMenu.addSeparator();
         addPlugin(fileMenu, imago.table.plugin.OpenTable.class, "Open Table...");
@@ -200,15 +160,12 @@ public class GuiBuilder
         fileMenu.add(demoTables);
         
         fileMenu.addSeparator();
-        if (!(frame instanceof ImagoEmptyFrame))
-        {
-            addPlugin(fileMenu, imago.gui.plugin.file.CloseCurrentFrame.class, "Close");
-            addPlugin(fileMenu, imago.gui.plugin.file.CloseWithChildren.class, "Close With Children");
-        }
+        addPlugin(fileMenu, imago.gui.plugin.file.CloseCurrentFrame.class, "Close");
+        addPlugin(fileMenu, imago.gui.plugin.file.CloseWithChildren.class, "Close With Children");
         addPlugin(fileMenu, imago.gui.plugin.file.QuitApplication.class, "Quit");
         return fileMenu;
     }
-    
+ 
     /**
      * Creates the sub-menu for the "Edit" item in the main menu bar.
      */
@@ -396,11 +353,11 @@ public class GuiBuilder
         addPlugin(stackMenu, imago.image.plugin.shape.ImageOrthogonalProjection.class, "Orthogonal Projection...", hasImage3D && hasScalarImage);
         stackMenu.addSeparator();
         addPlugin(stackMenu, imago.image.plugin.process.Image3DSetOrthoSlicesDisplay.class, "Set Orthoslices Display", hasImage3D);
-		menu.add(stackMenu);
+        menu.add(stackMenu);
 
         menu.addSeparator();
-		addPlugin(menu, imago.image.plugin.process.ImageDuplicate.class, "Duplicate", hasImage);
-		addArrayOperatorPlugin(menu, new ImageInverter(), "Invert", "%s-inv");
+        addPlugin(menu, imago.image.plugin.process.ImageDuplicate.class, "Duplicate", hasImage);
+        addArrayOperatorPlugin(menu, new ImageInverter(), "Invert", "%s-inv");
         
         // submenu for creation of phantoms
         JMenu phantomMenu = new JMenu("Phantoms");
@@ -413,26 +370,26 @@ public class GuiBuilder
         addPlugin(phantomMenu, imago.image.plugin.edit.ImageSelectionToDistanceMap.class, "Selection To Distance Map");
         menu.add(phantomMenu);
         
-		return menu;
-	}
+        return menu;
+    }
 
-	/**
-	 * Creates the sub-menu for the "process" item in the main Menu bar.
-	 */
-	private JMenu createImageProcessMenu()
-	{
-		JMenu menu = new JMenu("Process");
+    /**
+     * Creates the sub-menu for the "process" item in the main Menu bar.
+     */
+    private JMenu createImageProcessMenu()
+    {
+        JMenu menu = new JMenu("Process");
 
-		JMenu mathsMenu = new JMenu("Math");
+        JMenu mathsMenu = new JMenu("Math");
         addPlugin(mathsMenu, imago.image.plugin.process.ImageApplyMathFunction.class, "Apply Function...", hasScalarImage);
         addPlugin(mathsMenu, imago.image.plugin.process.ImageApplySingleValueOperator.class, "Math operator (image+value)...");
         addPlugin(mathsMenu, imago.image.plugin.process.ImageApplyMathBinaryOperator.class, "Math operator (Image pair)...");
         mathsMenu.addSeparator();
         addPlugin(mathsMenu, imago.image.plugin.process.ImageApplyLogicalBinaryOperator.class, "Logical operator (Image pair)...");
-		menu.add(mathsMenu);
-		menu.addSeparator();
+        menu.add(mathsMenu);
+        menu.addSeparator();
 
-		// Noise reduction filters
+        // Noise reduction filters
         JMenu filtersMenu = new JMenu("Filters");
         addPlugin(filtersMenu, imago.image.plugin.process.ImageBoxFilter.class, "Box Filter...");
         addPlugin(filtersMenu, imago.image.plugin.process.BoxFilter3x3FloatPlugin.class, "Box Filter 2D 3x3 (float)", hasScalarImage);
@@ -442,34 +399,34 @@ public class GuiBuilder
         addPlugin(filtersMenu, imago.image.plugin.process.ImageMinMaxFilterBox.class, "Min/Max Filter...");
         filtersMenu.addSeparator();
         addPlugin(filtersMenu, imago.image.plugin.process.ImageVarianceFilterBox.class, "Variance Filter...");
-		menu.add(filtersMenu);
+        menu.add(filtersMenu);
         
-		// Gradient filters
+        // Gradient filters
         JMenu gradientFiltersMenu = new JMenu("Gradient Filters");
         addImageOperatorPlugin(gradientFiltersMenu, net.sci.image.filtering.SobelGradient.class, "Sobel Gradient", hasScalarImage);
         addImageOperatorPlugin(gradientFiltersMenu, net.sci.image.filtering.SobelGradientNorm.class, "Sobel Gradient Norm", hasScalarImage);
         addImageOperatorPlugin(gradientFiltersMenu, net.sci.image.contrast.VectorArrayNorm.class, "Vector Image Norm", hasVectorImage);
         menu.add(gradientFiltersMenu);
         
-		JMenu morphologyMenu = new JMenu("Mathematical Morphology");
+        JMenu morphologyMenu = new JMenu("Mathematical Morphology");
         addPlugin(morphologyMenu, imago.image.plugin.process.ImageMorphologicalFilter.class, "Morphological Filters...");
         addPlugin(morphologyMenu, imago.image.plugin.binary.BinaryImageMorphologicalFilter.class, "Binary Morphological Filters...");
         addPlugin(morphologyMenu, imago.image.plugin.binary.BinaryImageMorphologicalFilterBall.class, "Ball Binary Morphological Filters...");
 
-		morphologyMenu.addSeparator();
+        morphologyMenu.addSeparator();
         addPlugin(morphologyMenu, imago.image.plugin.process.ImageRegionalExtrema.class, "Regional Min./Max...", hasScalarImage);
         addPlugin(morphologyMenu, imago.image.plugin.process.ImageExtendedExtrema.class, "Extended Min./Max...", hasScalarImage);
         addPlugin(morphologyMenu, imago.image.plugin.process.ImageImposeExtrema.class, "Impose Min./Max...", hasScalarImage);
         addPlugin(morphologyMenu, imago.image.plugin.process.ImageMorphologicalReconstruction.class, "Morphological Reconstruction...");
         addPlugin(morphologyMenu, imago.image.plugin.binary.BinaryImageMorphologicalReconstruction.class, "Binary Morphological Reconstruction...");
         addPlugin(morphologyMenu, imago.image.plugin.process.ImageIteratedGeodesicDilations.class, "Geodesic Dilation...");
-		morphologyMenu.addSeparator();
+        morphologyMenu.addSeparator();
         addPlugin(morphologyMenu, imago.image.plugin.process.ImageFillHoles.class, "Fill Holes");
         addPlugin(morphologyMenu, imago.image.plugin.binary.BinaryImageFillHoles.class, "Binary Fill Holes");
         addPlugin(morphologyMenu, imago.image.plugin.process.ImageKillBorders.class, "Kill Borders");
         addPlugin(morphologyMenu, imago.image.plugin.binary.BinaryImageKillBorders.class, "Binary Kill Borders");
         menu.add(morphologyMenu);
-		
+        
         menu.addSeparator();
         addPlugin(menu, imago.image.plugin.process.ImagePair2DRegister.class, "Simple Image Registration", hasScalarImage);
         
@@ -496,7 +453,7 @@ public class GuiBuilder
 
         // operators specific to binary images
         menu.addSeparator();
-		JMenu binaryMenu = new JMenu("Binary Images");
+        JMenu binaryMenu = new JMenu("Binary Images");
         addPlugin(binaryMenu, imago.image.plugin.binary.BinaryImageConnectedComponentsLabeling.class, "Connected Components Labeling");
         binaryMenu.addSeparator();
         addPlugin(binaryMenu, imago.image.plugin.binary.BinaryImageEuclideanDistanceMap.class, "Distance Map");
@@ -521,23 +478,23 @@ public class GuiBuilder
         addPlugin(labelMenu, imago.image.plugin.vectorize.BinaryImageBoundaryGraph.class, "Boundary Graph", hasImage2D && hasBinaryImage);
         addPlugin(labelMenu, imago.image.plugin.vectorize.LabelMapToBoundaryPolygons.class, "Region Boundaries to Polygons", hasImage2D && hasLabelImage);
         menu.add(labelMenu);
-		
-		return menu;
-	}
+        
+        return menu;
+    }
 
-	/**
-	 * Creates the sub-menu for the "process" item in the main Menu bar.
-	 */
-	private JMenu createImageAnalyzeMenu()
-	{
-		JMenu menu = new JMenu("Analyze");
+    /**
+     * Creates the sub-menu for the "process" item in the main Menu bar.
+     */
+    private JMenu createImageAnalyzeMenu()
+    {
+        JMenu menu = new JMenu("Analyze");
 
         addPlugin(menu, imago.image.plugin.analyze.ImageHistogram.class, "Histogram", hasImage);
         addPlugin(menu, imago.image.plugin.analyze.ImageRoiHistogram.class, "ROI Histogram", hasImage && hasImage2D);
         addPlugin(menu, imago.image.plugin.analyze.ImageMeanValue.class, "Mean Value", hasImage);
         addPlugin(menu, imago.image.plugin.analyze.ColorImageBivariateHistograms.class, "Bivariate Color Histograms", hasColorImage);
         addPlugin(menu, imago.image.plugin.process.ImageBivariateHistogram.class, "Bivariate Histogram");
-		menu.addSeparator();
+        menu.addSeparator();
         addPlugin(menu, imago.image.plugin.analyze.ImageLineProfile.class, "Line Profile", hasImage);
         addPlugin(menu, imago.image.plugin.analyze.ImageAnalyzeWithinROI.class, "Intensity within ROI", hasImage);
         addPlugin(menu, imago.image.plugin.analyze.ImagePlotChannels.class, "Channel Profile", hasImage);
@@ -618,176 +575,15 @@ public class GuiBuilder
         return toolsMenu;
     }
     
-    /**
-     * Creates the sub-menu for the "File" item in the main menu bar of Table frames.
-     */
-    private JMenu createTableFileMenu()
-    {
-        JMenu fileMenu = new JMenu("File");
-        
-        addPlugin(fileMenu, imago.table.plugin.OpenTable.class, "Open Table...");
-        JMenu demoTables = new JMenu("Demo Tables");
-        addPlugin(demoTables, new OpenDemoTable("tables/fisherIris.csv"), "Fisher's Iris");
-        addPlugin(demoTables, new OpenDemoTable("tables/penguins_clean.csv"), "Penguins");
-        fileMenu.add(demoTables);
-
-        fileMenu.addSeparator();
-        addPlugin(fileMenu, imago.table.plugin.SaveTable.class, "Save Table...");
-
-        fileMenu.addSeparator();
-        addPlugin(fileMenu, imago.gui.plugin.file.CloseCurrentFrame.class, "Close", !(frame instanceof ImagoEmptyFrame));
-        addPlugin(fileMenu, imago.gui.plugin.file.QuitApplication.class, "Quit");
-
-        return fileMenu;
-    }
-    
-    /**
-     * Creates the sub-menu for the "Edit" item in the main menu bar of Table
-     * frames.
-     */
-    private JMenu createTableEditMenu()
-    {
-        JMenu editMenu = new JMenu("Edit");
-        
-        addPlugin(editMenu, imago.table.plugin.edit.RenameTable.class, "Rename...");
-        editMenu.addSeparator();
-        addPlugin(editMenu, imago.table.plugin.edit.TableSelectColumns.class, "Select Columns...");
-        addPlugin(editMenu, imago.table.plugin.edit.TableKeepNumericColumns.class, "Keep Numeric Columns");
-        addPlugin(editMenu, imago.table.plugin.edit.ConcatenateTableColumns.class, "Concatenate Columns...");
-        addPlugin(editMenu, imago.table.plugin.edit.TableParseGroupFromRowNames.class, "Parse Group From Row Names...");
-        editMenu.addSeparator();
-        addPlugin(editMenu, imago.table.plugin.edit.TableFilterRows.class, "Filter/Select Rows...");
-        addPlugin(editMenu, imago.table.plugin.edit.TableSortRows.class, "Sort Rows...");
-        addPlugin(editMenu, imago.table.plugin.edit.ConcatenateTableRows.class, "Concatenate Rows...");
-        editMenu.addSeparator();
-        addPlugin(editMenu, imago.table.plugin.edit.TransposeTable.class, "Transpose");
-        editMenu.addSeparator();
-        addPlugin(editMenu, imago.table.plugin.edit.FoldTableToImage.class, "Fold Table to Image");
-        editMenu.addSeparator();
-        addPlugin(editMenu, imago.table.plugin.edit.PrintTableInfo.class, "Print Table Info");
-        addPlugin(editMenu, imago.table.plugin.edit.NumericTableSummary.class, "Table Summary");
-        addPlugin(editMenu, imago.table.plugin.edit.PrintTableToConsole.class, "Print to Console");
-        
-        return editMenu;
-    }
-
-    /**
-     * Creates the sub-menu for the "plot" item in the main menu bar of Table
-     * frames.
-     */
-    private JMenu createTablePlotMenu()
-    {
-        JMenu plotMenu = new JMenu("Plot");
-        addPlugin(plotMenu, imago.table.plugin.plot.TableScatterPlot.class, "Scatter Plot...");
-        addPlugin(plotMenu, imago.table.plugin.plot.TableGroupScatterPlot.class, "Scatter Plot By Group...");
-        addPlugin(plotMenu, imago.table.plugin.plot.TablePairPlot.class, "Pair Plot");
-        plotMenu.addSeparator();
-        addPlugin(plotMenu, imago.table.plugin.plot.TableLinePlot.class, "Line Plot...");
-        plotMenu.addSeparator();
-        addPlugin(plotMenu, imago.table.plugin.plot.PlotTableColumnHistogram.class, "Histogram...");
-        return plotMenu;
-    }
-    
-    /**
-     * Creates the sub-menu for the "Process" item in the main menu bar of Table
-     * frames.
-     */
-    private JMenu createTableProcessMenu()
-    {
-        JMenu processMenu = new JMenu("Process");
-        
-        addPlugin(processMenu, imago.table.plugin.process.ApplyFunctionToColumn.class, "Apply Function to Columns...");
-        processMenu.addSeparator();
-        addPlugin(processMenu, imago.table.plugin.process.AggregateTableWithColumn.class, "Aggregate by group...");
-        processMenu.addSeparator();
-        addPlugin(processMenu, imago.table.plugin.process.TablePca.class, "Principal Components Analysis");
-        processMenu.addSeparator();
-        addPlugin(processMenu, imago.table.plugin.process.TableKMeans.class, "K-Means...");
-        processMenu.addSeparator();
-        addPlugin(processMenu, imago.table.plugin.process.TableConfusionMatrix.class, "Confusion Matrix...");
-        processMenu.addSeparator();
-        addPlugin(processMenu, imago.table.plugin.process.CreateLabelClassMap.class, "Create Label Class Map...");
-        
-        return processMenu;
-    }
-
-    /**
-     * Creates the sub-menu for the "File" item in the main menu bar of Chart frames.
-     */
-    private JMenu createChartFileMenu()
-    {
-        JMenu fileMenu = new JMenu("File");
-        
-        addPlugin(fileMenu, imago.chart.plugin.SaveChart.class, "Save Chart...");
-
-        fileMenu.addSeparator();
-        addPlugin(fileMenu, imago.gui.plugin.file.CloseCurrentFrame.class, "Close", !(frame instanceof ImagoEmptyFrame));
-        return fileMenu;
-    }
-    
-    /**
-     * Creates the sub-menu for the "Plugins" item in the main menu bar, shared
-     * by several frame types.
-     */
-    private JMenu createPluginsMenu()
-    {
-        JMenu menu = new JMenu("Plugins");
-        
-        JMenu devMenu = new JMenu("Developer");
-        menu.add(devMenu);
-        addPlugin(devMenu, imago.gui.plugin.developer.DisplayExceptionDialog.class, "Show Demo Exception");
-        // The two following plugins are used for debugging
-//        addPlugin(devMenu, imago.plugin.developer.FailingConstructorPlugin.class, "(X) Can not Instantiate");
-//        addPlugin(devMenu, imago.plugin.developer.RunThrowExceptionPlugin.class, "(X) Can not Run");
-        devMenu.addSeparator();
-        addPlugin(devMenu, imago.image.plugin.edit.PrintFrameList.class, "Print Frame List");
-        addPlugin(devMenu, imago.image.plugin.edit.PrintDocumentList.class, "Print Document List");
-        addPlugin(devMenu, imago.image.plugin.edit.PrintWorkspaceContent.class, "Print Workspace Content");
-        
-        // Add some domain-specific plugins, to be transformed into user plugins in the future
-        menu.addSeparator();
-        JMenu perigrainMenu = new JMenu("Perigrain");
-        addPlugin(perigrainMenu, imago.gui.plugin.plugin.crop.Crop3DPlugin.class, "Crop 3D");
-        addPlugin(perigrainMenu, imago.gui.plugin.plugin.crop.CreateSurface3DPlugin.class, "Surface 3D");
-        addPlugin(perigrainMenu, imago.gui.plugin.plugin.ImportImage3DPolylineSeries.class, "Import Polyline Series");
-        menu.add(perigrainMenu);
-        
-        // Add the user plugins
-        menu.addSeparator();
-        for (PluginHandler handler : frame.gui.getPluginManager().pluginHandlers)
-        {
-            addPlugin(menu, handler);
-        }
-        
-        return menu;
-    }
-    
-    private JMenu createHelpMenu()
-    {
-        JMenu menu = new JMenu("Help");
-        addMenuItem(menu, null, "About...", true);
-        return menu;
-    }
-    
-    private JMenuItem addMenuItem(JMenu menu, ImagoAction action, String label, boolean enabled)
-    {
-        JMenuItem item = new JMenuItem(action);
-        item.setText(label);
-        item.setIcon(this.emptyIcon);
-        item.setEnabled(enabled);
-        menu.add(item);
-        return item;
-    }
-    
     private JMenuItem addImageOperatorPlugin(JMenu menu, Class<? extends ImageOperator> opClass, String label, boolean enabled)
     {
-        FramePlugin plugin = frame.gui.getPluginManager().retrievePlugin(opClass);
+        FramePlugin plugin = frame.getGui().getPluginManager().retrievePlugin(opClass);
         return addPlugin(menu, plugin, label, enabled);
     }
 
     private JMenuItem addArrayOperatorPlugin(JMenu menu, Class<? extends ArrayOperator> opClass, String label, boolean enabled)
     {
-        FramePlugin plugin = frame.gui.getPluginManager().retrievePlugin(opClass);
+        FramePlugin plugin = frame.getGui().getPluginManager().retrievePlugin(opClass);
         return addPlugin(menu, plugin, label, enabled);
     }
 
@@ -803,119 +599,4 @@ public class GuiBuilder
         return addPlugin(menu, plugin, label, plugin.isEnabled(frame));
     }
 
-    private void addPlugin(JMenu menu, PluginHandler handler)
-    {
-        // If menu path is specified, retrieve or create the hierarchy of menus
-        String menuPath = handler.getMenuPath();
-        if (!menuPath.isEmpty())
-        {
-            // determine menu text hierarchy
-            String[] tokens = menuPath.split(">");
-            
-            // remove the first item ("Plugins")
-            int ntokens = tokens.length;
-            String[] tokens2 = new String[tokens.length - 1];
-            System.arraycopy(tokens, 1, tokens2, 0, ntokens - 1);
-            
-            // retrieve correct menu
-            for (String name : tokens2)
-            {
-                menu = getSubMenu(menu, name);
-            }
-        }
-        
-        addPlugin(menu, handler.getPlugin(), handler.getName());
-    }
-    
-    private JMenu getSubMenu(JMenu baseMenu, String subMenuName)
-    {
-        for (Component sub : baseMenu.getMenuComponents())
-        {
-            if (sub instanceof JMenu)
-            {
-                if (((JMenu) sub).getText().equals(subMenuName))
-                {
-                    return (JMenu) sub;
-                }
-            }
-        }
-        
-        // create a new sub-menu
-        JMenu subMenu = new JMenu(subMenuName);
-        baseMenu.add(subMenu);
-        return subMenu;
-    }
-
-    private JMenuItem addPlugin(JMenu menu, Class<? extends FramePlugin> pluginClass, String label)
-    {
-        FramePlugin plugin = frame.gui.getPluginManager().retrievePlugin(pluginClass);
-        return addPlugin(menu, plugin, label, plugin.isEnabled(frame));
-    }
-    
-    private JMenuItem addPlugin(JMenu menu, Class<? extends FramePlugin> pluginClass, String label, boolean isEnabled)
-    {
-        FramePlugin plugin = frame.gui.getPluginManager().retrievePlugin(pluginClass);
-        return addPlugin(menu, plugin, label, isEnabled);
-    }
-
-    private JMenuItem addPlugin(JMenu menu, FramePlugin plugin, String label)
-    {
-        return addPlugin(menu, plugin, label, plugin.isEnabled(frame));
-    }
-
-    private JMenuItem addPlugin(JMenu menu, Class<? extends FramePlugin> itemClass, String optionsString, String label)
-    {
-        // retrieve plugin
-        FramePlugin plugin = frame.gui.getPluginManager().retrievePlugin(itemClass);
-        if (plugin == null) return null;
-        
-        // create action that will catch action events
-        RunPluginAction action = new RunPluginAction(frame, plugin, optionsString);
-        
-        // setup menu item
-        JMenuItem item = new JMenuItem(action);
-        item.setText(label);
-        item.setIcon(this.emptyIcon);
-        item.setMargin(new Insets(0, 0, 0, 0));
-        item.setEnabled(plugin.isEnabled(frame));
-        menu.add(item);
-        return item;
-    }
-    
-    private JMenuItem addPlugin(JMenu menu, FramePlugin plugin, String label, boolean enabled)
-    {
-        if (plugin == null) return null;
-        JMenuItem item = createPluginMenuItem(plugin, label);
-        item.setEnabled(enabled);
-        menu.add(item);
-        return item;
-    }
-    
-    private JMenuItem createPluginMenuItem(FramePlugin plugin, String label)
-    {
-        JMenuItem item = new JMenuItem(new RunPluginAction(frame, plugin));
-        item.setText(label);
-        item.setIcon(this.emptyIcon);
-        item.setMargin(new Insets(0, 0, 0, 0));
-        return item;
-    }
-    
-    /**
-     * Initializes the empty icon image with an image of type ARGB, and filled
-     * with the value "0x00FFFFFF": white, and totally transparent.
-     */
-    private static final ImageIcon createEmptyIcon()
-    {
-        int width = 16;
-        int height = 16;
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                image.setRGB(x, y, 0x00FFFFFF);
-            }
-        }
-        return new ImageIcon(image);
-    }
 }
