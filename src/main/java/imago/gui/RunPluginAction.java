@@ -1,15 +1,11 @@
 /**
  * 
  */
-package imago.image.action;
+package imago.gui;
 
-import imago.gui.ImagoAction;
-import imago.gui.ImagoFrame;
-import imago.gui.ImagoGui;
 import imago.image.ImageFrame;
 import imago.image.plugin.ImageOperatorPlugin;
 import net.sci.image.ImageOperator;
-import imago.gui.FramePlugin;
 
 import java.awt.event.ActionEvent;
 
@@ -89,6 +85,8 @@ public class RunPluginAction extends ImagoAction
             {
                 // log plugin start
                 String pluginName = plugin.getClass().getCanonicalName();
+                
+                // add some plugin-class-specific processing to track process
                 if (frame instanceof ImageFrame)
                 {
                     String imageName = ((ImageFrame) frame).getImageHandle().getName();
@@ -129,7 +127,5 @@ public class RunPluginAction extends ImagoAction
         
         t.start();
     }
-    
-//    private static final ImagoFrame
 
 }

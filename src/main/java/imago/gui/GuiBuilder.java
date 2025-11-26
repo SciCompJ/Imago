@@ -17,7 +17,6 @@ import imago.chart.ChartFrame;
 import imago.gui.frames.ImagoEmptyFrame;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
-import imago.image.action.RunPluginAction;
 import imago.image.plugin.ImageArrayOperatorPlugin;
 import imago.image.plugin.edit.ChangeCurrentTool;
 import imago.image.plugin.edit.ImageSetColorMapFactory;
