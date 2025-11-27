@@ -427,7 +427,7 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         menu.add(morphologyMenu);
         
         menu.addSeparator();
-        addPlugin(menu, imago.image.plugin.process.ImagePair2DRegister.class, "Simple Image Registration", hasScalarImage);
+        addPlugin(menu, imago.image.plugin.register.ImagePair2DRegister.class, "Simple Image Registration", hasScalarImage);
         
         menu.addSeparator();
         addPlugin(menu, imago.image.plugin.vectorize.ImageFindNonZeroPixels.class, "Find Non-Zeros Elements", hasImage2D && hasScalarImage);

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.image.plugin.process;
+package imago.image.plugin.register;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
