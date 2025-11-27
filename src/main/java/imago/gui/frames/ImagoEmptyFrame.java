@@ -80,8 +80,7 @@ public class ImagoEmptyFrame extends ImagoFrame
         menuBuilder.addPlugin(fileMenu, imago.gui.plugin.file.QuitApplication.class, "Quit");
         menuBar.add(fileMenu);
         
-        menuBar.add(menuBuilder.createPluginsMenu());
-        menuBar.add(menuBuilder.createHelpMenu());
+        menuBuilder.addSharedMenus(menuBar);
         
         this.jFrame.setJMenuBar(menuBar);
     }

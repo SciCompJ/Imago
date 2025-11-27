@@ -77,8 +77,7 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         menuBar.add(createImageProcessMenu());
         menuBar.add(createImageAnalyzeMenu());
         menuBar.add(createImageToolsMenu());
-        menuBar.add(createPluginsMenu());
-        menuBar.add(createHelpMenu());
+        addSharedMenus(menuBar);
         
         frame.getWidget().setJMenuBar(menuBar);
     }

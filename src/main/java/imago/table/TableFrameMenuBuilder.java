@@ -32,8 +32,7 @@ public class TableFrameMenuBuilder extends FrameMenuBuilder
         menuBar.add(createEditMenu());
         menuBar.add(createPlotMenu());
         menuBar.add(createProcessMenu());
-        menuBar.add(createPluginsMenu());
-        menuBar.add(createHelpMenu());
+        addSharedMenus(menuBar);
         
         frame.getWidget().setJMenuBar(menuBar);
     }

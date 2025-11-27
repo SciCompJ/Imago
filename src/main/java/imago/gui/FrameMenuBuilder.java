@@ -10,7 +10,11 @@ import java.awt.image.BufferedImage;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+
+import imago.shapemanager.ShapeManager;
+import imago.transform.TransformManager;
 
 /**
  * Utility class for creating menu items of the various frames of the Imago
@@ -62,14 +66,28 @@ public class FrameMenuBuilder
     // ===================================================================
     // menu creation methods
     
-    /**
-     * Creates the sub-menu for the "Plugins" item in the main menu bar, shared
-     * by several frame types.
-     */
-    public JMenu createPluginsMenu()
+    public void addSharedMenus(JMenuBar menuBar)
     {
-        JMenu menu = new JMenu("Plugins");
+        menuBar.add(createGlobalMenu());
+        menuBar.add(createPluginsMenu());
+        menuBar.add(createHelpMenu());
+    }
+    
+    /**
+     * Creates the sub-menu for the "Global" item in the main menu bar, shared
+     * by several frame types.
+     */    public JMenu createGlobalMenu()
+    {
+        JMenu menu = new JMenu("Global");
         
+        addPlugin(menu, 
+                (frame, options) -> {ShapeManager.getInstance(frame.getGui()).setVisible(true);},
+                "Show Shape Manager");
+        addPlugin(menu, 
+                (frame, options) -> {TransformManager.getInstance(frame.getGui()).setVisible(true);},
+                "Show Transfrom Manager");
+        
+        menu.addSeparator();
         JMenu devMenu = new JMenu("Developer");
         menu.add(devMenu);
         addPlugin(devMenu, imago.gui.plugin.developer.DisplayExceptionDialog.class, "Show Demo Exception");
@@ -81,8 +99,19 @@ public class FrameMenuBuilder
         addPlugin(devMenu, imago.image.plugin.edit.PrintDocumentList.class, "Print Document List");
         addPlugin(devMenu, imago.image.plugin.edit.PrintWorkspaceContent.class, "Print Workspace Content");
         
+        
+        return menu;
+    }
+    
+    /**
+     * Creates the sub-menu for the "Plugins" item in the main menu bar, shared
+     * by several frame types.
+     */
+    public JMenu createPluginsMenu()
+    {
+        JMenu menu = new JMenu("Plugins");
+        
         // Add some domain-specific plugins, to be transformed into user plugins in the future
-        menu.addSeparator();
         JMenu perigrainMenu = new JMenu("Perigrain");
         addPlugin(perigrainMenu, imago.gui.plugin.plugin.crop.Crop3DPlugin.class, "Crop 3D");
         addPlugin(perigrainMenu, imago.gui.plugin.plugin.crop.CreateSurface3DPlugin.class, "Surface 3D");
