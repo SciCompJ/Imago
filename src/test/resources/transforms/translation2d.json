@@ -1,0 +1,6 @@
+{
+  "className": "inrae.bibs.register.transforms.Translation2D",
+  "type": "Translation2D",
+  "shiftX": -5.0,
+  "shiftY": 10.0
+}
