@@ -184,7 +184,8 @@ public abstract class ImagePairViewer
      */
 	public abstract Object getWidget();
 
-	
+    public abstract Image getCompositeImage();
+
     public void setReferenceImage(Image image)
     {
         this.refImage = image;

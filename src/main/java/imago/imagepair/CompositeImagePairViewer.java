@@ -178,7 +178,12 @@ public class CompositeImagePairViewer extends ImagePairViewer implements Compone
     {
         return this.compositeImage;
     }
-    
+
+    public Image getCompositeImage() 
+    {
+        return this.compositeImage;
+    }
+
 	/**
      * @param selection
      *            the selection of the current viewer, as an instance of

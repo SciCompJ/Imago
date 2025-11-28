@@ -40,6 +40,7 @@ import imago.app.ImagoApp;
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.gui.util.GuiHelper;
+import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import imago.imagepair.ImagePairFrame;
 import imago.imagepair.ImagePairViewer;
@@ -220,7 +221,9 @@ public class ImagePair2DRegister implements FramePlugin
         ScalarArray2D<?> resArray = ScalarArray2D.wrapScalar2d(refArray.newInstance(refArray.size()));
         resArray.fillValues(pos -> transformed.evaluate(pos[0], pos[1]));
         
-        return new Image(resArray, movingImage);
+        Image res = new Image(resArray, movingImage);
+        res.setName(movingImage.getName() + "-reg");
+        return res;
     }
     
     /**
@@ -244,9 +247,20 @@ public class ImagePair2DRegister implements FramePlugin
     }
     
     /**
+     * Callback for the creating a composite image.
+     */
+    private void onCreateComboImage()
+    {
+        updateResultDisplay();
+        Image res = this.resultDisplay.getViewer().getCompositeImage();
+        res.setName(movingImage.getName() + "regCompo");
+        ImageFrame.create(res, parentFrame);
+    }
+    
+    /**
      * Callback for the "Save Registration" menu item.
      */
-    public void saveRegistration()
+    private void onSaveRegistration()
     {
         // create file dialog using last save path
         String pattern = "register_%s_to_%s.json";
@@ -501,15 +515,26 @@ public class ImagePair2DRegister implements FramePlugin
     private void setupMenu(JFrame frame)
     {
         // init menu items
-        JMenuItem saveRegistrationItem = new JMenuItem("Save Registration...");
-        saveRegistrationItem.addActionListener(evt -> saveRegistration());
         
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
-        fileMenu.add(saveRegistrationItem);
+        addMenuItem(fileMenu, "Display Registered Image", evt -> ImageFrame.create(registeredImage, parentFrame));
+        addMenuItem(fileMenu, "Create Registration Composite Image", evt -> onCreateComboImage());
+        fileMenu.addSeparator();
+        addMenuItem(fileMenu, "Save Registration...", evt -> onSaveRegistration());
+//        JMenuItem saveRegistrationItem = new JMenuItem("Save Registration...");
+//        saveRegistrationItem.addActionListener(evt -> onSaveRegistration());
+//        fileMenu.add(saveRegistrationItem);
         
         menuBar.add(fileMenu);
         frame.setJMenuBar(menuBar);
+    }
+    
+    private void addMenuItem(JMenu menu, String label, ActionListener listener)
+    {
+        JMenuItem item = new JMenuItem(label);
+        item.addActionListener(listener);
+        menu.add(item);
     }
     
     private JPanel createPanel(JComponent comp, JButton button1, JButton button2)
