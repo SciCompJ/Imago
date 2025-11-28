@@ -8,6 +8,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,6 +32,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.frames.ImagoTextFrame;
 import imago.transform.io.DelimitedFileAffineTransformReader;
+import imago.transform.io.JsonTransformReader;
 import net.sci.geom.Transform;
 import net.sci.geom.geom2d.AffineTransform2D;
 import net.sci.geom.geom3d.AffineTransform3D;
@@ -81,6 +83,7 @@ public class TransformManager extends ImagoFrame
     // Static members
     
     private static FileFilter textFileFilter = new FileNameExtensionFilter("Text files (*.txt)", "txt");
+    private static FileFilter jsonFileFilter = new FileNameExtensionFilter("All JSON files (*.json)", "json");
 
     
     // ===================================================================
@@ -124,6 +127,7 @@ public class TransformManager extends ImagoFrame
         JMenuBar menuBar = new JMenuBar();
         
         JMenu fileMenu = new JMenu("File");
+        createMenuItem(fileMenu, "Import from JSON...", this::onImportTransformFromJsonFile);
         createMenuItem(fileMenu, "Import Affine from Coeffs...", this::onImportAffineTransformFromCoefficientsFile);
         fileMenu.addSeparator();
         createMenuItem(fileMenu, "Close", this::onClose);
@@ -207,6 +211,42 @@ public class TransformManager extends ImagoFrame
 
     // ===================================================================
     // Menu item callbacks
+    
+    private void onImportTransformFromJsonFile(ActionEvent evt)
+    {
+        // open a dialog to read a .json file
+        File file = this.gui.chooseFileToOpen(this,
+                "Import Transform coefficients file", jsonFileFilter);
+        if (file == null)
+        {
+            return;
+        }
+        // Check the chosen file exists
+        if (!file.exists())
+        {
+            return;
+        }
+
+        Transform transfo;
+        try (JsonTransformReader reader = new JsonTransformReader(new FileReader(file));)
+        {
+            transfo = reader.readTransform();
+        }
+        catch (IOException ex)
+        {
+            throw new RuntimeException(ex);
+        }
+        catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+        
+        ImagoApp app = this.gui.getAppli();
+        TransformHandle.create(app, transfo, file.getName());
+        
+        updateInfoTable();
+
+    }
     
     private void onImportAffineTransformFromCoefficientsFile(ActionEvent evt)
     {
