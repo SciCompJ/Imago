@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 
 import net.sci.geom.Transform;
 import net.sci.geom.geom2d.MatrixAffineTransform2D;
-import net.sci.geom.geom3d.MatrixAffineTransform3D;
+import net.sci.geom.geom3d.impl.MatrixAffineTransform3D;
 
 /**
  * Reads a 2D affine transform from a delimited text file containing the
