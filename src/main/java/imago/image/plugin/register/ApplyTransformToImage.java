@@ -10,19 +10,23 @@ import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
 import imago.image.plugin.process.ScalarOutputTypes;
 import imago.transform.TransformHandle;
+import net.sci.algo.AlgoStub;
 import net.sci.array.Array;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray2D;
+import net.sci.array.numeric.ScalarArray3D;
 import net.sci.geom.Transform;
 import net.sci.geom.geom2d.Transform2D;
+import net.sci.geom.geom3d.Transform3D;
 import net.sci.image.Calibration;
 import net.sci.image.Image;
 import net.sci.register.image.TransformedImage2D;
+import net.sci.register.image.TransformedImage3D;
 
 /**
  * 
  */
-public class ApplyTransformToImage implements FramePlugin
+public class ApplyTransformToImage extends AlgoStub implements FramePlugin
 {
     /**
      * Default empty constructor.
@@ -111,6 +115,7 @@ public class ApplyTransformToImage implements FramePlugin
             factory = ((ScalarArray<?>) array).factory();
         }
         
+        this.addAlgoListener(imageFrame);
         ScalarArray<?> result = factory.create(dims);
         if (nd == 2)
         {
@@ -138,7 +143,33 @@ public class ApplyTransformToImage implements FramePlugin
         }
         else if (nd == 3)
         {
-            throw new RuntimeException("Not yet implemented");
+            if (!(transform instanceof Transform3D))
+            {
+                throw new RuntimeException("Requires an instance of Transform3D, not " + transform.getClass().getName());
+            }
+            
+            ScalarArray3D<?> movArray = ScalarArray3D.wrapScalar3d((ScalarArray<?>) array);
+            ScalarArray3D<?> res3d = ScalarArray3D.wrapScalar3d(result);
+            Transform3D transfo3d = (Transform3D) transform;
+            TransformedImage3D transformed = new TransformedImage3D(movArray, transfo3d);
+            
+            int sizeX = dims[0];
+            int sizeY = dims[1];
+            int sizeZ = dims[2];
+            for (int z = 0; z < sizeZ; z++)
+            {
+                this.fireProgressChanged(this, z, sizeZ);
+                for (int y = 0; y < sizeY; y++)
+                {
+                    for (int x = 0; x < sizeX; x++)
+                    {
+                        double x2 = x * spacing[0] + origin[0];
+                        double y2 = y * spacing[1] + origin[1];
+                        double z2 = z * spacing[2] + origin[2];
+                        res3d.setValue(x, y, z, transformed.evaluate(x2, y2, z2));
+                    }
+                }
+            }
         }
         else
         {
@@ -154,5 +185,4 @@ public class ApplyTransformToImage implements FramePlugin
         // display into new frame
         ImageFrame.create(resultImage, frame);
     }
-    
 }
