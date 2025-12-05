@@ -457,6 +457,7 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         menu.addSeparator();
         JMenu binaryMenu = new JMenu("Binary Images");
         addPlugin(binaryMenu, imago.image.plugin.binary.BinaryImageConnectedComponentsLabeling.class, "Connected Components Labeling");
+        addPlugin(binaryMenu, imago.image.plugin.binary.BinaryImageComponentsLabelingAndContouring.class, "Components Labeling and Contouring");
         binaryMenu.addSeparator();
         addPlugin(binaryMenu, imago.image.plugin.binary.BinaryImageEuclideanDistanceMap.class, "Distance Map");
         addPlugin(binaryMenu, imago.image.plugin.binary.BinaryImageChamferDistanceMap.class, "Chamfer Distance Map");
