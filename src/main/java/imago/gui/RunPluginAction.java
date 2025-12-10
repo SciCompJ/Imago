@@ -4,7 +4,7 @@
 package imago.gui;
 
 import imago.image.ImageFrame;
-import imago.image.plugin.ImageOperatorPlugin;
+import imago.image.plugins.ImageOperatorPlugin;
 import net.sci.image.ImageOperator;
 
 import java.awt.event.ActionEvent;

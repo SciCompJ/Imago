@@ -90,14 +90,14 @@ public class FrameMenuBuilder
         menu.addSeparator();
         JMenu devMenu = new JMenu("Developer");
         menu.add(devMenu);
-        addPlugin(devMenu, imago.gui.plugin.developer.DisplayExceptionDialog.class, "Show Demo Exception");
+        addPlugin(devMenu, imago.gui.developer.plugins.DisplayExceptionDialog.class, "Show Demo Exception");
         // The two following plugins are used for debugging
 //        addPlugin(devMenu, imago.plugin.developer.FailingConstructorPlugin.class, "(X) Can not Instantiate");
 //        addPlugin(devMenu, imago.plugin.developer.RunThrowExceptionPlugin.class, "(X) Can not Run");
         devMenu.addSeparator();
-        addPlugin(devMenu, imago.image.plugin.edit.PrintFrameList.class, "Print Frame List");
-        addPlugin(devMenu, imago.image.plugin.edit.PrintDocumentList.class, "Print Document List");
-        addPlugin(devMenu, imago.image.plugin.edit.PrintWorkspaceContent.class, "Print Workspace Content");
+        addPlugin(devMenu, imago.image.plugins.edit.PrintFrameList.class, "Print Frame List");
+        addPlugin(devMenu, imago.image.plugins.edit.PrintDocumentList.class, "Print Document List");
+        addPlugin(devMenu, imago.image.plugins.edit.PrintWorkspaceContent.class, "Print Workspace Content");
         
         
         return menu;
@@ -113,9 +113,9 @@ public class FrameMenuBuilder
         
         // Add some domain-specific plugins, to be transformed into user plugins in the future
         JMenu perigrainMenu = new JMenu("Perigrain");
-        addPlugin(perigrainMenu, imago.gui.plugin.plugin.crop.Crop3DPlugin.class, "Crop 3D");
-        addPlugin(perigrainMenu, imago.gui.plugin.plugin.crop.CreateSurface3DPlugin.class, "Surface 3D");
-        addPlugin(perigrainMenu, imago.gui.plugin.plugin.ImportImage3DPolylineSeries.class, "Import Polyline Series");
+        addPlugin(perigrainMenu, imago.gui.plugins.plugins.crop.Crop3DPlugin.class, "Crop 3D");
+        addPlugin(perigrainMenu, imago.gui.plugins.plugins.crop.CreateSurface3DPlugin.class, "Surface 3D");
+        addPlugin(perigrainMenu, imago.gui.plugins.plugins.ImportImage3DPolylineSeries.class, "Import Polyline Series");
         menu.add(perigrainMenu);
         
         // Add the user plugins

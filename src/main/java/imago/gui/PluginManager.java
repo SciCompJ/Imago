@@ -18,8 +18,8 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import imago.image.plugin.ImageArrayOperatorPlugin;
-import imago.image.plugin.ImageOperatorPlugin;
+import imago.image.plugins.ImageArrayOperatorPlugin;
+import imago.image.plugins.ImageOperatorPlugin;
 import net.sci.array.ArrayOperator;
 import net.sci.image.ImageOperator;
 

@@ -231,9 +231,9 @@ public class ChartFrame extends ImagoFrame
         JMenuBar menuBar = new JMenuBar();
         
         JMenu fileMenu = new JMenu("File");
-        menuBuilder.addPlugin(fileMenu, imago.chart.plugin.SaveChart.class, "Save Chart...");
+        menuBuilder.addPlugin(fileMenu, imago.chart.plugins.SaveChart.class, "Save Chart...");
         fileMenu.addSeparator();
-        menuBuilder.addPlugin(fileMenu, imago.gui.plugin.file.CloseCurrentFrame.class, "Close");
+        menuBuilder.addPlugin(fileMenu, imago.gui.plugins.file.CloseCurrentFrame.class, "Close");
         menuBar.add(fileMenu);
         
         menuBar.add(menuBuilder.createPluginsMenu());
