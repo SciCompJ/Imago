@@ -3,22 +3,43 @@
  */
 package imago.image.plugins.shape;
 
-import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
+import imago.image.plugins.ImageFramePlugin;
 import net.sci.array.Array;
-import net.sci.array.numeric.ScalarArray;
 import net.sci.array.shape.Padding;
 import net.sci.image.Image;
 
 /**
- * Add constant values around borders of image.
+ * Add values around borders of image.
  * 
  * The type of the value to add is determined by image type. 
  */
-public class ImageAddBorders implements FramePlugin
+public class ImageAddBorders implements ImageFramePlugin
 {
+    enum Strategy
+    {
+        BLACK("Black", Padding.Mode.ZERO), 
+        WHITE("White", Padding.Mode.TYPE_MAX),
+        REPLICATE("Replicate", Padding.Mode.REPLICATE),
+        MIRROR("Mirror", Padding.Mode.MIRROR),
+        PERIODIC("Periodic", Padding.Mode.PERIODIC);
+        
+        String label;
+        Padding.Mode mode;
+        
+        private Strategy(String label, Padding.Mode mode)
+        {
+            this.label = label;
+            this.mode = mode;
+        }
+        
+        public Padding.Mode getPaddingMode()
+        {
+            return mode;
+        }
+    }
 
     @Override
     public void run(ImagoFrame frame, String args)
@@ -27,11 +48,6 @@ public class ImageAddBorders implements FramePlugin
         ImageFrame imageFrame = (ImageFrame) frame;
         Image image = imageFrame.getImageHandle().getImage();
         Array<?> array = image.getData();
-
-        if (!(array instanceof ScalarArray))
-        {
-            throw new RuntimeException("Requires a scalar array as input");
-        }
         int nd = array.dimensionality();
         
         // create a dialog for the user to choose options
@@ -40,7 +56,7 @@ public class ImageAddBorders implements FramePlugin
         {
             gd.addNumericField("Padding dim. " + (d+1), 10, 0);
         }
-        gd.addNumericField("Padding Value", 0.0, 2);
+        gd.addEnumChoice("Padding mode", Strategy.class, Strategy.REPLICATE);
         gd.addCheckBox("Create View", false);
         
         // wait the user to choose
@@ -56,16 +72,13 @@ public class ImageAddBorders implements FramePlugin
         {
             padSizes[d] = (int) gd.getNextNumber();
         }
-        double padValue = gd.getNextNumber();
+        Strategy strategy = (Strategy) gd.getNextEnumChoice(); 
         boolean createView = gd.getNextBoolean();
         
-        ScalarArray<?> paddedArray = Padding.padScalar((ScalarArray<?>) array, padSizes, padSizes, padValue);
-        if (!createView)
-        {
-            paddedArray = paddedArray.duplicate();
-        }
+        Padding algo = new Padding(padSizes, strategy.mode);
+        Array<?> res = createView ? algo.createView(array) : algo.process(array);
         
-        Image resultImage = new Image(paddedArray, image);
+        Image resultImage = new Image(res, image);
         resultImage.setName(image.getName() + "-addBorders");
         
         // add the image document to GUI
@@ -77,7 +90,7 @@ public class ImageAddBorders implements FramePlugin
     {
         if (!(frame instanceof ImageFrame)) return false;
         Image image = ((ImageFrame) frame).getImageHandle().getImage();
-        if (!(image.getData() instanceof ScalarArray)) return false;
-        return true;
+        return image != null;
     } 
+    
 }

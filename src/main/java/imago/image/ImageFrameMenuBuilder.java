@@ -334,7 +334,7 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         addPlugin(geometryMenu, imago.image.plugins.shape.ImagePermuteDims.class, "Permute Image Dimensions...", hasImage);
         geometryMenu.addSeparator();
         addPlugin(geometryMenu, imago.image.plugins.shape.ImageConcatenate.class, "Concatenate..."); 
-        addPlugin(geometryMenu, imago.image.plugins.shape.ImageAddBorders.class, "Add Borders...", hasScalarImage); 
+        addPlugin(geometryMenu, imago.image.plugins.shape.ImageAddBorders.class, "Add Borders..."); 
         addPlugin(geometryMenu, imago.image.plugins.shape.ImageSubsample.class, "Subsample...", hasImage);
         addPlugin(geometryMenu, imago.image.plugins.shape.ImageDownsample.class, "Downsample...", hasImage);
         geometryMenu.addSeparator();
