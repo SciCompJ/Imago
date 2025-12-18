@@ -10,6 +10,7 @@ import imago.image.ImageViewer;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.numeric.ScalarArray;
+import net.sci.array.numeric.Vector;
 import net.sci.array.numeric.VectorArray;
 import net.sci.image.Image;
 
@@ -19,6 +20,9 @@ import net.sci.image.Image;
  */
 public class SetImageDisplayRangeToData implements FramePlugin
 {
+    /**
+     * Default empty constructor
+     */
     public SetImageDisplayRangeToData()
     {
     }
@@ -29,6 +33,7 @@ public class SetImageDisplayRangeToData implements FramePlugin
      * @see
      * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void run(ImagoFrame frame, String args)
     {
@@ -37,9 +42,9 @@ public class SetImageDisplayRangeToData implements FramePlugin
         Image image = doc.getImage();
 
         Array<?> array = image.getData();
-        if (array instanceof VectorArray)
+        if (Vector.class.isAssignableFrom(array.elementClass()))
         {
-            array = VectorArray.norm((VectorArray<?, ?>) array);
+            array = VectorArray.norm(VectorArray.wrap((Array<? extends Vector>) array));
         }
 
         if (!(array instanceof ScalarArray))

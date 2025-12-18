@@ -18,9 +18,11 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeListener;
 
+
 import net.sci.array.Array;
 import net.sci.array.color.RGB16;
 import net.sci.array.color.RGB8;
+import net.sci.array.numeric.Vector;
 import net.sci.array.numeric.VectorArray;
 import net.sci.image.Calibration;
 import net.sci.image.Image;
@@ -146,6 +148,10 @@ public class ImageDisplayOptionsPanel extends JPanel
         Class<?> elementClass = array.elementClass();
         if (elementClass.equals(RGB8.class)) return 3;
         if (elementClass.equals(RGB16.class)) return 3;
+        if (Vector.class.isAssignableFrom(elementClass))
+        {
+            return ((Vector<?,?>) array.sampleElement()).size();
+        }
                 
         throw new RuntimeException("Unable to count channels...");
     }
