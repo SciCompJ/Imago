@@ -17,7 +17,7 @@ import net.sci.array.color.RGB16;
 import net.sci.array.color.RGB8;
 import net.sci.array.numeric.Int;
 import net.sci.array.numeric.Scalar;
-import net.sci.array.numeric.VectorArray;
+import net.sci.array.numeric.Vector;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.image.Image;
 
@@ -160,21 +160,18 @@ public class DisplayCurrentValueTool extends ImageTool
             // Case of RGB color images
             int[] rgb = ((RGB16) array.get(pos)).getSamples();
             return String.format("rgb=[%d,%d,%d]", rgb[0], rgb[1], rgb[2]);
-        } 
-        else if (array instanceof VectorArray)
+        }
+        else if (Vector.class.isAssignableFrom(elementClass))
         {
             // in case of Vector array, compute the norm of the pixel for display
-            double[] values = ((VectorArray<?,?>) array).getValues(pos);
-            double norm = 0;
-            for (int c = 0; c < values.length; c++)
-                norm += values[c] * values[c];
-            norm = Math.sqrt(norm);
+            double[] values = ((Vector<?,?>) array.get(pos)).getValues();
+            double norm = Vector.norm(values);
             return String.format(Locale.US, "norm=%g", norm);
         } 
         else
         {
             throw new IllegalArgumentException(
-                    "Unable to manage image of class " + array.getClass());
+                    "Unable to manage array cotnaining elements of class " + elementClass);
         }
 	}
 }
