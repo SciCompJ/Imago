@@ -24,14 +24,15 @@ import net.sci.register.image.TransformedImage2D;
 import net.sci.register.image.TransformedImage3D;
 
 /**
- * 
+ * Applies a transform stored within the workspace to the current image. Can
+ * specify the size of output image, as well as calibration parameters.
  */
-public class ApplyTransformToImage extends AlgoStub implements FramePlugin
+public class ApplyExistingTransformToImage extends AlgoStub implements FramePlugin
 {
     /**
      * Default empty constructor.
      */
-    public ApplyTransformToImage()
+    public ApplyExistingTransformToImage()
     {
     }
 

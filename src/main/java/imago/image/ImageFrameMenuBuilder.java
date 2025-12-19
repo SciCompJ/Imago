@@ -432,14 +432,14 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         menu.add(morphologyMenu);
         
         menu.addSeparator();
-        JMenu registrationMenu = new JMenu("Registration");
-        addPlugin(registrationMenu, imago.image.plugins.register.ImagePair2DRegister.class, "Simple Image Registration", hasScalarImage);
-        addPlugin(registrationMenu, imago.image.plugins.register.ApplyTransformToImage.class, "Apply Transform To Image", hasScalarImage);
-        addPlugin(registrationMenu, 
+        JMenu transformsMenu = new JMenu("Geometric transforms");
+        addPlugin(transformsMenu, imago.image.plugins.register.ImagePair2DRegister.class, "Simple Image Registration", hasScalarImage);
+        addPlugin(transformsMenu, imago.image.plugins.register.ApplyExistingTransformToImage.class, "Apply Transform To Image", hasScalarImage);
+        transformsMenu.addSeparator();
+        addPlugin(transformsMenu, 
                 (frame, options) -> {TransformManager.getInstance(frame.getGui()).setVisible(true);},
                 "Show Transform Manager");
-        
-        menu.add(registrationMenu);
+        menu.add(transformsMenu);
         
         menu.addSeparator();
         addPlugin(menu, imago.image.plugins.vectorize.ImageFindNonZeroPixels.class, "Find Non-Zeros Elements", hasImage2D && hasScalarImage);
