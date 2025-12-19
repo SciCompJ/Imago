@@ -140,6 +140,9 @@ public class DrawBrushValueTool extends ImageTool
         // refresh display
         this.frame.getImageViewer().refreshDisplay();
         this.frame.repaint();
+        
+        // propagate to other viewers
+        this.frame.getImageViewer().getImageHandle().notifyImageHandleChange(ImageHandle.Event.CHANGE_MASK | ImageHandle.Event.IMAGE_MASK);
     }
     
     @Override
@@ -164,6 +167,7 @@ public class DrawBrushValueTool extends ImageTool
         
         // update cursor display
         updateCursor(xi, yi);
+        
         this.frame.repaint();
     }
     
