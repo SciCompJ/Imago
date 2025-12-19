@@ -54,7 +54,8 @@ public class ImageAddBorders implements ImageFramePlugin
         GenericDialog gd = new GenericDialog(frame, "Extend Borders");
         for (int d = 0; d < nd; d++)
         {
-            gd.addNumericField("Padding dim. " + (d+1), 10, 0);
+            gd.addNumericField("Padding before dim. " + (d+1), 10, 0);
+            gd.addNumericField("Padding after dim. " + (d+1), 10, 0);
         }
         gd.addEnumChoice("Padding mode", Strategy.class, Strategy.REPLICATE);
         gd.addCheckBox("Create View", false);
@@ -67,15 +68,17 @@ public class ImageAddBorders implements ImageFramePlugin
         }
         
         // parse dialog results
-        int[] padSizes = new int[nd];
+        int[] padBefore = new int[nd];
+        int[] padAfter= new int[nd];
         for (int d = 0; d < nd; d++)
         {
-            padSizes[d] = (int) gd.getNextNumber();
+            padBefore[d] = (int) gd.getNextNumber();
+            padAfter[d] = (int) gd.getNextNumber();
         }
         Strategy strategy = (Strategy) gd.getNextEnumChoice(); 
         boolean createView = gd.getNextBoolean();
         
-        Padding algo = new Padding(padSizes, strategy.mode);
+        Padding algo = new Padding(padBefore, padAfter, strategy.mode);
         Array<?> res = createView ? algo.createView(array) : algo.process(array);
         
         Image resultImage = new Image(res, image);
