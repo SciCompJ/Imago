@@ -13,9 +13,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-import imago.shapemanager.ShapeManager;
-import imago.transform.TransformManager;
-
 /**
  * Utility class for creating menu items of the various frames of the Imago
  * application. Provides also some methods for generating menus shared by
@@ -68,39 +65,8 @@ public class FrameMenuBuilder
     
     public void addSharedMenus(JMenuBar menuBar)
     {
-        menuBar.add(createGlobalMenu());
         menuBar.add(createPluginsMenu());
         menuBar.add(createHelpMenu());
-    }
-    
-    /**
-     * Creates the sub-menu for the "Global" item in the main menu bar, shared
-     * by several frame types.
-     */    public JMenu createGlobalMenu()
-    {
-        JMenu menu = new JMenu("Global");
-        
-        addPlugin(menu, 
-                (frame, options) -> {ShapeManager.getInstance(frame.getGui()).setVisible(true);},
-                "Show Shape Manager");
-        addPlugin(menu, 
-                (frame, options) -> {TransformManager.getInstance(frame.getGui()).setVisible(true);},
-                "Show Transfrom Manager");
-        
-        menu.addSeparator();
-        JMenu devMenu = new JMenu("Developer");
-        menu.add(devMenu);
-        addPlugin(devMenu, imago.gui.developer.plugins.DisplayExceptionDialog.class, "Show Demo Exception");
-        // The two following plugins are used for debugging
-//        addPlugin(devMenu, imago.plugin.developer.FailingConstructorPlugin.class, "(X) Can not Instantiate");
-//        addPlugin(devMenu, imago.plugin.developer.RunThrowExceptionPlugin.class, "(X) Can not Run");
-        devMenu.addSeparator();
-        addPlugin(devMenu, imago.image.plugins.edit.PrintFrameList.class, "Print Frame List");
-        addPlugin(devMenu, imago.image.plugins.edit.PrintDocumentList.class, "Print Document List");
-        addPlugin(devMenu, imago.image.plugins.edit.PrintWorkspaceContent.class, "Print Workspace Content");
-        
-        
-        return menu;
     }
     
     /**
@@ -111,6 +77,18 @@ public class FrameMenuBuilder
     {
         JMenu menu = new JMenu("Plugins");
         
+        JMenu devMenu = new JMenu("Developer");
+        addPlugin(devMenu, imago.gui.developer.plugins.DisplayExceptionDialog.class, "Show Demo Exception");
+        // The two following plugins are used for debugging
+//        addPlugin(devMenu, imago.plugin.developer.FailingConstructorPlugin.class, "(X) Can not Instantiate");
+//        addPlugin(devMenu, imago.plugin.developer.RunThrowExceptionPlugin.class, "(X) Can not Run");
+        devMenu.addSeparator();
+        addPlugin(devMenu, imago.image.plugins.edit.PrintFrameList.class, "Print Frame List");
+        addPlugin(devMenu, imago.image.plugins.edit.PrintDocumentList.class, "Print Document List");
+        addPlugin(devMenu, imago.image.plugins.edit.PrintWorkspaceContent.class, "Print Workspace Content");
+        menu.add(devMenu);
+        menu.addSeparator();
+
         // Add some domain-specific plugins, to be transformed into user plugins in the future
         JMenu perigrainMenu = new JMenu("Perigrain");
         addPlugin(perigrainMenu, imago.gui.plugins.plugins.crop.Crop3DPlugin.class, "Crop 3D");
@@ -119,10 +97,13 @@ public class FrameMenuBuilder
         menu.add(perigrainMenu);
         
         // Add the user plugins
-        menu.addSeparator();
-        for (PluginHandler handler : frame.gui.getPluginManager().pluginHandlers)
+        if (!frame.gui.getPluginManager().pluginHandlers.isEmpty())
         {
-            addPlugin(menu, handler);
+            menu.addSeparator();
+            for (PluginHandler handler : frame.gui.getPluginManager().pluginHandlers)
+            {
+                addPlugin(menu, handler);
+            }
         }
         
         return menu;

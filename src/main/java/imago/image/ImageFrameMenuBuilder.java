@@ -23,6 +23,8 @@ import imago.image.tools.SelectPolygonTool;
 import imago.image.tools.SelectPolylineTool;
 import imago.image.tools.SelectRectangleTool;
 import imago.image.tools.SelectionTool;
+import imago.shapemanager.ShapeManager;
+import imago.transform.TransformManager;
 import net.sci.array.Array;
 import net.sci.array.ArrayOperator;
 import net.sci.array.color.ColorMaps;
@@ -177,7 +179,10 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         addPlugin(selectionMenu, imago.image.plugins.edit.ImageCopySelectionToWorkspace.class, "Copy To Workspace");
         addPlugin(selectionMenu, imago.image.plugins.edit.ImportSelectionFromWorkspace.class, "Import From Workspace");
         addPlugin(selectionMenu, imago.image.plugins.edit.ImageSelectionToSceneGraph.class, "Add Selection to Scene Graph");
-        addPlugin(selectionMenu, imago.image.plugins.edit.ShowShapeManagerFrame.class, "Display Shape Manager");
+        addPlugin(selectionMenu, imago.image.plugins.edit.ShowShapeManagerFrame.class, "Show Shape Manager");
+        addPlugin(selectionMenu, 
+                (frame, options) -> {ShapeManager.getInstance(frame.getGui()).setVisible(true);},
+                "Display Shape Manager");
         selectionMenu.addSeparator();
         addPlugin(selectionMenu, imago.image.plugins.edit.ImageClearSelection.class, "Clear Selection");
         editMenu.add(selectionMenu);
@@ -430,6 +435,10 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         JMenu registrationMenu = new JMenu("Registration");
         addPlugin(registrationMenu, imago.image.plugins.register.ImagePair2DRegister.class, "Simple Image Registration", hasScalarImage);
         addPlugin(registrationMenu, imago.image.plugins.register.ApplyTransformToImage.class, "Apply Transform To Image", hasScalarImage);
+        addPlugin(registrationMenu, 
+                (frame, options) -> {TransformManager.getInstance(frame.getGui()).setVisible(true);},
+                "Show Transform Manager");
+        
         menu.add(registrationMenu);
         
         menu.addSeparator();
