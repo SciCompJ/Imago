@@ -24,10 +24,12 @@ import javax.swing.JScrollPane;
 import imago.gui.panels.CollapsiblePanel;
 import imago.image.ImageTool;
 import imago.image.viewers.ImageDisplay;
+import imago.imagepair.composite.AbsoluteDifferenceOfIntensitiesComposite;
 import imago.imagepair.composite.CheckerBoardComposite;
 import imago.imagepair.composite.DifferenceOfIntensitiesComposite;
 import imago.imagepair.composite.ImagePairComposite;
 import imago.imagepair.composite.MagentaGreenComposite;
+import imago.imagepair.composite.MaximumIntensityComposite;
 import imago.imagepair.composite.SumOfIntensitiesComposite;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;
@@ -51,6 +53,8 @@ public class CompositeImagePairViewer extends ImagePairViewer implements Compone
         CHECKERBOARD("Checkerboard"), 
         MAGENTA_GREEN("Magenta-Green"),
         DIFFERENCE("Difference"),
+        ABSOLUTE_DIFFERENCE("Abs. Difference"),
+        MAX_INTENSITY("Max Of Intensities"),
         SUM("Sum Of Intensities");
         
         String label;
@@ -139,9 +143,11 @@ public class CompositeImagePairViewer extends ImagePairViewer implements Compone
 	{
 	    ImagePairComposite compositer = switch(this.displayType)
         {
-            case CHECKERBOARD -> new CheckerBoardComposite(20);
+            case CHECKERBOARD -> new CheckerBoardComposite(50);
             case MAGENTA_GREEN -> new MagentaGreenComposite();
             case DIFFERENCE -> new DifferenceOfIntensitiesComposite();
+            case ABSOLUTE_DIFFERENCE -> new AbsoluteDifferenceOfIntensitiesComposite();
+            case MAX_INTENSITY -> new MaximumIntensityComposite();
             case SUM -> new SumOfIntensitiesComposite();
             default -> throw new RuntimeException("Unknown display type for image pair " + this.displayType);
         };

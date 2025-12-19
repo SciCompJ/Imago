@@ -44,7 +44,12 @@ import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import imago.imagepair.ImagePairFrame;
 import imago.imagepair.ImagePairViewer;
+import net.sci.array.Array;
+import net.sci.array.numeric.Scalar;
+import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray2D;
+import net.sci.array.numeric.UInt8Array;
+import net.sci.geom.geom2d.AffineTransform2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.Transform2D;
 import net.sci.image.Image;
@@ -67,6 +72,9 @@ public class ImagePair2DRegister implements FramePlugin
     
     Image movingImage;
     
+    ScalarArray.Factory<?> outputArrayFactory = UInt8Array.defaultFactory;
+    int[] outputImageDims;
+    
     /** the translation vector (in pixels) */
     double xShift = 0.0;
     double yShift = 0.0;
@@ -82,8 +90,11 @@ public class ImagePair2DRegister implements FramePlugin
     /** The transform model from reference space to moving image space */
     Transform2D transform = new TranslationModel2D();
     
+    /** The reference image displayed in the new basis */
+    Image registeredImage1;
+    
     /** The result of the transform applied on the moving image */
-    Image registeredImage; 
+    Image registeredImage2; 
     
     ImagePairFrame resultDisplay = null;
     
@@ -101,6 +112,9 @@ public class ImagePair2DRegister implements FramePlugin
     JComboBox<String> imageNames2Combo;
     
     JComboBox<String> transformModelCombo;
+
+    JTextField outputSizeXField;
+    JTextField outputSizeYField;
 
     JLabel xShiftLabel;
     JTextField xShiftTextField;
@@ -139,6 +153,14 @@ public class ImagePair2DRegister implements FramePlugin
             this.pluginFrame.setLocation(pos.x + 30, pos.y + 20);
         }
         
+        // initialize size of output image from size of current image
+        if (frame instanceof ImageFrame)
+        {
+            Image img = ((ImageFrame) frame).getImageHandle().getImage();
+            this.outputImageDims = img.getSize();
+        }
+        
+        // create frame
         initWidgets();
         setupLayout(pluginFrame);
         setupMenu(pluginFrame);
@@ -168,7 +190,7 @@ public class ImagePair2DRegister implements FramePlugin
         updateTransform();
         
         // apply transform on moving image
-        updateRegisteredImage();
+        updateRegisteredImages();
         
         updateResultDisplay();
     }
@@ -204,26 +226,43 @@ public class ImagePair2DRegister implements FramePlugin
     }
 
     /**
-     * Applies the current transform on the moving image.
+     * Applies the current transform on the moving image, and updates the display of fixed image.
      */
-    public void updateRegisteredImage()
+    public void updateRegisteredImages()
     {
         // apply transform on moving image
-        registeredImage = computeTransformedImage2d(this.refImage, this.transform, this.movingImage);
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        ScalarArray2D<?> ref2d = ScalarArray2D.wrap(ScalarArray.wrap((Array<Scalar>) refImage.getData()));
+        ScalarArray2D<?> reg1 = computeTransformedArray2D(ref2d, AffineTransform2D.IDENTITY, outputImageDims, outputArrayFactory);
+        registeredImage1 = new Image(reg1, refImage);
+
+        // apply transform on moving image
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        ScalarArray2D<?> moving2d = ScalarArray2D.wrap(ScalarArray.wrap((Array<Scalar>) movingImage.getData()));
+        ScalarArray2D<?> reg2 = computeTransformedArray2D(moving2d, transform, outputImageDims, outputArrayFactory);
+        registeredImage2 = new Image(reg2, movingImage);
     }
     
-    private static final Image computeTransformedImage2d(Image refImage, Transform2D transfo, Image movingImage)
+//    private static final Image computeTransformedImage2d(Image refImage, Transform2D transfo, Image movingImage)
+//    {
+//        ScalarArray2D<?> refArray = (ScalarArray2D<?>) refImage.getData();
+//        ScalarArray2D<?> movArray = (ScalarArray2D<?>) movingImage.getData();
+//        TransformedImage2D transformed = new TransformedImage2D(movArray, transfo);
+//        
+//        ScalarArray2D<?> resArray = ScalarArray2D.wrapScalar2d(refArray.newInstance(refArray.size()));
+//        resArray.fillValues(pos -> transformed.evaluate(pos[0], pos[1]));
+//        
+//        Image res = new Image(resArray, movingImage);
+//        res.setName(movingImage.getName() + "-reg");
+//        return res;
+//    }
+    
+    private static final ScalarArray2D<?> computeTransformedArray2D(ScalarArray2D<?> movArray, Transform2D transfo, int[] outputSize, ScalarArray.Factory<?> factory)
     {
-        ScalarArray2D<?> refArray = (ScalarArray2D<?>) refImage.getData();
-        ScalarArray2D<?> movArray = (ScalarArray2D<?>) movingImage.getData();
         TransformedImage2D transformed = new TransformedImage2D(movArray, transfo);
-        
-        ScalarArray2D<?> resArray = ScalarArray2D.wrapScalar2d(refArray.newInstance(refArray.size()));
+        ScalarArray2D<?> resArray = ScalarArray2D.wrapScalar2d(factory.create(outputSize));
         resArray.fillValues(pos -> transformed.evaluate(pos[0], pos[1]));
-        
-        Image res = new Image(resArray, movingImage);
-        res.setName(movingImage.getName() + "-reg");
-        return res;
+        return resArray;
     }
     
     /**
@@ -234,13 +273,13 @@ public class ImagePair2DRegister implements FramePlugin
     {
         if (resultDisplay == null)
         {
-            this.resultDisplay = ImagePairFrame.create(refImage, registeredImage, this.parentFrame);
+            this.resultDisplay = ImagePairFrame.create(registeredImage1, registeredImage2, this.parentFrame);
         } 
         else
         {
             ImagePairViewer viewer = this.resultDisplay.getViewer();
-            viewer.setReferenceImage(refImage);
-            viewer.setMovingImage(registeredImage);
+            viewer.setReferenceImage(registeredImage1);
+            viewer.setMovingImage(registeredImage2);
             viewer.refreshDisplay();
             this.resultDisplay.repaint();
         }
@@ -331,6 +370,10 @@ public class ImagePair2DRegister implements FramePlugin
             }
         });
         
+        
+        this.outputSizeXField = createNumericTextField(this.outputImageDims[0]);
+        this.outputSizeYField = createNumericTextField(this.outputImageDims[1]);
+
         this.transformModelCombo = new JComboBox<String>();
         this.transformModelCombo.addItem("Translation");
         this.transformModelCombo.addItem("Motion (Trans.+Rot.)");
@@ -489,6 +532,13 @@ public class ImagePair2DRegister implements FramePlugin
         imagesPanel.add(new JLabel("Moving Image: "));
         imagesPanel.add(this.imageNames2Combo);
 
+        JPanel outputImagePanel = GuiHelper.createOptionsPanel("Output Image");
+        outputImagePanel.setLayout(new GridLayout(3, 2));
+        outputImagePanel.add(new JLabel("Size X: "));
+        outputImagePanel.add(outputSizeXField);
+        outputImagePanel.add(new JLabel("Size Y: "));
+        outputImagePanel.add(outputSizeYField);
+
         JPanel registrationPanel = GuiHelper.createOptionsPanel("Registration");
         registrationPanel.setLayout(new GridLayout(5, 2));
         registrationPanel.add(new JLabel("Registration Type:"));
@@ -504,6 +554,7 @@ public class ImagePair2DRegister implements FramePlugin
         updateEnabledRegistrationWidgets();
         
         mainPanel.add(imagesPanel);
+        mainPanel.add(outputImagePanel);
         mainPanel.add(registrationPanel);
          
         GuiHelper.addInLine(mainPanel, FlowLayout.CENTER, autoUpdateCheckBox, runButton);
@@ -518,7 +569,8 @@ public class ImagePair2DRegister implements FramePlugin
         
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
-        addMenuItem(fileMenu, "Display Registered Image", evt -> ImageFrame.create(registeredImage, parentFrame));
+        addMenuItem(fileMenu, "Display Registered Image 1", evt -> ImageFrame.create(registeredImage2, parentFrame));
+        addMenuItem(fileMenu, "Display Registered Image 2", evt -> ImageFrame.create(registeredImage2, parentFrame));
         addMenuItem(fileMenu, "Create Registration Composite Image", evt -> onCreateComboImage());
         fileMenu.addSeparator();
         addMenuItem(fileMenu, "Save Registration...", evt -> onSaveRegistration());
@@ -565,6 +617,14 @@ public class ImagePair2DRegister implements FramePlugin
             else if (textField == logScalingTextField)
             {
                 this.logScaling = Double.parseDouble(logScalingTextField.getText());
+            }
+            else if (textField == outputSizeXField)
+            {
+                this.outputImageDims[0] = (int) Double.parseDouble(outputSizeXField.getText());
+            }
+            else if (textField == outputSizeYField)
+            {
+                this.outputImageDims[1] = (int) Double.parseDouble(outputSizeYField.getText());
             }
         }
         catch (NumberFormatException ex)
