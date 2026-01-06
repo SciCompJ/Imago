@@ -10,6 +10,7 @@ import imago.image.ImageHandle;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
 import net.sci.array.numeric.Float64Array;
+import net.sci.array.numeric.Vector;
 import net.sci.array.numeric.VectorArray;
 import net.sci.image.Image;
 
@@ -52,14 +53,17 @@ public class ConvertVectorImageToScalar implements FramePlugin
         {
             return;
         }
-        if (!(array instanceof VectorArray))
+        if (!(Vector.class.isAssignableFrom(array.elementClass())))
         {
             ImagoGui.showErrorDialog(frame, "Requires a Vector image", "Data Type Error");
             return;
         }
 
+        // wrap into a vector array
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        VectorArray<?,?> vectorArray = (VectorArray<?,?>) VectorArray.wrap((Array<Vector>) array);
+
         // dimensions of input array
-        VectorArray<?, ?> vectorArray = (VectorArray<?, ?>) array;
         int nd = array.dimensionality();
         int[] dims = vectorArray.size();
         int nChannels = vectorArray.channelCount();

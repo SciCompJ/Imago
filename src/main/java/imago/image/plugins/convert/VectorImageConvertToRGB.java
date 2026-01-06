@@ -13,8 +13,10 @@ import net.sci.array.Array;
 import net.sci.array.color.RGB8Array;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.UInt8Array;
+import net.sci.array.numeric.Vector;
 import net.sci.array.numeric.VectorArray;
 import net.sci.image.Image;
+import net.sci.image.ImageType;
 
 /**
  * @see CreateVectorImageRGB8View
@@ -24,19 +26,22 @@ import net.sci.image.Image;
  */
 public class VectorImageConvertToRGB implements FramePlugin
 {
-	public VectorImageConvertToRGB()
-	{
-	}
+    /**
+     * Default empty constructor.
+     */
+    public VectorImageConvertToRGB()
+    {
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
-	public void run(ImagoFrame frame, String args)
-	{
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void run(ImagoFrame frame, String args)
+    {
         // get current frame
         ImageHandle doc = ((ImageFrame) frame).getImageHandle();
         Image image = doc.getImage();
@@ -50,13 +55,15 @@ public class VectorImageConvertToRGB implements FramePlugin
         {
             return;
         }
-        if (!(array instanceof VectorArray))
+        if (!(Vector.class.isAssignableFrom(array.elementClass())))
         {
             ImagoGui.showErrorDialog(frame, "Requires a Vector image", "Data Type Error");
             return;
         }
 
-        VectorArray<?,?> vectorArray = (VectorArray<?,?>) array;
+        // wrap into a VectorArray
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        VectorArray<?,?> vectorArray = (VectorArray<?,?>) VectorArray.wrap((Array<Vector>) array);
         int nChannels = vectorArray.channelCount();
         
         // Create dialog for choosing channel indices
@@ -99,25 +106,24 @@ public class VectorImageConvertToRGB implements FramePlugin
         double[] redValuesRange = redChannel.finiteValueRange();
         double[] greenValuesRange = greenChannel.finiteValueRange();
         double[] blueValuesRange = blueChannel.finiteValueRange();
-        
-        
-		// convert arrays to UInt8
+
+        // convert arrays to UInt8
         UInt8Array redChannel8 = UInt8Array.convert(redChannel, redValuesRange[0],
                 redValuesRange[1]);
         UInt8Array greenChannel8 = UInt8Array.convert(greenChannel, greenValuesRange[0],
                 greenValuesRange[1]);
         UInt8Array blueChannel8 = UInt8Array.convert(blueChannel, blueValuesRange[0],
                 blueValuesRange[1]);
-		
-		// concatenate the three channels to create an RGB8 array
-		RGB8Array rgbArray = RGB8Array.mergeChannels(redChannel8, greenChannel8, blueChannel8);
-		
-		// create the image corresponding to channels concatenation
-		Image rgbImage = new Image(rgbArray, image);
-		rgbImage.setName(image.getName() + "-RGB");
 
-		// add the image document to GUI
-		ImageFrame.create(rgbImage, frame);
-	}
-	
+        // concatenate the three channels to create an RGB8 array
+        RGB8Array rgbArray = RGB8Array.mergeChannels(redChannel8, greenChannel8, blueChannel8);
+
+        // create the image corresponding to channels concatenation
+        Image rgbImage = new Image(rgbArray, ImageType.COLOR, image);
+        rgbImage.setName(image.getName() + "-RGB");
+
+        // add the image document to GUI
+        ImageFrame.create(rgbImage, frame);
+    }
+
 }
