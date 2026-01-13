@@ -96,13 +96,19 @@ public class TableFrameMenuBuilder extends FrameMenuBuilder
     private JMenu createPlotMenu()
     {
         JMenu plotMenu = new JMenu("Plot");
+        // global overview of values within table
         addPlugin(plotMenu, imago.table.plugins.plot.TableScatterPlot.class, "Scatter Plot...");
         addPlugin(plotMenu, imago.table.plugins.plot.TableGroupScatterPlot.class, "Scatter Plot By Group...");
         addPlugin(plotMenu, imago.table.plugins.plot.TablePairPlot.class, "Pair Plot");
+        // Plot specific column(s)
         plotMenu.addSeparator();
         addPlugin(plotMenu, imago.table.plugins.plot.TableLinePlot.class, "Line Plot...");
+        // Plot specific column
         plotMenu.addSeparator();
-        addPlugin(plotMenu, imago.table.plugins.plot.PlotTableColumnHistogram.class, "Histogram...");
+        addPlugin(plotMenu, imago.table.plugins.plot.PlotTableColumnHistogram.class, "Column Histogram...");
+        // Plot rows
+        plotMenu.addSeparator();
+        addPlugin(plotMenu, imago.table.plugins.plot.PlotTableRows.class, "Plot Rows");
         return plotMenu;
     }
     
