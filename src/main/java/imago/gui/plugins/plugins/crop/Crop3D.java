@@ -52,7 +52,7 @@ import net.sci.image.io.MetaImageWriter;
  * Several Processing steps:
  * <ol>
  * <li>Initialize node tree for the plugin. Create a node "crop3d" and two
- * subnodes: "polygons", and "interpolate".</li>
+ * subnodes: "polygons", and "interp".</li>
  * <li>Populate the 'polygons" node, either manually or by loading data from a
  * JSON file.</li>
  * <li>Interpolate polygons to populate also slices within annotated
@@ -232,7 +232,7 @@ public class Crop3D extends AlgoStub implements AlgoListener
         initializeCrop3dNodes();
         
         // setup new data
-        populatePolygons(region);
+        populateCrop3dNodes(region);
     }
     
     public void initializeDefaultRegions()
@@ -247,7 +247,11 @@ public class Crop3D extends AlgoStub implements AlgoListener
     // Initialization of nodes
     
     /**
-     * Reset the nodes of ImageHandle associated to a Crop3D plugin. 
+     * Reset the scene nodes of the ImageHandle instance associated to this
+     * Crop3D.
+     * 
+     * Creates a node with name "crop3d", and two children with names "polygons"
+     * and "interp".
      */
     public void initializeCrop3dNodes()
     {
@@ -300,8 +304,8 @@ public class Crop3D extends AlgoStub implements AlgoListener
     }
 
     /**
-     * @return the group node that contains the polygons node, the smooth node,
-     *         and the interp node.
+     * @return the group node that contains the polygons node, and the interp
+     *         node.
      */
     public GroupNode getCrop3dNode()
     {
@@ -400,6 +404,15 @@ public class Crop3D extends AlgoStub implements AlgoListener
         getPolygonsNode().removeSliceNode(sliceIndex);
     }
 
+    /**
+     * Reads a collection of polygons from a file in JSON format, and populates
+     * the current region.
+     * 
+     * @param file
+     *            the file containing the polygons.
+     * @throws IOException
+     *             if an exception occurs
+     */
     public void readPolygonsFromJson(File file) throws IOException
     {
         // check current region exists
@@ -413,7 +426,7 @@ public class Crop3D extends AlgoStub implements AlgoListener
 
         // reset current state of the Crop3D plugin
         initializeCrop3dNodes();
-        populatePolygons(currentRegion);
+        populateCrop3dNodes(currentRegion);
         
         System.out.println("reading polygons terminated.");
     }
@@ -458,7 +471,7 @@ public class Crop3D extends AlgoStub implements AlgoListener
         
         // reset current state of the Crop3D plugin
         initializeCrop3dNodes();
-        populatePolygons(currentRegion);
+        populateCrop3dNodes(currentRegion);
         
         System.out.println("reading polygons terminated.");
     }
@@ -471,7 +484,7 @@ public class Crop3D extends AlgoStub implements AlgoListener
      *            the region containing the polygons to display on the current
      *            Image Viewer
      */
-    public void populatePolygons(Crop3DRegion region)
+    public void populateCrop3dNodes(Crop3DRegion region)
     {
         // Process polygons
         ImageSerialSectionsNode polyNode = getPolygonsNode();
@@ -495,8 +508,8 @@ public class Crop3D extends AlgoStub implements AlgoListener
             sliceNode.addNode(shapeNode);
             node.addSliceNode(sliceNode);
         }
-   
     }
+    
 
     // ===================================================================
     // Computation of interpolated polygons
@@ -516,7 +529,7 @@ public class Crop3D extends AlgoStub implements AlgoListener
         
         algo.interpolatePolygons(currentRegion);
         
-        populatePolygons(currentRegion);
+        populateCrop3dNodes(currentRegion);
     }
     
     /**

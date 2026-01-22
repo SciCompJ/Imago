@@ -312,6 +312,110 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     
     
     // ===================================================================
+    // Management of inner data (Crop3D, image frame...)
+    
+    /**
+     * Reads a 3D virtual image from the specified file, and creates a new
+     * ImageViewer and a new Crop3D object associated to the current frame.
+     * 
+     * @param imageFileName
+     *            the image file to open.
+     */
+    public void initializeFromImageFile(File imageFileName)
+    {
+        createImageFrame(imageFileName);
+        createDefaultCrop3D();
+    }
+
+
+    private void createDefaultCrop3D()
+    {
+        // create the associated Crop3D 
+        this.crop3d = new Crop3D(imageFrame.getImageHandle());
+        this.crop3d.addAlgoListener(imageFrame);
+        this.crop3d.initializeDefaultRegions();
+        
+        // and updates the current frame
+        // need to call this to update items to display
+        ImageViewer viewer = imageFrame.getImageViewer();
+        viewer.refreshDisplay(); 
+        viewer.repaint();
+        viewer.setCurrentTool(new SelectPolygonTool(imageFrame, "selectPolygon"));
+        
+        // enable widgets for regions management
+        updateRegionWidgets();
+    }
+
+
+    public void initialize(Crop3DData data)
+    {
+        File imageFile = new File(data.imageInfo.filePath);
+        createImageFrame(imageFile);
+        data.image = this.imageFrame.getImageHandle().getImage();
+        
+        // create the associated Crop3D 
+        this.crop3d = new Crop3D(data, imageFrame.getImageHandle());
+        this.crop3d.addAlgoListener(imageFrame);
+        
+        // choose the default region to display:
+        // either the first non-empty one, or the first one if they are all empty
+        Crop3DRegion refRegion = data.regions.get(0);
+        for (Crop3DRegion region : data.regions())
+        {
+            if (!region.polygons.isEmpty())
+            {
+                refRegion = region;
+                break;
+            }
+        }
+        crop3d.selectCurrentRegion(refRegion.name);
+        
+        // enable widgets for regions management
+        updateRegionWidgets();
+        this.regionComboBox.setSelectedItem(refRegion.name);
+        updatePolygonListView();
+        
+        // and updates the current frame
+        // need to call this to update items to display
+        ImageViewer viewer = imageFrame.getImageViewer();
+        viewer.refreshDisplay(); 
+        viewer.repaint();
+        viewer.setCurrentTool(new SelectPolygonTool(imageFrame, "selectPolygon"));
+    }
+
+
+    /**
+     * Reads a 3D virtual image from the specified file, and creates a new
+     * ImageViewer and a new Crop3D object associated to the current frame.
+     * 
+     * @param imageFileName
+     *            the image file to open.
+     */
+    private void createImageFrame(File imageFileName)
+    {
+        // open a virtual image from the file
+        Image image;
+        try 
+        {
+            TiffImageReader reader = new TiffImageReader(imageFileName);
+            image = reader.readVirtualImage3D();
+        }
+        catch (Exception ex) 
+        {
+            System.err.println(ex);
+            ImagoGui.showErrorDialog(parentFrame, ex.getLocalizedMessage(), "TIFF Image Reading Error");
+            return;
+        }
+        
+        // create viewer for the image
+        this.imageFrame = ImageFrame.create(image, parentFrame);
+    
+        // update widgets
+        imageNameLabel.setText(image.getName());
+    }
+
+
+    // ===================================================================
     // Widget callbacks
     
     /**
@@ -562,11 +666,11 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     public void onOpenImageButton()
     {
         // Ask for the filename of the image to open
-        File file = parentFrame.getGui().chooseFileToOpen(parentFrame, 
+        File imageFile = parentFrame.getGui().chooseFileToOpen(parentFrame, 
                 "Choose Input 3D TIFF Image", ImageFileFilters.TIFF);
 
         // Check the chosen file is valid
-        if (file == null)
+        if (imageFile == null)
         {
             return;
         }
@@ -575,104 +679,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
         this.imageFrame = null;
         
         // create a viewer and a Crop3D object for the new image
-        initializeFromImageFile(file);
-    }
-    
-    /**
-     * Reads a 3D virtual image from the specified file, and creates a new
-     * ImageViewer and a new Crop3D object associated to the current frame.
-     * 
-     * @param imageFileName
-     *            the image file to open.
-     */
-    public void initializeFromImageFile(File imageFileName)
-    {
-        createImageFrame(imageFileName);
-        createDefaultCrop3D();
-    }
-    
-    public void initialize(Crop3DData data)
-    {
-        File imageFile = new File(data.imageInfo.filePath);
-        createImageFrame(imageFile);
-        data.image = this.imageFrame.getImageHandle().getImage();
-        
-        // create the associated Crop3D 
-        this.crop3d = new Crop3D(data, imageFrame.getImageHandle());
-        this.crop3d.addAlgoListener(imageFrame);
-        
-        // choose the default region to display:
-        // either the first non-empty one, or the first one if they are all empty
-        Crop3DRegion refRegion = data.regions.get(0);
-        for (Crop3DRegion region : data.regions())
-        {
-            if (!region.polygons.isEmpty())
-            {
-                refRegion = region;
-                break;
-            }
-        }
-        crop3d.selectCurrentRegion(refRegion.name);
-        
-        // enable widgets for regions management
-        updateRegionWidgets();
-        this.regionComboBox.setSelectedItem(refRegion.name);
-        updatePolygonListView();
-        
-        // and updates the current frame
-        // need to call this to update items to display
-        ImageViewer viewer = imageFrame.getImageViewer();
-        viewer.refreshDisplay(); 
-        viewer.repaint();
-        viewer.setCurrentTool(new SelectPolygonTool(imageFrame, "selectPolygon"));
-    }
-    
-    /**
-     * Reads a 3D virtual image from the specified file, and creates a new
-     * ImageViewer and a new Crop3D object associated to the current frame.
-     * 
-     * @param imageFileName
-     *            the image file to open.
-     */
-    private void createImageFrame(File imageFileName)
-    {
-        // open a virtual image from the file
-        Image image;
-        try 
-        {
-            TiffImageReader reader = new TiffImageReader(imageFileName);
-            image = reader.readVirtualImage3D();
-        }
-        catch (Exception ex) 
-        {
-            System.err.println(ex);
-            ImagoGui.showErrorDialog(parentFrame, ex.getLocalizedMessage(), "TIFF Image Reading Error");
-            return;
-        }
-        
-        // create viewer for the image
-        this.imageFrame = ImageFrame.create(image, parentFrame);
-
-        // update widgets
-        imageNameLabel.setText(image.getName());
-    }
-    
-    private void createDefaultCrop3D()
-    {
-        // create the associated Crop3D 
-        this.crop3d = new Crop3D(imageFrame.getImageHandle());
-        this.crop3d.addAlgoListener(imageFrame);
-        this.crop3d.initializeDefaultRegions();
-        
-        // and updates the current frame
-        // need to call this to update items to display
-        ImageViewer viewer = imageFrame.getImageViewer();
-        viewer.refreshDisplay(); 
-        viewer.repaint();
-        viewer.setCurrentTool(new SelectPolygonTool(imageFrame, "selectPolygon"));
-        
-        // enable widgets for regions management
-        updateRegionWidgets();
+        initializeFromImageFile(imageFile);
     }
     
     /**
@@ -726,7 +733,7 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     
     /**
      * Updates the different widgets related to region management, depending on
-     * a region exists in current Crop3D.
+     * whether a region exists in current Crop3D.
      */
     private void updateRegionWidgets()
     {
@@ -892,15 +899,6 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
                 {
                     crop3d.interpolatePolygons();
                     progress.setProgressRatio(1.0);
-                    
-                    // validates the next operations
-                    previewCropImageButton.setEnabled(true);
-                    cropImageButton.setEnabled(true);
-
-                    // need to call this to update items to display
-                    ImageViewer viewer = imageFrame.getImageViewer();
-                    viewer.refreshDisplay(); 
-                    viewer.repaint();
                 }
                 catch (Exception ex)
                 {
@@ -911,6 +909,15 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
                 {
                     crop3d.removeAlgoListener(progress);
                 }
+                
+                // validates the next operations
+                previewCropImageButton.setEnabled(true);
+                cropImageButton.setEnabled(true);
+                
+                // need to call this to update items to display
+                ImageViewer viewer = imageFrame.getImageViewer();
+                viewer.refreshDisplay(); 
+                viewer.repaint();
             }
         };
         t.start();
