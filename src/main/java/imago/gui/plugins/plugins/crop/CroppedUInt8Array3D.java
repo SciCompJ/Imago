@@ -5,8 +5,11 @@ package imago.gui.plugins.plugins.crop;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
+import net.sci.array.Array;
+import net.sci.array.numeric.UInt8;
 import net.sci.array.numeric.UInt8Array2D;
 import net.sci.array.numeric.UInt8Array3D;
 import net.sci.geom.geom2d.Bounds2D;
@@ -27,7 +30,7 @@ import net.sci.geom.polygon2d.LinearRing2D;
  * @author dlegland
  *
  */
-public class CroppedUInt8Array3D extends UInt8Array3D
+public class CroppedUInt8Array3D extends UInt8Array3D implements Array.View<UInt8>
 {
     UInt8Array3D refArray;
     Map<Integer, LinearRing2D> cropSlices;
@@ -68,7 +71,7 @@ public class CroppedUInt8Array3D extends UInt8Array3D
             int np = points.size();
             if (np % 2 != 0)
             {
-                System.err.println("can not manage odd number of intersections bewteen linear ring and straight line");
+                System.err.println("can not manage odd number of intersections between linear ring and straight line");
                 continue;
             }
             
@@ -120,5 +123,16 @@ public class CroppedUInt8Array3D extends UInt8Array3D
     public void setByte(int x, int y, int z, byte b)
     {
         throw new RuntimeException("Unauthorized operation");
+    }
+
+    @Override
+    public Collection<Array<?>> parentArrays()
+    {
+        return List.of(refArray);
+    }
+    
+    public boolean isModifiable()
+    {
+        return false;
     }
 }
