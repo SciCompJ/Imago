@@ -13,9 +13,6 @@ import net.sci.array.numeric.UInt8;
 import net.sci.array.numeric.UInt8Array2D;
 import net.sci.array.numeric.UInt8Array3D;
 import net.sci.geom.geom2d.Bounds2D;
-import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.geom2d.StraightLine2D;
-import net.sci.geom.geom2d.Vector2D;
 import net.sci.geom.polygon2d.LinearRing2D;
 
 /**
@@ -65,24 +62,20 @@ public class CroppedUInt8Array3D extends UInt8Array3D implements Array.View<UInt
         // iterate over lines inside bounding box
         for (int y = ymin; y < ymax; y++)
         {
-            StraightLine2D line = new StraightLine2D(new Point2D(0, y), new Vector2D(1, 0));
-            Collection<Point2D> points = ring.intersections(line);
+            // compute intersections of polygon with current line 
+            double[] xCoords = LinearRing2D.xIntersectionsWithHorizontalLine(ring, y).stream()
+                    .mapToDouble(d->d)
+                    .toArray();
 
-            int np = points.size();
+            // check number of intersections is even
+            int np = xCoords.length;
             if (np % 2 != 0)
             {
-                System.err.println("can not manage odd number of intersections between linear ring and straight line");
+                System.err.println("can not manage odd number of intersections between linear ring and straight line (y=" + y + ")");
                 continue;
             }
             
-            double[] xCoords = new double[np];
-
-            java.util.Iterator<Point2D> iter = points.iterator();
-            for (int i = 0; i < np; i++)
-            {
-                xCoords[i] = iter.next().x();
-            }
-            
+            // iterate over pairs of consecutive coordinates
             Arrays.sort(xCoords);
             for (int i = 0; i < np; i += 2)
             {

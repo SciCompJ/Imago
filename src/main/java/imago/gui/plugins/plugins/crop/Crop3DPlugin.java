@@ -781,7 +781,6 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
     public void onAddPolygonButton()
     {
         StackSliceViewer viewer = (StackSliceViewer) imageFrame.getImageViewer();
-
         int sliceIndex = viewer.getSlicingPosition(2);
         
         Geometry selection = viewer.getSelection();
@@ -822,19 +821,14 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
      */
     public void onRemovePolygonButton()
     {
-        // retrieve index of selected slice polygon
-        int index = cropItemList.getSelectedIndex();
-        if (index == -1)
-        {
-            return;
-        }
+        // check that an item was selected
+        if (cropItemList.getSelectedIndex() == -1) return;
         
+        // retrieve index of selected slice polygon
         String name = cropItemList.getSelectedValue();
         int sliceIndex = Integer.parseInt(name.substring(6).trim());
 
-        
-        ImageSerialSectionsNode group = crop3d.getPolygonsNode();
-        group.removeSliceNode(sliceIndex);
+        crop3d.removePolygon(sliceIndex);
         
         updatePolygonListView();
         
@@ -898,6 +892,15 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
                 {
                     crop3d.interpolatePolygons();
                     progress.setProgressRatio(1.0);
+                    
+                    // validates the next operations
+                    previewCropImageButton.setEnabled(true);
+                    cropImageButton.setEnabled(true);
+
+                    // need to call this to update items to display
+                    ImageViewer viewer = imageFrame.getImageViewer();
+                    viewer.refreshDisplay(); 
+                    viewer.repaint();
                 }
                 catch (Exception ex)
                 {
@@ -911,15 +914,6 @@ public class Crop3DPlugin implements FramePlugin, ListSelectionListener
             }
         };
         t.start();
-        
-        // validates the next operations
-        this.previewCropImageButton.setEnabled(true);
-        this.cropImageButton.setEnabled(true);
-
-        // need to call this to update items to display
-        ImageViewer viewer = imageFrame.getImageViewer();
-        viewer.refreshDisplay(); 
-        viewer.repaint();
     }
     
     /**
