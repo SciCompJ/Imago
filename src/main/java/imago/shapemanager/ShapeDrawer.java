@@ -164,60 +164,28 @@ public class ShapeDrawer
             throw new RuntimeException("Geometry should not be null");
         }
 
-        // Process various geometry cases
-        if (geom instanceof Point2D)
+        switch (geom)
         {
-            Point2D point = (Point2D) geom;
-            drawPoint(g2, point);
-        }
-        else if (geom instanceof LineSegment2D)
-        {
-            LineSegment2D line = (LineSegment2D) geom;
-            drawLineSegment(g2, line);
-        }
-        else if (geom instanceof Bounds2D)
-        {
-            Bounds2D box = (Bounds2D) geom;
-            drawPolygon(g2, box.getRectangle());
-        }
-        else if (geom instanceof PolygonalDomain2D)
-        {
-            PolygonalDomain2D poly = (PolygonalDomain2D) geom;
-            drawPolygon(g2, poly);
-        }
-        else if (geom instanceof Ellipse2D)
-        {
-            Polyline2D poly = ((Ellipse2D) geom).asPolyline(120);
-            drawPolyline(g2, poly);
-        }
-        else if (geom instanceof Polyline2D)
-        {
-            Polyline2D poly = (Polyline2D) geom;
-            drawPolyline(g2, poly);
-        }
-        else if (geom instanceof Curve2D)
-        {
-            Curve2D curve = (Curve2D) geom;
-            Polyline2D poly = curve.asPolyline(120);
-            drawPolyline(g2, poly);
-        }
-        else if (geom instanceof MultiCurve2D)
-        {
-            for (Curve2D curve : ((MultiCurve2D) geom).curves())
-            {
-                Polyline2D poly = curve.asPolyline(120);
-                drawPolyline(g2, poly);
+            case Point2D point -> drawPoint(g2, point);
+            case LineSegment2D line -> drawLineSegment(g2, line);
+            case Bounds2D box -> drawPolygon(g2, box.getRectangle());
+            case PolygonalDomain2D poly -> drawPolygon(g2, poly);
+            case Ellipse2D elli -> drawPolyline(g2, elli.asPolyline(120));
+            case Polyline2D poly -> drawPolyline(g2, poly);
+            case Curve2D curve -> drawPolyline(g2, curve.asPolyline(120));
+            case MultiCurve2D multiCurve -> {
+                for (Curve2D curve : multiCurve.curves())
+                {
+                    Polyline2D poly = curve.asPolyline(120);
+                    drawPolyline(g2, poly);
+                }
             }
-        }
-        else if (geom instanceof Graph2D)
-        {
-            drawGraphEdges(g2, (Graph2D) geom);
-            drawGraphVertices(g2, (Graph2D) geom);
-        }
-        else
-        {
-            // basic check to avoid errors
-            System.out.println("ShapeDrawer can not draw geometry with class: " + geom.getClass());
+            case Graph2D graph -> {
+                drawGraphEdges(g2, graph);
+                drawGraphVertices(g2, graph);
+            }
+             
+            default -> System.out.println("ShapeDrawer can not draw geometry with class: " + geom.getClass());
         }
     }
 
@@ -236,20 +204,11 @@ public class ShapeDrawer
             throw new RuntimeException("Geometry should not be null");
         }
 
-        if (geom instanceof PolygonalDomain2D)
+        switch (geom)
         {
-            PolygonalDomain2D poly = (PolygonalDomain2D) geom;
-            fillPolygon(g2, poly);
-        }
-        else if (geom instanceof Ellipse2D)
-        {
-            LinearRing2D poly = ((Ellipse2D) geom).asPolyline(120);
-            fillLinearRing(g2, poly);
-        }
-        else
-        {
-            // basic check to avoid errors
-            System.out.println("ShapeDrawer can not fill geometry with class: " + geom.getClass());
+            case PolygonalDomain2D poly -> fillPolygon(g2, poly);
+            case Ellipse2D elli -> fillLinearRing(g2, elli.asPolyline(120));
+            default -> System.out.println("ShapeDrawer can not fill geometry with class: " + geom.getClass());
         }
     }
     
