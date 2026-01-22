@@ -25,6 +25,28 @@ import net.sci.table.Table;
  */
 public class AddPointShapeFromTable implements FramePlugin
 {
+    enum Marker
+    {
+        CROSS("Cross", MarkerType.CROSS),
+        PLUS("Plus", MarkerType.PLUS),
+        ASTERISK("Asterisk", MarkerType.ASTERISK),
+        SQUARE("Square", MarkerType.SQUARE),
+        DIAMOND("Diamond", MarkerType.DIAMOND),
+        TRIANGLE_UP("Triangle (Up)", MarkerType.TRIANGLE_UP),
+        TRIANGLE_DOWN("Triangle (Down)", MarkerType.TRIANGLE_DOWN),
+        TRIANGLE_LEFT("Triangle (Left)", MarkerType.TRIANGLE_LEFT),
+        TRIANGLE_RIGHT("Triangle (Right)", MarkerType.TRIANGLE_RIGHT);
+        
+        String label;
+        MarkerType markerType;
+        
+        private Marker(String label, MarkerType markerType)
+        {
+            this.label = label;
+            this.markerType = markerType;
+        }
+    }
+    
     /**
      * Default empty constructor
      */
@@ -58,7 +80,7 @@ public class AddPointShapeFromTable implements FramePlugin
         JComboBox<String> tableCombo = gd.addChoice("Table", tableNames, tableNames[0]);
         JComboBox<String> xPosCombo = gd.addChoice("X-Position", colNames, colNames[0]);
         JComboBox<String> yPosCombo = gd.addChoice("Y-Position", colNames, colNames[0]);
-        gd.addEnumChoice("Marker Type", MarkerType.class, MarkerType.PLUS);
+        gd.addEnumChoice("Marker Type", Marker.class, Marker.PLUS);
         gd.addNumericField("Marker Size", 6, 0);
         
         // updates the combo box containing column names when table changes 
@@ -85,7 +107,7 @@ public class AddPointShapeFromTable implements FramePlugin
         String tableName = gd.getNextChoice();
         String xColName = gd.getNextChoice();
         String yColName = gd.getNextChoice();
-        MarkerType markerType = (MarkerType) gd.getNextEnumChoice();
+        MarkerType markerType = ((Marker) gd.getNextEnumChoice()).markerType;
         int markerSize = (int) gd.getNextNumber();
         
         // retrieve relevant columns from table

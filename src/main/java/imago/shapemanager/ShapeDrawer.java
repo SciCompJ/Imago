@@ -11,7 +11,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
-import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.util.Collection;
 import java.util.Iterator;
@@ -113,16 +112,16 @@ public class ShapeDrawer
         Geometry geom = shape.getGeometry();
         
         // call the fill method only for domain geometries 
-        if (geom instanceof Domain2D)
+        if (geom instanceof Domain2D domain)
         {
             Color fillColor = setOpacity(shape.getStyle().getFillColor(), shape.getStyle().getFillOpacity());
             g2.setPaint(fillColor);
-            fillGeometry(g2, (Geometry2D) geom);
+            fillGeometry(g2, domain);
         }
         
-        if (geom instanceof Point2D)
+        if (geom instanceof Point2D point)
         {
-            drawPoint(g2, (Point2D) geom, shape.getStyle());
+            drawPoint(g2, point, shape.getStyle());
         }
         else if (geom instanceof Geometry2D)
         {
@@ -278,76 +277,7 @@ public class ShapeDrawer
         g2.setStroke(stroke);
         g2.setColor(style.getLineColor());
         
-        switch(style.getMarkerType())
-        {
-            case CIRCLE -> {
-                g2.draw(new java.awt.geom.Ellipse2D.Float(xc - r, yc - r, 2 *r, 2*r));
-            }
-            case PLUS -> {
-                g2.draw(new Line2D.Float((int) (xc-r), (int) yc, (int) (xc+r), (int) yc));
-                g2.draw(new Line2D.Float((int) xc, (int) (yc-r), (int) xc, (int) (yc+r)));
-            }
-            case CROSS -> {
-                g2.draw(new Line2D.Float((int) (xc-r), (int) (yc-r), (int) (xc+r), (int) (yc+r)));
-                g2.draw(new Line2D.Float((int) (xc-r), (int) (yc+r), (int) (xc+r), (int) (yc-r)));
-            } 
-            case ASTERISK -> {
-                g2.draw(new Line2D.Float((int) (xc-r), (int) yc, (int) (xc+r), (int) yc));
-                g2.draw(new Line2D.Float((int) xc, (int) (yc-r), (int) xc, (int) (yc+r)));
-                float r2 = (float) (r * Math.sqrt(2) * 0.5);
-                g2.draw(new Line2D.Float((int) (xc-r2), (int) (yc-r2), (int) (xc+r2), (int) (yc+r2)));
-                g2.draw(new Line2D.Float((int) (xc-r2), (int) (yc+r2), (int) (xc+r2), (int) (yc-r2)));
-            } 
-            case SQUARE -> {
-                g2.draw(new java.awt.geom.Rectangle2D.Float(xc - r, yc - r, 2 *r, 2*r));
-            }
-            case DIAMOND -> {
-                Path2D.Float path = new Path2D.Float();
-                path.moveTo(xc, yc + r);
-                path.lineTo(xc - r, yc);
-                path.lineTo(xc, yc - r);
-                path.lineTo(xc + r, yc);
-                path.lineTo(xc, yc + r);
-                g2.draw(path);
-            } 
-            case TRIANGLE_DOWN -> {
-                float dy = (float) (Math.sqrt(3) * r / 3.0);
-                Path2D.Float path = new Path2D.Float();
-                path.moveTo(xc, yc + dy * 2.0);
-                path.lineTo(xc - r, yc - dy);
-                path.lineTo(xc + r, yc - dy);
-                path.lineTo(xc, yc + dy * 2.0);
-                g2.draw(path);
-            } 
-            case TRIANGLE_UP-> {
-                float dy = (float) (Math.sqrt(3) * r / 3.0);
-                Path2D.Float path = new Path2D.Float();
-                path.moveTo(xc, yc - dy * 2.0);
-                path.lineTo(xc + r, yc + dy);
-                path.lineTo(xc - r, yc + dy);
-                path.lineTo(xc, yc - dy * 2.0);
-                g2.draw(path);
-            } 
-            case TRIANGLE_LEFT-> {
-                float dx = (float) (Math.sqrt(3) * r / 3.0);
-                Path2D.Float path = new Path2D.Float();
-                path.moveTo(xc - dx * 2.0, yc);
-                path.lineTo(xc + dx, yc - r);
-                path.lineTo(xc + dx, yc + r);
-                path.lineTo(xc - dx * 2.0, yc);
-                g2.draw(path);
-            } 
-            case TRIANGLE_RIGHT-> {
-                float dx = (float) (Math.sqrt(3) * r / 3.0);
-                Path2D.Float path = new Path2D.Float();
-                path.moveTo(xc + dx * 2.0, yc);
-                path.lineTo(xc - dx, yc + r);
-                path.lineTo(xc - dx, yc - r);
-                path.lineTo(xc + dx * 2.0, yc);
-                g2.draw(path);
-            } 
-            default -> throw new RuntimeException("Could not manage marker type: " + style.getMarkerType());
-        };
+        style.getMarkerType().draw(g2, xc, yc, r);
     }
     
     /**
