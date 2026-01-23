@@ -351,6 +351,11 @@ public class ImageHandle extends ObjectHandle
         return this.image;
     }
 
+    public String getItemClassName()
+    {
+        return "Image";
+    }
+    
     
     // =============================================================
     // Declaration of inner classes and interfaces

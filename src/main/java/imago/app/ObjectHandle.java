@@ -113,12 +113,13 @@ public abstract class ObjectHandle
     }
     
     /**
-     * Changes the name of this handle. To avoid two or moerz handle to share
-     * the same name, the ImagoApp class contains methods to create unique
+     * Changes the name of this handle. In order to avoid two or more handles to
+     * share the same name, the ImagoApp class contains methods to create unique
      * names.
      * 
      * @see ImagoApp#createHandleName(String)
-     * @param newName the new name for this handle.
+     * @param newName
+     *            the new name for this handle.
      */
     public void setName(String newName) 
     {
@@ -142,4 +143,16 @@ public abstract class ObjectHandle
         this.modified = b;
     }
     
+    /**
+     * Returns a string describing the class of the item within this handle.
+     * Default behavior is to return the class name of the encapsulated item.
+     * Specialization Handle classes may return a more generic string (i.e.
+     * "Image", "Table"...).
+     * 
+     * @return a string describing the class of the item within this handle.
+     */
+    public String getItemClassName()
+    {
+        return getObject().getClass().getSimpleName();
+    }
 }

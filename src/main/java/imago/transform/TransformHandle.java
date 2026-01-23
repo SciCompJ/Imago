@@ -23,12 +23,12 @@ public class TransformHandle extends ObjectHandle
     // Static utility methods
     
     /**
-     * Creates a new handle for a geometry, adds it to the workspace, and
+     * Creates a new handle for a transform, adds it to the workspace, and
      * returns the created handle.
      * 
-     * @param geom
-     *            the geometry.
-     * @return the handle to manage the geometry.
+     * @param transfo
+     *            the transform.
+     * @return the handle to manage the transform.
      */
     public static final TransformHandle create(ImagoApp app, Transform transfo)
     {
@@ -37,16 +37,16 @@ public class TransformHandle extends ObjectHandle
     }
 
     /**
-     * Creates a new handle for a geometry, adds it to the workspace, and
+     * Creates a new handle for a transform, adds it to the workspace, and
      * returns the created handle.
      * 
-     * @param geom
-     *            the geometry.
+     * @param transfo
+     *            the transform.
      * @param parent
      *            a parent handle, used to initialize handles fields.
      * @param name
      *            the name of the transform
-     * @return the handle to manage the geometry.
+     * @return the handle to manage the transform.
      */
     public static final TransformHandle create(ImagoApp app, Transform transfo, String name)
     {
@@ -61,11 +61,11 @@ public class TransformHandle extends ObjectHandle
     }
 
     /**
-     * Returns all the geometry handles contained in the application.
+     * Returns all the transform handles contained in the application.
      * 
      * @param app
      *            the application to explore
-     * @return the list of all table handles within the application workspace
+     * @return the list of all transform handles within the application workspace
      */
     public static final Collection<TransformHandle> getAll(ImagoApp app)
     {
@@ -76,9 +76,9 @@ public class TransformHandle extends ObjectHandle
     }
     
     /**
-     * Get the name of all geometry handles.
+     * Get the name of all transform handles.
      * 
-     * @return the list of names of handles containing geometries.
+     * @return the list of names of handles containing transforms.
      */
     public static final Collection<String> getAllNames(ImagoApp app)
     {
@@ -98,15 +98,15 @@ public class TransformHandle extends ObjectHandle
     }
 
     /**
-     * Generates a default tag for a geometry based on geometry class. For
-     * example, Point geometries will generate tag "pnt", polygon or polyline
-     * geometries will generate tag "poly", and so on. Default tag is d"geom".
+     * Generates a default tag for a transform, based on its class. Currently
+     * returns the same tag for all transform classes, but more specialized tags
+     * could be returned in the future.
      * 
-     * @param geom
-     *            the geometry
+     * @param transfo
+     *            the transform
      * @return a string that can be used as tag base for the geometry handle
      */
-    public static final String createTag(Transform geom)
+    public static final String createTag(Transform transfo)
     {
         return "transfo";
     }
@@ -141,4 +141,10 @@ public class TransformHandle extends ObjectHandle
     {
         return this.transfo;
     }
+    
+    public String getItemClassName()
+    {
+        return "Transform";
+    }
+    
 }

@@ -35,5 +35,9 @@ public class StringHandle extends ObjectHandle
     {
         return this.string;
     }
-
+    
+    public String getItemClassName()
+    {
+        return "String";
+    }
 }

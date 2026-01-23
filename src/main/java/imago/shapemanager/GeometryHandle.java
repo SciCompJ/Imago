@@ -180,5 +180,21 @@ public class GeometryHandle extends ObjectHandle
     {
         return this.geometry;
     }
-
+    
+    public String getItemClassName()
+    {
+        if (geometry instanceof Polygon2D || geometry instanceof Polygon3D) return "Polygon2D";
+        if (geometry instanceof Polyline2D || geometry instanceof Polyline3D) return "Polyline2D";
+        if (geometry instanceof Mesh3D) return "Mesh3D";
+        if (geometry instanceof Point || geometry instanceof MultiPoint) return "Point";
+        if (geometry instanceof PointShape2D) return "Point";
+        if (geometry instanceof LineSegment2D) return "LineSegment2D";
+        if (geometry instanceof StraightLine3D) return "StraightLine3D";
+        if (geometry instanceof LineSegment2D) return "LineSegment2D";
+        if (geometry instanceof StraightLine3D) return "StraightLine3D";
+        if (geometry instanceof Circle2D) return "Circle2D";
+        if (geometry instanceof Ellipse2D) return "Ellipse2D";
+        if (geometry instanceof Curve) return "Curve";
+        return "Geometry";
+    }
 }

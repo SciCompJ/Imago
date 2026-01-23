@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.image.plugins.edit;
+package imago.gui.developer.plugins;
 
 import imago.app.ObjectHandle;
 import imago.app.Workspace;
@@ -30,9 +30,9 @@ public class PrintWorkspaceContent implements FramePlugin
 
         for (ObjectHandle handle : ws.getHandles())
 	    {
-	        String className = handle.getObject().getClass().getSimpleName();
+	        String className = handle.getItemClassName();
             System.out.println(String.format(Locale.ENGLISH,
-                    "  %s (%s): \"%s\"", handle.getTag(), className, handle.getName()));
+                    "  %-7s (%s): \"%s\"", handle.getTag(), className, handle.getName()));
         }
 	}
 }

@@ -138,4 +138,9 @@ public class TableHandle extends ObjectHandle
         return this.table;
     }
 
+    public String getItemClassName()
+    {
+        return "Table";
+    }
+    
 }

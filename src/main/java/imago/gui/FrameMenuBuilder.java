@@ -83,9 +83,9 @@ public class FrameMenuBuilder
 //        addPlugin(devMenu, imago.plugin.developer.FailingConstructorPlugin.class, "(X) Can not Instantiate");
 //        addPlugin(devMenu, imago.plugin.developer.RunThrowExceptionPlugin.class, "(X) Can not Run");
         devMenu.addSeparator();
-        addPlugin(devMenu, imago.image.plugins.edit.PrintFrameList.class, "Print Frame List");
-        addPlugin(devMenu, imago.image.plugins.edit.PrintDocumentList.class, "Print Document List");
-        addPlugin(devMenu, imago.image.plugins.edit.PrintWorkspaceContent.class, "Print Workspace Content");
+        addPlugin(devMenu, imago.gui.developer.plugins.PrintFrameList.class, "Print Frame List");
+        addPlugin(devMenu, imago.gui.developer.plugins.PrintDocumentList.class, "Print Document List");
+        addPlugin(devMenu, imago.gui.developer.plugins.PrintWorkspaceContent.class, "Print Workspace Content");
         menu.add(devMenu);
         menu.addSeparator();
 
