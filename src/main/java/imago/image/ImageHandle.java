@@ -269,7 +269,48 @@ public class ImageHandle extends ObjectHandle
     {
     	return this.rootNode;
     }
+    
 	
+    // =============================================================
+    // General methods
+    
+    public void copyDisplaySettings(ImageHandle doc)
+    {
+        // if the two images are 3D and have the same size, use same index of current slice
+        if (this.image.getDimension() > 2 && doc.image.getDimension() > 2)
+        {
+            int size2 = this.image.getSize(2);
+            if (doc.image.getSize(2) == size2)
+            {
+                this.currentSliceIndex = Math.min(Math.max(doc.getCurrentSliceIndex(), 0), size2);
+            }
+        }
+    }
+    
+    /**
+     * Updates the file name of the inner image, and updates the name of the
+     * image according to the file path. Also updates the name of this
+     * ImageHandle to match the name the image, keeping the name unique within
+     * the specified workspace.
+     * 
+     * @param filePath
+     *            the file name of the image, used to update image name
+     * @param app
+     *            the application containing the handles
+     */
+    public void updateFilePathAndName(String filePath, ImagoApp app)
+    {
+        // update image metadata
+        image.setFilePath(filePath);
+        image.setNameFromFileName(filePath);
+        
+        // also updates handle name if necessary
+        if (this.getName() != image.getName())
+        {
+            this.setName(app.getWorkspace().createHandleName(image.getName()));
+        }
+    }
+    
     
     // =============================================================
     // Management of ImageHandleListeners
@@ -303,26 +344,17 @@ public class ImageHandle extends ObjectHandle
     }
     
     // =============================================================
-    // General methods
-    
-    public void copyDisplaySettings(ImageHandle doc)
-    {
-        // if the two images are 3D and have the same size, use same index of current slice
-        if (this.image.getDimension() > 2 && doc.image.getDimension() > 2)
-        {
-            int size2 = this.image.getSize(2);
-            if (doc.image.getSize(2) == size2)
-            {
-                this.currentSliceIndex = Math.min(Math.max(doc.getCurrentSliceIndex(), 0), size2);
-            }
-        }
-    }
+    // Methods overriding Handle
     
     public Image getObject()
     {
         return this.image;
     }
 
+    
+    // =============================================================
+    // Declaration of inner classes and interfaces
+    
     public interface Listener
     {
         public void imageHandleModified(Event evt);

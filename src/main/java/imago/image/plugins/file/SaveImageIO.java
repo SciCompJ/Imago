@@ -65,5 +65,9 @@ public class SaveImageIO implements FramePlugin
 
         iframe.getStatusBar().setProgressBarPercent(0);
         iframe.showElapsedTime("Save Image", dt, image);
+
+        // update image name with file name
+        viewer.getImageHandle().updateFilePathAndName(file.getPath(), iframe.getGui().getAppli());
+        iframe.updateTitle();
 	}
 }

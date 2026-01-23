@@ -73,5 +73,9 @@ public class SaveImageMetaImage implements FramePlugin
 
         iframe.getStatusBar().setProgressBarPercent(0);
         iframe.showElapsedTime("Save To MHD", dt, image);
+        
+        // update image name with file name
+        viewer.getImageHandle().updateFilePathAndName(file.getPath(), iframe.getGui().getAppli());
+        iframe.updateTitle();
 	}
 }
