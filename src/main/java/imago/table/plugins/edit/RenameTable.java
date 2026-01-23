@@ -41,7 +41,7 @@ public class RenameTable implements FramePlugin
         }
         
         // ensure the name is unique within the set of open image handles
-        newName = frame.getGui().getAppli().createHandleName(newName);
+        newName = frame.getGui().getAppli().getWorkspace().createHandleName(newName);
         
         // setup name for image, handle, and frame.
         handle.setName(newName);

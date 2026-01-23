@@ -92,7 +92,7 @@ public class ImagoApp
     public ObjectHandle createHandle(Object item, String name, String baseTag)
     {
         // setup indexation variables
-        name = createHandleName(name != null ? name : "NoName");
+        name = workspace.createHandleName(name != null ? name : "NoName");
         String tag = workspace.findNextFreeTag(baseTag);
         
         // create handle based on class of item
@@ -110,15 +110,11 @@ public class ImagoApp
         return handle;
     }
     
-	public void removeHandle(ObjectHandle handle)
-	{
-	    workspace.removeHandle(handle.tag);
-	}
-
-
-    // =============================================================
-    // Management of handle names
-
+    public void removeHandle(ObjectHandle handle)
+    {
+        workspace.removeHandle(handle.tag);
+    }
+    
     /**
      * Creates a unique name for a handle, given a base name (typically a file name). If
      * application already contains a document with same base name, an index is
@@ -130,79 +126,10 @@ public class ImagoApp
      */
     public String createHandleName(String name)
     {
-        // avoid empty name
-        if (name == null || name.isEmpty())
-        {
-            name = "NoName";
-        }
-        
-        if (!workspace.hasHandleWithName(name))
-        {
-            return name;
-        }
-        
-        // extract base name (before extension if present)
-        String[] fileParts = splitFileNameParts(name);
-        String baseName = fileParts[0];
-        
-        // remove trailing suffix if present
-        baseName = removeTrailingDigits(baseName);
-            
-        // create names with the pattern until we found a non existing one
-        int index = 1;
-        do
-        {
-            name = buildFileName(String.format("%s-%d", baseName, index++), fileParts[1]);
-        } while (workspace.hasHandleWithName(name));
-        
-        return name;
+        return workspace.createHandleName(name);
     }
     
-    private static final String[] splitFileNameParts(String filename) 
-    {
-        // identifies position of extension
-        int extensionIndex = filename.lastIndexOf(".");
 
-        // Case of no extension.
-        if (extensionIndex == -1)
-        {
-            return new String[] {filename, ""};
-        }
-        
-        String baseName = filename.substring(0, extensionIndex); 
-        String extensionName = filename.substring(extensionIndex+1); 
-        
-        return new String[] {baseName, extensionName};
-    }
-    
-    private static final String removeTrailingDigits(String name)
-    {
-        // basic check-up
-        if (name.isEmpty()) 
-            return name;
-        
-        // if last character is not a digit, return the base name
-        if (!name.substring(name.length()-1).matches("[0-9]"))
-            return name;
-
-        // remove trailing digits
-        while (!name.isEmpty() && name.substring(name.length()-1).matches("[0-9]"))
-            name = name.substring(0, name.length()-1);
-        // remove trailing '-' characters
-        while (!name.isEmpty() && name.endsWith("-"))
-            name = name.substring(0, name.length()-1);
-        
-        return name;
-    }
-    
-    private String buildFileName(String baseName, String extensionName)
-    {
-        if (extensionName == null || extensionName.isEmpty())
-            return baseName;
-        else
-            return baseName + "." + extensionName;
-    }
-    
     // =============================================================
     // Management of user preferences
     

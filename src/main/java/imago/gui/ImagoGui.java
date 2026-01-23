@@ -25,6 +25,7 @@ import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
 import imago.app.ImagoApp;
+import imago.app.Workspace;
 import imago.gui.frames.ImagoEmptyFrame;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
@@ -551,6 +552,11 @@ public class ImagoGui
     // ===================================================================
     // Getters / setters
 
+    public Workspace getWorkspace()
+    {
+        return this.app.getWorkspace();
+    }
+    
     public ImagoApp getAppli()
     {
         return this.app;

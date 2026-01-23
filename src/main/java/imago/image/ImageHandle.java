@@ -50,19 +50,19 @@ public class ImageHandle extends ObjectHandle
      * 
      * @param image
      *            the image instance.
-     * @param parent
+     * @param parentHandle
      *            a parent handle, used to initialize handles fields.
      * @return the handle to manage the image.
      */
-    public static final ImageHandle create(ImagoApp app, Image image, ImageHandle parent)
+    public static final ImageHandle create(ImagoApp app, Image image, ImageHandle parentHandle)
     {
         Workspace workspace = app.getWorkspace();
         String tag = workspace.findNextFreeTag("img");
-        String name = app.createHandleName(image.getName());
+        String name = workspace.createHandleName(image.getName());
         ImageHandle handle = new ImageHandle(image, name, tag);
-        if (parent != null)
+        if (parentHandle != null)
         {
-            handle.copyDisplaySettings(parent);
+            handle.copyDisplaySettings(parentHandle);
         }
         workspace.addHandle(handle);
         return handle;
@@ -70,15 +70,10 @@ public class ImageHandle extends ObjectHandle
 
     public static final Collection<ImageHandle> getAll(ImagoApp app)
     {
-        ArrayList<ImageHandle> res = new ArrayList<ImageHandle>();
-        for (ObjectHandle handle : app.getWorkspace().getHandles())
-        {
-            if (handle instanceof ImageHandle)
-            {
-                res.add((ImageHandle) handle);
-            }
-        }
-        return res;
+        return app.getWorkspace().getHandles().stream()
+                .filter(handle -> handle instanceof ImageHandle)
+                .map(handle -> (ImageHandle) handle)
+                .toList();
     }
     
     /**
@@ -88,15 +83,10 @@ public class ImageHandle extends ObjectHandle
      */
     public static final Collection<String> getAllNames(ImagoApp app)
     {
-        ArrayList<String> res = new ArrayList<String>();
-        for (ObjectHandle handle : app.getWorkspace().getHandles())
-        {
-            if (handle instanceof ImageHandle)
-            {
-                res.add(handle.getName());
-            }
-        }
-        return res;
+        return app.getWorkspace().getHandles().stream()
+                .filter(handle -> handle instanceof ImageHandle)
+                .map(handle -> handle.getName())
+                .toList();
     }
     
     /**
@@ -141,16 +131,12 @@ public class ImageHandle extends ObjectHandle
     
     public static final ImageHandle findFromName(ImagoApp app, String handleName)
     {
-        for (ObjectHandle handle : app.getWorkspace().getHandles())
-        {
-            if (handle instanceof ImageHandle)
-            {
-                if (handle.getName().equals(handleName))
-                    return (ImageHandle) handle;
-            }
-        }
-        
-        throw new IllegalArgumentException("App does not contain any image handle with name: " + handleName);
+        return app.getWorkspace().getHandles().stream()
+                .filter(handle -> handle instanceof ImageHandle)
+                .filter(handle -> handle.getName().equals(handleName))
+                .map(handle -> (ImageHandle) handle)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Workspace does not contain any image handle with name: " + handleName));
     }
 
 

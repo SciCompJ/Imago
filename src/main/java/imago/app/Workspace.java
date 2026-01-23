@@ -8,7 +8,11 @@ import java.util.TreeMap;
 import java.util.function.Predicate;
 
 /**
- * Contains a set of <code>ObjectHandle</code> instances, indexed by their tag.
+ * Contains a set of {@code ObjectHandle} instances, indexed by their tag.
+ * 
+ * Each tag is unique by definition. Each Handle name is also expected to be
+ * unique. For this, several methods are provided to check whether a handle
+ * exists with a given name, or to generate new unique names.
  * 
  * @see ObjectHandle
  * 
@@ -52,27 +56,111 @@ public class Workspace
      */
     public ObjectHandle findHandleWithName(String name)
     {
-        for (ObjectHandle handle : handles.values())
-        {
-            if (handle.getName().equals(name))
-            {
-                return handle;
-            }
-        }
-
-        throw new RuntimeException("Workspace does not contain any item with name: " + name);
+        return handles.values().stream()
+                .filter(handle -> handle.getName().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Workspace does not contain any item with name: " + name));
     }
     
+    /**
+     * Checks whether this workspace contains a handle with the specified name.
+     * 
+     * @param name
+     *            the name of the handle
+     * @return true if this workspace contains an handle with the specified
+     *         name.
+     */
     public boolean hasHandleWithName(String name)
     {
-        for (ObjectHandle handle : handles.values())
+        return handles.values().stream().anyMatch(handle -> handle.getName().equals(name));
+    }
+    
+    
+    // =============================================================
+    // Management of handle names
+
+    /**
+     * Creates a unique name for a handle, given a base name (typically a file name). If
+     * application already contains a document with same base name, an index is
+     * added to make the name unique.
+     * 
+     * @param name
+     *            a base name for the handle, for example the file name.
+     * @return a unique name based on proposed name.
+     */
+    public String createHandleName(String name)
+    {
+        // avoid empty name
+        if (name == null || name.isEmpty())
         {
-            if (handle.getName().equals(name))
-            {
-                return true;
-            }
+            name = "NoName";
         }
-        return false;
+        
+        if (!hasHandleWithName(name))
+        {
+            return name;
+        }
+        
+        // extract base name (before extension if present)
+        String[] fileParts = splitFileNameParts(name);
+        String baseName = fileParts[0];
+        
+        // remove trailing suffix if present
+        baseName = removeTrailingDigits(baseName);
+            
+        // create names with the pattern until we found a non existing one
+        int index = 1;
+        do
+        {
+            name = buildFileName(String.format("%s-%d", baseName, index++), fileParts[1]);
+        } while (hasHandleWithName(name));
+        
+        return name;
+    }
+    
+    private static final String[] splitFileNameParts(String filename) 
+    {
+        // identifies position of extension
+        int extensionIndex = filename.lastIndexOf(".");
+
+        // Case of no extension.
+        if (extensionIndex == -1)
+        {
+            return new String[] {filename, ""};
+        }
+        
+        String baseName = filename.substring(0, extensionIndex); 
+        String extensionName = filename.substring(extensionIndex+1); 
+        
+        return new String[] {baseName, extensionName};
+    }
+    
+    private static final String removeTrailingDigits(String name)
+    {
+        // basic check-up
+        if (name.isEmpty()) 
+            return name;
+        
+        // if last character is not a digit, return the base name
+        if (!name.substring(name.length()-1).matches("[0-9]"))
+            return name;
+
+        // remove trailing digits
+        while (!name.isEmpty() && name.substring(name.length()-1).matches("[0-9]"))
+            name = name.substring(0, name.length()-1);
+        // remove trailing '-' characters
+        while (!name.isEmpty() && name.endsWith("-"))
+            name = name.substring(0, name.length()-1);
+        
+        return name;
+    }
+    
+    private static final String buildFileName(String baseName, String extensionName)
+    {
+        if (extensionName == null || extensionName.isEmpty())
+            return baseName;
+        else
+            return baseName + "." + extensionName;
     }
     
 

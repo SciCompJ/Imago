@@ -49,7 +49,7 @@ public class TableHandle extends ObjectHandle
     {
         Workspace workspace = app.getWorkspace();
         String tag = workspace.findNextFreeTag("tab");
-        String name = app.createHandleName(table.getName());
+        String name = workspace.createHandleName(table.getName());
         TableHandle handle = new TableHandle(table, name, tag);
         workspace.addHandle(handle);
         return handle;

@@ -181,7 +181,7 @@ public class CreateNewImage implements FramePlugin
         System.out.println("create new image");
 
         // determine default values for dialog
-        String baseName = frame.getGui().getAppli().createHandleName("NoName");
+        String baseName = frame.getGui().getAppli().getWorkspace().createHandleName("NoName");
         int sizeX_init = 200;
         int sizeY_init = 200;
         int sizeZ_init = 1;
