@@ -4,6 +4,7 @@
 package imago.shapemanager;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -34,7 +35,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
 import imago.app.ImagoApp;
+import imago.app.scene.GroupNode;
+import imago.app.scene.ImageSerialSectionsNode;
+import imago.app.scene.ImageSliceNode;
+import imago.app.scene.ShapeNode;
 import imago.app.shape.Shape;
+import imago.app.shape.Style;
 import imago.app.shape.io.JsonGeometryReader;
 import imago.app.shape.io.JsonGeometryWriter;
 import imago.gui.GenericDialog;
@@ -53,10 +59,20 @@ import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.curve.Circle2D;
 import net.sci.geom.geom2d.curve.Ellipse2D;
+import net.sci.geom.geom3d.Geometry3D;
+import net.sci.geom.geom3d.Plane3D;
+import net.sci.geom.geom3d.Point3D;
+import net.sci.geom.geom3d.Vector3D;
+import net.sci.geom.geom3d.polyline.Polyline3D;
 import net.sci.geom.polygon2d.LineString2D;
 import net.sci.geom.polygon2d.Polygon2D;
 import net.sci.geom.polygon2d.Polyline2D;
+import net.sci.image.Image;
+import net.sci.geom.mesh3d.DefaultTriMesh3D;
+import net.sci.geom.mesh3d.EdgeMesh3D;
 import net.sci.geom.mesh3d.Mesh3D;
+import net.sci.geom.mesh3d.Meshes3D;
+import net.sci.geom.mesh3d.process.IntersectionMeshPlane;
 
 /**
  * A frame, unique within the GUI, that allows to display and edit all the
@@ -176,6 +192,7 @@ public class ShapeManager extends ImagoFrame
         editMenu.addSeparator();
         createMenuItem(editMenu, "Set As Image Selection", this::onSetAsImageSelection);
         createMenuItem(editMenu, "Copy to Image Shapes", this::onCopyToImageShapes);
+        createMenuItem(editMenu, "Copy to Image Shape Node", this::onCopyToImageShapeNode);
         menuBar.add(editMenu);
         
         getWidget().setJMenuBar(menuBar);
@@ -530,21 +547,12 @@ public class ShapeManager extends ImagoFrame
     private void onCopyToImageShapes(ActionEvent evt)
     {
         ImagoApp appli = this.gui.getAppli();
-        
-        GenericDialog dlg = new GenericDialog(this, "Move To Image");
-        String[] imageNames = ImageHandle.getAllNames(appli).toArray(new String[]{});
-        dlg.addChoice("Image to Update", imageNames, imageNames[0]);
-        dlg.showDialog();
-        
-        if (dlg.wasCanceled()) 
+        ImageHandle imageHandle = chooseImage("Move To Image", "Image to Update", appli);
+        if (imageHandle == null) 
         {
             return;
         }
-        
-        // Parse dialog options
-        String imageName = dlg.getNextChoice();
-        ImageHandle imageHandle = ImageHandle.findFromName(appli, imageName);
-        
+
         for (GeometryHandle handle : getSelectedHandles())
         {
             Shape shape = new Shape(handle.getGeometry());
@@ -552,6 +560,109 @@ public class ShapeManager extends ImagoFrame
         }
         
         imageHandle.notifyImageHandleChange(ImageHandle.Event.SHAPES_MASK | ImageHandle.Event.CHANGE_MASK);
+    }
+    
+    private void onCopyToImageShapeNode(ActionEvent evt)
+    {
+        ImagoApp appli = this.gui.getAppli();
+        ImageHandle imageHandle = chooseImage("Move To Image Shape Node", "Image to Update", appli);
+        if (imageHandle == null) 
+        {
+            return;
+        }
+
+        GroupNode rootNode = (GroupNode) imageHandle.getRootNode();
+        for (GeometryHandle handle : getSelectedHandles())
+        {
+            switch (handle.getGeometry())
+            {
+                case Geometry2D geom2d -> 
+                {
+                    rootNode.addNode(new ShapeNode(handle.getName(), geom2d));
+                }
+                case Geometry3D geom3d -> 
+                {
+                    Image image = imageHandle.getImage();
+                    if (image.getDimension() != 3)
+                    {
+                        System.err.println("Requires a 3D image");
+                        continue;
+                    }
+                    
+                    int nSlices = image.getSize(2);
+                    ImageSerialSectionsNode node = switch (geom3d)
+                    {
+                        case Mesh3D mesh -> computeSerialSectionNode(mesh, nSlices);
+                        default -> null;
+                    };
+                    node.setName(handle.getName());
+                    rootNode.addNode(node);
+                }
+                default -> {
+                    System.err.println("Unable to manage geometry with class: " + handle.getGeometry().getClass());
+                }
+            };
+        }
+        
+        imageHandle.notifyImageHandleChange(ImageHandle.Event.SHAPES_MASK | ImageHandle.Event.CHANGE_MASK);
+    }
+    
+    private static final ImageSerialSectionsNode computeSerialSectionNode(Mesh3D mesh, int nSlices)
+    {
+        // requires an instance of "EdgeMesh" specialization for computing
+        // intersections with planes
+        EdgeMesh3D edgeMesh = mesh instanceof EdgeMesh3D ? (EdgeMesh3D) mesh
+                : DefaultTriMesh3D.convert(Meshes3D.triangulate(mesh));
+        
+        // get serial sections node
+        ImageSerialSectionsNode sectionsNode = new ImageSerialSectionsNode("isosurface");
+        
+        // create slice for display of mesh-plane intersection
+        Style sliceStyle = new Style().setLineWidth(2.5).setLineColor(Color.MAGENTA);
+        
+        // for each slice, computes the intersection polygon, and if it is not
+        // empty,
+        // add it into a new "ImageSliceNode" within the sectionsNode instance.
+        for (int z = 0; z < nSlices; z++)
+        {
+            // frame.algoProgressChanged(new AlgoEvent(this, "", z,
+            // sliceCount));
+            Plane3D plane = new Plane3D(new Point3D(0, 0, z + 0.003), new Vector3D(0, 0, 1));
+            Collection<Polyline3D> polylines = IntersectionMeshPlane.intersectionMeshPlane(edgeMesh, plane);
+            
+            if (!polylines.isEmpty())
+            {
+                String name = String.format("slice-%03d", z);
+                ImageSliceNode sliceNode = new ImageSliceNode(name, z);
+                
+                int i = 0;
+                for (Polyline3D poly : polylines)
+                {
+                    sliceNode.addNode(new ShapeNode("poly" + (i++), poly.projectXY(), sliceStyle));
+                }
+                sectionsNode.addSliceNode(sliceNode);
+            }
+        }
+        
+        // frame.algoProgressChanged(new AlgoEvent(this, "", 1, 1));
+        return sectionsNode;
+    }
+    
+    private ImageHandle chooseImage(String title, String label, ImagoApp appli)
+    {
+        String[] imageNames = ImageHandle.getAllNames(appli).toArray(new String[]{});
+        
+        GenericDialog dlg = new GenericDialog(this, title);
+        dlg.addChoice(label, imageNames, imageNames[0]);
+        dlg.showDialog();
+        
+        if (dlg.wasCanceled()) 
+        {
+            return null;
+        }
+        
+        // Parse dialog options
+        return ImageHandle.findFromName(appli, dlg.getNextChoice());
     }
     
     private void onRemove(ActionEvent evt)
@@ -569,16 +680,13 @@ public class ShapeManager extends ImagoFrame
         GeometryHandle handle = getSelectedHandle();
         if (handle == null) return;
         
-        // check type
-        if (!(handle.getGeometry() instanceof Geometry2D))
+        Geometry bounds = switch (handle.getGeometry())
         {
-            ImagoGui.showErrorDialog(this, "Requires a 2D geometry");
-            return;
-        }
-        
-        // create a new geometry
-        Geometry2D geom = (Geometry2D) handle.getGeometry();
-        Geometry2D bounds = geom.bounds().getRectangle();
+            case Geometry2D geom2d -> Polygon2D.fromBounds(geom2d.bounds());
+            case Geometry3D geom3d -> Meshes3D.fromBounds(geom3d.bounds());
+            default -> throw new RuntimeException(
+                    "Unabme to manage geometry with class " + handle.getGeometry().getClass().getName());
+        };
         
         // add new geometry to appli
         GeometryHandle newHandle = GeometryHandle.create(this.gui.getAppli(), bounds, handle);
