@@ -120,7 +120,7 @@ public class LabelImageBoundingBoxes implements FramePlugin
                 int nBoxes = boxes.length;
                 for (int i = 0; i < nBoxes; i++)
                 {
-                    Polygon2D poly = boxes[i].getRectangle();
+                    Polygon2D poly = Polygon2D.fromBounds(boxes[i]);
                     handle.addShape(new Shape(poly));
                 }
                 

@@ -112,7 +112,7 @@ public class RegionFeatureOverlay2D implements FramePlugin
                 // add to the Image handle
                 for (int i = 0; i < boxes.length; i++)
                 {
-                    Polygon2D poly = boxes[i].getRectangle().transform(transfo.inverse());
+                    Polygon2D poly = Polygon2D.fromBounds(boxes[i]).transform(transfo.inverse());
                     handle.addShape(new Shape(poly));
                 }
             }

@@ -22,7 +22,6 @@ import javax.swing.JPanel;
 import imago.app.shape.Shape;
 import imago.app.shape.Style;
 import net.sci.geom.Geometry;
-import net.sci.geom.geom2d.Bounds2D;
 import net.sci.geom.geom2d.Curve2D;
 import net.sci.geom.geom2d.Domain2D;
 import net.sci.geom.geom2d.Geometry2D;
@@ -167,7 +166,6 @@ public class ShapeDrawer
         {
             case Point2D point -> drawPoint(g2, point);
             case LineSegment2D line -> drawLineSegment(g2, line);
-            case Bounds2D box -> drawPolygon(g2, box.getRectangle());
             case PolygonalDomain2D poly -> drawPolygon(g2, poly);
             case Ellipse2D elli -> drawPolyline(g2, elli.asPolyline(120));
             case Polyline2D poly -> drawPolyline(g2, poly);
