@@ -308,6 +308,7 @@ public class ShapeManager extends ImagoFrame
             menuBar.add(fileMenu);
             
             JMenu editMenu = new JMenu("Edit");
+            addPlugin(editMenu, imago.shape.plugins.edit.PrintGeometryInfo.class, "Display Info");
             addPlugin(editMenu, imago.shape.plugins.edit.RenameGeometry.class, "Rename...");
             editMenu.addSeparator();
             addPlugin(editMenu, imago.shape.plugins.edit.RemoveSelectedGeometries.class, "Remove");
@@ -319,6 +320,8 @@ public class ShapeManager extends ImagoFrame
 
             JMenu processMenu = new JMenu("Process");
             addPlugin(processMenu, imago.shape.plugins.process.ComputeBounds.class, "Compute Bounds");
+            processMenu.addSeparator();
+            addPlugin(processMenu, imago.shape.plugins.process.SmoothMesh3D.class, "Smooth Mesh 3D");
             menuBar.add(processMenu);
 
             frame.getWidget().setJMenuBar(menuBar);
