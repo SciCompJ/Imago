@@ -11,6 +11,7 @@ import imago.app.scene.GroupNode;
 import imago.app.scene.ImageSerialSectionsNode;
 import imago.app.scene.ImageSliceNode;
 import imago.app.scene.ShapeNode;
+import imago.app.shape.Style;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
@@ -19,6 +20,7 @@ import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import imago.shapemanager.GeometryHandle;
 import imago.shapemanager.ShapeManager;
+import net.sci.algo.AlgoEvent;
 import net.sci.array.Array;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray3D;
@@ -28,7 +30,6 @@ import net.sci.geom.geom3d.Vector3D;
 import net.sci.geom.geom3d.polyline.Polyline3D;
 import net.sci.geom.mesh3d.DefaultTriMesh3D;
 import net.sci.geom.mesh3d.process.IntersectionMeshPlane;
-import net.sci.geom.polygon2d.Polyline2D;
 import net.sci.image.Image;
 import net.sci.image.vectorize.MorphologicalMarchingCubes;
 
@@ -105,25 +106,23 @@ public class Image3DIsosurface implements FramePlugin
         // cleanup listener and status bar
         iFrame.getStatusBar().setProgressBarPercent(0);
 
-        // display elapsed time
-        long t1 = System.nanoTime();
-        iFrame.getStatusBar().setCurrentStepLabel("");
-        iFrame.showElapsedTime("Compute Isosurface", (t1 - t0) / 1_000_000.0, image);
-        
-        
         if (addToImage)
         {
             iFrame.getStatusBar().setCurrentStepLabel("Add isosurface to image shape tree");
             ImageHandle targetHandle = ImageHandle.findFromName(app, imageToOverlayName);
 
             // get serial sections node
-            String nodeName = "isosurface";
-            ImageSerialSectionsNode sectionsNode = getIsosurfaceNode(targetHandle, nodeName); 
+            ImageSerialSectionsNode sectionsNode = new ImageSerialSectionsNode("isosurface");
+            
+            // create slice for display of mesh-plane intersection
+            Style sliceStyle = new Style().setLineWidth(2.5).setLineColor(Color.MAGENTA);
 
             // for each slice, computes the intersection polygon, and if it is not empty, 
             // add it into a new "ImageSliceNode" within the sectionsNode instance.
-            for (int z = 0; z < scalar.size(2); z++)
+            int sliceCount = scalar.size(2);
+            for (int z = 0; z < sliceCount; z++)
             {
+                frame.algoProgressChanged(new AlgoEvent(this, "", z, sliceCount));
                 Plane3D plane = new Plane3D(new Point3D(0, 0, z+0.003), new Vector3D(0, 0, 1));
                 Collection<Polyline3D> polylines = IntersectionMeshPlane.intersectionMeshPlane(mesh, plane);
 
@@ -131,20 +130,30 @@ public class Image3DIsosurface implements FramePlugin
                 {
                     String name = String.format("slice-%03d", z);
                     ImageSliceNode sliceNode = new ImageSliceNode(name, z);
+                    
+                    int i = 0;
                     for (Polyline3D poly : polylines)
                     {
-                        sliceNode.addNode(createShapeNode(poly.projectXY(), "poly"));
+                        sliceNode.addNode(new ShapeNode("poly" + (i++), poly.projectXY(), sliceStyle));
                     }
                     sectionsNode.addSliceNode(sliceNode);
                 }
             }
-            // notify changes
+            
+            frame.algoProgressChanged(new AlgoEvent(this, "", 1, 1));
+            
+            // add new node to image handle
+            ((GroupNode) handle.getRootNode()).addNode(sectionsNode);
             targetHandle.notifyImageHandleChange(ImageHandle.Event.SHAPES_MASK | ImageHandle.Event.CHANGE_MASK);
         }
         
+        // display elapsed time
+        long t1 = System.nanoTime();
+        iFrame.getStatusBar().setCurrentStepLabel("");
+        iFrame.showElapsedTime("Compute Isosurface", (t1 - t0) / 1_000_000.0, image);
+        
         if (addToShapeManager)
         {
-//            ImagoApp app = frame.getGui().getAppli();
             GeometryHandle geomHandle = GeometryHandle.create(app, mesh);
             
             // opens a dialog to choose name
@@ -158,27 +167,4 @@ public class Image3DIsosurface implements FramePlugin
             manager.setVisible(true);
         }
     }
-    
-    private ImageSerialSectionsNode getIsosurfaceNode(ImageHandle handle, String nodeName)
-    {
-        GroupNode rootNode = (GroupNode) handle.getRootNode();
-        
-        if (rootNode.hasChildWithName(nodeName))
-        {
-            return (ImageSerialSectionsNode) rootNode.getChild(nodeName);
-        }
-        ImageSerialSectionsNode sectionsNode = new ImageSerialSectionsNode(nodeName);
-        rootNode.addNode(sectionsNode);
-        return sectionsNode;
-    }
-    
-    private ShapeNode createShapeNode(Polyline2D poly, String name)
-    {
-        // Create a new LinearRing shape from the boundary of the polygon
-        ShapeNode shapeNode = new ShapeNode(name, poly);
-        shapeNode.getStyle().setLineWidth(2.5);
-        shapeNode.getStyle().setLineColor(Color.MAGENTA);
-        return shapeNode;
-    }
-
 }

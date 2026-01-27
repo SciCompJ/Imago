@@ -56,6 +56,7 @@ import net.sci.geom.geom2d.curve.Ellipse2D;
 import net.sci.geom.polygon2d.LineString2D;
 import net.sci.geom.polygon2d.Polygon2D;
 import net.sci.geom.polygon2d.Polyline2D;
+import net.sci.geom.mesh3d.Mesh3D;
 
 /**
  * A frame, unique within the GUI, that allows to display and edit all the
@@ -479,6 +480,7 @@ public class ShapeManager extends ImagoFrame
             case Ellipse2D elli -> "Ellipse";
             case LineSegment2D seg -> "Segment";
             case Curve2D c -> "Curve";
+            case Mesh3D m -> "Mesh3D";
             default -> geom.getClass().getSimpleName();
         };
     }

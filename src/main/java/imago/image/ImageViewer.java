@@ -382,7 +382,8 @@ public abstract class ImageViewer implements ImageHandle.Listener
         int code = evt.getCode();
         if ((code & ImageHandle.Event.LUT_MASK) != 0
                 || (code & ImageHandle.Event.DISPLAY_RANGE_MASK) != 0
-                || (code & ImageHandle.Event.IMAGE_MASK) != 0)
+                || (code & ImageHandle.Event.IMAGE_MASK) != 0
+                || (code & ImageHandle.Event.SHAPES_MASK) !=0)
         {
             refreshDisplay();
         }
