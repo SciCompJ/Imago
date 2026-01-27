@@ -4,8 +4,10 @@
 package imago.gui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -430,6 +432,27 @@ public class ImagoGui
         String dir = dlg.getDirectory();
         this.app.userPreferences.lastSavePath = dir;
         return new File(dir, file);
+    }
+    
+    /**
+     * Places the specified frame in the middle of the screen.
+     * 
+     * @param frame
+     *            the frame to relocate
+     */
+    public void putFrameMiddleScreen(ImagoFrame frame)
+    {
+        JFrame jFrame = frame.getWidget();
+        
+        // set up frame size depending on screen size
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int width = jFrame.getWidth();
+        int height = jFrame.getHeight();
+
+        // set up frame position depending on frame size
+        int posX = (screenSize.width - width) / 4;
+        int posY = (screenSize.height - height) / 4;
+        jFrame.setLocation(posX, posY);
     }
     
     public void updateFrameLocation(ImagoFrame frame, ImagoFrame parentFrame)

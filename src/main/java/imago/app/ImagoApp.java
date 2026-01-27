@@ -6,7 +6,7 @@ package imago.app;
 import java.io.File;
 
 import imago.image.ImageHandle;
-import imago.shapemanager.GeometryHandle;
+import imago.shape.GeometryHandle;
 import imago.table.TableHandle;
 import net.sci.geom.Geometry;
 import net.sci.image.Image;

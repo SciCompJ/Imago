@@ -23,7 +23,7 @@ import imago.image.tools.SelectPolygonTool;
 import imago.image.tools.SelectPolylineTool;
 import imago.image.tools.SelectRectangleTool;
 import imago.image.tools.SelectionTool;
-import imago.shapemanager.ShapeManager;
+import imago.shape.ShapeManager;
 import imago.transform.TransformManager;
 import net.sci.array.Array;
 import net.sci.array.ArrayOperator;

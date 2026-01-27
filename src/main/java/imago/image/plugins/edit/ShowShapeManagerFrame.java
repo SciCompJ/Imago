@@ -5,7 +5,7 @@ package imago.image.plugins.edit;
 
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
-import imago.shapemanager.ShapeManager;
+import imago.shape.ShapeManager;
 
 /**
  * Shows the current ShapeManager. 

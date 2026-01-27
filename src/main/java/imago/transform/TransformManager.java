@@ -42,7 +42,7 @@ import net.sci.geom.geom3d.AffineTransform3D;
  * geometric transforms managed within the workspace.
  * 
  * 
- * @see imago.shapemanager.ShapeManager
+ * @see imago.shape.ShapeManager
  */
 public class TransformManager extends ImagoFrame
 {

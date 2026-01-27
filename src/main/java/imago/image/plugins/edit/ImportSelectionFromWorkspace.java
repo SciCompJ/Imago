@@ -14,7 +14,7 @@ import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import imago.image.ImageViewer;
 import imago.image.viewers.PlanarImageViewer;
-import imago.shapemanager.GeometryHandle;
+import imago.shape.GeometryHandle;
 import net.sci.array.Array;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;

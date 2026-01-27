@@ -15,7 +15,7 @@ import java.util.Collection;
 import javax.swing.JPanel;
 
 import imago.app.shape.Shape;
-import imago.shapemanager.ShapeDrawer;
+import imago.shape.ShapeDrawer;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.Point2D;

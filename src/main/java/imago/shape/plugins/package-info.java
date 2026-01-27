@@ -1,0 +1,7 @@
+/**
+ * 
+ */
+/**
+ * 
+ */
+package imago.shape.plugins;

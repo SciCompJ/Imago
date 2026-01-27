@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.shapemanager;
+package imago.shape;
 
 import java.util.ArrayList;
 import java.util.Collection;
