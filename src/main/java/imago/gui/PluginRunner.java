@@ -3,27 +3,24 @@
  */
 package imago.gui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import imago.image.ImageFrame;
 import imago.image.plugins.ImageOperatorPlugin;
-import net.sci.image.ImageOperator;
-
-import java.awt.event.ActionEvent;
 
 /**
- * Use to run a given plugin after selection of a menu entry.
+ * Used to run a given plugin after selection of a menu entry within a frame.
  * 
  * @author dlegland
  *
  */
-public class RunPluginAction extends ImagoAction
+public class PluginRunner implements ActionListener
 {
-    /**
-     * the serial version ID. 
-     */
-    private static final long serialVersionUID = 1L;
-    
     // ===================================================================
     // Class variables
+
+    ImagoFrame frame;
 
     /**
      * The plugin to run when an action is performed.
@@ -44,9 +41,9 @@ public class RunPluginAction extends ImagoAction
      * @param plugin
      *            the plugin to run
      */
-    public RunPluginAction(ImagoFrame frame, FramePlugin plugin)
+    public PluginRunner(ImagoFrame frame, FramePlugin plugin)
     {
-        super(frame, "");
+        this.frame = frame;
         this.plugin = plugin;
     }
 
@@ -62,9 +59,9 @@ public class RunPluginAction extends ImagoAction
      *            Options are provided as name-value pairs, and are separated
      *            with comas.
      */
-    public RunPluginAction(ImagoFrame frame, FramePlugin plugin, String optionsString)
+    public PluginRunner(ImagoFrame frame, FramePlugin plugin, String optionsString)
     {
-        super(frame, "");
+        this.frame = frame;
         this.plugin = plugin;
         this.optionsString = optionsString;
     }
@@ -90,11 +87,10 @@ public class RunPluginAction extends ImagoAction
                 if (frame instanceof ImageFrame)
                 {
                     String imageName = ((ImageFrame) frame).getImageHandle().getName();
-                    if (plugin instanceof ImageOperatorPlugin)
+                    if (plugin instanceof ImageOperatorPlugin plugin2)
                     {
                         // specific processing for "ImageOperator" plugins
-                        ImageOperator operator = ((ImageOperatorPlugin) plugin).operator();
-                        String opName = operator.getClass().getCanonicalName();
+                        String opName = plugin2.operator().getClass().getCanonicalName();
                         String pattern = "run Image Operator Plugin \"%s\" on image \"%s\"";
                         System.out.println(String.format(pattern, opName, imageName));
                     }
@@ -127,5 +123,4 @@ public class RunPluginAction extends ImagoAction
         
         t.start();
     }
-
 }

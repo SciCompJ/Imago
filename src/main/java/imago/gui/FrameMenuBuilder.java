@@ -5,6 +5,7 @@ package imago.gui;
 
 import java.awt.Component;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.Icon;
@@ -112,7 +113,7 @@ public class FrameMenuBuilder
     public JMenu createHelpMenu()
     {
         JMenu menu = new JMenu("Help");
-        addMenuItem(menu, null, "About...", true);
+        addMenuItem(menu, "About...", null, true);
         return menu;
     }
     
@@ -149,11 +150,11 @@ public class FrameMenuBuilder
     {
         for (Component sub : baseMenu.getMenuComponents())
         {
-            if (sub instanceof JMenu)
+            if (sub instanceof JMenu menu)
             {
-                if (((JMenu) sub).getText().equals(subMenuName))
+                if (menu.getText().equals(subMenuName))
                 {
-                    return (JMenu) sub;
+                    return menu;
                 }
             }
         }
@@ -175,11 +176,11 @@ public class FrameMenuBuilder
         if (plugin == null) return null;
         
         // create action that will catch action events
-        RunPluginAction action = new RunPluginAction(frame, plugin, optionsString);
+        PluginRunner action = new PluginRunner(frame, plugin, optionsString);
         
         // setup menu item
-        JMenuItem item = new JMenuItem(action);
-        item.setText(label);
+        JMenuItem item = new JMenuItem(label);
+        item.addActionListener(action);
         item.setIcon(emptyIcon);
         item.setMargin(new Insets(0, 0, 0, 0));
         item.setEnabled(plugin.isEnabled(frame));
@@ -215,8 +216,8 @@ public class FrameMenuBuilder
     
     private JMenuItem createPluginMenuItem(FramePlugin plugin, String label)
     {
-        JMenuItem item = new JMenuItem(new RunPluginAction(frame, plugin));
-        item.setText(label);
+        JMenuItem item = new JMenuItem(label);
+        item.addActionListener(new PluginRunner(frame, plugin));
         item.setIcon(emptyIcon);
         item.setMargin(new Insets(0, 0, 0, 0));
         return item;
@@ -226,10 +227,10 @@ public class FrameMenuBuilder
     // ===================================================================
     // menu item creation methods
     
-    private JMenuItem addMenuItem(JMenu menu, ImagoAction action, String label, boolean enabled)
+    private JMenuItem addMenuItem(JMenu menu, String label, ActionListener listener, boolean enabled)
     {
-        JMenuItem item = new JMenuItem(action);
-        item.setText(label);
+        JMenuItem item = new JMenuItem(label);
+        item.addActionListener(listener);
         item.setIcon(emptyIcon);
         item.setEnabled(enabled);
         menu.add(item);
