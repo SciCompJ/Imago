@@ -284,7 +284,7 @@ public class ShapeManager extends ImagoFrame
         return handles;
     }
     
-    static class MenuBuilder extends FrameMenuBuilder
+    private static class MenuBuilder extends FrameMenuBuilder
     {
 
         public MenuBuilder(ImagoFrame frame)
@@ -320,6 +320,7 @@ public class ShapeManager extends ImagoFrame
 
             JMenu processMenu = new JMenu("Process");
             addPlugin(processMenu, imago.shape.plugins.process.ComputeBounds.class, "Compute Bounds");
+            addPlugin(processMenu, imago.shape.plugins.process.ComputeConvexHull.class, "Compute Convex Hull");
             processMenu.addSeparator();
             addPlugin(processMenu, imago.shape.plugins.process.SmoothMesh3D.class, "Smooth Mesh 3D");
             menuBar.add(processMenu);
