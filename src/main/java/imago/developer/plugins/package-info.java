@@ -3,4 +3,4 @@
  * 
  * @author dlegland
  */
-package imago.gui.developer.plugins;
+package imago.developer.plugins;

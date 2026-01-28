@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.gui.developer.plugins;
+package imago.developer.plugins;
 
 import imago.app.ObjectHandle;
 import imago.app.Workspace;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.gui.developer.plugins;
+package imago.developer.plugins;
 
 import java.awt.Dimension;
 import java.util.ArrayList;

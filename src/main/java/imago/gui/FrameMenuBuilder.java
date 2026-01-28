@@ -78,14 +78,14 @@ public class FrameMenuBuilder
         JMenu menu = new JMenu("Plugins");
         
         JMenu devMenu = new JMenu("Developer");
-        addPlugin(devMenu, imago.gui.developer.plugins.DisplayExceptionDialog.class, "Show Demo Exception");
+        addPlugin(devMenu, imago.developer.plugins.DisplayExceptionDialog.class, "Show Demo Exception");
         // The two following plugins are used for debugging
 //        addPlugin(devMenu, imago.plugin.developer.FailingConstructorPlugin.class, "(X) Can not Instantiate");
 //        addPlugin(devMenu, imago.plugin.developer.RunThrowExceptionPlugin.class, "(X) Can not Run");
         devMenu.addSeparator();
-        addPlugin(devMenu, imago.gui.developer.plugins.PrintFrameList.class, "Print Frame List");
-        addPlugin(devMenu, imago.gui.developer.plugins.PrintDocumentList.class, "Print Document List");
-        addPlugin(devMenu, imago.gui.developer.plugins.PrintWorkspaceContent.class, "Print Workspace Content");
+        addPlugin(devMenu, imago.developer.plugins.PrintFrameList.class, "Print Frame List");
+        addPlugin(devMenu, imago.developer.plugins.PrintDocumentList.class, "Print Document List");
+        addPlugin(devMenu, imago.developer.plugins.PrintWorkspaceContent.class, "Print Workspace Content");
         menu.add(devMenu);
         menu.addSeparator();
 

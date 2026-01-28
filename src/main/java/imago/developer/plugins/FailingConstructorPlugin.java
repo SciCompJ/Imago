@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.gui.developer.plugins;
+package imago.developer.plugins;
 
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
