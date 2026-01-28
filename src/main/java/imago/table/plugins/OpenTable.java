@@ -80,12 +80,11 @@ public class OpenTable implements FramePlugin
             return;
         }
         
-        DelimitedTableReader reader = DelimitedTableReader.builder()
-                .delimiters(dlg.getNextString())
-                .readHeader(dlg.getNextBoolean())
-                .skipLines((int) dlg.getNextNumber())
-                .readRowNames(dlg.getNextBoolean())
-                .build();
+        DelimitedTableReader reader = new DelimitedTableReader()
+                .setDelimiters(dlg.getNextString())
+                .setReadHeader(dlg.getNextBoolean())
+                .setSkipLines((int) dlg.getNextNumber())
+                .setReadRowNames(dlg.getNextBoolean());
 
         // try reading the table
         Table table;
@@ -109,11 +108,10 @@ public class OpenTable implements FramePlugin
     private Table readTable(String pathToFile, ImagoFrame frame)
     {
         // builds a "standard" CSV format table reader
-        DelimitedTableReader reader = DelimitedTableReader.builder()
-                .delimiters(",")
-                .readHeader(true)
-                .readRowNames(false)
-                .build();
+        DelimitedTableReader reader = new DelimitedTableReader()
+                .setDelimiters(",")
+                .setReadHeader(true)
+                .setReadRowNames(false);
         
         // First try to read the table from within the jar
         try (InputStream stream = this.getClass().getClassLoader().getResourceAsStream(pathToFile))

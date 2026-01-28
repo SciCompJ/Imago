@@ -39,10 +39,9 @@ public class OpenDemoTable implements FramePlugin
             throw new IllegalArgumentException("Could not retrieve table: " + pathToResource);
         }
         
-        DelimitedTableReader reader = DelimitedTableReader.builder()
-                .delimiters(",")
-                .readRowNames(false)
-                .build();
+        DelimitedTableReader reader = new DelimitedTableReader()
+                .setDelimiters(",")
+                .setReadRowNames(false);
 	    Table table;
         try
         {
