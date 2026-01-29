@@ -8,11 +8,10 @@ import imago.app.Workspace;
 import imago.gui.ImagoFrame;
 import imago.gui.FramePlugin;
 
-import java.util.Locale;
-
 /**
+ * Displays the content of the workspace on the console.
+ * 
  * @author dlegland
- *
  */
 public class PrintWorkspaceContent implements FramePlugin
 {
@@ -26,13 +25,16 @@ public class PrintWorkspaceContent implements FramePlugin
     public void run(ImagoFrame frame, String args)
 	{
 	    Workspace ws = frame.getGui().getAppli().getWorkspace();
+	    String pattern = "  %-8s %-10s %s\n";
+	    
         System.out.println("Workspace content:");
-
+        System.out.printf(pattern, "Tag", "Type", "Name");
+        
         for (ObjectHandle handle : ws.getHandles())
 	    {
 	        String className = handle.getItemClassName();
-            System.out.println(String.format(Locale.ENGLISH,
-                    "  %-7s (%s): \"%s\"", handle.getTag(), className, handle.getName()));
+	        String name = "\"" + handle.getName() + "\"";
+            System.out.printf(pattern, handle.getTag(), className, name);
         }
 	}
 }
