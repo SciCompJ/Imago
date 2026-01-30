@@ -136,6 +136,8 @@ public class ImagePair2DRegister implements FramePlugin
     JCheckBox autoUpdateCheckBox;
     JButton runButton;
 
+    boolean isComputing = false;
+    
     
     // ===================================================================
     // Implementation of the Plugin interface    
@@ -189,10 +191,15 @@ public class ImagePair2DRegister implements FramePlugin
         // need to update transform after updating images (to compute center)
         updateTransform();
         
-        // apply transform on moving image
-        updateRegisteredImages();
-        
-        updateResultDisplay();
+        if (!isComputing)
+        {
+            // avoid running heavy computation many times
+            isComputing = true;
+            // apply transform on moving image
+            updateRegisteredImages();
+            updateResultDisplay();
+            isComputing = false;
+        }
     }
     
     private void updateInputImages()
@@ -242,20 +249,6 @@ public class ImagePair2DRegister implements FramePlugin
         ScalarArray2D<?> reg2 = computeTransformedArray2D(moving2d, transform, outputImageDims, outputArrayFactory);
         registeredImage2 = new Image(reg2, movingImage);
     }
-    
-//    private static final Image computeTransformedImage2d(Image refImage, Transform2D transfo, Image movingImage)
-//    {
-//        ScalarArray2D<?> refArray = (ScalarArray2D<?>) refImage.getData();
-//        ScalarArray2D<?> movArray = (ScalarArray2D<?>) movingImage.getData();
-//        TransformedImage2D transformed = new TransformedImage2D(movArray, transfo);
-//        
-//        ScalarArray2D<?> resArray = ScalarArray2D.wrapScalar2d(refArray.newInstance(refArray.size()));
-//        resArray.fillValues(pos -> transformed.evaluate(pos[0], pos[1]));
-//        
-//        Image res = new Image(resArray, movingImage);
-//        res.setName(movingImage.getName() + "-reg");
-//        return res;
-//    }
     
     private static final ScalarArray2D<?> computeTransformedArray2D(ScalarArray2D<?> movArray, Transform2D transfo, int[] outputSize, ScalarArray.Factory<?> factory)
     {
@@ -572,11 +565,8 @@ public class ImagePair2DRegister implements FramePlugin
         addMenuItem(fileMenu, "Create Registration Composite Image", evt -> onCreateComboImage());
         fileMenu.addSeparator();
         addMenuItem(fileMenu, "Save Registration...", evt -> onSaveRegistration());
-//        JMenuItem saveRegistrationItem = new JMenuItem("Save Registration...");
-//        saveRegistrationItem.addActionListener(evt -> onSaveRegistration());
-//        fileMenu.add(saveRegistrationItem);
-        
         menuBar.add(fileMenu);
+        
         frame.setJMenuBar(menuBar);
     }
     
@@ -633,7 +623,6 @@ public class ImagePair2DRegister implements FramePlugin
         if (this.autoUpdateCheckBox.isSelected())
         {
             runRegistration();
-            textField.requestFocus();
         }
     }
     
