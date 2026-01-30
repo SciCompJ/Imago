@@ -8,9 +8,9 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.ItemEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -498,15 +498,13 @@ public class ImagePair2DRegister implements FramePlugin
     {
         String text = doubleToString(initialValue);
         JTextField textField = new JTextField(text, 10);
-        textField.addKeyListener(new KeyAdapter()
+        textField.addActionListener(evt -> processTextUpdate(textField));
+        textField.addFocusListener(new FocusAdapter()
         {
             @Override
-            public void keyTyped(KeyEvent evt)
+            public void focusLost(FocusEvent evt)
             {
-                if (evt.getSource() instanceof JTextField)
-                {
-                    processTextUpdate((JTextField) evt.getSource());
-                }
+                processTextUpdate(textField);
             }
         });
         return textField;
