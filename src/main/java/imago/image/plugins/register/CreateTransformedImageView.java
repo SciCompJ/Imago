@@ -8,13 +8,14 @@ import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
-import imago.image.plugins.process.ScalarOutputTypes;
 import imago.transform.TransformHandle;
 import net.sci.algo.AlgoStub;
 import net.sci.array.Array;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray2D;
 import net.sci.array.numeric.ScalarArray3D;
+import net.sci.array.numeric.UInt8Array;
+import net.sci.array.numeric.impl.FunctionViewUInt8Array;
 import net.sci.geom.Transform;
 import net.sci.geom.geom2d.Transform2D;
 import net.sci.geom.geom3d.Transform3D;
@@ -24,17 +25,18 @@ import net.sci.register.image.TransformedImage2D;
 import net.sci.register.image.TransformedImage3D;
 
 /**
- * Applies a transform stored within the workspace to the current image. Can
- * specify the size of output image, as well as calibration parameters.
+ * Creates a view to a transformation of the current image, by choosing a
+ * transform stored within the workspace to the current image. Can specify the
+ * size of output image, as well as calibration parameters.
  * 
- * @see CreateTransformedImageView
+ * @see ApplyExistingTransformToImage
  */
-public class ApplyExistingTransformToImage extends AlgoStub implements FramePlugin
+public class CreateTransformedImageView extends AlgoStub implements FramePlugin
 {
     /**
      * Default empty constructor.
      */
-    public ApplyExistingTransformToImage()
+    public CreateTransformedImageView()
     {
     }
 
@@ -85,7 +87,7 @@ public class ApplyExistingTransformToImage extends AlgoStub implements FramePlug
         {
             gd.addNumericField("Origin dim. " + (d+1), 0.0, 2);
         }
-        gd.addEnumChoice("Output Type", ScalarOutputTypes.class, ScalarOutputTypes.SAME_AS_INPUT);
+//        gd.addEnumChoice("Output Type", ScalarOutputTypes.class, ScalarOutputTypes.SAME_AS_INPUT);
 
         // wait the user to choose
         gd.showDialog();
@@ -112,14 +114,14 @@ public class ApplyExistingTransformToImage extends AlgoStub implements FramePlug
         {
             origin[d] = gd.getNextNumber();
         }
-        ScalarArray.Factory<?> factory = ((ScalarOutputTypes) gd.getNextEnumChoice()).factory();
-        if (factory == null)
-        {
-            factory = ((ScalarArray<?>) array).factory();
-        }
+//        ScalarArray.Factory<?> factory = ((ScalarOutputTypes) gd.getNextEnumChoice()).factory();
+//        if (factory == null)
+//        {
+//            factory = ((ScalarArray<?>) array).factory();
+//        }
         
         this.addAlgoListener(imageFrame);
-        ScalarArray<?> result = factory.create(dims);
+        UInt8Array result;
         if (nd == 2)
         {
             if (!(transform instanceof Transform2D))
@@ -128,21 +130,12 @@ public class ApplyExistingTransformToImage extends AlgoStub implements FramePlug
             }
             
             ScalarArray2D<?> movArray = ScalarArray2D.wrapScalar2d((ScalarArray<?>) array);
-            ScalarArray2D<?> res2d = ScalarArray2D.wrapScalar2d(result);
             Transform2D transfo2d = (Transform2D) transform;
             TransformedImage2D transformed = new TransformedImage2D(movArray, transfo2d);
             
-            int sizeX = dims[0];
-            int sizeY = dims[1];
-            for (int y = 0; y < sizeY; y++)
-            {
-                for (int x = 0; x < sizeX; x++)
-                {
-                    double x2 = x * spacing[0] + origin[0];
-                    double y2 = y * spacing[1] + origin[1];
-                    res2d.setValue(x, y, transformed.evaluate(x2, y2));
-                }
-            }
+            result = new FunctionViewUInt8Array(dims, pos -> transformed.evaluate(
+                    pos[0] * spacing[0] + origin[0], 
+                    pos[1] * spacing[1] + origin[1]));
         }
         else if (nd == 3)
         {
@@ -152,27 +145,13 @@ public class ApplyExistingTransformToImage extends AlgoStub implements FramePlug
             }
             
             ScalarArray3D<?> movArray = ScalarArray3D.wrapScalar3d((ScalarArray<?>) array);
-            ScalarArray3D<?> res3d = ScalarArray3D.wrapScalar3d(result);
             Transform3D transfo3d = (Transform3D) transform;
             TransformedImage3D transformed = new TransformedImage3D(movArray, transfo3d);
             
-            int sizeX = dims[0];
-            int sizeY = dims[1];
-            int sizeZ = dims[2];
-            for (int z = 0; z < sizeZ; z++)
-            {
-                this.fireProgressChanged(this, z, sizeZ);
-                for (int y = 0; y < sizeY; y++)
-                {
-                    for (int x = 0; x < sizeX; x++)
-                    {
-                        double x2 = x * spacing[0] + origin[0];
-                        double y2 = y * spacing[1] + origin[1];
-                        double z2 = z * spacing[2] + origin[2];
-                        res3d.setValue(x, y, z, transformed.evaluate(x2, y2, z2));
-                    }
-                }
-            }
+            result = new FunctionViewUInt8Array(dims, pos -> transformed.evaluate(
+                    pos[0] * spacing[0] + origin[0],
+                    pos[1] * spacing[1] + origin[1], 
+                    pos[2] * spacing[2] + origin[2]));
         }
         else
         {
