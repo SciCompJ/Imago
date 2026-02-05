@@ -33,6 +33,7 @@ import imago.gui.ImagoGui;
 import imago.gui.frames.ImagoTextFrame;
 import imago.transform.io.DelimitedFileAffineTransformReader;
 import imago.transform.io.JsonTransformReader;
+import imago.transform.plugins.CreateTransform2D;
 import net.sci.geom.Transform;
 import net.sci.geom.geom2d.AffineTransform2D;
 import net.sci.geom.geom3d.AffineTransform3D;
@@ -127,6 +128,8 @@ public class TransformManager extends ImagoFrame
         JMenuBar menuBar = new JMenuBar();
         
         JMenu fileMenu = new JMenu("File");
+        createMenuItem(fileMenu, "Create Transform...", this::onCreateTransform);
+        fileMenu.addSeparator();
         createMenuItem(fileMenu, "Import from JSON...", this::onImportTransformFromJsonFile);
         createMenuItem(fileMenu, "Import Affine from Coeffs...", this::onImportAffineTransformFromCoefficientsFile);
         fileMenu.addSeparator();
@@ -211,6 +214,11 @@ public class TransformManager extends ImagoFrame
 
     // ===================================================================
     // Menu item callbacks
+    
+    private void onCreateTransform(ActionEvent evt)
+    {
+        new CreateTransform2D().run(this, "");
+    }
     
     private void onImportTransformFromJsonFile(ActionEvent evt)
     {
