@@ -74,11 +74,19 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(createFileMenu());
-        menuBar.add(createImageEditMenu());
+        menuBar.add(createEditMenu());
         menuBar.add(createImageMenu());
-        menuBar.add(createImageProcessMenu());
-        menuBar.add(createImageAnalyzeMenu());
-        menuBar.add(createImageToolsMenu());
+        menuBar.add(createProcessMenu());
+        if (hasBinaryImage)
+        {
+            menuBar.add(createProcessBinaryImagesMenu());
+        }
+        if (hasLabelImage && !hasBinaryImage)
+        {
+            menuBar.add(createProcessLabelImagesMenu());
+        }
+        menuBar.add(createAnalyzeMenu());
+        menuBar.add(createToolsMenu());
         addSharedMenus(menuBar);
         
         frame.getWidget().setJMenuBar(menuBar);
@@ -170,7 +178,7 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
     /**
      * Creates the sub-menu for the "Edit" item in the main menu bar.
      */
-    private JMenu createImageEditMenu()
+    private JMenu createEditMenu()
     {
         JMenu editMenu = new JMenu("Edit");
         
@@ -380,7 +388,7 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
     /**
      * Creates the sub-menu for the "process" item in the main Menu bar.
      */
-    private JMenu createImageProcessMenu()
+    private JMenu createProcessMenu()
     {
         JMenu menu = new JMenu("Process");
 
@@ -449,7 +457,7 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         addPlugin(menu, imago.image.plugins.vectorize.Image3DIsosurface.class, "Compute Isosurface...");
         addPlugin(menu, imago.image.plugins.process.Image3DKymograph.class, "Kymograph", hasImage3D && hasScalarImage);
 
-        // operators specific to binary images
+        // operators for segmentation of images
         menu.addSeparator();
         JMenu segmentationMenu = new JMenu("Segmentation");
         addPlugin(segmentationMenu, imago.image.plugins.process.ImageOtsuThreshold.class, "Otsu Auto Threshold", hasScalarImage);
@@ -463,9 +471,12 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         addPlugin(segmentationMenu, imago.image.plugins.process.ImageMarkerControlledWatershed.class, "Marker-Based Watershed", hasScalarImage);
         menu.add(segmentationMenu);
 
-        // operators specific to binary images
-        menu.addSeparator();
-        JMenu binaryMenu = new JMenu("Binary Images");
+        return menu;
+    }
+    
+    private JMenu createProcessBinaryImagesMenu()
+    {
+        JMenu binaryMenu = new JMenu("Binary-Images");
         addPlugin(binaryMenu, imago.image.plugins.binary.BinaryImageConnectedComponentsLabeling.class, "Connected Components Labeling");
         addPlugin(binaryMenu, imago.image.plugins.binary.BinaryImageComponentsLabelingAndContouring.class, "Components Labeling and Contouring");
         binaryMenu.addSeparator();
@@ -480,26 +491,31 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         binaryMenu.addSeparator();
         addPlugin(binaryMenu, imago.image.plugins.binary.BinaryImageOverlay.class, "Binary Overlay...");
         addPlugin(binaryMenu, imago.image.plugins.binary.ApplyBinaryMask.class, "Apply Binary Mask...");
-        menu.add(binaryMenu);
+        binaryMenu.addSeparator();
+        addPlugin(binaryMenu, imago.image.plugins.vectorize.BinaryImageBoundaryGraph.class, "Boundary Graph", hasImage2D && hasBinaryImage);
+        addPlugin(binaryMenu, imago.image.plugins.vectorize.LabelMapToBoundaryPolygons.class, "Region Boundaries to Polygons", hasImage2D && hasLabelImage);
         
+        return binaryMenu;
+    }
+    
+    private JMenu createProcessLabelImagesMenu()
+    {
         // operators specific to binary images
-        JMenu labelMenu = new JMenu("Binary / Label Images");
+        JMenu labelMenu = new JMenu("Label-Images");
         addPlugin(labelMenu, imago.image.plugins.process.LabelMapCropLabel.class, "Crop Label...", hasLabelImage);
         addPlugin(labelMenu, imago.image.plugins.process.LabelMapSizeOpening.class, "Size Opening...", hasLabelImage);
         labelMenu.addSeparator();
         addPlugin(labelMenu, imago.image.plugins.process.LabelMapSkeleton.class, "Skeleton (2D)");
         labelMenu.addSeparator();
-        addPlugin(labelMenu, imago.image.plugins.vectorize.BinaryImageBoundaryGraph.class, "Boundary Graph", hasImage2D && hasBinaryImage);
         addPlugin(labelMenu, imago.image.plugins.vectorize.LabelMapToBoundaryPolygons.class, "Region Boundaries to Polygons", hasImage2D && hasLabelImage);
-        menu.add(labelMenu);
         
-        return menu;
+        return labelMenu;
     }
 
     /**
-     * Creates the sub-menu for the "process" item in the main Menu bar.
+     * Creates the sub-menu for the "Analyze" item in the main Menu bar.
      */
-    private JMenu createImageAnalyzeMenu()
+    private JMenu createAnalyzeMenu()
     {
         JMenu menu = new JMenu("Analyze");
 
@@ -552,7 +568,7 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
     /**
      * Creates the sub-menu for the "Tools" item in the main menu bar.
      */
-    private JMenu createImageToolsMenu()
+    private JMenu createToolsMenu()
     {
         JMenu toolsMenu = new JMenu("Tools");
         
