@@ -147,7 +147,7 @@ public class ImageRotatedCrop implements FramePlugin
         
         // then, apply 3D rotation by Euler angles followed by translation to
         // put origin (= box center) on the reference point
-        AffineTransform3D transfo = rotateAndShift(anglesInDegrees, boxCenter).concatenate(trBoxCenter);
+        AffineTransform3D transfo = rotateAndShift(anglesInDegrees, boxCenter).compose(trBoxCenter);
         
         return transfo;
     }
@@ -173,7 +173,7 @@ public class ImageRotatedCrop implements FramePlugin
         AffineTransform3D trans = AffineTransform3D.createTranslation(refPoint);
         
         // concatenate into global display-image-to-source-image transform
-        return trans.concatenate(rotZ).concatenate(rotY).concatenate(rotX);
+        return trans.compose(rotZ).compose(rotY).compose(rotX);
     }
 
     private static final ScalarArray3D<?> rotatedCropScalar(ScalarArray3D<?> image, int[] dims, AffineTransform3D transfo)
