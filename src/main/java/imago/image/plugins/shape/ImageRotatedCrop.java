@@ -59,10 +59,11 @@ public class ImageRotatedCrop implements FramePlugin
     // ==================================================
     // Static methods
  
-    public static final Array2D<?> rotatedCrop(Array2D<?> array, int[] dims, Point2D refPoint, double angleInDegrees)
+    public static final Array2D<?> rotatedCrop(Array2D<?> array, OrientedBox2D box)
     {
-        AffineTransform2D transfo = computeTransform(refPoint, dims, angleInDegrees);
-
+        int[] dims = new int[] {box.sizeX, box.sizeY};
+        AffineTransform2D transfo = box.localToGlobalTransform();
+        
         if (array instanceof ScalarArray2D<?>)
         {
             return rotatedCropUInt8((ScalarArray2D<?>) array, dims, transfo);
@@ -82,22 +83,7 @@ public class ImageRotatedCrop implements FramePlugin
             throw new IllegalArgumentException("Requires a scalar array as input");
         }
     }
-    
-    private static final AffineTransform2D computeTransform(Point2D refPoint, int[] dims, double angleInDegrees)
-    {
-        // retrieve image dimensions
-        int sizeX = dims[0];
-        int sizeY = dims[1];
 
-        // create elementary transforms
-        AffineTransform2D trBoxCenter = AffineTransform2D.createTranslation(-sizeX / 2, -sizeY / 2);
-        AffineTransform2D rot = AffineTransform2D.createRotation(Math.toRadians(angleInDegrees));
-        AffineTransform2D trRefPoint = AffineTransform2D.createTranslation(refPoint);
-
-        // concatenate into global display-image-to-source-image transform
-        return trRefPoint.compose(rot).compose(trBoxCenter);
-    }
-    
     private static final UInt8Array2D rotatedCropUInt8(ScalarArray2D<?> array, int[] dims, AffineTransform2D transfo)
     {
         // Create interpolation class, that encapsulates both the image and the transform
@@ -111,11 +97,12 @@ public class ImageRotatedCrop implements FramePlugin
     }
     
     
-    public static final Array3D<?> rotatedCrop(Array3D<?> array, int[] dims, Point3D refPoint, double[] anglesInDegrees)
+    public static final Array3D<?> rotatedCrop(Array3D<?> array, OrientedBox3D box)
     {
         // Computes the transform that will map indices from within result image
         // into coordinates within source image
-        AffineTransform3D transfo = computeTransform(refPoint, dims, anglesInDegrees);
+        int[] dims = new int[] {box.sizeX, box.sizeY, box.sizeZ};
+        AffineTransform3D transfo = box.localToGlobalTransform();
         
         if (array instanceof ScalarArray3D<?>)
         {
@@ -137,45 +124,6 @@ public class ImageRotatedCrop implements FramePlugin
         }
     }
     
-    private static final AffineTransform3D computeTransform(Point3D boxCenter, int[] boxSize, double[] anglesInDegrees)
-    {
-        // create a translation to put center of the box at the origin
-        int sizeX = boxSize[0];
-        int sizeY = boxSize[1];
-        int sizeZ = boxSize[2];
-        AffineTransform3D trBoxCenter = AffineTransform3D.createTranslation(-sizeX / 2, -sizeY / 2, -sizeZ / 2);
-        
-        // then, apply 3D rotation by Euler angles followed by translation to
-        // put origin (= box center) on the reference point
-        AffineTransform3D transfo = rotateAndShift(anglesInDegrees, boxCenter).compose(trBoxCenter);
-        
-        return transfo;
-    }
-
-    /**
-     * Computes the box-to-world transform, that will transform coordinates from
-     * the box basis into the world (global) basis. The origin in the box basis
-     * will be mapped into the box center in the global basis.
-     * 
-     * @param anglesInDegrees
-     *            the three Euler angles (in degrees) that define the box
-     *            orientation ("XYZ" convention)
-     * @param boxCenter
-     *            the center of the box
-     * @return an affine transform that can be used to compute coordinates of
-     *         box corners in global basis
-     */
-    private static final AffineTransform3D rotateAndShift(double[] anglesInDegrees, Point3D refPoint)
-    {
-        AffineTransform3D rotX = AffineTransform3D.createRotationOx(Math.toRadians(anglesInDegrees[0]));
-        AffineTransform3D rotY = AffineTransform3D.createRotationOy(Math.toRadians(anglesInDegrees[1]));
-        AffineTransform3D rotZ = AffineTransform3D.createRotationOz(Math.toRadians(anglesInDegrees[2]));
-        AffineTransform3D trans = AffineTransform3D.createTranslation(refPoint);
-        
-        // concatenate into global display-image-to-source-image transform
-        return trans.compose(rotZ).compose(rotY).compose(rotX);
-    }
-
     private static final ScalarArray3D<?> rotatedCropScalar(ScalarArray3D<?> image, int[] dims, AffineTransform3D transfo)
     {
         // Create interpolation class, that encapsulates both the image and the
@@ -275,7 +223,6 @@ public class ImageRotatedCrop implements FramePlugin
 
             SettingsFrame3D settingsFrame = new SettingsFrame3D(imageFrame, dims, refPoint, angles);
             settingsFrame.setVisible(true);
-
             
             // TODO: should try to avoid class cast
             ImageViewer viewer = imageFrame.getImageViewer();
@@ -297,6 +244,105 @@ public class ImageRotatedCrop implements FramePlugin
     // ==================================================
     // Inner classes
  
+    /**
+     * Concatenates the settings for the choice of oriented box.
+     */
+    class OrientedBox2D
+    {
+        int sizeX;
+        int sizeY;
+        double centerX;
+        double centerY;
+        double angle;
+        
+        public OrientedBox2D()
+        {
+        }
+        
+        public OrientedBox2D(int[] boxSize, Point2D refPoint, double rotAngle)
+        {
+            this.sizeX = boxSize[0];
+            this.sizeY = boxSize[1];
+            this.centerX = refPoint.x();
+            this.centerY = refPoint.y();
+            this.angle = rotAngle;
+        }
+        
+        /**
+         * Computes the affine transform that maps a points in the box inner
+         * coordinate system to the global coordinate system.
+         * 
+         * @return the transform between local and global coordinate system
+         */
+        public AffineTransform2D localToGlobalTransform()
+        {
+            // create elementary transforms
+            AffineTransform2D trBoxCenter = AffineTransform2D.createTranslation(-sizeX / 2, -sizeY / 2);
+            AffineTransform2D rot = AffineTransform2D.createRotation(Math.toRadians(angle));
+            AffineTransform2D trRefPoint = AffineTransform2D.createTranslation(centerX, centerY);
+
+            // concatenate into global transform
+            return AffineTransform2D.compose(trRefPoint, rot, trBoxCenter);
+        }
+    }
+    
+    /**
+     * Concatenates the settings for the choice of 3D oriented box.
+     */
+    class OrientedBox3D
+    {
+        int sizeX;
+        int sizeY;
+        int sizeZ;
+        double centerX;
+        double centerY;
+        double centerZ;
+        double rotAngleX;
+        double rotAngleY;
+        double rotAngleZ;
+
+        public OrientedBox3D()
+        {
+        }
+        
+        public OrientedBox3D(int[] dims, Point3D refPoint, double[] anglesInDegrees)
+        {
+            this.sizeX = dims[0];
+            this.sizeY = dims[1];
+            this.sizeZ = dims[2];
+            this.centerX = refPoint.x();
+            this.centerY = refPoint.y();
+            this.centerZ = refPoint.z();
+            this.rotAngleX = anglesInDegrees[0];
+            this.rotAngleY = anglesInDegrees[1];
+            this.rotAngleZ = anglesInDegrees[2];
+        }
+        
+        /**
+         * Computes the affine transform that maps a points in the box inner
+         * coordinate system to the global coordinate system.
+         * 
+         * @return the transform between local and global coordinate system
+         */
+        public AffineTransform3D localToGlobalTransform()
+        {
+            // translation of origin to the center of the box
+            AffineTransform3D trBoxCenter = AffineTransform3D.createTranslation(-sizeX / 2, -sizeY / 2, -sizeZ / 2);
+            
+            // three rotation by Euler angles 
+            AffineTransform3D rotX = AffineTransform3D.createRotationOx(Math.toRadians(rotAngleX));
+            AffineTransform3D rotY = AffineTransform3D.createRotationOy(Math.toRadians(rotAngleY));
+            AffineTransform3D rotZ = AffineTransform3D.createRotationOz(Math.toRadians(rotAngleZ));
+            
+            // translation of box center to reference point
+            AffineTransform3D trRefPoint = AffineTransform3D.createTranslation(centerX, centerY, centerZ);
+            
+            // concatenate into global transform
+            return AffineTransform3D.compose(trRefPoint, rotZ, rotY, rotX, trBoxCenter);
+        }
+    }
+
+
     public class SettingsFrame2D extends JFrame implements MouseListener
     {
         // ====================================================
@@ -313,15 +359,10 @@ public class ImageRotatedCrop implements FramePlugin
         ImageFrame parentFrame;
        
         Image image;
-        
         Array2D<?> array;
         
-        int boxSizeX;
-        int boxSizeY;
-        double boxCenterX;
-        double boxCenterY;
-        double boxAngle;
-        // TODO: create a "Box"/"OrientedBox" inner class?
+        OrientedBox2D box;
+        
         
         // ====================================================
         // GUI Widgets
@@ -349,11 +390,7 @@ public class ImageRotatedCrop implements FramePlugin
             this.array = Array2D.wrap(image.getData());
             
             // init default values
-            boxSizeX = boxSize[0];
-            boxSizeY = boxSize[1];
-            boxCenterX = refPoint.x();
-            boxCenterY = refPoint.y();
-            boxAngle = rotAngle;
+            box = new OrientedBox2D(boxSize, refPoint, rotAngle);
 
             setupWidgets();
             setupLayout();
@@ -366,39 +403,39 @@ public class ImageRotatedCrop implements FramePlugin
         
         private void setupWidgets()
         {
-            sizeXWidget = GuiHelper.createNumberSpinner(boxSizeX, 0, 10000, 1);
+            sizeXWidget = GuiHelper.createNumberSpinner(box.sizeX, 0, 10000, 1);
             sizeXWidget.addChangeListener(evt -> 
             {
-                this.boxSizeX = ((SpinnerNumberModel) sizeXWidget.getModel()).getNumber().intValue();
+                this.box.sizeX = ((SpinnerNumberModel) sizeXWidget.getModel()).getNumber().intValue();
                 updatePreviewIfNeeded();
             });
             
-            sizeYWidget = GuiHelper.createNumberSpinner(boxSizeY, 0, 10000, 1);
+            sizeYWidget = GuiHelper.createNumberSpinner(box.sizeY, 0, 10000, 1);
             sizeYWidget.addChangeListener(evt -> 
             {
-                this.boxSizeY = ((SpinnerNumberModel) sizeYWidget.getModel()).getNumber().intValue();
+                this.box.sizeY = ((SpinnerNumberModel) sizeYWidget.getModel()).getNumber().intValue();
                 updatePreviewIfNeeded();
             });
             
-            boxCenterXWidget = GuiHelper.createNumberSpinner(boxCenterX, 0, 10000, 1);
+            boxCenterXWidget = GuiHelper.createNumberSpinner(box.centerX, 0, 10000, 1);
             boxCenterXWidget.addChangeListener(evt -> 
             {
-                this.boxCenterX = ((SpinnerNumberModel) boxCenterXWidget.getModel()).getNumber().intValue();
+                this.box.centerX = ((SpinnerNumberModel) boxCenterXWidget.getModel()).getNumber().intValue();
                 updatePreviewIfNeeded();
             });
             
-            boxCenterYWidget = GuiHelper.createNumberSpinner(boxCenterY, 0, 10000, 1);
+            boxCenterYWidget = GuiHelper.createNumberSpinner(box.centerY, 0, 10000, 1);
             boxCenterYWidget.addChangeListener(evt -> 
             {
-                this.boxCenterY = ((SpinnerNumberModel) boxCenterYWidget.getModel()).getNumber().intValue();
+                this.box.centerY = ((SpinnerNumberModel) boxCenterYWidget.getModel()).getNumber().intValue();
                 updatePreviewIfNeeded();
             });
             
             
-            boxAngleWidget = GuiHelper.createNumberSpinner(boxAngle, -180, 180, 1);
+            boxAngleWidget = GuiHelper.createNumberSpinner(box.angle, -180, 180, 1);
             boxAngleWidget.addChangeListener(evt -> 
             {
-                this.boxAngle = ((SpinnerNumberModel) boxAngleWidget.getModel()).getNumber().doubleValue();
+                this.box.angle = ((SpinnerNumberModel) boxAngleWidget.getModel()).getNumber().doubleValue();
                 updatePreviewIfNeeded();
             });
 
@@ -461,10 +498,7 @@ public class ImageRotatedCrop implements FramePlugin
         
         public void updatePreview()
         {
-            int[] dims = new int[] {boxSizeX, boxSizeY};
-            Point2D cropCenter = new Point2D(boxCenterX, boxCenterY);
-            
-            Array2D<?> res = rotatedCrop(this.array, dims, cropCenter, boxAngle);
+            Array2D<?> res = rotatedCrop(this.array, box);
             Image previewImage = new Image(res, image);
             previewImage.setName(image.getName() + "-cropPreview");
             
@@ -482,16 +516,13 @@ public class ImageRotatedCrop implements FramePlugin
 
         public void displayResult()
         {
-            int[] dims = new int[] {boxSizeX, boxSizeY};
-            Point2D cropCenter = new Point2D(boxCenterX, boxCenterY);
-            
-            Array2D<?> res = rotatedCrop(this.array, dims, cropCenter, boxAngle);
+            Array2D<?> res = rotatedCrop(this.array, box);
             Image resultImage = new Image(res, image);
             resultImage.setName(image.getName() + "-crop");
             
             ImageFrame.create(resultImage, this.parentFrame);
         }
-
+        
         private void updatePreviewIfNeeded()
         {
             if (this.autoUpdateCheckBox.isSelected())
@@ -512,10 +543,10 @@ public class ImageRotatedCrop implements FramePlugin
             Point p = evt.getPoint();
             Point2D point = imageDisplay.displayToImage(p);
             
-            this.boxCenterX = point.x();
-            ((SpinnerNumberModel) this.boxCenterXWidget.getModel()).setValue(this.boxCenterX);
-            this.boxCenterY = point.y();
-            ((SpinnerNumberModel) this.boxCenterYWidget.getModel()).setValue(this.boxCenterY);
+            this.box.centerX = point.x();
+            ((SpinnerNumberModel) this.boxCenterXWidget.getModel()).setValue(this.box.centerX);
+            this.box.centerY = point.y();
+            ((SpinnerNumberModel) this.boxCenterYWidget.getModel()).setValue(this.box.centerY);
             
             if (this.autoUpdateCheckBox.isSelected())
             {
@@ -559,20 +590,10 @@ public class ImageRotatedCrop implements FramePlugin
         ImageFrame parentFrame;
        
         Image image;
-        
         ScalarArray3D<?> array;
         
-        int boxSizeX;
-        int boxSizeY;
-        int boxSizeZ;
-        double boxCenterX;
-        double boxCenterY;
-        double boxCenterZ;
-        double boxRotX;
-        double boxRotY;
-        double boxRotZ;
-        // TODO: create a "Box"/"OrientedBox" inner class?
-
+        OrientedBox3D box;
+        
 
         // ====================================================
         // GUI Widgets
@@ -607,15 +628,7 @@ public class ImageRotatedCrop implements FramePlugin
             this.array = ScalarArray3D.wrapScalar3d((ScalarArray<?>) image.getData());
             
             // init default values
-            boxSizeX = boxSize[0];
-            boxSizeY = boxSize[1];
-            boxSizeZ = boxSize[2];
-            boxCenterX = refPoint.x();
-            boxCenterY = refPoint.y();
-            boxCenterZ = refPoint.z();
-            boxRotX = rotAngles[0];
-            boxRotY = rotAngles[1];
-            boxRotZ = rotAngles[2];
+            this.box = new OrientedBox3D(boxSize, refPoint, rotAngles);
 
             setupWidgets();
             setupLayout();
@@ -628,67 +641,67 @@ public class ImageRotatedCrop implements FramePlugin
         
         private void setupWidgets()
         {
-            sizeXWidget = GuiHelper.createNumberSpinner(boxSizeX, 0, 10000, 1);
+            sizeXWidget = GuiHelper.createNumberSpinner(box.sizeX, 0, 10000, 1);
             sizeXWidget.addChangeListener(evt -> 
             {
-                this.boxSizeX = ((SpinnerNumberModel) sizeXWidget.getModel()).getNumber().intValue();
+                this.box.sizeX = ((SpinnerNumberModel) sizeXWidget.getModel()).getNumber().intValue();
                 updatePreviewIfNeeded();
             });
             
-            sizeYWidget = GuiHelper.createNumberSpinner(boxSizeY, 0, 10000, 1);
+            sizeYWidget = GuiHelper.createNumberSpinner(box.sizeY, 0, 10000, 1);
             sizeYWidget.addChangeListener(evt -> 
             {
-                this.boxSizeY = ((SpinnerNumberModel) sizeYWidget.getModel()).getNumber().intValue();
+                this.box.sizeY = ((SpinnerNumberModel) sizeYWidget.getModel()).getNumber().intValue();
                 updatePreviewIfNeeded();
             });
             
-            sizeZWidget = GuiHelper.createNumberSpinner(boxSizeZ, 0, 10000, 1);
+            sizeZWidget = GuiHelper.createNumberSpinner(box.sizeZ, 0, 10000, 1);
             sizeZWidget.addChangeListener(evt -> 
             {
-                this.boxSizeZ = ((SpinnerNumberModel) sizeZWidget.getModel()).getNumber().intValue();
+                this.box.sizeZ = ((SpinnerNumberModel) sizeZWidget.getModel()).getNumber().intValue();
                 updatePreviewIfNeeded();
             });
             
-            boxCenterXWidget = GuiHelper.createNumberSpinner(boxCenterX, 0, 10000, 1);
+            boxCenterXWidget = GuiHelper.createNumberSpinner(box.centerX, 0, 10000, 1);
             boxCenterXWidget.addChangeListener(evt -> 
             {
-                this.boxCenterX = ((SpinnerNumberModel) boxCenterXWidget.getModel()).getNumber().intValue();
+                this.box.centerX = ((SpinnerNumberModel) boxCenterXWidget.getModel()).getNumber().intValue();
                 updatePreviewIfNeeded();
             });
             
-            boxCenterYWidget = GuiHelper.createNumberSpinner(boxCenterY, 0, 10000, 1);
+            boxCenterYWidget = GuiHelper.createNumberSpinner(box.centerY, 0, 10000, 1);
             boxCenterYWidget.addChangeListener(evt -> 
             {
-                this.boxCenterY = ((SpinnerNumberModel) boxCenterYWidget.getModel()).getNumber().intValue();
+                this.box.centerY = ((SpinnerNumberModel) boxCenterYWidget.getModel()).getNumber().intValue();
                 updatePreviewIfNeeded();
             });
             
-            boxCenterZWidget = GuiHelper.createNumberSpinner(boxCenterZ, 0, 10000, 1);
+            boxCenterZWidget = GuiHelper.createNumberSpinner(box.centerZ, 0, 10000, 1);
             boxCenterZWidget.addChangeListener(evt -> 
             {
-                this.boxCenterZ = ((SpinnerNumberModel) boxCenterZWidget.getModel()).getNumber().intValue();
+                this.box.centerZ = ((SpinnerNumberModel) boxCenterZWidget.getModel()).getNumber().intValue();
                 updatePreviewIfNeeded();
             });
             
             
-            boxRotXWidget = GuiHelper.createNumberSpinner(boxRotX, -180, 180, 1);
+            boxRotXWidget = GuiHelper.createNumberSpinner(box.rotAngleX, -180, 180, 1);
             boxRotXWidget.addChangeListener(evt -> 
             {
-                this.boxRotX = ((SpinnerNumberModel) boxRotXWidget.getModel()).getNumber().doubleValue();
+                this.box.rotAngleX = ((SpinnerNumberModel) boxRotXWidget.getModel()).getNumber().doubleValue();
                 updatePreviewIfNeeded();
             });
             
-            boxRotYWidget = GuiHelper.createNumberSpinner(boxRotY, -180, 180, 1);
+            boxRotYWidget = GuiHelper.createNumberSpinner(box.rotAngleY, -180, 180, 1);
             boxRotYWidget.addChangeListener(evt -> 
             {
-                this.boxRotY = ((SpinnerNumberModel) boxRotYWidget.getModel()).getNumber().doubleValue();
+                this.box.rotAngleY = ((SpinnerNumberModel) boxRotYWidget.getModel()).getNumber().doubleValue();
                 updatePreviewIfNeeded();
             });
             
-            boxRotZWidget = GuiHelper.createNumberSpinner(boxRotZ, -180, 180, 1);
+            boxRotZWidget = GuiHelper.createNumberSpinner(box.rotAngleZ, -180, 180, 1);
             boxRotZWidget.addChangeListener(evt -> 
             {
-                this.boxRotZ = ((SpinnerNumberModel) boxRotZWidget.getModel()).getNumber().doubleValue();
+                this.box.rotAngleZ = ((SpinnerNumberModel) boxRotZWidget.getModel()).getNumber().doubleValue();
                 updatePreviewIfNeeded();
             });
             
@@ -763,17 +776,14 @@ public class ImageRotatedCrop implements FramePlugin
         
         public void updatePreview()
         {
-            int[] dims = new int[] {boxSizeX, boxSizeY, boxSizeZ};
-            Point3D cropCenter = new Point3D(boxCenterX, boxCenterY, boxCenterZ);
-            double[] angles = new double[] {boxRotX, boxRotY, boxRotZ};
-
             // compute the transform
-            AffineTransform3D transfo = computeTransform(cropCenter, dims, angles);
+            AffineTransform3D transfo = box.localToGlobalTransform();
 
-            // Create interpolation class, that encapsulates both the image and the
-            // transform
+            // Create interpolation class, that encapsulates both the image and
+            // the transform
             TransformedImage3D interp = new TransformedImage3D(this.array, transfo);
 
+            int[] dims = new int[] {box.sizeX, box.sizeY, box.sizeZ};
             ScalarArray2D<?> preview = orthoSlices(interp, dims);
             Image previewImage = new Image(preview, this.image);
             previewImage.setName("Rotated Crop Preview");
@@ -792,17 +802,13 @@ public class ImageRotatedCrop implements FramePlugin
 
         public void displayResult()
         {
-            int[] dims = new int[] {boxSizeX, boxSizeY, boxSizeZ};
-            Point3D cropCenter = new Point3D(boxCenterX, boxCenterY, boxCenterZ);
-            double[] angles = new double[] {boxRotX, boxRotY, boxRotZ};
-
             System.out.println("Rot Crop With params: ");
-            System.out.println(String.format("  box size: %d x %d x %d", boxSizeX, boxSizeY, boxSizeZ));
-            System.out.println(String.format("  refPoint: " + cropCenter));
-            System.out.println(String.format("  Euler Angles: %5.2f, %5.2f, %5.2f", boxRotX, boxRotY, boxRotZ));
+            System.out.println(String.format("  box size: %d x %d x %d", box.sizeX, box.sizeY, box.sizeZ));
+            System.out.println(String.format("  refPoint: " + new Point3D(box.centerX, box.centerY, box.centerZ)));
+            System.out.println(String.format("  Euler Angles: %5.2f, %5.2f, %5.2f", box.rotAngleX, box.rotAngleY, box.rotAngleZ));
             
             // compute the crop
-            Array3D<?> res = rotatedCrop(this.array, dims, cropCenter, angles);
+            Array3D<?> res = rotatedCrop(this.array, box);
             Image resultImage = new Image(res, this.image);
             resultImage.setName(this.image.getName() + "-crop");
             
@@ -832,12 +838,12 @@ public class ImageRotatedCrop implements FramePlugin
             int zSlice = parentFrame.getImageViewer().getSlicingPosition(2);
             
             // update position of crop box center
-            this.boxCenterX = point.x();
-            ((SpinnerNumberModel) this.boxCenterXWidget.getModel()).setValue(this.boxCenterX);
-            this.boxCenterY = point.y();
-            ((SpinnerNumberModel) this.boxCenterYWidget.getModel()).setValue(this.boxCenterY);
-            this.boxCenterZ = zSlice;
-            ((SpinnerNumberModel) this.boxCenterZWidget.getModel()).setValue(this.boxCenterZ);
+            this.box.centerX = point.x();
+            ((SpinnerNumberModel) this.boxCenterXWidget.getModel()).setValue(this.box.centerX);
+            this.box.centerY = point.y();
+            ((SpinnerNumberModel) this.boxCenterYWidget.getModel()).setValue(this.box.centerY);
+            this.box.centerZ = zSlice;
+            ((SpinnerNumberModel) this.boxCenterZWidget.getModel()).setValue(this.box.centerZ);
             
             if (this.autoPreviewCheckBox.isSelected())
             {
@@ -859,6 +865,5 @@ public class ImageRotatedCrop implements FramePlugin
         public void mouseExited(MouseEvent e)
         {
         }
-        
     }
 }
