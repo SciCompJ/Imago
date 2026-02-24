@@ -3,14 +3,14 @@
  */
 package imago.image.plugins.edit;
 
+import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
-import imago.gui.FramePlugin;
 import net.sci.array.numeric.UInt8Array3D;
-import net.sci.array.numeric.impl.BufferedUInt8Array3D;
 import net.sci.geom.geom3d.Point3D;
 import net.sci.geom.mesh3d.DefaultTriMesh3D;
 import net.sci.image.Image;
+import net.sci.image.ImageType;
 
 /**
  * Create a 3D mesh representing an octahedron, generate a discrete 3D grid,
@@ -22,6 +22,9 @@ import net.sci.image.Image;
  */
 public class CreateDistanceToOctahedronImage3D implements FramePlugin
 {
+    /**
+     * Default empty constructor.
+     */
     public CreateDistanceToOctahedronImage3D()
     {
     }
@@ -66,30 +69,18 @@ public class CreateDistanceToOctahedronImage3D implements FramePlugin
         int depth = 100;
         
         // Create new image data
-        byte[] data = new byte[width * height * depth];
+        UInt8Array3D array = UInt8Array3D.create(width, height, depth);
         
         // Initialize image data with raster content
         long tic = System.nanoTime();
-        int offset = 0;
-        for (int z = 0; z < depth; z++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    double dist = mesh.distance(x, y, z);
-                    data[offset++] = (byte) Math.min(Math.floor(dist * 5), 255);
-                }
-            }
-        }
+        array.fillInts((x,y,z) -> (int) Math.min(Math.floor(mesh.distance(x, y, z) * 5), 255));
         long toc = System.nanoTime();
         double elapsed = (toc - tic) / 1000000.0;
         System.out.println("Elapsed time: " + elapsed + " ms, " + elapsed / 1000000. + " ms/voxel");
         
-        UInt8Array3D img3d = new BufferedUInt8Array3D(width, height, depth, data);
         
         // create the image
-        Image image = new Image(img3d);
+        Image image = new Image(array, ImageType.DISTANCE);
         image.setName("OctahedronDistMap");
         
         // add the image document to GUI
