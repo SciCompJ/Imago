@@ -19,7 +19,6 @@ import javax.swing.event.ChangeListener;
 
 import imago.image.ImageHandle;
 import imago.image.ImageTool;
-import imago.image.ImageViewer;
 import net.sci.geom.Geometry;
 import net.sci.image.Image;
 import net.sci.image.shape.ImageSlicer;
@@ -30,7 +29,7 @@ import net.sci.image.shape.ImageSlicer;
  * @author David Legland
  *
  */
-public class Image5DXYSliceViewer extends ImageViewer
+public class Image5DXYSliceViewer extends XYImageViewer
         implements ChangeListener, ActionListener, ComponentListener
 {
     // ===================================================================
@@ -92,8 +91,9 @@ public class Image5DXYSliceViewer extends ImageViewer
 
     
     // ===================================================================
-    // General methods
+    // Specialization of the XYImageViewer class 
 
+    @Override
     public ImageDisplay getImageDisplay()
     {
         return imageDisplay;

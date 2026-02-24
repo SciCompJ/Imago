@@ -19,7 +19,6 @@ import imago.app.scene.ShapeNode;
 import imago.app.shape.Shape;
 import imago.image.ImageHandle;
 import imago.image.ImageTool;
-import imago.image.ImageViewer;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.image.Image;
@@ -30,7 +29,7 @@ import net.sci.image.Image;
  * @author David Legland
  *
  */
-public class PlanarImageViewer extends ImageViewer implements ComponentListener
+public class PlanarImageViewer extends XYImageViewer implements ComponentListener
 {
     // ===================================================================
     // Class variables
@@ -94,11 +93,6 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
     // ===================================================================
     // General methods
 
-    public ImageDisplay getImageDisplay()
-    {
-        return imageDisplay;
-    }
-
     /**
      * Returns the current selection of the viewer.
      * 
@@ -130,6 +124,16 @@ public class PlanarImageViewer extends ImageViewer implements ComponentListener
     }
 
     
+    // ===================================================================
+    // Specialization of the XYImageViewer class 
+
+    @Override
+    public ImageDisplay getImageDisplay()
+    {
+        return imageDisplay;
+    }
+    
+
     // ===================================================================
     // Zoom management
 

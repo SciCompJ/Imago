@@ -26,7 +26,6 @@ import imago.app.scene.ShapeNode;
 import imago.app.shape.Shape;
 import imago.image.ImageHandle;
 import imago.image.ImageTool;
-import imago.image.ImageViewer;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.image.Image;
@@ -38,7 +37,7 @@ import net.sci.image.shape.ImageSlicer;
  * @author David Legland
  *
  */
-public class StackSliceViewer extends ImageViewer
+public class StackSliceViewer extends XYImageViewer
         implements ChangeListener, ActionListener, ComponentListener
 {
     // ===================================================================
@@ -141,6 +140,10 @@ public class StackSliceViewer extends ImageViewer
         this.sliceEdit.setText(txt);
     }
 
+    // ===================================================================
+    // Specialization of the XYImageViewer class 
+
+    @Override
     public ImageDisplay getImageDisplay()
     {
         return imageDisplay;
