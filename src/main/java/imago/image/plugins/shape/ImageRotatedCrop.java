@@ -28,8 +28,7 @@ import imago.gui.util.GuiHelper;
 import imago.image.ImageFrame;
 import imago.image.ImageViewer;
 import imago.image.viewers.ImageDisplay;
-import imago.image.viewers.PlanarImageViewer;
-import imago.image.viewers.StackSliceViewer;
+import imago.image.viewers.XYImageViewer;
 import net.sci.array.Array;
 import net.sci.array.Array2D;
 import net.sci.array.Array3D;
@@ -206,9 +205,12 @@ public class ImageRotatedCrop implements FramePlugin
             SettingsFrame2D settingsFrame = new SettingsFrame2D(imageFrame, dims, refPoint, 0.0);
             settingsFrame.setVisible(true);
             
-            // TODO: should try to avoid class cast
-            ImageDisplay imageDisplay = ((PlanarImageViewer) imageFrame.getImageViewer()).getImageDisplay();
-            imageDisplay.addMouseListener(settingsFrame);
+            ImageViewer viewer = imageFrame.getImageViewer();
+            if (viewer instanceof XYImageViewer)
+            {
+                ImageDisplay imageDisplay = ((XYImageViewer) viewer).getImageDisplay();
+                imageDisplay.addMouseListener(settingsFrame);
+            }
         }
         else if (nd == 3)
         {
@@ -224,11 +226,10 @@ public class ImageRotatedCrop implements FramePlugin
             SettingsFrame3D settingsFrame = new SettingsFrame3D(imageFrame, dims, refPoint, angles);
             settingsFrame.setVisible(true);
             
-            // TODO: should try to avoid class cast
             ImageViewer viewer = imageFrame.getImageViewer();
-            if (viewer instanceof StackSliceViewer)
+            if (viewer instanceof XYImageViewer)
             {
-                ImageDisplay imageDisplay = ((StackSliceViewer) viewer).getImageDisplay();
+                ImageDisplay imageDisplay = ((XYImageViewer) viewer).getImageDisplay();
                 imageDisplay.addMouseListener(settingsFrame);
             }
         }
