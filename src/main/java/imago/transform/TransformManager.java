@@ -356,6 +356,7 @@ public class TransformManager extends ImagoFrame
         else
         {
             ImagoGui.showErrorDialog(this, "Requires an affine transform as input", "Wrong Transform Type");
+            return;
         }
         
         String title = String.format("%s - Transform Info", handle.getName());
