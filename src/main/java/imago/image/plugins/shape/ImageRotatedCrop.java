@@ -11,6 +11,8 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Collection;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -38,6 +40,7 @@ import net.sci.array.color.RGB8Array3D;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray2D;
 import net.sci.array.numeric.ScalarArray3D;
+import net.sci.array.numeric.UInt8;
 import net.sci.array.numeric.UInt8Array2D;
 import net.sci.array.numeric.UInt8Array3D;
 import net.sci.array.numeric.interp.ScalarFunction3D;
@@ -63,19 +66,18 @@ public class ImageRotatedCrop implements FramePlugin
         int[] dims = new int[] {box.sizeX, box.sizeY};
         AffineTransform2D transfo = box.localToGlobalTransform();
         
-        if (array instanceof ScalarArray2D<?>)
+        // create rotated array (as view)
+        if (array instanceof ScalarArray<?> scalar)
         {
-            return rotatedCropUInt8((ScalarArray2D<?>) array, dims, transfo);
+            return new UInt8TransformedArray2D(dims, ScalarArray2D.wrap(scalar), transfo);
         }
-        else if (array instanceof RGB8Array2D)
+        else if (array instanceof RGB8Array rgbArray)
         {
-            // allocate result image
-            RGB8Array2D rgbArray = (RGB8Array2D) array;
-            UInt8Array2D red   = rotatedCropUInt8(rgbArray.channel(0), dims, transfo);
-            UInt8Array2D green = rotatedCropUInt8(rgbArray.channel(1), dims, transfo);
-            UInt8Array2D blue  = rotatedCropUInt8(rgbArray.channel(2), dims, transfo);
-            RGB8Array2D res = RGB8Array2D.wrap(RGB8Array.mergeChannels(red, green, blue));
-            return res;
+            RGB8Array2D rgb2d = RGB8Array2D.wrap(rgbArray);
+            UInt8Array2D red   = new UInt8TransformedArray2D(dims, rgb2d.channel(0), transfo);
+            UInt8Array2D green = new UInt8TransformedArray2D(dims, rgb2d.channel(1), transfo);
+            UInt8Array2D blue  = new UInt8TransformedArray2D(dims, rgb2d.channel(2), transfo);
+            return RGB8Array2D.wrap(RGB8Array.mergeChannels(red, green, blue));
         }
         else
         {
@@ -83,19 +85,6 @@ public class ImageRotatedCrop implements FramePlugin
         }
     }
 
-    private static final UInt8Array2D rotatedCropUInt8(ScalarArray2D<?> array, int[] dims, AffineTransform2D transfo)
-    {
-        // Create interpolation class, that encapsulates both the image and the transform
-        TransformedImage2D interp = new TransformedImage2D(array, transfo);
-
-        // allocate result image
-        UInt8Array2D res = UInt8Array2D.create(dims[0], dims[1]);
-        res.fillValues((x, y) -> interp.evaluate(x, y));
-
-        return res;
-    }
-    
-    
     public static final Array3D<?> rotatedCrop(Array3D<?> array, OrientedBox3D box)
     {
         // Computes the transform that will map indices from within result image
@@ -204,13 +193,6 @@ public class ImageRotatedCrop implements FramePlugin
             int[] dims = new int[] {sizeX, sizeY};
             SettingsFrame2D settingsFrame = new SettingsFrame2D(imageFrame, dims, refPoint, 0.0);
             settingsFrame.setVisible(true);
-            
-            ImageViewer viewer = imageFrame.getImageViewer();
-            if (viewer instanceof XYImageViewer)
-            {
-                ImageDisplay imageDisplay = ((XYImageViewer) viewer).getImageDisplay();
-                imageDisplay.addMouseListener(settingsFrame);
-            }
         }
         else if (nd == 3)
         {
@@ -238,7 +220,6 @@ public class ImageRotatedCrop implements FramePlugin
             frame.showErrorDialog("Requires a 2D or 3D image as input", "Input Image error");
             return;
         }
-
     }
  
     
@@ -399,6 +380,11 @@ public class ImageRotatedCrop implements FramePlugin
             this.pack();
             this.centerFrame();
             
+            if (parentFrame.getImageViewer() instanceof XYImageViewer xyViewer)
+            {
+                xyViewer.getImageDisplay().addMouseListener(this);
+            }
+
             setVisible(true);
         }
         
@@ -447,7 +433,7 @@ public class ImageRotatedCrop implements FramePlugin
             previewButton.addActionListener(evt -> updatePreview());
 
             runButton = new JButton("Create Result!");
-            runButton.addActionListener(evt -> displayResult());
+            runButton.addActionListener(evt -> createResultImageAndClose());
         }
 
         private void setupLayout()
@@ -515,13 +501,29 @@ public class ImageRotatedCrop implements FramePlugin
             this.previewFrame.setVisible(true);
         }
 
-        public void displayResult()
+        public void createResultImageAndClose()
         {
             Array2D<?> res = rotatedCrop(this.array, box);
             Image resultImage = new Image(res, image);
             resultImage.setName(image.getName() + "-crop");
             
-            ImageFrame.create(resultImage, this.parentFrame);
+            ImageFrame refFrame = this.previewFrame != null ? this.previewFrame : this.parentFrame;
+            ImageFrame.create(resultImage, refFrame);
+            
+            if (this.previewFrame != null)
+            {
+                this.previewFrame.setVisible(false);
+                this.previewFrame.close();
+            }
+            this.setVisible(false);
+            
+            // remove listener
+            if (parentFrame.getImageViewer() instanceof XYImageViewer xyViewer)
+            {
+                xyViewer.getImageDisplay().removeMouseListener(this);
+            }
+            
+            this.dispose();
         }
         
         private void updatePreviewIfNeeded()
@@ -865,6 +867,63 @@ public class ImageRotatedCrop implements FramePlugin
         @Override
         public void mouseExited(MouseEvent e)
         {
+        }
+    }
+    
+    /**
+     * Implements a transformed view on a scalar array with results as UInt8.
+     */
+    public static class UInt8TransformedArray2D extends UInt8Array2D implements Array.View<UInt8>
+    {
+        /**
+         * The array to interpolate. Can be of any scalar type, but only values
+         * between 0 and 255 will be correctly converted.
+         */
+        ScalarArray2D<?> refArray;
+        
+        /**
+         * The interpolation function, created during array creation.
+         */
+        TransformedImage2D interp;
+        
+        protected UInt8TransformedArray2D(int[] dims, ScalarArray2D<?> refArray, AffineTransform2D transfo)
+        {
+            super(dims[0], dims[1]);
+            this.refArray = refArray;
+            
+            // create the interpolation class encapsulating both the array and
+            // the transform
+            this.interp = new TransformedImage2D(refArray, transfo);
+        }
+        
+        @Override
+        public byte getByte(int x, int y)
+        {
+            return (byte) UInt8.convert(interp.evaluate(x, y));
+        }
+
+        @Override
+        public int getInt(int x, int y)
+        {
+            return UInt8.convert(interp.evaluate(x, y));
+        }
+
+        @Override
+        public double getValue(int x, int y)
+        {
+            return interp.evaluate(x, y);
+        }
+
+        @Override
+        public void setByte(int x, int y, byte b)
+        {
+            throw new RuntimeException("Can not modify a transformed array view");
+        }
+
+        @Override
+        public Collection<Array<?>> parentArrays()
+        {
+            return List.of(this.refArray);
         }
     }
 }
