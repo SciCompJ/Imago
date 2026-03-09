@@ -28,6 +28,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
 import imago.app.ImagoApp;
+import imago.gui.FrameMenuBuilder;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.gui.frames.ImagoTextFrame;
@@ -107,6 +108,7 @@ public class TransformManager extends ImagoFrame
         super(gui, "Transform Manager");
         
         // layout the frame
+        new MenuBuilder(this).setupMenuBar();
         setupMenu();
         setupWidgets();
         setupLayout();
@@ -380,7 +382,7 @@ public class TransformManager extends ImagoFrame
     {
     }
     
-    private TransformHandle getSelectedHandle()
+    public TransformHandle getSelectedHandle()
     {
         ListSelectionModel selection = infoTable.getSelectionModel();
         int[] inds = selection.getSelectedIndices();
@@ -394,7 +396,7 @@ public class TransformManager extends ImagoFrame
         return (TransformHandle) this.gui.getAppli().getWorkspace().getHandle(id);
     }
     
-    private Collection<TransformHandle> getSelectedHandles()
+    public Collection<TransformHandle> getSelectedHandles()
     {
         ListSelectionModel selection = infoTable.getSelectionModel();
         int[] indices = selection.getSelectedIndices();
@@ -445,6 +447,44 @@ public class TransformManager extends ImagoFrame
             default -> transfo.getClass().getSimpleName();
         };
     }
+    
+    
+    // ===================================================================
+    // Implementation of inner menu builder
+    
+    private class MenuBuilder extends FrameMenuBuilder
+    {
+        public MenuBuilder(ImagoFrame frame)
+        {
+            super(frame);
+        }
+        
+        public void setupMenuBar()
+        {
+            JMenuBar menuBar = new JMenuBar();
+            TransformManager tm = (TransformManager) frame;
+
+            JMenu fileMenu = new JMenu("File");
+            createMenuItem(fileMenu, "Create Transform...", tm::onCreateTransform);
+            fileMenu.addSeparator();
+            createMenuItem(fileMenu, "Import from JSON...", tm::onImportTransformFromJsonFile);
+            createMenuItem(fileMenu, "Import Affine from Coeffs...", tm::onImportAffineTransformFromCoefficientsFile);
+            fileMenu.addSeparator();
+            createMenuItem(fileMenu, "Close", tm::onClose);
+            menuBar.add(fileMenu);
+            
+            JMenu editMenu = new JMenu("Edit");
+            createMenuItem(editMenu, "Rename...", tm::onRename);
+            editMenu.addSeparator();
+            createMenuItem(editMenu, "Remove", tm::onRemove);
+            editMenu.addSeparator();
+            createMenuItem(editMenu, "Display Coefficients", tm::onDisplayCoefficients);
+            menuBar.add(editMenu);
+            
+            tm.getWidget().setJMenuBar(menuBar);
+        }
+    }
+
     
     // ===================================================================
     // main

@@ -6,7 +6,6 @@ package imago.shape;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -15,7 +14,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -326,16 +324,9 @@ public class ShapeManager extends ImagoFrame
             menuBar.add(processMenu);
 
             frame.getWidget().setJMenuBar(menuBar);
-
-        }
-        
-        private static final void createMenuItem(JMenu menu, String label, ActionListener lst)
-        {
-            JMenuItem item = new JMenuItem(label);
-            item.addActionListener(lst);
-            menu.add(item);
         }
     }
+    
     
     // ===================================================================
     // main

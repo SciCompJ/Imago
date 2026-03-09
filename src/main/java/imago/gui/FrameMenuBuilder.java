@@ -227,6 +227,15 @@ public class FrameMenuBuilder
     // ===================================================================
     // menu item creation methods
     
+    protected static final JMenuItem createMenuItem(JMenu menu, String label, ActionListener lst)
+    {
+        JMenuItem item = new JMenuItem(label);
+        item.addActionListener(lst);
+        item.setIcon(emptyIcon);
+        menu.add(item);
+        return item;
+    }
+    
     private JMenuItem addMenuItem(JMenu menu, String label, ActionListener listener, boolean enabled)
     {
         JMenuItem item = new JMenuItem(label);
