@@ -271,10 +271,6 @@ public class PlanarImageViewer extends XYImageViewer implements ComponentListene
     public void repaint()
     {
         this.panel.repaint();
-        if (this.selection != null)
-        {
-
-        }
     }
     
 

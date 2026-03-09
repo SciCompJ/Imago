@@ -200,6 +200,11 @@ public class Image5DXYSliceViewer extends XYImageViewer
         this.awtImage = image.getType().createAwtImage(slice);
     }
 
+    public void repaint()
+    {
+        this.panel.repaint();
+    }
+    
     
     // ===================================================================
     // Implementation of StateListener interface

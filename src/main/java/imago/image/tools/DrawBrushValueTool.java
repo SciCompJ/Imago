@@ -15,6 +15,11 @@ import imago.image.viewers.ImageDisplay;
 import imago.image.viewers.PlanarImageViewer;
 import imago.image.viewers.StackSliceViewer;
 import net.sci.array.Array;
+import net.sci.array.Array2D;
+import net.sci.array.Array3D;
+import net.sci.array.color.RGB8;
+import net.sci.array.color.RGB8Array;
+import net.sci.array.color.RGB8Array2D;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray2D;
 import net.sci.array.numeric.ScalarArray3D;
@@ -89,7 +94,7 @@ public class DrawBrushValueTool extends ImageTool
         // retrieve image data
         Image image = this.frame.getImageViewer().getImage();
         Array<?> array = image.getData();
-        if (!(array instanceof ScalarArray))
+        if (!(array instanceof ScalarArray || array instanceof RGB8Array))
         {
             return;
         }
@@ -103,7 +108,7 @@ public class DrawBrushValueTool extends ImageTool
         Point point = new Point(evt.getX(), evt.getY());
         Point2D pos = display.displayToImage(point);
         
-//        System.out.println("[DrawValue] Mouse pressed at (" + x + " ; " + y);
+//        System.out.println("[DrawBrushValue] Mouse pressed at (" + x + " ; " + y);
         
         // convert to array coord
         int xi = (int) Math.round(pos.x());
@@ -125,17 +130,36 @@ public class DrawBrushValueTool extends ImageTool
         double r2 = (radius + 0.5) * (radius + 0.5);
         int ri = (int) Math.floor(radius);
         
-        // select the 2D array to update
-        ScalarArray2D<?> array2d = wrapArray(array);
-        
-        // update the array
-        for (int y2 = yi - ri; y2 <= yi + ri; y2++)
+        if (array instanceof ScalarArray)
         {
-            if (y2 < 0 || y2 > sizeY-1) continue;
-            int deltaY = y2 - yi;
-            int deltaX = (int) Math.floor(Math.sqrt(r2 - deltaY * deltaY));
-            fillHorizontalInterval(array2d, Math.max(xi - deltaX, 0), Math.min(xi + deltaX, sizeX - 1), y2, value);
+            // select the 2D array to update
+            ScalarArray2D<?> array2d = wrapScalarSlice(array);
+            
+            // update the array
+            for (int y2 = yi - ri; y2 <= yi + ri; y2++)
+            {
+                if (y2 < 0 || y2 > sizeY-1) continue;
+                int deltaY = y2 - yi;
+                int deltaX = (int) Math.floor(Math.sqrt(r2 - deltaY * deltaY));
+                fillHorizontalInterval(array2d, Math.max(xi - deltaX, 0), Math.min(xi + deltaX, sizeX - 1), y2, value);
+            }
         }
+        else if (array instanceof RGB8Array)
+        {
+            // select the 2D array to update
+            RGB8Array2D array2d = RGB8Array2D.wrap(RGB8Array.wrap(wrapSlice(array)));
+            RGB8 rgbValue = RGB8.fromValue(value);
+            
+            // update the array
+            for (int y2 = yi - ri; y2 <= yi + ri; y2++)
+            {
+                if (y2 < 0 || y2 > sizeY-1) continue;
+                int deltaY = y2 - yi;
+                int deltaX = (int) Math.floor(Math.sqrt(r2 - deltaY * deltaY));
+                fillHorizontalInterval(array2d, Math.max(xi - deltaX, 0), Math.min(xi + deltaX, sizeX - 1), y2, rgbValue);
+            }
+        }
+
         
         // refresh display
         this.frame.getImageViewer().refreshDisplay();
@@ -192,7 +216,7 @@ public class DrawBrushValueTool extends ImageTool
         // retrieve image data
         Image image = this.frame.getImageViewer().getImage();
         Array<?> array = image.getData();
-        if (!(array instanceof ScalarArray))
+        if (!array.isModifiable())
         {
             return;
         }
@@ -201,9 +225,6 @@ public class DrawBrushValueTool extends ImageTool
         ImageDisplay display = (ImageDisplay) evt.getSource();
         Point point = new Point(evt.getX(), evt.getY());
         Point2D pos = display.displayToImage(point);
-        
-        // wrap to scalar 2D
-        ScalarArray2D<?> array2d = wrapArray(array);
         
         // convert to array coord
         int xi = (int) Math.round(pos.x());
@@ -215,22 +236,32 @@ public class DrawBrushValueTool extends ImageTool
             return;
         }
         
-        if (array.isModifiable())
+        // check position is within array bounds
+        int sizeX = array.size(0);
+        int sizeY = array.size(1);
+        if (xi < 0 || yi < 0) return;
+        if (xi >= sizeX || yi >= sizeY) return;
+        
+        // retrieve brush settings
+        UserPreferences prefs = this.frame.getGui().getAppli().userPreferences;
+        double value = prefs.brushValue;
+        double radius = prefs.brushRadius;
+        
+        if (array instanceof ScalarArray)
         {
-            // check position is within array bounds
-            int sizeX = array.size(0);
-            int sizeY = array.size(1);
-            if (xi < 0 || yi < 0) return;
-            if (xi >= sizeX || yi >= sizeY) return;
-
-            // retrieve brush settings
-            UserPreferences prefs = this.frame.getGui().getAppli().userPreferences;
-            double value = prefs.brushValue;
-            double radius = prefs.brushRadius;
-
+            // use a faster processing for scalar arrays
+            ScalarArray2D<?> array2d = wrapScalarSlice(array);
             drawLineOnArray(array2d, xprev, yprev, xi, yi, radius, value);
         }
+        else if (array instanceof RGB8Array)
+        {
+            // select the 2D array to update
+            RGB8Array2D array2d = RGB8Array2D.wrap(RGB8Array.wrap(wrapSlice(array)));
+            RGB8 rgbValue = RGB8.fromValue(value);
+            drawLineOnArray(array2d, xprev, yprev, xi, yi, radius, rgbValue);
+        }
         
+
         // keep coordinates for next mouse move
         xprev = xi;
         yprev = yi;
@@ -261,6 +292,11 @@ public class DrawBrushValueTool extends ImageTool
     }
     
     private static void drawLineOnArray(ScalarArray2D<?> array, int x1, int y1, int x2, int y2, double radius, double value)
+    {
+        drawLineOnScalarArray(array, x1, y1, x2, y2, radius, value);
+    }
+    
+    private static void drawLineOnScalarArray(ScalarArray2D<?> array, int x1, int y1, int x2, int y2, double radius, double value)
     {
         // array size
         int sizeX = array.size(0);
@@ -393,7 +429,156 @@ public class DrawBrushValueTool extends ImageTool
         }
     }
     
-    private ScalarArray2D<?> wrapArray(Array<?> array)
+    private static <T> void drawLineOnArray(Array2D<T> array, int x1, int y1, int x2, int y2, double radius, T value)
+    {
+        // array size
+        int sizeX = array.size(0);
+        int sizeY = array.size(1);
+        
+        // compute integer radius
+        int ri = (int) Math.floor(radius);
+        
+        // compute squared radius (consider diameter = 2*radius+1)
+        double r2 = (radius + 0.5) * (radius + 0.5);
+        
+        // first determines if line is mostly horizontal or mostly vertical
+        double dx = x2 - x1;
+        double dy = y2 - y1;
+        if (Math.abs(dx) > Math.abs(dy))
+        {
+            // Process horizontal line
+            double slope = dy / dx;
+                    
+            // ensure positive increment of y
+            boolean swap = false;
+            if (x1 > x2)
+            {
+                // swap coords
+                int tmp = y1; y1 = y2; y2 = tmp;
+                tmp = x1; x1 = x2; x2 = tmp;
+                swap = true;
+            }
+            
+            // draw a thick (mostly horizontal) line between extremities
+            for (int x = x1; x <= x2; x++)
+            {
+                int yc = (int) Math.round(y1 + slope * (x - x1));
+                for (int y = yc - ri; y <= yc + ri; y++)
+                {
+                    if (y < 0 || y >= sizeY) continue;
+                    array.set(x, y, value);
+                }
+            }
+            
+            // draw a half-disk after the end of the line
+            if (swap)
+            {
+                // draw half disk for x < x1
+                for (int x = x1 - 1; x >= x1 - ri; x--)
+                {
+                    if (x <= 0) break;
+                    int deltaX = x1 - x;
+                    int deltaY = (int) Math.floor(Math.sqrt(r2 - deltaX * deltaX));
+                    fillVerticalInterval(array, x, Math.max(y1 - deltaY, 0), Math.min(y1 + deltaY, sizeY - 1), value);
+                }
+            }
+            else
+            {
+                // draw half disk for x > x2
+                for (int x = x2 + 1; x <= x2 + ri; x++)
+                {
+                    if (x >= sizeX) break;
+                    int deltaX = x - x2;
+                    int deltaY = (int) Math.floor(Math.sqrt(r2 - deltaX * deltaX));
+                    fillVerticalInterval(array, x, Math.max(y2 - deltaY, 0), Math.min(y2 + deltaY, sizeY - 1), value);
+                }
+            }
+        }
+        else
+        {
+            // Process vertical line
+            double slope = dx / dy;
+                    
+            // ensure positive increment of y
+            boolean swap = false;
+            if (y1 > y2)
+            {
+                // swap coords
+                int tmp = y1; y1 = y2; y2 = tmp;
+                tmp = x1; x1 = x2; x2 = tmp;
+                swap = true;
+            }
+            
+            // draw a thick (mostly vertical) line between extremities
+            for (int y = y1; y <= y2; y++)
+            {
+                int xc = (int) Math.round(x1 + slope * (y - y1));
+                for (int x = xc - ri; x <= xc + ri; x++)
+                {
+                    if (x < 0 || x >= sizeX) continue;
+                    array.set(x, y, value);
+                }
+            }
+            
+            // draw a half-disk after the end of the line
+            if (swap)
+            {
+                // draw half disk for y < y1
+                for (int y = y1 - 1; y >= y1 - ri; y--)
+                {
+                    if (y <= 0) break;
+                    int deltaY = y1 - y;
+                    int deltaX = (int) Math.floor(Math.sqrt(r2 - deltaY * deltaY));
+                    fillHorizontalInterval(array, Math.max(x1 - deltaX, 0), Math.min(x1 + deltaX, sizeX - 1), y, value);
+                }
+            }
+            else
+            {
+                // draw half disk for y > y2
+                for (int y = y2 + 1; y <= y2 + ri; y++)
+                {
+                    if (y >= sizeY) break;
+                    int deltaY = y - y2;
+                    int deltaX = (int) Math.floor(Math.sqrt(r2 - deltaY * deltaY));
+                    fillHorizontalInterval(array, Math.max(x2 - deltaX, 0), Math.min(x2 + deltaX, sizeX - 1), y, value);
+                }
+            }
+        }
+    }
+    
+    private static <T> void fillVerticalInterval(Array2D<T> array, int x, int y1, int y2, T value)
+    {
+        for (int y = y1; y <= y2; y++)
+        {
+            array.set(x, y, value);
+        }
+    }
+    
+    private static <T> void fillHorizontalInterval(Array2D<T> array, int x1, int x2, int y, T value)
+    {
+        for (int x = x1; x <= x2; x++)
+        {
+            array.set(x, y, value);
+        }
+    }
+    
+    private Array2D<?> wrapSlice(Array<?> array)
+    {
+        // select the 2D array to update
+        if (array.dimensionality() == 2)
+        {
+            return Array2D.wrap(array);
+        }
+        else if (array.dimensionality() == 3)
+        {
+            int zi = this.frame.getImageViewer().getSlicingPosition(2);
+            return Array3D.wrap(array).slice(zi);
+        }
+        
+        throw new RuntimeException("Requires either a 2D or a 3D array");
+    }
+    
+    private ScalarArray2D<?> wrapScalarSlice(Array<?> array)
     {
         // select the 2D array to update
         if (array.dimensionality() == 2)

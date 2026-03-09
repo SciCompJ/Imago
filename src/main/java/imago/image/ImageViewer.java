@@ -326,17 +326,13 @@ public abstract class ImageViewer implements ImageHandle.Listener
      */
     protected ScalarArray<?> computeVectorArrayDisplay(VectorArray<?, ?> array)
     {
-        switch (this.vectorImageDisplayMode)
+        return switch (this.vectorImageDisplayMode)
         {
-            case CHANNEL:
-                return array.channel(this.currentChannelIndex);
-            case NORM:
-                return VectorArray.norm(array);
-            case MAX:
-                return VectorArray.maxNorm(array);
-            default:
-                throw new RuntimeException("Unknown mode for converting vector image...");
-        }
+            case CHANNEL -> array.channel(this.currentChannelIndex);
+            case NORM -> VectorArray.norm(array);
+            case MAX -> VectorArray.maxNorm(array);
+            default -> throw new RuntimeException("Unknown mode for converting vector image...");
+        };
     }
 
     // ===================================================================

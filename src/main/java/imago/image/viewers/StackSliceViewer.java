@@ -212,6 +212,12 @@ public class StackSliceViewer extends XYImageViewer
         Image slice = ImageSlicer.slice2d(image, this.slicingPosition[2]);
         this.awtImage = slice.getType().createAwtImage(slice);
     }
+    
+    public void repaint()
+    {
+        this.panel.repaint();
+    }
+    
 
     
     // ===================================================================

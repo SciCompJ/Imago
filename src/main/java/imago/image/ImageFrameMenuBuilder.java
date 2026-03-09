@@ -591,10 +591,8 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
                     "Select Polyline", hasImage);
             
             toolsMenu.addSeparator();
-            addPlugin(toolsMenu, new ChangeCurrentTool(new DrawValueTool(viewer, "drawValue")), "Draw (Dot)",
-                    hasScalarImage);
-            addPlugin(toolsMenu, new ChangeCurrentTool(new DrawBrushValueTool(viewer, "drawBrushValue")),
-                    "Draw (Brush)", hasScalarImage);
+            addPlugin(toolsMenu, new ChangeCurrentTool(new DrawValueTool(viewer, "drawValue")), "Draw (Dot)");
+            addPlugin(toolsMenu, new ChangeCurrentTool(new DrawBrushValueTool(viewer, "drawBrushValue")), "Draw (Brush)");
             addPlugin(toolsMenu, new ChangeCurrentTool(new FloodFillTool(viewer, "floodFillValue")), "Flood-Fill",
                     hasScalarImage);
             
