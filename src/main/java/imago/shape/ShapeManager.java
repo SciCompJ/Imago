@@ -5,7 +5,6 @@ package imago.shape;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -186,11 +185,6 @@ public class ShapeManager extends ImagoFrame
     // ===================================================================
     // Menu item callbacks
     
-    private void onClose(ActionEvent evt)
-    {
-        this.jFrame.setVisible(false);
-    }
-    
     private void refreshModel()
     {
         Collection<GeometryHandle> handles = GeometryHandle.getAll(gui.getAppli());
@@ -302,7 +296,7 @@ public class ShapeManager extends ImagoFrame
             addPlugin(fileMenu, imago.shape.plugins.file.SaveRoiListAsJson.class, "Save Roi List...");
             addPlugin(fileMenu, imago.shape.plugins.file.SaveGeometryAsJson.class, "Save Single Geometry...");
             fileMenu.addSeparator();
-            createMenuItem(fileMenu, "Close", sm::onClose);
+            createMenuItem(fileMenu, "Close", evt -> sm.setVisible(false));
             menuBar.add(fileMenu);
             
             JMenu editMenu = new JMenu("Edit");

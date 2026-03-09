@@ -5,36 +5,23 @@ package imago.transform;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Locale;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
 import imago.app.ImagoApp;
 import imago.gui.FrameMenuBuilder;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import imago.gui.frames.ImagoTextFrame;
-import imago.transform.io.DelimitedFileAffineTransformReader;
-import imago.transform.io.JsonTransformReader;
-import imago.transform.plugins.CreateTransform2D;
 import net.sci.geom.Transform;
 import net.sci.geom.geom2d.AffineTransform2D;
 import net.sci.geom.geom3d.AffineTransform3D;
@@ -82,13 +69,6 @@ public class TransformManager extends ImagoFrame
     
     
     // ===================================================================
-    // Static members
-    
-    private static FileFilter textFileFilter = new FileNameExtensionFilter("Text files (*.txt)", "txt");
-    private static FileFilter jsonFileFilter = new FileNameExtensionFilter("All JSON files (*.json)", "json");
-
-    
-    // ===================================================================
     // Class members 
     
     /**
@@ -109,7 +89,6 @@ public class TransformManager extends ImagoFrame
         
         // layout the frame
         new MenuBuilder(this).setupMenuBar();
-        setupMenu();
         setupWidgets();
         setupLayout();
          
@@ -123,37 +102,6 @@ public class TransformManager extends ImagoFrame
         this.jFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         
         putFrameMiddleScreen();
-    }
-    
-    private void setupMenu()
-    {
-        JMenuBar menuBar = new JMenuBar();
-        
-        JMenu fileMenu = new JMenu("File");
-        createMenuItem(fileMenu, "Create Transform...", this::onCreateTransform);
-        fileMenu.addSeparator();
-        createMenuItem(fileMenu, "Import from JSON...", this::onImportTransformFromJsonFile);
-        createMenuItem(fileMenu, "Import Affine from Coeffs...", this::onImportAffineTransformFromCoefficientsFile);
-        fileMenu.addSeparator();
-        createMenuItem(fileMenu, "Close", this::onClose);
-        menuBar.add(fileMenu);
-        
-        JMenu editMenu = new JMenu("Edit");
-        createMenuItem(editMenu, "Rename...", this::onRename);
-        editMenu.addSeparator();
-        createMenuItem(editMenu, "Remove", this::onRemove);
-        editMenu.addSeparator();
-        createMenuItem(editMenu, "Display Coefficients", this::onDisplayCoefficients);
-        menuBar.add(editMenu);
-        
-        getWidget().setJMenuBar(menuBar);
-    }
-
-    private void createMenuItem(JMenu menu, String label, ActionListener lst)
-    {
-        JMenuItem item = new JMenuItem(label);
-        item.addActionListener(lst);
-        menu.add(item);
     }
     
     private void setupWidgets()
@@ -211,161 +159,6 @@ public class TransformManager extends ImagoFrame
     public void updateInfoTable()
     {
         refreshModel();
-    }
-    
-
-    // ===================================================================
-    // Menu item callbacks
-    
-    private void onCreateTransform(ActionEvent evt)
-    {
-        new CreateTransform2D().run(this, "");
-    }
-    
-    private void onImportTransformFromJsonFile(ActionEvent evt)
-    {
-        // open a dialog to read a .json file
-        File file = this.gui.chooseFileToOpen(this,
-                "Import Transform coefficients file", jsonFileFilter);
-        if (file == null)
-        {
-            return;
-        }
-        // Check the chosen file exists
-        if (!file.exists())
-        {
-            return;
-        }
-
-        Transform transfo;
-        try (JsonTransformReader reader = new JsonTransformReader(new FileReader(file));)
-        {
-            transfo = reader.readTransform();
-        }
-        catch (IOException ex)
-        {
-            throw new RuntimeException(ex);
-        }
-        catch (Exception ex)
-        {
-            throw new RuntimeException(ex);
-        }
-        
-        ImagoApp app = this.gui.getAppli();
-        TransformHandle.create(app, transfo, file.getName());
-        
-        updateInfoTable();
-
-    }
-    
-    private void onImportAffineTransformFromCoefficientsFile(ActionEvent evt)
-    {
-        // open a dialog to read a .json file
-        File file = this.gui.chooseFileToOpen(this,
-                "Import Transform coefficients file", textFileFilter);
-        if (file == null)
-        {
-            return;
-        }
-        // Check the chosen file exists
-        if (!file.exists())
-        {
-            return;
-        }
-        
-        Transform transfo;
-        try (DelimitedFileAffineTransformReader reader = new DelimitedFileAffineTransformReader(file))
-        {
-            transfo = reader.readTransform();
-        }
-        catch (IOException ex)
-        {
-            throw new RuntimeException(ex);
-        }
-        catch (Exception ex)
-        {
-            throw new RuntimeException(ex);
-        }
-        
-        ImagoApp app = this.gui.getAppli();
-        TransformHandle.create(app, transfo, file.getName());
-        
-        updateInfoTable();
-    }
-    
-    private void onClose(ActionEvent evt)
-    {
-        this.jFrame.setVisible(false);
-    }
-    
-    private void onRename(ActionEvent evt)
-    {
-        TransformHandle handle = getSelectedHandle();
-        if (handle == null) return;
-        
-        String newName = ImagoGui.showInputDialog(this, "Rename geometry", "Enter new name:", handle.getName());
-        handle.setName(newName);
-        
-        updateInfoTable();
-    }
-    
-    private void onRemove(ActionEvent evt)
-    {
-        ImagoApp appli = this.gui.getAppli();
-        for (TransformHandle handle : getSelectedHandles())
-        {
-            appli.removeHandle(handle);
-        }
-        updateInfoTable();
-    }
-    
-    /**
-     * Displays the coefficient of the current affine transform, if selected.
-     * 
-     * @param evt
-     *            the event object
-     */
-    private void onDisplayCoefficients(ActionEvent evt)
-    {
-        TransformHandle handle = getSelectedHandle();
-        if (handle == null) return;
-        
-        ArrayList<String> textLines = new ArrayList<String>();
-        textLines.add("Coefficients of transform: " + handle.getName() + " (id=" + handle.getTag() + ")");
-        
-        Transform transfo = handle.getTransform();
-        String numberFormat = "%10.5f";
-        if (transfo instanceof AffineTransform2D aff)
-        {
-            double[][] mat = aff.affineMatrix();
-            String pattern = String.format("[%s, %s, %s]", numberFormat, numberFormat, numberFormat);
-            for (int i = 0; i < 2; i++)
-            {
-                textLines.add(String.format(Locale.ENGLISH, pattern, mat[i][0], mat[i][1], mat[i][2]));
-            }
-            textLines.add(String.format(Locale.ENGLISH, pattern, 0.0, 0.0, 1.0));
-        }
-        else if (transfo instanceof AffineTransform3D aff)
-        {
-            double[][] mat = aff.affineMatrix();
-            String pattern = String.format("[%s, %s, %s, %s]", numberFormat, numberFormat, numberFormat, numberFormat);
-            for (int i = 0; i < 3; i++)
-            {
-                textLines.add(String.format(Locale.ENGLISH, pattern, mat[i][0], mat[i][1], mat[i][2], mat[i][3]));
-            }
-            textLines.add(String.format(Locale.ENGLISH, pattern, 0.0, 0.0, 0.0, 1.0));
-        }
-        else
-        {
-            ImagoGui.showErrorDialog(this, "Requires an affine transform as input", "Wrong Transform Type");
-            return;
-        }
-        
-        String title = String.format("%s - Transform Info", handle.getName());
-        ImagoTextFrame newFrame = new ImagoTextFrame(this, title, textLines);
-        newFrame.getWidget().pack();
-        newFrame.getWidget().setSize(new Dimension(600, 400));
-        newFrame.setVisible(true);
     }
     
     
@@ -465,20 +258,20 @@ public class TransformManager extends ImagoFrame
             TransformManager tm = (TransformManager) frame;
 
             JMenu fileMenu = new JMenu("File");
-            createMenuItem(fileMenu, "Create Transform...", tm::onCreateTransform);
+            addPlugin(fileMenu, imago.transform.plugins.file.CreateTransform2D.class, "Create Transform...");
             fileMenu.addSeparator();
-            createMenuItem(fileMenu, "Import from JSON...", tm::onImportTransformFromJsonFile);
-            createMenuItem(fileMenu, "Import Affine from Coeffs...", tm::onImportAffineTransformFromCoefficientsFile);
+            addPlugin(fileMenu, imago.transform.plugins.file.ImportTransformFromJsonFile.class, "Import from JSON...");
+            addPlugin(fileMenu, imago.transform.plugins.file.ImportAffineTransformFromCoefficientsFile.class, "Import Affine from Coeffs...");
             fileMenu.addSeparator();
-            createMenuItem(fileMenu, "Close", tm::onClose);
+            createMenuItem(fileMenu, "Close", evt -> tm.setVisible(false));
             menuBar.add(fileMenu);
             
             JMenu editMenu = new JMenu("Edit");
-            createMenuItem(editMenu, "Rename...", tm::onRename);
+            addPlugin(editMenu, imago.transform.plugins.edit.RenameTransform.class, "Rename...");
             editMenu.addSeparator();
-            createMenuItem(editMenu, "Remove", tm::onRemove);
+            addPlugin(editMenu, imago.transform.plugins.edit.RemoveTransform.class, "Remove");
             editMenu.addSeparator();
-            createMenuItem(editMenu, "Display Coefficients", tm::onDisplayCoefficients);
+            addPlugin(editMenu, imago.transform.plugins.edit.DisplayCoefficients.class, "Display Coefficients");
             menuBar.add(editMenu);
             
             tm.getWidget().setJMenuBar(menuBar);

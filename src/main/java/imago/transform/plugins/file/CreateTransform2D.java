@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.transform.plugins;
+package imago.transform.plugins.file;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
