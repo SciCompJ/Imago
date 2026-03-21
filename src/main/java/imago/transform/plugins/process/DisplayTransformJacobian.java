@@ -55,18 +55,9 @@ public class DisplayTransformJacobian extends AlgoStub implements TransformManag
         
         // create a dialog for the user to choose options
         GenericDialog gd = new GenericDialog(frame, "Apply Transform");
-        for (int d = 0; d < nd; d++)
-        {
-            gd.addNumericField("Result Size dim. " + (d+1), 100, 0);
-        }
-        for (int d = 0; d < nd; d++)
-        {
-            gd.addNumericField("Spacing dim. " + (d+1), 1.0, 2);
-        }
-        for (int d = 0; d < nd; d++)
-        {
-            gd.addNumericField("Origin dim. " + (d+1), 0.0, 2);
-        }
+        gd.addIntegerFields("Result Size", fillArray(new int[nd], 100));
+        gd.addNumericFields("Spacing", fillArray(new double[nd], 1.0), 2);
+        gd.addNumericFields("Origin", fillArray(new double[nd], 0.0), 2);
         gd.addCheckBox("Compute log", true);
         
         // wait the user to choose
@@ -77,21 +68,9 @@ public class DisplayTransformJacobian extends AlgoStub implements TransformManag
         }
         
         // parse dialog results
-        int[] dims = new int[nd];
-        for (int d = 0; d < nd; d++)
-        {
-            dims[d] = (int) gd.getNextNumber();
-        }
-        double[] spacing = new double[nd];
-        for (int d = 0; d < nd; d++)
-        {
-            spacing[d] = gd.getNextNumber();
-        }
-        double[] origin = new double[nd];
-        for (int d = 0; d < nd; d++)
-        {
-            origin[d] = gd.getNextNumber();
-        }
+        int[] dims = gd.getNextIntegers();
+        double[] spacing = gd.getNextNumbers();
+        double[] origin = gd.getNextNumbers();
         boolean computeLog = gd.getNextBoolean();
         
         
@@ -178,6 +157,24 @@ public class DisplayTransformJacobian extends AlgoStub implements TransformManag
         
         // display into new frame
         ImageFrame.create(resultImage, frame);
+    }
+    
+    private static final double[] fillArray(double[] array, double value)
+    {
+        for (int i = 0; i < array.length; i++)
+        {
+            array[i] = value;
+        }
+        return array;
+    }
+    
+    private static final int[] fillArray(int[] array, int value)
+    {
+        for (int i = 0; i < array.length; i++)
+        {
+            array[i] = value;
+        }
+        return array;
     }
     
     private static final double det2(double[][] mat)

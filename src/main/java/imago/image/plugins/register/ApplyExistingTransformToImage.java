@@ -73,18 +73,9 @@ public class ApplyExistingTransformToImage extends AlgoStub implements FramePlug
         // create a dialog for the user to choose options
         GenericDialog gd = new GenericDialog(frame, "Apply Transform");
         gd.addChoice("Transform", names, names[0]);
-        for (int d = 0; d < nd; d++)
-        {
-            gd.addNumericField("Result Size dim. " + (d+1), array.size(d), 0);
-        }
-        for (int d = 0; d < nd; d++)
-        {
-            gd.addNumericField("Spacing dim. " + (d+1), 1.0, 2);
-        }
-        for (int d = 0; d < nd; d++)
-        {
-            gd.addNumericField("Origin dim. " + (d+1), 0.0, 2);
-        }
+        gd.addIntegerFields("Result Size", array.size());
+        gd.addNumericFields("Spacing", fillArray(new double[nd], 1.0), 2);
+        gd.addNumericFields("Origin", fillArray(new double[nd], 0.0), 2);
         gd.addEnumChoice("Output Type", ScalarOutputTypes.class, ScalarOutputTypes.SAME_AS_INPUT);
 
         // wait the user to choose
@@ -97,21 +88,9 @@ public class ApplyExistingTransformToImage extends AlgoStub implements FramePlug
         // parse dialog results
         String transformName = gd.getNextChoice();
         Transform transform = TransformHandle.findFromName(app, transformName).getTransform();
-        int[] dims = new int[nd];
-        for (int d = 0; d < nd; d++)
-        {
-            dims[d] = (int) gd.getNextNumber();
-        }
-        double[] spacing = new double[nd];
-        for (int d = 0; d < nd; d++)
-        {
-            spacing[d] = gd.getNextNumber();
-        }
-        double[] origin = new double[nd];
-        for (int d = 0; d < nd; d++)
-        {
-            origin[d] = gd.getNextNumber();
-        }
+        int[] dims = gd.getNextIntegers();
+        double[] spacing = gd.getNextNumbers();
+        double[] origin = gd.getNextNumbers();
         ScalarArray.Factory<?> factory = ((ScalarOutputTypes) gd.getNextEnumChoice()).factory();
         if (factory == null)
         {
@@ -188,4 +167,14 @@ public class ApplyExistingTransformToImage extends AlgoStub implements FramePlug
         // display into new frame
         ImageFrame.create(resultImage, frame);
     }
+    
+    private static final double[] fillArray(double[] array, double value)
+    {
+        for (int i = 0; i < array.length; i++)
+        {
+            array[i] = value;
+        }
+        return array;
+    }
+    
 }
