@@ -30,6 +30,9 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Locale;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -95,6 +98,10 @@ public class GenericDialog
 
     ArrayList<JTextField> numericFields;
     private int numericFieldIndex;
+    ArrayList<JTextField[]> numericFieldArrays;
+    private int numericFieldArrayIndex;
+    ArrayList<JTextField[]> integerFieldArrays;
+    private int integerFieldArrayIndex;
     private boolean firstNumericField = true; // for layout
 
     ArrayList<JCheckBox> checkBoxes;
@@ -328,6 +335,184 @@ public class GenericDialog
         currentRow++;
 
         return tf;
+    }
+
+    public JTextField[] addNumericFields(String label, double[] defaultValues, int digits)
+    {
+        return addNumericFields(label, defaultValues, digits, 6, null, null);
+    }
+    
+    /**
+     * Adds a text field containing a numeric value.
+     * 
+     * @param label
+     *            the label to display before the text field
+     * @param defaultValue
+     *            the initial value within the text field
+     * @param digits
+     *            the number of digits to the right of the decimal point
+     * @param columns
+     *            sizeX of field in characters
+     * @param units
+     *            (optional) a string displayed to the right of the field
+     * @param toolTipText
+     *            (optional) a tooltip string used to display information about
+     *            this option
+     * @return the widget of the text field
+     */
+    public JTextField[] addNumericFields(String label, double[] defaultValues, int digits, int columns,
+            String units, String toolTipText)
+    {
+        // creates the label widget
+        JLabel labelItem = new JLabel(formatLabel(label));
+        if (toolTipText != null)
+        {
+            labelItem.setToolTipText(toolTipText);
+        }
+
+        // create the widgets containing the text
+        JTextField[] textFields = DoubleStream.of(defaultValues)
+                .mapToObj(v -> formatNumber(v, digits))
+                .map(text -> createNumericTextField(text, columns))
+                .toArray(JTextField[]::new);
+        Stream.of(textFields).forEach(tf -> tf.setEditable(true));
+        
+        // add to the list of text field arrays
+        if (numericFieldArrays == null) 
+        {
+            numericFieldArrays = new ArrayList<JTextField[]>(5);
+        }
+        numericFieldArrays.add(textFields);
+
+        // add widgets to the dialog layout
+        c.gridx = 0;
+        c.gridy = currentRow;
+        c.anchor = GridBagConstraints.EAST;
+        c.gridwidth = 1;
+
+        // adapt insets for first row
+        if (firstNumericField)
+            c.insets = getInsets(5, 5, 3, 5);
+        else
+            c.insets = getInsets(0, 5, 3, 5);
+        gridLayout.setConstraints(labelItem, c);
+        this.dialog.add(labelItem);
+
+        if (firstNumericField) 
+        {
+            textFields[0].selectAll();
+        }
+        firstNumericField = false;
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        for (JTextField tf : textFields)
+        {
+            panel.add(tf);
+        }
+        if (units != null && !units.equals(""))
+        {
+            panel.add(new JLabel(" " + units));
+        }
+        c.gridx = 1;
+        c.gridy = currentRow;
+        c.anchor = GridBagConstraints.WEST;
+        gridLayout.setConstraints(panel, c);
+        this.dialog.add(panel);
+
+        // if (Recorder.record || macro)
+        // saveLabel(tf, label);
+        currentRow++;
+
+        return textFields;
+    }
+
+    public JTextField[] addIntegerFields(String label, int[] defaultValues)
+    {
+        return addIntegerFields(label, defaultValues, 6, null, null);
+    }
+    
+    /**
+     * Adds a series of text fields, each one containing an integer value.
+     * 
+     * @param label
+     *            the label to display before the text field
+     * @param defaultValue
+     *            the initial value within the text field
+     * @param columns
+     *            sizeX of field in characters
+     * @param units
+     *            (optional) a string displayed to the right of the field
+     * @param toolTipText
+     *            (optional) a tooltip string used to display information about
+     *            this option
+     * @return the widget of the text field
+     */
+    public JTextField[] addIntegerFields(String label, int[] defaultValues, int columns,
+            String units, String toolTipText)
+    {
+        // creates the label widget
+        JLabel labelItem = new JLabel(formatLabel(label));
+        if (toolTipText != null)
+        {
+            labelItem.setToolTipText(toolTipText);
+        }
+
+        // create the widgets containing the text
+        JTextField[] textFields = IntStream.of(defaultValues)
+                .mapToObj(v -> Integer.toString(v))
+                .map(text -> createNumericTextField(text, columns))
+                .toArray(JTextField[]::new);
+        Stream.of(textFields).forEach(tf -> tf.setEditable(true));
+        
+        // add to the list of text field arrays
+        if (integerFieldArrays == null) 
+        {
+            integerFieldArrays = new ArrayList<JTextField[]>(5);
+        }
+        integerFieldArrays.add(textFields);
+
+        // add widgets to the dialog layout
+        c.gridx = 0;
+        c.gridy = currentRow;
+        c.anchor = GridBagConstraints.EAST;
+        c.gridwidth = 1;
+
+        // adapt insets for first row
+        if (firstNumericField)
+            c.insets = getInsets(5, 5, 3, 5);
+        else
+            c.insets = getInsets(0, 5, 3, 5);
+        gridLayout.setConstraints(labelItem, c);
+        this.dialog.add(labelItem);
+
+        if (firstNumericField) 
+        {
+            textFields[0].selectAll();
+        }
+        firstNumericField = false;
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        for (JTextField tf : textFields)
+        {
+            panel.add(tf);
+        }
+        if (units != null && !units.equals(""))
+        {
+            panel.add(new JLabel(" " + units));
+        }
+        c.gridx = 1;
+        c.gridy = currentRow;
+        c.anchor = GridBagConstraints.WEST;
+        gridLayout.setConstraints(panel, c);
+        this.dialog.add(panel);
+
+        // if (Recorder.record || macro)
+        // saveLabel(tf, label);
+        currentRow++;
+
+        return textFields;
     }
 
     /**
@@ -971,10 +1156,11 @@ public class GenericDialog
         buttonsCreated = true;
     }
 
-    /** Reset the counters before reading the dialog parameters */
+    /** Resets the counters before reading the dialog parameters. */
     private void resetCounters()
     {
-        numericFieldIndex = 0; // prepare for readout
+        numericFieldIndex = 0;
+        numericFieldArrayIndex = 0;
         textFieldIndex = 0;
         checkBoxIndex = 0;
         comboBoxIndex = 0;
@@ -1031,6 +1217,46 @@ public class GenericDialog
 
         numericFieldIndex++;
         return value;
+    }
+
+    /**
+     * Returns the contents of the next array of numeric fields. Some values may
+     * be NaN if the corresponding text field does not contain a number.
+     */
+    public double[] getNextNumbers()
+    {
+        if (numericFieldArrays == null)
+        {
+            throw new RuntimeException("no Numeric Field was added");
+        }
+
+        JTextField[] textFields = numericFieldArrays.get(numericFieldArrayIndex);
+        double[] values = Stream.of(textFields)
+                .mapToDouble(tf -> Double.parseDouble(tf.getText()))
+                .toArray();
+
+        numericFieldArrayIndex++;
+        return values;
+    }
+
+    /**
+     * Returns the contents of the next array of numeric fields. Some values may
+     * be NaN if the corresponding text field does not contain a number.
+     */
+    public int[] getNextIntegers()
+    {
+        if (integerFieldArrays == null)
+        {
+            throw new RuntimeException("no IntegerFieldArray was added");
+        }
+
+        JTextField[] textFields = integerFieldArrays.get(integerFieldArrayIndex);
+        int[] values = Stream.of(textFields)
+                .mapToInt(tf -> Integer.parseInt(tf.getText()))
+                .toArray();
+
+        integerFieldArrayIndex++;
+        return values;
     }
 
     /** Returns the contents of the next text field. */
