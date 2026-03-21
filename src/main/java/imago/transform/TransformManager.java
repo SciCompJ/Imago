@@ -274,6 +274,10 @@ public class TransformManager extends ImagoFrame
             addPlugin(editMenu, imago.transform.plugins.edit.DisplayCoefficients.class, "Display Coefficients");
             menuBar.add(editMenu);
             
+            JMenu processMenu = new JMenu("Process");
+            addPlugin(processMenu, imago.transform.plugins.process.DisplayTransformJacobian.class, "Display Jacobian determinant...");
+            menuBar.add(processMenu);
+
             tm.getWidget().setJMenuBar(menuBar);
         }
     }
