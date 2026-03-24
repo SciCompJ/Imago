@@ -86,7 +86,7 @@ public class CreateTransform2D implements FramePlugin
         int transfoIndex = this.transformTypeCombo.getSelectedIndex();
         double xShift = this.xShiftProperty.getValue();
         double yShift = this.yShiftProperty.getValue();
-        double rotAngle = this.rotAngleProperty.getValue();
+        double rotAngle = Math.toRadians(this.rotAngleProperty.getValue());
         double logScale = this.logScaleProperty.getValue();
         double scaling = Math.pow(2.0, logScale);
         
