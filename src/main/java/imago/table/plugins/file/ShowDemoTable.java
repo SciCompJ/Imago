@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.table.plugins;
+package imago.table.plugins.file;
 
 import imago.gui.ImagoFrame;
 import imago.table.TableFrame;

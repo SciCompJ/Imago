@@ -70,10 +70,10 @@ public class ImagoEmptyFrame extends ImagoFrame
         fileMenu.add(fileImportMenu);
         
         fileMenu.addSeparator();
-        menuBuilder.addPlugin(fileMenu, imago.table.plugins.OpenTable.class, "Open Table...");
+        menuBuilder.addPlugin(fileMenu, imago.table.plugins.file.OpenTable.class, "Open Table...");
         JMenu demoTables = new JMenu("Demo Tables");
-        menuBuilder.addPlugin(demoTables, imago.table.plugins.OpenTable.class, "fileName=tables/fisherIris.csv", "Fisher's Iris");
-        menuBuilder.addPlugin(demoTables, imago.table.plugins.OpenTable.class, "fileName=tables/penguins_clean.csv", "Penguins (without NA)");
+        menuBuilder.addPlugin(demoTables, imago.table.plugins.file.OpenTable.class, "fileName=tables/fisherIris.csv", "Fisher's Iris");
+        menuBuilder.addPlugin(demoTables, imago.table.plugins.file.OpenTable.class, "fileName=tables/penguins_clean.csv", "Penguins (without NA)");
         fileMenu.add(demoTables);
         
         fileMenu.addSeparator();

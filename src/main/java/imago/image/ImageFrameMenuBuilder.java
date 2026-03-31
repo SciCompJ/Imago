@@ -162,10 +162,10 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         addPlugin(fileMenu, imago.image.plugins.file.SaveImageMetaImage.class, "Save As MetaImage...");
         
         fileMenu.addSeparator();
-        addPlugin(fileMenu, imago.table.plugins.OpenTable.class, "Open Table...");
+        addPlugin(fileMenu, imago.table.plugins.file.OpenTable.class, "Open Table...");
         JMenu demoTables = new JMenu("Demo Tables");
-        addPlugin(demoTables, imago.table.plugins.OpenTable.class, "fileName=tables/fisherIris.csv", "Fisher's Iris");
-        addPlugin(demoTables, imago.table.plugins.OpenTable.class, "fileName=tables/penguins_clean.csv", "Penguins (without NA)");
+        addPlugin(demoTables, imago.table.plugins.file.OpenTable.class, "fileName=tables/fisherIris.csv", "Fisher's Iris");
+        addPlugin(demoTables, imago.table.plugins.file.OpenTable.class, "fileName=tables/penguins_clean.csv", "Penguins (without NA)");
         fileMenu.add(demoTables);
         
         fileMenu.addSeparator();

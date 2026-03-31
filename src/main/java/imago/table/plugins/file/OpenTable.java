@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.table.plugins;
+package imago.table.plugins.file;
 
 import java.io.File;
 import java.io.FileNotFoundException;

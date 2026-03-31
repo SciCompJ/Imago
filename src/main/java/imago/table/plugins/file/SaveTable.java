@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.table.plugins;
+package imago.table.plugins.file;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +9,7 @@ import java.io.IOException;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.table.TableFrame;
+import imago.table.plugins.TableFramePlugin;
 import net.sci.table.Table;
 import net.sci.table.io.DelimitedTableWriter;
 

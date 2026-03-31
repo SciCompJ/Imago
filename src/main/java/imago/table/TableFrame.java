@@ -10,7 +10,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.swing.JFrame;
@@ -84,19 +83,12 @@ public class TableFrame extends ImagoFrame
         return frame;
     }
     
-    
     public static final Collection<TableFrame> getTableFrames(ImagoGui gui)
     {
-        ArrayList<TableFrame> res = new ArrayList<TableFrame>();
-        for (ImagoFrame frame : gui.getFrames())
-        {
-            if (frame instanceof TableFrame)
-            {
-                res.add((TableFrame) frame);
-            }
-        }
-        
-        return res;
+        return gui.getFrames().stream()
+                .filter(f -> f instanceof TableFrame)
+                .map(f -> (TableFrame) f)
+                .toList();
     }
     
     /**

@@ -9,7 +9,7 @@ import javax.swing.JMenuBar;
 import imago.gui.FrameMenuBuilder;
 import imago.gui.ImagoFrame;
 import imago.gui.frames.ImagoEmptyFrame;
-import imago.table.plugins.OpenDemoTable;
+import imago.table.plugins.file.OpenDemoTable;
 
 /**
  * Utility class for building menu bar of TableFrame instances.
@@ -44,14 +44,14 @@ public class TableFrameMenuBuilder extends FrameMenuBuilder
     {
         JMenu fileMenu = new JMenu("File");
         
-        addPlugin(fileMenu, imago.table.plugins.OpenTable.class, "Open Table...");
+        addPlugin(fileMenu, imago.table.plugins.file.OpenTable.class, "Open Table...");
         JMenu demoTables = new JMenu("Demo Tables");
         addPlugin(demoTables, new OpenDemoTable("tables/fisherIris.csv"), "Fisher's Iris");
         addPlugin(demoTables, new OpenDemoTable("tables/penguins_clean.csv"), "Penguins");
         fileMenu.add(demoTables);
 
         fileMenu.addSeparator();
-        addPlugin(fileMenu, imago.table.plugins.SaveTable.class, "Save Table...");
+        addPlugin(fileMenu, imago.table.plugins.file.SaveTable.class, "Save Table...");
 
         fileMenu.addSeparator();
         addPlugin(fileMenu, imago.gui.plugins.file.CloseCurrentFrame.class, "Close", !(frame instanceof ImagoEmptyFrame));
