@@ -14,9 +14,12 @@ import net.sci.algo.AlgoStub;
 import net.sci.array.numeric.Float32Array;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray2D;
+import net.sci.array.numeric.ScalarArray3D;
 import net.sci.geom.Transform;
 import net.sci.geom.geom2d.Point2D;
+import net.sci.geom.geom3d.Point3D;
 import net.sci.geom.geom2d.Transform2D;
+import net.sci.geom.geom3d.Transform3D;
 import net.sci.image.Calibration;
 import net.sci.image.Image;
 import net.sci.image.ImageType;
@@ -105,6 +108,38 @@ public class DisplayTransformJacobian extends AlgoStub implements TransformManag
                 }
             }
         }
+        else if (nd == 3)
+        {
+            if (!(transfo instanceof Transform3D))
+            {
+                throw new RuntimeException("Requires an instance of Transform3D, not " + transfo.getClass().getName());
+            }
+            
+            ScalarArray3D<?> res3d = ScalarArray3D.wrapScalar3d(result);
+            Transform3D transfo3d = (Transform3D) transfo;
+            
+            System.out.println("compute");
+            int sizeX = dims[0];
+            int sizeY = dims[1];
+            int sizeZ = dims[2];
+            for (int z = 0; z < sizeZ; z++)
+            {
+                double z2 = z * spacing[2] + origin[2];
+                for (int y = 0; y < sizeY; y++)
+                {
+                    double y2 = y * spacing[1] + origin[1];
+                    for (int x = 0; x < sizeX; x++)
+                    {
+                        double x2 = x * spacing[0] + origin[0];
+                        double v = det3x3(transfo3d.jacobian(new Point3D(x2, y2, z2)));
+                        res3d.setValue(x, y, z, v);
+                        
+                        minVal = Math.min(minVal, v);
+                        maxVal = Math.max(maxVal, v);
+                    }
+                }
+            }
+        }
         else
         {
             throw new RuntimeException("Can not process transforms with dimension " + nd);
@@ -141,6 +176,7 @@ public class DisplayTransformJacobian extends AlgoStub implements TransformManag
         resultImage.setName(handle.getName() + "-jacobian");
         Calibration calib = new Calibration(nd);
         calib.setSpatialCalibration(spacing, origin, "");
+        resultImage.setCalibration(calib);
         
         double[] displayRange;
         if (computeLog)
@@ -180,5 +216,12 @@ public class DisplayTransformJacobian extends AlgoStub implements TransformManag
     private static final double det2(double[][] mat)
     {
         return mat[0][0] * mat[1][1] - mat[0][1] * mat[1][0];
+    }
+    
+    private static final double det3x3(double[][] mat)
+    {
+        return    mat[0][0] * (mat[1][1] * mat[2][2] - mat[1][2] * mat[2][1]) 
+                - mat[1][0] * (mat[0][1] * mat[2][2] - mat[0][2] * mat[2][1]) 
+                + mat[2][0] * (mat[0][1] * mat[1][2] - mat[0][2] * mat[1][1]);
     }
 }
