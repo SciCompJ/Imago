@@ -19,6 +19,8 @@ import net.sci.array.numeric.Int;
 import net.sci.array.numeric.Scalar;
 import net.sci.array.numeric.Vector;
 import net.sci.geom.geom2d.Point2D;
+import net.sci.geom.geom3d.Point3D;
+import net.sci.image.Calibration;
 import net.sci.image.Image;
 
 /**
@@ -71,7 +73,7 @@ public class DisplayCurrentValueTool extends ImageTool
         ImageDisplay display = (ImageDisplay) evt.getSource();
         Point point = new Point(evt.getX(), evt.getY());
         
-        // convert coordinates to image reference system
+        // convert panem coordinate system to array coordinate system
         Point2D pos2d = display.displayToImage(point);
         double x = pos2d.x();
         double y = pos2d.y();
@@ -86,7 +88,7 @@ public class DisplayCurrentValueTool extends ImageTool
         if (indy < 0 || indy > image.getSize(1) - 1) return;
         
         // String patterns for representing position
-        String floatFormat = "%.4g";
+        String floatFormat = "%.2f";
         String posString = "";
         
         // create the position array
@@ -102,6 +104,14 @@ public class DisplayCurrentValueTool extends ImageTool
             // String format = "pos=(" + floatFormat + ", " + floatFormat + ")";
             String format = String.format("pos=(%s, %s)", floatFormat, floatFormat);
             posString = String.format(Locale.ENGLISH, format, x, y);
+            
+            Calibration calib = image.getCalibration();
+            if (calib.isCalibrated())
+            {
+                Point2D calibPos = calib.calibrate(pos2d);
+                String pos2 = String.format(Locale.ENGLISH, " = (%.3g,%.3g) %s", calibPos.x(), calibPos.y(), calib.getXAxis().getUnitName());
+                posString = posString.concat(pos2);
+            }
         }
         else if (nd == 3)
         {
@@ -110,6 +120,14 @@ public class DisplayCurrentValueTool extends ImageTool
             
             String format = String.format("pos=(%s, %s, %s)", floatFormat, floatFormat, "%d");
             posString = String.format(Locale.ENGLISH, format, x, y, indz);
+            
+            Calibration calib = image.getCalibration();
+            if (calib.isCalibrated())
+            {
+                Point3D calibPos = calib.calibrate(new Point3D(x, y, indz));
+                String pos2 = String.format(Locale.ENGLISH, " = (%.3g,%.3g,%.3g) %s", calibPos.x(), calibPos.y(), calibPos.z(), calib.getXAxis().getUnitName());
+                posString = posString.concat(pos2);
+            }
         }
         
         // Create string for representing image value
@@ -117,7 +135,7 @@ public class DisplayCurrentValueTool extends ImageTool
         
         // Concatenate the information and update status bar
         StatusBar statusBar = frame.getStatusBar();
-        String format = "%1$s %2$s";
+        String format = "%1$s ; %2$s";
         String label = String.format(format, posString, valueString);
         statusBar.setCursorLabel(label);
     }
