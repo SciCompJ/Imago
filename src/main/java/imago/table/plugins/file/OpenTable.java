@@ -22,12 +22,83 @@ import net.sci.table.io.DelimitedTableReader;
  * Opens a dialog to choose a table file, typically in CSV format, and opens the
  * selected file in a new image frame.
  * 
- * @author David Legland
- *
+ * Provides also static methods to read data table from a file path.
+ * 
+ * @author dlegland
  */
 public class OpenTable implements FramePlugin
 {
-	/* (non-Javadoc)
+    /**
+     * Tries to open a data table from a file path given as a string, using the
+     * specified frame to display potential errors or exceptions.
+     * 
+     * @param pathToFile
+     *            the path to the file. Can also be the path to a resource
+     *            within a jar.
+     * @param frame
+     *            the frame used to display error messages
+     * @return the resulting Table instance, or null if an error occurred.
+     */
+    public static final Table readTable(String pathToFile, ImagoFrame frame)
+    {
+        // builds a "standard" CSV format table reader
+        DelimitedTableReader reader = new DelimitedTableReader()
+                .setDelimiters(",")
+                .setReadHeader(true)
+                .setReadRowNames(false);
+        
+        return readTable(pathToFile, reader, frame);
+    }
+
+    /**
+     * Tries to open a data table from a file path given as a string, using the
+     * specified frame to display potential errors or exceptions.
+     * 
+     * @param pathToFile
+     *            the path to the file. Can also be the path to a resource
+     *            within a jar.
+     * @param reader
+     *            an instance of delimited table reader containing the options
+     *            necessary to parse text data
+     * @param frame
+     *            the frame used to display error messages
+     * @return the resulting Table instance, or null if an error occurred.
+     */
+	public static final Table readTable(String pathToFile, DelimitedTableReader reader, ImagoFrame frame)
+    {
+        // First try to read the table from within the jar
+        try (InputStream stream = OpenTable.class.getClassLoader().getResourceAsStream(pathToFile))
+        {
+            if (stream != null)
+            {
+                return reader.readTable(stream);
+            }
+        }
+        catch(Exception ex)
+        {
+            // could not find within jar, so continue with local file system
+        }
+        
+        // If table could not be found, try with more standard method
+        try 
+        {
+            return reader.readTable(new File(pathToFile));
+        }
+        catch (FileNotFoundException ex)
+        {
+            // ex.printStackTrace(System.err);
+            frame.showErrorDialog("Could not find the file: " + pathToFile);
+        }
+        catch (IOException ex)
+        {
+            ex.printStackTrace(System.err);
+            ImagoGui.showExceptionDialog(frame, ex, "Table File Input Error");
+        }
+        
+        return null;
+    }
+
+    /* (non-Javadoc)
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	@Override
@@ -95,7 +166,7 @@ public class OpenTable implements FramePlugin
         catch (Exception ex)
         {
             ex.printStackTrace(System.err);
-            ImagoGui.showErrorDialog(frame, "Could not read the table.", "Table I/O Error");
+            ImagoGui.showExceptionDialog(frame, ex, "Table I/O Error");
             return;
         }
         
@@ -103,45 +174,5 @@ public class OpenTable implements FramePlugin
         
         // add the new frame to the GUI
         TableFrame.create(table, frame);
-    }
-	
-    private Table readTable(String pathToFile, ImagoFrame frame)
-    {
-        // builds a "standard" CSV format table reader
-        DelimitedTableReader reader = new DelimitedTableReader()
-                .setDelimiters(",")
-                .setReadHeader(true)
-                .setReadRowNames(false);
-        
-        // First try to read the table from within the jar
-        try (InputStream stream = this.getClass().getClassLoader().getResourceAsStream(pathToFile))
-        {
-            if (stream != null)
-            {
-                return reader.readTable(stream);
-            }
-        }
-        catch(Exception ex)
-        {
-            // could not find within jar, so continue with local file system
-        }
-        
-        // If table could not be found, try with more standard method
-        try 
-        {
-            return reader.readTable(new File(pathToFile));
-        }
-        catch (FileNotFoundException ex)
-        {
-            // ex.printStackTrace(System.err);
-            frame.showErrorDialog("Could not find the file: " + pathToFile);
-        }
-        catch (IOException ex)
-        {
-            ex.printStackTrace(System.err);
-            frame.showErrorDialog(ex.getMessage(), "File Input Error");
-        }
-        
-        return null;
     }
 }
