@@ -11,7 +11,6 @@ import imago.image.ImageFrame;
 import imago.image.ImageTool;
 import imago.image.viewers.ImageDisplay;
 import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.polygon2d.DefaultPolygon2D;
 import net.sci.geom.polygon2d.Polygon2D;
 
 /**
@@ -40,6 +39,9 @@ public class SelectPolygonTool extends ImageTool
      */
     State state = State.REST;
     
+    // creates a new polygon for selection
+    Polygon2D currentPolygon = null;
+
     
     public SelectPolygonTool(ImageFrame viewer, String name)
     {
@@ -59,6 +61,7 @@ public class SelectPolygonTool extends ImageTool
         this.selectedPoints.clear();
         this.lastClickedPoint = null;
         this.state = State.REST;
+        this.currentPolygon = null;
     }
     
     /*
@@ -108,26 +111,27 @@ public class SelectPolygonTool extends ImageTool
                 {
                     // update polygon
                     this.selectedPoints.add(pos);
+                    this.currentPolygon = Polygon2D.create(selectedPoints);
                 }
-                
-                // creates a new polygon for selection
-                Polygon2D poly = Polygon2D.create(selectedPoints);
-                
-                // if clicked twice on the same point, close the polygon and ensure signed area > 0
-                if (doubleClick)
+                else
                 {
-                   if (poly.signedArea() < 0) poly = poly.complement();
-                }
-                
-                display.setSelection(poly);
-                this.frame.getImageViewer().setSelection(poly);
-                this.frame.repaint();
-                
-                if (doubleClick)
-                {
+                    // if clicked twice on the same point, close the polygon
+                    // using the point of first click
+                    this.currentPolygon = Polygon2D.create(selectedPoints);
+                    
+                    // ensure positive signed area
+                    if (this.currentPolygon.signedArea() < 0)
+                    {
+                        this.currentPolygon = this.currentPolygon.complement();
+                    }
+                    
                     // reset to restful state
                     this.state = State.REST;
                 }
+
+                display.setSelection(currentPolygon);
+                this.frame.getImageViewer().setSelection(currentPolygon);
+                this.frame.repaint();
                 
                 break;
             }
@@ -149,7 +153,7 @@ public class SelectPolygonTool extends ImageTool
             // update vertices, add corresponding polygon, and remove last vertex
             int nv = this.selectedPoints.size();
             this.selectedPoints.add(pos);
-            display.setSelection(new DefaultPolygon2D(selectedPoints));
+            display.setSelection(Polygon2D.create(selectedPoints));
             this.selectedPoints.remove(nv);
 
             this.frame.repaint();
