@@ -13,6 +13,7 @@ import imago.image.ImageViewer;
 import imago.image.viewers.ImageDisplay;
 import imago.image.viewers.XYImageViewer;
 import net.sci.geom.geom2d.Point2D;
+import net.sci.geom.polygon2d.DefaultPolygon2D;
 import net.sci.geom.polygon2d.Polygon2D;
 
 /**
@@ -23,7 +24,7 @@ import net.sci.geom.polygon2d.Polygon2D;
  */
 public class SelectPolygonTool extends ImageTool
 {
-    private static final double SNAP_DISTANCE = 2.0;
+    private static final double SNAP_DISTANCE = 3.0;
     
     enum State
     {
@@ -45,7 +46,7 @@ public class SelectPolygonTool extends ImageTool
     State state = State.REST;
     
     // creates a new polygon for selection
-    Polygon2D currentPolygon = null;
+    DefaultPolygon2D currentPolygon = null;
 
     
     public SelectPolygonTool(ImageFrame viewer, String name)
@@ -105,6 +106,10 @@ public class SelectPolygonTool extends ImageTool
         // convert point to image pixel coordinates
         Point2D pos = display.displayToImage(point);
         
+//        System.out.println("State: " + state);
+//        System.out.println("Position: " + pos);
+//        System.out.println("double-click: " + doubleClick);
+        
         switch (this.state)
         {
             case REST:
@@ -113,23 +118,22 @@ public class SelectPolygonTool extends ImageTool
                 if (this.currentPolygon != null)
                 {
                     double dist = this.currentPolygon.distance(pos);
-                    System.out.println("distance to poly: " + dist);
                     if (dist < SNAP_DISTANCE)
                     {
-                        System.out.println("clicked on current polygon.");
                         this.state = State.SELECT_POLYGON;
                         display.drawSelectionVertices(true);
                         this.frame.repaint();
-                        break;
                     }
                 }
-                
-                // create a new polygon
-                this.selectedPoints.clear();
-                this.selectedPoints.add(pos);
-                this.currentPolygon = Polygon2D.create(selectedPoints);
-                this.state = State.POLYGON_STARTED;
-                display.drawSelectionVertices(false);
+                else
+                {
+                    // clicked on an "empty" space -> create a new polygon
+                    this.selectedPoints.clear();
+                    this.selectedPoints.add(pos);
+                    updatePolygon();
+                    this.state = State.POLYGON_STARTED;
+                    display.drawSelectionVertices(false);
+                }
                 break;
             }
             
@@ -139,28 +143,31 @@ public class SelectPolygonTool extends ImageTool
                 {
                     // update polygon
                     this.selectedPoints.add(pos);
-                    this.currentPolygon = Polygon2D.create(selectedPoints);
+                    updatePolygon();
+                    
+                    updateSelection(display, currentPolygon);
+                    this.frame.repaint();
                 }
                 else
                 {
                     // if clicked twice on the same point, close the polygon
                     // using the point of first click
-                    this.currentPolygon = Polygon2D.create(selectedPoints);
+                    updatePolygon();
+                    Polygon2D poly = this.currentPolygon;
                     
                     // ensure positive signed area
-                    if (this.currentPolygon.signedArea() < 0)
+                    if (poly.signedArea() < 0)
                     {
-                        this.currentPolygon = this.currentPolygon.complement();
+                        poly = poly.complement();
                     }
+                    
+                    updateSelection(display, poly);
+                    this.frame.repaint();
                     
                     // reset to restful state
                     this.state = State.REST;
                 }
 
-                display.setSelection(currentPolygon);
-                this.frame.getImageViewer().setSelection(currentPolygon);
-                this.frame.repaint();
-                
                 break;
             }
             
@@ -168,28 +175,30 @@ public class SelectPolygonTool extends ImageTool
             {
                 if (doubleClick)
                 {
-                    System.out.println("double-click on polygon.");
-                    // TODO: add a vertex
+                    // add a new point to the current list of points
+                    double t = this.currentPolygon.boundary().projectedPosition(pos);
+                    int iv0 = (int) Math.floor(t);
+                    this.selectedPoints.add(iv0 + 1, pos);
+                    updatePolygon();
+
+                    // update display
+                    updateSelection(display, currentPolygon);
                 }
                 else
                 {
                     double dist = this.currentPolygon.distance(pos);
-                    if (dist < SNAP_DISTANCE)
-                    {
-                        break;
-                    }
-                    else
+                    if (dist > SNAP_DISTANCE)
                     {
                         // reset to restful state
                         this.selectedPoints.clear();
                         this.currentPolygon = null;
                         this.state = State.REST;
                         display.drawSelectionVertices(false);
-                        display.setSelection(null);
-                        this.frame.getImageViewer().setSelection(null);
-                        this.frame.repaint();
+                        updateSelection(display, null);
                     }
                 }
+                this.frame.repaint();
+                break;
             }
         }
     }
@@ -215,5 +224,16 @@ public class SelectPolygonTool extends ImageTool
             this.frame.repaint();
         }
     }
-
+    
+    private void updatePolygon()
+    {
+        this.currentPolygon = new DefaultPolygon2D(selectedPoints);
+    }
+    
+    private void updateSelection(ImageDisplay display, Polygon2D poly)
+    {
+        // update display
+        display.setSelection(poly);
+        this.frame.getImageViewer().setSelection(poly);
+    }
 }
