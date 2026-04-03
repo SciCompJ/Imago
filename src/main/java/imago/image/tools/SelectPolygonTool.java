@@ -22,6 +22,12 @@ import net.sci.geom.polygon2d.Polygon2D;
  */
 public class SelectPolygonTool extends ImageTool
 {
+    enum State
+    {
+        REST,
+        POLYGON_STARTED;
+    };
+    
     ArrayList<Point2D> selectedPoints = new ArrayList<Point2D>();
     
     /** 
@@ -31,11 +37,9 @@ public class SelectPolygonTool extends ImageTool
 
     /**
      * The current state of the algorithm.
-     *  
-     * When true, points are added to the polygon. 
-     * When false, a new point will start a new polygon.
      */
-    boolean polygonStarted = false;
+    State state = State.REST;
+    
     
     public SelectPolygonTool(ImageFrame viewer, String name)
     {
@@ -54,7 +58,7 @@ public class SelectPolygonTool extends ImageTool
         
         this.selectedPoints.clear();
         this.lastClickedPoint = null;
-        this.polygonStarted = false;
+        this.state = State.REST;
     }
     
     /*
@@ -87,61 +91,69 @@ public class SelectPolygonTool extends ImageTool
         // convert point to image pixel coordinates
         Point2D pos = display.displayToImage(point);
         
-        if (doubleClick)
+        switch (this.state)
         {
-            // if clicked twice on the same point, close the polygon and add it to selection
-            this.polygonStarted = false;
+            case REST:
+            {
+                // create a new polygon
+                this.selectedPoints.clear();
+                this.selectedPoints.add(pos);
+                this.state = State.POLYGON_STARTED;
+                break;
+            }
+            
+            case POLYGON_STARTED:
+            {
+                if (!doubleClick)
+                {
+                    // update polygon
+                    this.selectedPoints.add(pos);
+                }
+                
+                // creates a new polygon for selection
+                Polygon2D poly = Polygon2D.create(selectedPoints);
+                
+                // if clicked twice on the same point, close the polygon and ensure signed area > 0
+                if (doubleClick)
+                {
+                   if (poly.signedArea() < 0) poly = poly.complement();
+                }
+                
+                display.setSelection(poly);
+                this.frame.getImageViewer().setSelection(poly);
+                this.frame.repaint();
+                
+                if (doubleClick)
+                {
+                    // reset to restful state
+                    this.state = State.REST;
+                }
+                
+                break;
+            }
         }
-        else if (this.polygonStarted)
-        {
-            // if polygon was created, update it
-            this.selectedPoints.add(pos);
-        }
-        else
-        {
-            // create a new polygon
-            this.selectedPoints.clear();
-            this.selectedPoints.add(pos);
-            this.polygonStarted = true;
-        }
-        
-        // creates a new polygon for selection
-        Polygon2D poly = Polygon2D.create(selectedPoints);
-        
-        // if new polygon is created, ensures signed area > 0
-        if (doubleClick)
-        {
-           if (poly.signedArea() < 0) poly = poly.complement();
-        }
-
-        display.setSelection(poly);
-        this.frame.getImageViewer().setSelection(poly);
-        
-        this.frame.repaint();
     }
     
     @Override
     public void mouseMoved(MouseEvent evt)
     {
-        if (!this.polygonStarted)
+        if (this.state == State.POLYGON_STARTED)
         {
-            return;
+            // Coordinate of mouse cursor
+            ImageDisplay display = (ImageDisplay) evt.getSource();
+            Point point = new Point(evt.getX(), evt.getY());
+
+            // convert point to image pixel coordinates
+            Point2D pos = display.displayToImage(point);
+
+            // update vertices, add corresponding polygon, and remove last vertex
+            int nv = this.selectedPoints.size();
+            this.selectedPoints.add(pos);
+            display.setSelection(new DefaultPolygon2D(selectedPoints));
+            this.selectedPoints.remove(nv);
+
+            this.frame.repaint();
         }
-        
-        // Coordinate of mouse cursor
-        ImageDisplay display = (ImageDisplay) evt.getSource();
-        Point point = new Point(evt.getX(), evt.getY());
-        
-        // convert point to image pixel coordinates
-        Point2D pos = display.displayToImage(point);
-        
-        // update vertices, add corresponding polygon, and remove last vertex
-        int nv = this.selectedPoints.size();
-        this.selectedPoints.add(pos);
-        display.setSelection(new DefaultPolygon2D(selectedPoints));
-        this.selectedPoints.remove(nv);
-        
-        this.frame.repaint();
     }
 
 }
