@@ -9,7 +9,9 @@ import java.util.ArrayList;
 
 import imago.image.ImageFrame;
 import imago.image.ImageTool;
+import imago.image.ImageViewer;
 import imago.image.viewers.ImageDisplay;
+import imago.image.viewers.XYImageViewer;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.polygon2d.Polygon2D;
 
@@ -21,11 +23,14 @@ import net.sci.geom.polygon2d.Polygon2D;
  */
 public class SelectPolygonTool extends ImageTool
 {
+    private static final double SNAP_DISTANCE = 2.0;
+    
     enum State
     {
         REST,
-        POLYGON_STARTED;
-    };
+        POLYGON_STARTED,
+        SELECT_POLYGON;
+    }
     
     ArrayList<Point2D> selectedPoints = new ArrayList<Point2D>();
     
@@ -74,6 +79,12 @@ public class SelectPolygonTool extends ImageTool
     {
         System.out.println("deselected the 'selectPolygon' tool");
         this.selectedPoints.clear();
+
+        ImageViewer viewer =  this.frame.getImageViewer();
+        if (viewer instanceof XYImageViewer xyViewer)
+        {
+            xyViewer.getImageDisplay().drawSelectionVertices(false);
+        }
     }
     
     /**
@@ -98,10 +109,27 @@ public class SelectPolygonTool extends ImageTool
         {
             case REST:
             {
+                // first check if click was 'close enough' from the polygon
+                if (this.currentPolygon != null)
+                {
+                    double dist = this.currentPolygon.distance(pos);
+                    System.out.println("distance to poly: " + dist);
+                    if (dist < SNAP_DISTANCE)
+                    {
+                        System.out.println("clicked on current polygon.");
+                        this.state = State.SELECT_POLYGON;
+                        display.drawSelectionVertices(true);
+                        this.frame.repaint();
+                        break;
+                    }
+                }
+                
                 // create a new polygon
                 this.selectedPoints.clear();
                 this.selectedPoints.add(pos);
+                this.currentPolygon = Polygon2D.create(selectedPoints);
                 this.state = State.POLYGON_STARTED;
+                display.drawSelectionVertices(false);
                 break;
             }
             
@@ -134,6 +162,34 @@ public class SelectPolygonTool extends ImageTool
                 this.frame.repaint();
                 
                 break;
+            }
+            
+            case SELECT_POLYGON:
+            {
+                if (doubleClick)
+                {
+                    System.out.println("double-click on polygon.");
+                    // TODO: add a vertex
+                }
+                else
+                {
+                    double dist = this.currentPolygon.distance(pos);
+                    if (dist < SNAP_DISTANCE)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        // reset to restful state
+                        this.selectedPoints.clear();
+                        this.currentPolygon = null;
+                        this.state = State.REST;
+                        display.drawSelectionVertices(false);
+                        display.setSelection(null);
+                        this.frame.getImageViewer().setSelection(null);
+                        this.frame.repaint();
+                    }
+                }
             }
         }
     }
