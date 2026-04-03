@@ -19,6 +19,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import imago.app.shape.MarkerType;
 import imago.app.shape.Shape;
 import imago.app.shape.Style;
 import net.sci.geom.Geometry;
@@ -26,6 +27,7 @@ import net.sci.geom.geom2d.Curve2D;
 import net.sci.geom.geom2d.Domain2D;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.LineSegment2D;
+import net.sci.geom.geom2d.MultiPoint2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.curve.Circle2D;
 import net.sci.geom.geom2d.curve.Ellipse2D;
@@ -43,6 +45,8 @@ import net.sci.geom.polygon2d.Polyline2D;
  */
 public class ShapeDrawer
 {
+    private Style vertexStyle;
+            
     // ===================================================================
     // Class fields
 
@@ -64,6 +68,12 @@ public class ShapeDrawer
 
     public ShapeDrawer()
     {
+        this.vertexStyle = new Style()
+                .setMarkerType(MarkerType.SQUARE)
+                .setMarkerSize(6)
+                .setLineColor(Color.BLACK)
+                .setLineWidth(1.0)
+                .setFillColor(Color.WHITE);
     }
         
     
@@ -150,6 +160,8 @@ public class ShapeDrawer
     /**
      * Draws a geometry on the specified graphics. Paint settings are assumed to
      * be already defined.
+     * @param g2
+     *            The Graphics object to draw on
      * 
      * @param geom
      *            the geometry to draw
@@ -190,6 +202,8 @@ public class ShapeDrawer
      * Draws a geometry on the specified graphics. Paint settings are assumed to
      * be already defined.
      * 
+     * @param g2
+     *            The Graphics object to draw on
      * @param geom
      *            the geometry to draw
      */
@@ -208,6 +222,46 @@ public class ShapeDrawer
             default -> System.out.println("ShapeDrawer can not fill geometry with class: " + geom.getClass());
         }
     }
+    
+    /**
+     * Draws the vertices of the specified geometry. The geometry is expected to
+     * an instance of either Polyline2D or of Polygon2D. The behavior is not
+     * specified for other geometries.
+     * 
+     * @param g2
+     *            The Graphics object to draw on
+     * @param geom
+     *            the geometry to draw
+     */
+    public void drawVertices(Graphics2D g2, Geometry2D geom)
+    {
+        // basic checkups
+        if (geom == null)
+        {
+            throw new RuntimeException("Geometry should not be null");
+        }
+
+        System.out.println("draw vertices");
+        switch (geom)
+        {
+            case Point2D point -> drawVertex(g2, point, vertexStyle);
+            case MultiPoint2D multi -> 
+            {
+                multi.points().stream().forEach(p -> drawVertex(g2, p, vertexStyle));
+            }
+            case Polyline2D poly -> 
+            {
+                poly.vertexPositions().stream().forEach(p -> drawVertex(g2, p, vertexStyle));
+            }
+            case PolygonalDomain2D poly -> 
+            {
+                poly.vertexPositions().stream().forEach(p -> drawVertex(g2, p, vertexStyle));
+            }
+             
+            default -> System.out.println("ShapeDrawer can not draw vertices of geometry with class: " + geom.getClass());
+        }
+    }
+
     
     // ===================================================================
     // Specific geometry paint methods
@@ -269,6 +323,31 @@ public class ShapeDrawer
         float xc = (float) point.x();
         float yc = (float) point.y();
         float r = style.getMarkerSize() * 0.5f;
+        
+        // setup line draw style
+        Stroke stroke = new BasicStroke((float) style.getLineWidth());
+        g2.setStroke(stroke);
+        g2.setColor(style.getMarkerColor());
+        
+        style.getMarkerType().draw(g2, xc, yc, r);
+    }
+    
+    /**
+     * Draws a Vertex on the specified graphics. Paint settings are assumed to be
+     * already defined.
+     * 
+     * @param point the position of the vertex to draw
+     */
+    private void drawVertex(Graphics2D g2, Point2D point, Style style)
+    {
+        point = userToDisplay(point);
+        float xc = (float) point.x();
+        float yc = (float) point.y();
+        float r = style.getMarkerSize() * 0.5f;
+        
+        // setup fill
+        g2.setPaint(style.getFillColor());
+        style.getMarkerType().fill(g2, xc, yc, r);
         
         // setup line draw style
         Stroke stroke = new BasicStroke((float) style.getLineWidth());

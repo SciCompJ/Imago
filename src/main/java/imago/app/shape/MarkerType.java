@@ -19,6 +19,12 @@ public interface MarkerType
         {
             g2.draw(new java.awt.geom.Ellipse2D.Float(x - s, y - s, 2 * s, 2 * s));
         }
+        
+        @Override
+        public void fill(Graphics2D g2, float x, float y, float s)
+        {
+            g2.fill(new java.awt.geom.Ellipse2D.Float(x - s, y - s, 2 * s, 2 * s));
+        }
     };
     
     public static final MarkerType CROSS = new MarkerType()
@@ -61,6 +67,12 @@ public interface MarkerType
         {
             g2.draw(new java.awt.geom.Rectangle2D.Float(x - s, y - s, 2 *s, 2*s));
         }
+        
+        @Override
+        public void fill(Graphics2D g2, float x, float y, float s)
+        {
+            g2.fill(new java.awt.geom.Rectangle2D.Float(x - s, y - s, 2 *s, 2*s));
+        }
     };
     
     public static final MarkerType DIAMOND = new MarkerType()
@@ -68,13 +80,24 @@ public interface MarkerType
         @Override
         public void draw(Graphics2D g2, float x, float y, float s)
         {
+            g2.draw(createPath(x, y, s));
+        }
+        
+        @Override
+        public void fill(Graphics2D g2, float x, float y, float s)
+        {
+            g2.fill(createPath(x, y, s));
+        }
+        
+        private Path2D createPath(float x, float y, float s)
+        {
             Path2D.Float path = new Path2D.Float();
             path.moveTo(x, y + s);
             path.lineTo(x - s, y);
             path.lineTo(x, y - s);
             path.lineTo(x + s, y);
             path.lineTo(x, y + s);
-            g2.draw(path);
+            return path;
         }
     };
     
@@ -83,13 +106,24 @@ public interface MarkerType
         @Override
         public void draw(Graphics2D g2, float x, float y, float s)
         {
+            g2.draw(createPath(x, y, s));
+        }
+        
+        @Override
+        public void fill(Graphics2D g2, float x, float y, float s)
+        {
+            g2.fill(createPath(x, y, s));
+        }
+        
+        private Path2D createPath(float x, float y, float s)
+        {
             float dy = (float) (Math.sqrt(3) * s / 3.0);
             Path2D.Float path = new Path2D.Float();
             path.moveTo(x, y - dy * 2.0);
             path.lineTo(x + s, y + dy);
             path.lineTo(x - s, y + dy);
             path.lineTo(x, y - dy * 2.0);
-            g2.draw(path);
+            return path;
         }
     };
     
@@ -98,13 +132,24 @@ public interface MarkerType
         @Override
         public void draw(Graphics2D g2, float x, float y, float s)
         {
+            g2.draw(createPath(x, y, s));
+        }
+        
+        @Override
+        public void fill(Graphics2D g2, float x, float y, float s)
+        {
+            g2.fill(createPath(x, y, s));
+        }
+        
+        private Path2D createPath(float x, float y, float s)
+        {
             float dy = (float) (Math.sqrt(3) * s / 3.0);
             Path2D.Float path = new Path2D.Float();
             path.moveTo(x, y + dy * 2.0);
             path.lineTo(x - s, y - dy);
             path.lineTo(x + s, y - dy);
             path.lineTo(x, y + dy * 2.0);
-            g2.draw(path);
+            return path;
         }
     };
     
@@ -113,13 +158,24 @@ public interface MarkerType
         @Override
         public void draw(Graphics2D g2, float x, float y, float s)
         {
+            g2.draw(createPath(x, y, s));
+        }
+        
+        @Override
+        public void fill(Graphics2D g2, float x, float y, float s)
+        {
+            g2.fill(createPath(x, y, s));
+        }
+        
+        private Path2D createPath(float x, float y, float s)
+        {
             float dx = (float) (Math.sqrt(3) * s / 3.0);
             Path2D.Float path = new Path2D.Float();
             path.moveTo(x - dx * 2.0, y);
             path.lineTo(x + dx, y - s);
             path.lineTo(x + dx, y + s);
             path.lineTo(x - dx * 2.0, y);
-            g2.draw(path);
+            return path;            
         }
     };
     
@@ -128,13 +184,24 @@ public interface MarkerType
         @Override
         public void draw(Graphics2D g2, float x, float y, float s)
         {
+            g2.draw(createPath(x, y, s));
+        }
+        
+        @Override
+        public void fill(Graphics2D g2, float x, float y, float s)
+        {
+            g2.fill(createPath(x, y, s));
+        }
+        
+        private Path2D createPath(float x, float y, float s)
+        {
             float dx = (float) (Math.sqrt(3) * s / 3.0);
             Path2D.Float path = new Path2D.Float();
             path.moveTo(x + dx * 2.0, y);
             path.lineTo(x - dx, y + s);
             path.lineTo(x - dx, y - s);
             path.lineTo(x + dx * 2.0, y);
-            g2.draw(path);
+            return path;
         }
     };
     
@@ -143,7 +210,7 @@ public interface MarkerType
      * specified size.
      * 
      * @param g2
-     *            the graphics to draw in
+     *            the graphics to draw on
      * @param x
      *            the x-position of the marker
      * @param y
@@ -152,4 +219,22 @@ public interface MarkerType
      *            the size of the marker to draw
      */
     public void draw(Graphics2D g2, float x, float y, float s);
+    
+    /**
+     * Fills the content of a marker of this type at the specified position, and
+     * with the specified size (optional operation). The default behavior is to
+     * do nothing, but it can be overridden for markers with interior.
+     * 
+     * @param g2
+     *            the graphics to draw on
+     * @param x
+     *            the x-position of the marker
+     * @param y
+     *            the y-position of the marker
+     * @param s
+     *            the size of the marker to fill
+     */
+    public default void fill(Graphics2D g2, float x, float y, float s)
+    {
+    }
 }
