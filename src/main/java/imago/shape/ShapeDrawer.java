@@ -241,7 +241,6 @@ public class ShapeDrawer
             throw new RuntimeException("Geometry should not be null");
         }
 
-        System.out.println("draw vertices");
         switch (geom)
         {
             case Point2D point -> drawVertex(g2, point, vertexStyle);

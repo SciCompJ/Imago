@@ -19,6 +19,8 @@ import imago.shape.ShapeDrawer;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.Point2D;
+import net.sci.geom.polygon2d.PolygonalDomain2D;
+import net.sci.geom.polygon2d.Polyline2D;
 
 
 /**
@@ -70,6 +72,8 @@ public class ImageDisplay extends JPanel
      * The shape of the current selection, usually a polyline or a rectangle
      */
     protected Geometry2D selection = null;
+    
+    private boolean drawSelectionVertices = false;
     
     /**
      * A shape that will be drawn when mouse is moved, in image pixel coordinate.
@@ -174,6 +178,15 @@ public class ImageDisplay extends JPanel
         this.selection = shape;
     }
     
+    public boolean drawSelectionVertices()
+    {
+        return this.drawSelectionVertices;
+    }
+    
+    public void drawSelectionVertices(boolean b)
+    {
+        this.drawSelectionVertices = b;
+    }
     
     // ===================================================================
     // Cursor management
@@ -339,6 +352,16 @@ public class ImageDisplay extends JPanel
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.YELLOW);
         drawer.drawGeometry(g2, this.selection);
+        
+        if (drawSelectionVertices)
+        {
+            switch (this.selection)
+            {
+                case Polyline2D poly -> drawer.drawVertices(g2, poly);
+                case PolygonalDomain2D poly -> drawer.drawVertices(g2, poly);
+                default -> {}
+            };
+        }
     }
 
     private void drawCustomCursor(Graphics g)
