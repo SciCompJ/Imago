@@ -373,13 +373,15 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         
         // submenu for creation of phantoms
         JMenu phantomMenu = new JMenu("Phantoms");
+        addPlugin(phantomMenu, imago.image.plugins.edit.ImageSelectionToMask.class, "Selection To Mask");
+        addPlugin(phantomMenu, imago.image.plugins.edit.ImageSelectionToDistanceMap.class, "Selection To Distance Map");
+        phantomMenu.addSeparator();
         addPlugin(phantomMenu, imago.image.plugins.edit.ImageFillDisk.class, "Fill Disk...");
         addPlugin(phantomMenu, imago.image.plugins.edit.ImageFillEllipse.class, "Fill Ellipse...");
         addPlugin(phantomMenu, imago.image.plugins.edit.ImageFillBox.class, "Fill Box...");
         addPlugin(phantomMenu, imago.image.plugins.edit.ImageFillEllipsoid.class, "Fill Ellipsoid...");
         phantomMenu.addSeparator();
-        addPlugin(phantomMenu, imago.image.plugins.edit.ImageSelectionToMask.class, "Selection To Mask");
-        addPlugin(phantomMenu, imago.image.plugins.edit.ImageSelectionToDistanceMap.class, "Selection To Distance Map");
+        addPlugin(phantomMenu, imago.image.plugins.edit.CreateGaussianNoiseImage.class, "Gaussian Noise Image...");
         menu.add(phantomMenu);
         
         return menu;
