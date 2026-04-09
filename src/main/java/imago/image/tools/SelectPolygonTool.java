@@ -43,7 +43,8 @@ public class SelectPolygonTool extends ImageTool
     {
         REST,
         POLYGON_STARTED,
-        SELECT_POLYGON;
+        SELECT_POLYGON,
+        SELECT_VERTEX;
     }
     
     ArrayList<Point2D> selectedPoints = new ArrayList<Point2D>();
@@ -57,6 +58,8 @@ public class SelectPolygonTool extends ImageTool
      * The current state of the algorithm.
      */
     State state = State.REST;
+    
+    int selectedPointIndex = 0;
     
     // creates a new polygon for selection
     DefaultPolygon2D currentPolygon = null;
@@ -130,7 +133,7 @@ public class SelectPolygonTool extends ImageTool
                 // first check if click was 'close enough' from the polygon
                 if (this.currentPolygon != null)
                 {
-                    double dist = this.currentPolygon.distance(pos);
+                    double dist = this.currentPolygon.boundary().distance(pos);
                     if (dist < SNAP_DISTANCE)
                     {
                         this.state = State.SELECT_POLYGON;
@@ -184,7 +187,7 @@ public class SelectPolygonTool extends ImageTool
                 break;
             }
             
-            case SELECT_POLYGON:
+            case SELECT_POLYGON, SELECT_VERTEX:
             {
                 if (doubleClick)
                 {
@@ -199,8 +202,29 @@ public class SelectPolygonTool extends ImageTool
                 }
                 else
                 {
-                    double dist = this.currentPolygon.distance(pos);
-                    if (dist > SNAP_DISTANCE)
+                    // first check if a vertex is close from
+                    double minDist = Double.POSITIVE_INFINITY;
+                    int minDistIndex = 0;
+                    for (int iPoint = 0; iPoint < selectedPoints.size(); iPoint++)
+                    {
+                        double dist = selectedPoints.get(iPoint).distance(pos);
+                        if (dist < minDist)
+                        {
+                            minDist = dist;
+                            minDistIndex = iPoint;
+                        }
+                    }
+                    if (minDist < SNAP_DISTANCE) // TODO: use snap distance in pixels of the panel
+                    {
+                        this.state = State.SELECT_VERTEX;
+                        this.selectedPointIndex = minDistIndex;
+                        return;
+                    }
+                    
+                    // if no vertex was found, check distance to polygon boundary
+                    minDist = this.currentPolygon.boundary().distance(pos);
+                    System.out.println("dist to boundary: " + minDist);
+                    if (minDist > SNAP_DISTANCE)
                     {
                         // reset to restful state
                         this.selectedPoints.clear();
@@ -209,15 +233,12 @@ public class SelectPolygonTool extends ImageTool
                         display.drawSelectionVertices(false);
                         updateSelection(display, null);
                     }
-                    else
-                    {
-                        System.out.println("selected polygon again");
-                    }
-                 
                 }
                 this.frame.repaint();
                 break;
             }
+            default:
+                break;
         }
     }
     
@@ -261,12 +282,32 @@ public class SelectPolygonTool extends ImageTool
                 Polygon2D poly = this.currentPolygon.transform(AffineTransform2D.createTranslation(Vector2D.of(lastPos, pos)));
                 updateSelection(display, poly);
                 this.frame.repaint();
+                break;
+            }
+            
+            case SELECT_VERTEX:
+            {
+                // convert point to image pixel coordinates
+                Point2D pos = display.displayToImage(point);
+                Point2D lastPos = display.displayToImage(this.lastPoint);
+                
+                ArrayList<Point2D> points = new ArrayList<Point2D>(this.selectedPoints);
+
+                Point2D pt = this.selectedPoints.get(selectedPointIndex);
+                pt = pt.transform(AffineTransform2D.createTranslation(Vector2D.of(lastPos, pos)));
+                points.set(selectedPointIndex, pt);
+                
+                updateSelection(display, Polygon2D.create(points));
+                this.frame.repaint();
+                
+                break;
             }
             
             default:
                 break;
         }
     }
+    
     @Override
     public void mouseReleased(MouseEvent evt)
     {
@@ -290,6 +331,23 @@ public class SelectPolygonTool extends ImageTool
                 
                 updatePolygon();
                 updateSelection(display, this.currentPolygon);
+                this.frame.repaint();
+                break;
+           }
+            
+            case SELECT_VERTEX:
+            {
+                Point2D pos = display.displayToImage(point);
+                Point2D lastPos = display.displayToImage(this.lastPoint);
+                AffineTransform2D transfo = AffineTransform2D.createTranslation(Vector2D.of(lastPos, pos));
+                
+                // apply translation the selected point
+                this.selectedPoints.set(selectedPointIndex, this.selectedPoints.get(selectedPointIndex).transform(transfo));
+                
+                updatePolygon();
+                updateSelection(display, this.currentPolygon);
+                this.frame.repaint();
+                break;
             }
             
             default:
