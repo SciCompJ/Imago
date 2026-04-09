@@ -12,12 +12,25 @@ import imago.image.ImageTool;
 import imago.image.ImageViewer;
 import imago.image.viewers.ImageDisplay;
 import imago.image.viewers.XYImageViewer;
+import net.sci.geom.geom2d.AffineTransform2D;
 import net.sci.geom.geom2d.Point2D;
+import net.sci.geom.geom2d.Vector2D;
 import net.sci.geom.polygon2d.DefaultPolygon2D;
 import net.sci.geom.polygon2d.Polygon2D;
 
 /**
  * Select a polygon region of interest on a planar viewer.
+ * 
+ * Provides different states:
+ * <ul>
+ * <li>First click initiate creation of a new polygon</li>
+ * <li>Subsequent clicks add vertices to the polygon</li>
+ * <li>Double-click terminates the polygon</li>
+ * <li>When the polygon is terminated, clicking again will either select the
+ * polygon (the vertices become visible), or remove the polygon</li>
+ * <li>When the polygon is selected, dragging the mouse will move the
+ * polygon</li>
+ * </ul>
  * 
  * @author David Legland
  *
@@ -38,7 +51,7 @@ public class SelectPolygonTool extends ImageTool
     /** 
      * The point that was clicked, in gui pixel coordinates
      */
-    Point lastClickedPoint = null;
+    Point lastPoint = null;
 
     /**
      * The current state of the algorithm.
@@ -65,7 +78,7 @@ public class SelectPolygonTool extends ImageTool
         System.out.println("selected the 'selectPolygon' tool");
         
         this.selectedPoints.clear();
-        this.lastClickedPoint = null;
+        this.lastPoint = null;
         this.state = State.REST;
         this.currentPolygon = null;
     }
@@ -100,8 +113,8 @@ public class SelectPolygonTool extends ImageTool
         Point point = new Point(evt.getX(), evt.getY());
 
         // check termination condition
-        boolean doubleClick = point.equals(this.lastClickedPoint);
-        this.lastClickedPoint = point;
+        boolean doubleClick = point.equals(this.lastPoint);
+        this.lastPoint = point;
         
         // convert point to image pixel coordinates
         Point2D pos = display.displayToImage(point);
@@ -196,6 +209,11 @@ public class SelectPolygonTool extends ImageTool
                         display.drawSelectionVertices(false);
                         updateSelection(display, null);
                     }
+                    else
+                    {
+                        System.out.println("selected polygon again");
+                    }
+                 
                 }
                 this.frame.repaint();
                 break;
@@ -225,6 +243,60 @@ public class SelectPolygonTool extends ImageTool
         }
     }
     
+    @Override
+    public void mouseDragged(MouseEvent evt)
+    {
+        // Coordinate of mouse cursor
+        ImageDisplay display = (ImageDisplay) evt.getSource();
+        Point point = new Point(evt.getX(), evt.getY());
+
+        switch (this.state)
+        {
+            case SELECT_POLYGON:
+            {
+                // convert point to image pixel coordinates
+                Point2D pos = display.displayToImage(point);
+                Point2D lastPos = display.displayToImage(this.lastPoint);
+                
+                Polygon2D poly = this.currentPolygon.transform(AffineTransform2D.createTranslation(Vector2D.of(lastPos, pos)));
+                updateSelection(display, poly);
+                this.frame.repaint();
+            }
+            
+            default:
+                break;
+        }
+    }
+    @Override
+    public void mouseReleased(MouseEvent evt)
+    {
+        // Coordinate of mouse cursor
+        ImageDisplay display = (ImageDisplay) evt.getSource();
+        Point point = new Point(evt.getX(), evt.getY());
+        
+        switch (this.state)
+        {
+            case SELECT_POLYGON:
+            {
+                Point2D pos = display.displayToImage(point);
+                Point2D lastPos = display.displayToImage(this.lastPoint);
+                AffineTransform2D transfo = AffineTransform2D.createTranslation(Vector2D.of(lastPos, pos));
+                
+                // apply translation to each selected point
+                for (int i = 0; i < selectedPoints.size(); i++)
+                {
+                    this.selectedPoints.set(i, this.selectedPoints.get(i).transform(transfo));
+                }
+                
+                updatePolygon();
+                updateSelection(display, this.currentPolygon);
+            }
+            
+            default:
+                break;
+        }
+    }
+
     private void updatePolygon()
     {
         this.currentPolygon = new DefaultPolygon2D(selectedPoints);
