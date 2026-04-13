@@ -203,9 +203,12 @@ public class CreateNewImage implements FramePlugin
         // Create the array depending on the type
         ImageDataFactory factory = type.factory();
         factory.addAlgoListener(frame);
+        long t0 = System.nanoTime();
         Array<?> array = factory.create(dims, fillValue);
+        long t1 = System.nanoTime();
         factory.removeAlgoListener(frame);
-
+        frame.algoTerminated("BoxFilter3x3", (t1 - t0) / 1_000_000.0);
+        
         // Create image
         Image image = new Image(array);
         image.setName(imageName);

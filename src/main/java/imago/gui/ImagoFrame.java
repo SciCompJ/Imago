@@ -245,4 +245,18 @@ public abstract class ImagoFrame implements AlgoListener
     public void algoStatusChanged(AlgoEvent evt)
     {
     }
+    
+    /**
+     * Utility method that can be called at the end of the execution of an
+     * algorithms. Default behavior is to do nothing. Subclasses are free to
+     * implement or to leave as is.
+     * 
+     * @param opName
+     *            the name of the algorithm that terminated
+     * @param timeInMillis
+     *            the time used by the algorithm to run
+     */
+    public void algoTerminated(String opName, double timeInMillis)
+    {
+    }
 }

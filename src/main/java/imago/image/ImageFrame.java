@@ -626,6 +626,23 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         this.getStatusBar().setCurrentStepLabel(evt.getStatus());
     }
     
+    @Override
+    public void algoTerminated(String opName, double timeInMillis)
+    {
+        // compute number of processed elements per unit time
+        double timeInSecs = timeInMillis / 1000.0;
+       
+        // format display
+        String pattern = "%s: %.3f seconds";
+        String status = String.format(Locale.ENGLISH, pattern, opName, timeInSecs);
+        
+        // display message
+        System.out.println(status);
+        this.getStatusBar().setCurrentStepLabel(status);
+        // also reset progress bar
+        this.getStatusBar().setProgressBarPercent(0);
+    }
+
     /**
      * Override the default behavior to also remove image viewer from listeners
      * of other images.

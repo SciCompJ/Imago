@@ -37,7 +37,7 @@ public class AlgoMonitoringPanel extends JPanel
         // initialize widgets
         this.statusLabel = new JLabel(" ");
         this.progressBar = new JProgressBar(0, 100);
-        this.progressBar.setStringPainted(true);
+        this.progressBar.setStringPainted(false);
         
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         add(statusLabel);
@@ -57,6 +57,7 @@ public class AlgoMonitoringPanel extends JPanel
     public void setProgressPercent(int percent)
     {
         this.progressBar.setValue(percent);
+        this.progressBar.setStringPainted(percent != 0);
         this.progressBar.invalidate();
         this.validate();
         this.repaint();

@@ -48,10 +48,7 @@ public class BoxFilter3x3FloatPlugin implements FramePlugin
 
 		// create operator
 		BoxFilter3x3 filter = new BoxFilter3x3();
-		if (frame instanceof ImageFrame)
-		{
-		    filter.addAlgoListener((ImageFrame) frame);
-		}
+		filter.addAlgoListener(frame);
         long t0 = System.nanoTime();
 		filter.processScalar((ScalarArray<?>) array, output);
         long t1 = System.nanoTime();

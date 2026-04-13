@@ -156,9 +156,11 @@ public class OpenTable implements FramePlugin
                 .setReadHeader(dlg.getNextBoolean())
                 .setSkipLines((int) dlg.getNextNumber())
                 .setReadRowNames(dlg.getNextBoolean());
-
+        reader.addAlgoListener(frame);
+        
         // try reading the table
         Table table;
+        long t0 = System.nanoTime();
         try
         {
             table = reader.readTable(file);
@@ -169,8 +171,11 @@ public class OpenTable implements FramePlugin
             ImagoGui.showExceptionDialog(frame, ex, "Table I/O Error");
             return;
         }
+        reader.removeAlgoListener(frame);
         
         table.setName(file.toPath().getFileName().toString());
+        long t1 = System.nanoTime();
+        frame.algoTerminated("Read Table", (t1 - t0) / 1_000_000.0);
         
         // add the new frame to the GUI
         TableFrame.create(table, frame);

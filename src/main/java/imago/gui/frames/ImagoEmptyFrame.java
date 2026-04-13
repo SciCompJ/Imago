@@ -4,21 +4,29 @@
 package imago.gui.frames;
 
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.util.Locale;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JPanel;
 
 import imago.gui.FrameMenuBuilder;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
+import imago.gui.panels.AlgoMonitoringPanel;
+import net.sci.algo.AlgoEvent;
+import net.sci.algo.AlgoListener;
 
 /**
  * @author David Legland
  *
  */
-public class ImagoEmptyFrame extends ImagoFrame
+public class ImagoEmptyFrame extends ImagoFrame implements AlgoListener
 {
+    AlgoMonitoringPanel algoMonitorPanel;
+    
     // ===================================================================
     // Constructor
 
@@ -27,7 +35,8 @@ public class ImagoEmptyFrame extends ImagoFrame
         super(gui, "Imago");
 
         setupMenuBar();
-
+        setupLayout();
+        
         initializePosition();
     }
 
@@ -85,6 +94,18 @@ public class ImagoEmptyFrame extends ImagoFrame
         this.jFrame.setJMenuBar(menuBar);
     }
     
+    private void setupLayout()
+    {
+        // creates a pane for monitoring algorithms
+        this.algoMonitorPanel = new AlgoMonitoringPanel();
+
+        // put into global layout
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.add(this.algoMonitorPanel, BorderLayout.SOUTH);
+
+        this.jFrame.setContentPane(mainPanel);
+    }
+
     /**
      * Set up frame position on top-left of screen, with a position depending on
      * screen size.
@@ -98,5 +119,52 @@ public class ImagoEmptyFrame extends ImagoFrame
         int posX = 300;
         int posY = 50;
         this.jFrame.setLocation(posX, posY);
+    }
+    
+    /**
+     * Completes the default implementation to display the progression in the
+     * status bar.
+     * 
+     * @param evt
+     *            the algorithm event
+     */
+    @Override
+    public void algoProgressChanged(AlgoEvent evt)
+    {
+        super.algoProgressChanged(evt);
+        int progress = (int) (evt.getProgressRatio() * 100);
+        this.algoMonitorPanel.setProgressPercent(progress);
+    }
+
+    /**
+     * Completes the default implementation to display the algorithm status in
+     * the status bar.
+     * 
+     * @param evt
+     *            the algorithm event
+     */
+    @Override
+    public void algoStatusChanged(AlgoEvent evt)
+    {
+        super.algoProgressChanged(evt);
+        System.out.println("status: " + evt.getStatus());
+        this.algoMonitorPanel.setStatusMessage(evt.getStatus());
+    }
+    
+    @Override
+    public void algoTerminated(String opName, double timeInMillis)
+    {
+        // compute number of processed elements per unit time
+        double timeInSecs = timeInMillis / 1000.0;
+       
+        // format display
+        String pattern = "%s: %.3f seconds";
+        String status = String.format(Locale.ENGLISH, pattern, opName, timeInSecs);
+        
+        // display message
+        System.out.println(status);
+        this.algoMonitorPanel.setStatusMessage(status);
+        // also reset progress bar
+        this.algoMonitorPanel.setProgressPercent(0);
     }
 }
