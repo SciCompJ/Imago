@@ -100,49 +100,22 @@ public class CreateNewImage implements FramePlugin
          */
         public static Type fromArray(Array<?> array)
         {
-            if (array instanceof BinaryArray)
+            return switch (array)
             {
-                return BINARY;
-            }
-            else if (array instanceof UInt8Array)
-            {
-                return GRAY8;
-            }
-            else if (array instanceof UInt16Array)
-            {
-                return GRAY16;
-            }
-            else if (array instanceof Int32Array)
-            {
-                return INT32;
-            }
-            else if (array instanceof Float32Array)
-            {
-                return FLOAT32;
-            }
-            else if (array instanceof Float64Array)
-            {
-                return FLOAT64;
-            }
-            else if (array instanceof RGB8Array)
-            {
-                return COLOR;
-            }
-            
-            // return a default type
-            return GRAY8;
+                case BinaryArray binary -> BINARY;
+                case UInt8Array binary -> GRAY8;
+                case UInt16Array binary -> GRAY16;
+                case Int32Array binary -> INT32;
+                case Float32Array binary -> FLOAT32;
+                case Float64Array binary -> FLOAT64;
+                case RGB8Array binary -> COLOR;
+                default -> GRAY8;
+            };
         }
 
         private final String label;
         
-//        private final Supplier<ImageDataFactory> factorySupplier;
         private final ImageDataFactory factory;
-        
-//        private Type(String label, Supplier<ImageDataFactory> factorySupplier)
-//        {
-//            this.label = label;
-//            this.factorySupplier = factorySupplier;
-//        }
         
         private Type(String label, ImageDataFactory factory)
         {
