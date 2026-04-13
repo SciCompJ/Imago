@@ -143,6 +143,7 @@ public class OpenTable implements FramePlugin
         dlg.addCheckBox("Header", true);
         dlg.addNumericField("Skip lines", 0, 0);
         dlg.addCheckBox("Read Row Names", false);
+        dlg.addCheckBox("Ignore Double-Quotes", true);
         
         // wait for user input
         dlg.showDialog();
@@ -155,7 +156,8 @@ public class OpenTable implements FramePlugin
                 .setDelimiters(dlg.getNextString())
                 .setReadHeader(dlg.getNextBoolean())
                 .setSkipLines((int) dlg.getNextNumber())
-                .setReadRowNames(dlg.getNextBoolean());
+                .setReadRowNames(dlg.getNextBoolean())
+                .setIgnoreQuotes(dlg.getNextBoolean());
         reader.addAlgoListener(frame);
         
         // try reading the table
