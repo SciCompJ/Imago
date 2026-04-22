@@ -63,13 +63,12 @@ public class SaveImageAsTiff implements FramePlugin
         }
 
         // Create a writer with specified file
-        TiffImageWriter writer = new TiffImageWriter(file);
-        writer.addCustomTag(new BaselineTags.Software().setValue("Imago ")); // adds a space to make sure ImageJ read correctly
-        
         long t0 = System.nanoTime();
-        writer.addAlgoListener(iframe);
-        try
+        try (TiffImageWriter writer = new TiffImageWriter(file))
         {
+            writer.addCustomTag(new BaselineTags.Software().setValue("Imago ")); // adds a space to make sure ImageJ read correctly
+            
+            writer.addAlgoListener(iframe);
             writer.writeImage(image);
         }
         catch (Exception ex)
