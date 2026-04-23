@@ -20,6 +20,7 @@ import imago.image.ImageHandle;
 import imago.table.RowNumberTable;
 import imago.gui.FramePlugin;
 import net.sci.image.Image;
+import net.sci.image.io.tiff.Entry;
 import net.sci.image.io.tiff.TiffTag;
 
 /**
@@ -55,14 +56,17 @@ public class PrintImageTiffTags implements FramePlugin
             return;
         }
         
+        Map<Integer, TiffTag> tiffTags = TiffTag.getAllTags();
+        
         // display tags on console
         @SuppressWarnings("unchecked")
-        Map<Integer, TiffTag> tiffTags = (Map<Integer, TiffTag>) image.metadata.get("tiff-tags");
-        for (TiffTag tag : tiffTags.values())
+        Map<Integer, Entry> entries = (Map<Integer, Entry>) image.metadata.get("tiff-tags");
+        for (Entry entry : entries.values())
         {
-            String desc = tag.name == null ? "" : " (" + tag.name + ")";
-            String info = String.format("Tag code: %5d %-30s", tag.code, desc);
-            System.out.println(info + "\tType=" + tag.type + ", \tcount=" + tag.count + ", content=" + tag.content);
+            TiffTag tag = tiffTags.get(entry.code);
+            String id = tag == null ? "" : " (" + tag.name + ")";
+            String info = String.format("Tag code: %5d %-30s", entry.code, id);
+            System.out.println(info + "\tType=" + entry.type + ", \tcount=" + entry.count + ", content=" + entry.content);
         }
         
         // tries to display in a frame
@@ -105,23 +109,25 @@ public class PrintImageTiffTags implements FramePlugin
 
             // retrieve the map of tags
             @SuppressWarnings("unchecked")
-            Map<Integer, TiffTag> tiffTags = (Map<Integer, TiffTag>) image.metadata.get("tiff-tags");
+            Map<Integer, Entry> entries = (Map<Integer, Entry>) image.metadata.get("tiff-tags");
+            Map<Integer, TiffTag> tiffTags = TiffTag.getAllTags();
             
             // Table header
             String[] colNames = new String[]{"Code", "Name", "Origin", "Value"};
-            int nRows = tiffTags.size();
+            int nRows = entries.size();
              
             // Convert numeric values to table of objects
             int nCols = colNames.length;
             Object[][] data = new Object[nRows][nCols];
             int iRow = 0;
-            for (TiffTag tag : tiffTags.values())
+            for (Entry entry : entries.values())
             {
                 Object[] row = new Object[nCols];
-                row[0] = tag.code;
-                row[1] = tag.name;
-                row[2] = tag.tagSet == null ? "Unknown" : tag.tagSet.getName();
-                row[3] = createContentString(tag.content);
+                row[0] = entry.code;
+                TiffTag tag = tiffTags.get(entry.code);
+                row[1] = tag != null ? tag.name : "Unknown";
+                row[2] = tag != null ? (tag.tagSet != null ? tag.tagSet.getName() : "Unknown") : "Unknown";
+                row[3] = createContentString(entry.content);
                 data[iRow++] = row;
             }
             

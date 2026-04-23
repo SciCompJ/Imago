@@ -5,11 +5,13 @@ package imago.image.plugins.file;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Map;
 
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import net.sci.image.io.TiffImageReader;
+import net.sci.image.io.tiff.Entry;
 import net.sci.image.io.tiff.ImageFileDirectory;
 import net.sci.image.io.tiff.TiffTag;
 
@@ -58,13 +60,23 @@ public class PrintImageFileTiffTags implements FramePlugin
 		Collection<ImageFileDirectory> fileInfoList = reader.getImageFileDirectories();
 	    System.out.println("Tiff Image File with " + fileInfoList.size() + " Image File Directories.");
         
+	    Map<Integer, TiffTag> tiffTags = TiffTag.getAllTags();
+	    
 	    ImageFileDirectory info = fileInfoList.iterator().next();
 	    // display tags on console
-        for (TiffTag tag : info.entries())
+        for (Entry entry : info.entries())
         {
-            String id = tag.name == null ? "" : " (" + tag.name + ")";
-            String desc = String.format("Tag code: %5d %-30s", tag.code, id);
-            System.out.println(desc + "\tType=" + tag.type + ", \tcount=" + tag.count + ", content=" + tag.content);
+            TiffTag tag = tiffTags.get(entry.code);
+            String id = tag == null ? "" : " (" + tag.name + ")";
+            String desc = String.format("Tag code: %5d %-30s", entry.code, id);
+            System.out.println(desc + "\tType=" + entry.type + ", \tcount=" + entry.count + ", content=" + entry.content);
         }
+//        // display tags on console
+//        for (TiffTag tag : info.tiffTags())
+//        {
+//            String id = tag.name == null ? "" : " (" + tag.name + ")";
+//            String desc = String.format("Tag code: %5d %-30s", tag.code, id);
+//            System.out.println(desc + "\tType=" + tag.type + ", \tcount=" + tag.count + ", content=" + tag.content);
+//        }
 	}
 }
