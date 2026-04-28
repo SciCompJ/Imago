@@ -26,6 +26,8 @@ import net.sci.image.io.tiff.TiffTag;
 /**
  * Show the list of tags retrieved from an images stored in TIFF format.
  * 
+ * @see imago.image.plugins.edit.PrintImageFileTiffTags
+ * 
  * @author dlegland
  */
 public class PrintImageTiffTags implements FramePlugin
@@ -56,17 +58,17 @@ public class PrintImageTiffTags implements FramePlugin
             return;
         }
         
-        Map<Integer, TiffTag> tiffTags = TiffTag.getAllTags();
+        Map<Integer, TiffTag> knownTags = TiffTag.getAllTags();
         
         // display tags on console
         @SuppressWarnings("unchecked")
         Map<Integer, Entry> entries = (Map<Integer, Entry>) image.metadata.get("tiff-tags");
         for (Entry entry : entries.values())
         {
-            TiffTag tag = tiffTags.get(entry.code);
+            TiffTag tag = knownTags.get(entry.code);
             String id = tag == null ? "" : " (" + tag.name + ")";
             String info = String.format("Tag code: %5d %-30s", entry.code, id);
-            System.out.println(info + "\tType=" + entry.type + ", \tcount=" + entry.count + ", content=" + entry.content);
+            System.out.println(info + "\tType=" + entry.type + ", \tcount=" + entry.count + ", content=" + entry.contentSummary());
         }
         
         // tries to display in a frame
@@ -127,7 +129,7 @@ public class PrintImageTiffTags implements FramePlugin
                 TiffTag tag = tiffTags.get(entry.code);
                 row[1] = tag != null ? tag.name : "Unknown";
                 row[2] = tag != null ? (tag.tagSet != null ? tag.tagSet.getName() : "Unknown") : "Unknown";
-                row[3] = createContentString(entry.content);
+                row[3] = entry.contentSummary();
                 data[iRow++] = row;
             }
             
@@ -144,125 +146,6 @@ public class PrintImageTiffTags implements FramePlugin
             scrollPane.setCorner(JScrollPane.UPPER_LEFT_CORNER, rowTable.getTableHeader());
             
             ((JFrame) this.getWidget()).setContentPane(mainPanel);
-        }
-
-        private String createContentString(Object obj)
-        {
-            if (isArray(obj))
-            {
-                if (obj instanceof int[])
-                {
-                    return convertIntArray((int[]) obj);
-                }
-                else if (obj instanceof byte[])
-                {
-                    return "byte[]";
-                }
-                else if (obj instanceof int[][])
-                {
-                    return convertIntIntArray((int[][]) obj);
-                }
-                else if (obj instanceof short[])
-                {
-                    return convertShortArray((short[]) obj);
-                }
-                else if (obj instanceof double[])
-                {
-                    return convertDoubleArray((double[]) obj);
-                }
-                else
-                {
-                    return "Array (unknown type)";
-                }
-            }
-            else if (obj == null)
-            {
-                return "null";
-            }
-            else
-            {
-                return obj.toString();
-            }
-        }
-        
-        private boolean isArray(Object obj)
-        {
-            return obj!=null && obj.getClass().isArray();
-        }
-        
-        private String convertIntArray(int[] obj)
-        {
-            StringBuffer buffer = new StringBuffer("Int[]{");
-            if (obj.length > 0)
-            {
-                buffer.append(obj[0]);
-            }
-            for (int i = 1; i < obj.length; i++)
-            {
-                buffer.append(", " + obj[i]);
-            }
-            buffer.append("}");
-            return buffer.toString();
-        }
-
-        private String convertIntIntArray(int[][] obj)
-        {
-            int nr = obj.length;
-            if (nr == 0)
-            {
-                return "Int[][]{}";
-            }
-            
-            int nc = obj[0].length;
-            if (nc == 0)
-            {
-                return "Int[][]{}";
-            }
-            
-            StringBuffer buffer = new StringBuffer("Int[][]{");
-            for (int iRow = 0; iRow < nr; iRow++)
-            {
-                buffer.append("{");
-                buffer.append(obj[iRow][0]);
-                for (int iCol= 1; iCol < nc; iCol++)
-                {
-                    buffer.append(", " + obj[iRow][iCol]);
-                }
-                buffer.append("}");
-            }
-            
-            buffer.append("}");
-            return buffer.toString();
-        }
-        
-        private String convertShortArray(short[] obj)
-        {
-            StringBuffer buffer = new StringBuffer("Short[]{");
-            if (obj.length > 0)
-            {
-                buffer.append(obj[0]);
-            }
-            for (int i = 1; i < obj.length; i++)
-            {
-                buffer.append(", " + obj[i]);
-            }
-            buffer.append("}");
-            return buffer.toString();
-        }
-        
-        private String convertDoubleArray(double[] obj)
-        {
-            StringBuffer buffer = new StringBuffer("Double[]{");
-            if (obj.length > 0)
-            {
-                buffer.append(obj[0]);
-            }
-            for (int i = 1; i < obj.length; i++)
-            {
-                buffer.append(", " + obj[i]);
-            }
-            buffer.append("}");
-            return buffer.toString();
         }
 	}
 }

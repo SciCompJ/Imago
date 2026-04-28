@@ -20,6 +20,8 @@ import net.sci.image.io.tiff.TiffTag;
  * Opens a dialog to select a file in TIFF format, and displays the Tiff Tags
  * contained in it.
  * 
+ * @see imago.image.plugins.edit.PrintImageTiffTags
+ * 
  * @author David Legland
  *
  */
@@ -57,26 +59,22 @@ public class PrintImageFileTiffTags implements FramePlugin
 			return;
 		}
 		
+		// retrieve first image file directory
 		Collection<ImageFileDirectory> fileInfoList = reader.getImageFileDirectories();
 	    System.out.println("Tiff Image File with " + fileInfoList.size() + " Image File Directories.");
+        ImageFileDirectory info = fileInfoList.iterator().next();
         
-	    Map<Integer, TiffTag> tiffTags = TiffTag.getAllTags();
+	    Map<Integer, TiffTag> knownTags = TiffTag.getAllTags();
 	    
-	    ImageFileDirectory info = fileInfoList.iterator().next();
 	    // display tags on console
         for (Entry entry : info.entries())
         {
-            TiffTag tag = tiffTags.get(entry.code);
+            TiffTag tag = knownTags.get(entry.code);
             String id = tag == null ? "" : " (" + tag.name + ")";
             String desc = String.format("Tag code: %5d %-30s", entry.code, id);
-            System.out.println(desc + "\tType=" + entry.type + ", \tcount=" + entry.count + ", content=" + entry.content);
+            System.out.print(desc + "\tType=" + entry.type + ", \tcount=" + entry.count);
+            System.out.println(", content=" + entry.contentSummary());
+//            System.out.println(desc + "\tType=" + entry.type + ", \tcount=" + entry.count + ", content=" + entry.contentSummary());
         }
-//        // display tags on console
-//        for (TiffTag tag : info.tiffTags())
-//        {
-//            String id = tag.name == null ? "" : " (" + tag.name + ")";
-//            String desc = String.format("Tag code: %5d %-30s", tag.code, id);
-//            System.out.println(desc + "\tType=" + tag.type + ", \tcount=" + tag.count + ", content=" + tag.content);
-//        }
 	}
 }
