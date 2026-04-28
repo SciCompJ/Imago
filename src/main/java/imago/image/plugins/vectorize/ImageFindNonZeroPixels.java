@@ -20,7 +20,7 @@ import net.sci.array.numeric.ScalarArray2D;
 import net.sci.geom.geom2d.MultiPoint2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.image.Image;
-import net.sci.image.vectorize.Find;
+import net.sci.image.vectorize.FindNonZeroElements;
 
 /**
  * Find non-zero pixels within a planar image and add them as ImagoShape to the
@@ -70,7 +70,7 @@ public class ImageFindNonZeroPixels implements FramePlugin
 
         // compute collection of points
         ScalarArray2D<?> array2d = (ScalarArray2D<?>) array;
-        Collection<Point2D> points = Find.findPixels(array2d);
+        Collection<Point2D> points = FindNonZeroElements.findPixels(array2d);
         
         if (addToImage)
         {
