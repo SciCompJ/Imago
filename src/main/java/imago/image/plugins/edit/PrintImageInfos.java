@@ -5,6 +5,7 @@ package imago.image.plugins.edit;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Map;
 
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
@@ -18,6 +19,8 @@ import net.sci.axis.Axis;
 import net.sci.image.Calibration;
 import net.sci.image.DisplaySettings;
 import net.sci.image.Image;
+import net.sci.image.io.tiff.BaselineTags;
+import net.sci.image.io.tiff.Entry;
 
 /**
  * @author dlegland
@@ -87,7 +90,20 @@ public class PrintImageInfos implements FramePlugin
             textLines.add("  Number of runs: " + ((RunLengthBinaryArray3D) array).runCount());
         }
         
-        ImagoTextFrame newFrame = new ImagoTextFrame(frame, "Image Info", textLines);
+        // if image contains tiff tags, try to display description
+        if (image.metadata.containsKey("tiff-tags"))
+        {
+            @SuppressWarnings("unchecked")
+            Map<Integer, Entry> entries = (Map<Integer, Entry>) image.metadata.get("tiff-tags");
+            Entry entry = entries.get(BaselineTags.ImageDescription.CODE);
+            if (entry != null)
+            {
+                textLines.add("Image Description:\n" + entry.content);
+            }
+        }
+
+        String title = "Image Info of " + image.getName();
+        ImagoTextFrame newFrame = new ImagoTextFrame(frame, title, textLines);
         newFrame.getWidget().pack();
         newFrame.getWidget().setSize(new Dimension(600, 400));
         newFrame.setVisible(true);
