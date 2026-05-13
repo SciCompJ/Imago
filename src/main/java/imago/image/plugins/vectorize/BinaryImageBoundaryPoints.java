@@ -20,8 +20,11 @@ import net.sci.array.Array;
 import net.sci.array.binary.Binary;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.binary.BinaryArray2D;
+import net.sci.array.binary.BinaryArray3D;
 import net.sci.geom.geom2d.MultiPoint2D;
 import net.sci.geom.geom2d.Point2D;
+import net.sci.geom.geom3d.MultiPoint3D;
+import net.sci.geom.geom3d.Point3D;
 import net.sci.image.Image;
 import net.sci.image.vectorize.BinaryImageBoundaryFacetMidPoints;
 
@@ -81,7 +84,7 @@ public class BinaryImageBoundaryPoints implements FramePlugin
         if (nd == 2) 
         {
             BinaryArray2D array2d = BinaryArray2D.wrap(BinaryArray.wrap(array));
-            List<Point2D> pointList = BinaryImageBoundaryFacetMidPoints.reduce(algo.processBinary2d(array2d));
+            List<Point2D> pointList = BinaryImageBoundaryFacetMidPoints.reduceMap2d(algo.processBinary2d(array2d));
             MultiPoint2D multiPoint = MultiPoint2D.create(pointList);
             
             if (addToImage)
@@ -110,6 +113,43 @@ public class BinaryImageBoundaryPoints implements FramePlugin
                 manager.repaint();
                 manager.setVisible(true);
             }
+        }
+        else if (nd == 3)
+        {
+            BinaryArray3D array3d = BinaryArray3D.wrap(BinaryArray.wrap(array));
+            List<Point3D> pointList = BinaryImageBoundaryFacetMidPoints.reduceMap3d(algo.processBinary3d(array3d));
+            MultiPoint3D multiPoint = MultiPoint3D.create(pointList);
+            
+            if (addToImage)
+            {
+                iFrame.getStatusBar().setCurrentStepLabel("Add boundary points to image shape tree - TODOOOO");
+//                ImageHandle targetHandle = ImageHandle.findFromName(app, imageToOverlayName);
+//                
+//                Shape shape = new Shape(multiPoint);
+//                
+//                // add new node to image handle
+//                targetHandle.addShape(shape);
+//                targetHandle.notifyImageHandleChange(ImageHandle.Event.SHAPES_MASK | ImageHandle.Event.CHANGE_MASK);
+            }
+            
+            if (addToShapeManager)
+            {
+                GeometryHandle geomHandle = GeometryHandle.create(app, multiPoint);
+                
+                // opens a dialog to choose name
+                String name = image.getName() + "-boundaryPoints";
+                name = ImagoGui.showInputDialog(frame, "Name of new geometry:", "Choose Geometry Name", name);
+                geomHandle.setName(name);
+                
+                // ensure ShapeManager is visible
+                ShapeManager manager = ShapeManager.getInstance(frame.getGui());
+                manager.repaint();
+                manager.setVisible(true);
+            }
+        }
+        else
+        {
+            throw new RuntimeException("Can not compute boundary points on image with dimension: " + nd);
         }
     }
     
