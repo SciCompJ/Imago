@@ -146,7 +146,8 @@ public class ShapeDrawer
     
     private Color setOpacity(Color baseColor, double opacity)
     {
-        return new Color(baseColor.getRed(), baseColor.getGreen(), baseColor.getBlue(), (int) (255 * opacity));
+        int op = (int) (255 * Math.clamp(opacity, 0.0, 1.0));
+        return new Color(baseColor.getRed(), baseColor.getGreen(), baseColor.getBlue(), op);
     }
     
     public void drawShapes(Graphics2D g2, Collection<Shape> shapes)

@@ -287,7 +287,7 @@ public class Style
      */
     public Style setFillOpacity(double opacity)
     {
-        this.fillOpacity = lineWidth;
+        this.fillOpacity = opacity;
         return this;
     }
 }
