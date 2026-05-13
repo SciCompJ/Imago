@@ -29,6 +29,7 @@ import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.MultiPoint2D;
 import net.sci.geom.geom2d.Point2D;
+import net.sci.geom.geom2d.PointShape2D;
 import net.sci.geom.geom2d.curve.Circle2D;
 import net.sci.geom.geom2d.curve.Ellipse2D;
 import net.sci.geom.geom2d.curve.MultiCurve2D;
@@ -177,6 +178,7 @@ public class ShapeDrawer
         switch (geom)
         {
             case Point2D point -> drawPoint(g2, point);
+            case PointShape2D point -> drawMultiPoint(g2, point);
             case LineSegment2D line -> drawLineSegment(g2, line);
             case PolygonalDomain2D poly -> drawPolygon(g2, poly);
             case Ellipse2D elli -> drawPolyline(g2, elli.asPolyline(120));
@@ -329,6 +331,21 @@ public class ShapeDrawer
         g2.setColor(style.getMarkerColor());
         
         style.getMarkerType().draw(g2, xc, yc, r);
+    }
+    
+    /**
+     * Draws a collection of point on the specified graphics. Paint settings are
+     * assumed to be already defined.
+     * 
+     * @param mp
+     *            the point shape to draw
+     */
+    private void drawMultiPoint(Graphics2D g2, PointShape2D mp)
+    {
+        for (Point2D p : mp.points())
+        {
+            drawPoint(g2, p);
+        }
     }
     
     /**
