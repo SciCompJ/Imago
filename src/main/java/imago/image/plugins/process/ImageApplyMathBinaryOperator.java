@@ -8,10 +8,10 @@ import imago.gui.*;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import imago.image.plugins.process.options.ValuePairFunction;
+import net.sci.array.Array;
 import net.sci.array.Arrays;
 import net.sci.array.numeric.Float32Array;
 import net.sci.array.numeric.Float64Array;
-import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.process.MathBinaryOperator;
 import net.sci.image.Image;
 
@@ -31,6 +31,9 @@ public class ImageApplyMathBinaryOperator implements FramePlugin
      */
     String[] outputTypeNames = new String[]{"Same as Image 1", "Same as Image 2", "Float32", "Float64"};
     
+    /**
+     * Default empty constructor.
+     */
 	public ImageApplyMathBinaryOperator()
 	{
 	}
@@ -74,21 +77,11 @@ public class ImageApplyMathBinaryOperator implements FramePlugin
         
         // retrieve images from names
         Image image1 = ImageHandle.findFromName(frame.getGui().getAppli(), image1Name).getImage();
-        if (!image1.isScalarImage())
-        {
-            ImagoGui.showErrorDialog(frame, "Requires an image containing a scalar array");
-            return;
-        }
         Image image2 = ImageHandle.findFromName(frame.getGui().getAppli(), image2Name).getImage();
-        if (!image2.isScalarImage())
-        {
-            ImagoGui.showErrorDialog(frame, "Requires an image containing a scalar array");
-            return;
-        }
 
         // extract arrays
-        ScalarArray<?> array1 = (ScalarArray<?>) image1.getData();
-        ScalarArray<?> array2 = (ScalarArray<?>) image2.getData();
+        Array<?> array1 = image1.getData();
+        Array<?> array2 = image2.getData();
 
         // check dimensions
         if (!Arrays.isSameSize(array1, array2))
@@ -98,7 +91,7 @@ public class ImageApplyMathBinaryOperator implements FramePlugin
         }
         
         // create output array
-        ScalarArray<?> result = switch (outputTypeIndex)
+        Array<?> result = switch (outputTypeIndex)
         {
             case 0 -> array1.newInstance(array1.size());
             case 1 -> array2.newInstance(array1.size());
