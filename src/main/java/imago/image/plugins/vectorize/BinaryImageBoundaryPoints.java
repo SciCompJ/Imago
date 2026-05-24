@@ -84,7 +84,7 @@ public class BinaryImageBoundaryPoints implements FramePlugin
         if (nd == 2) 
         {
             BinaryArray2D array2d = BinaryArray2D.wrap(BinaryArray.wrap(array));
-            List<Point2D> pointList = BinaryImageBoundaryFacetMidPoints.reduceMap2d(algo.processBinary2d(array2d));
+            List<Point2D> pointList = algo.processBinary2d(array2d);
             MultiPoint2D multiPoint = MultiPoint2D.create(pointList);
             
             if (addToImage)
@@ -117,7 +117,7 @@ public class BinaryImageBoundaryPoints implements FramePlugin
         else if (nd == 3)
         {
             BinaryArray3D array3d = BinaryArray3D.wrap(BinaryArray.wrap(array));
-            List<Point3D> pointList = BinaryImageBoundaryFacetMidPoints.reduceMap3d(algo.processBinary3d(array3d));
+            List<Point3D> pointList = algo.processBinary3d(array3d);
             MultiPoint3D multiPoint = MultiPoint3D.create(pointList);
             
             if (addToImage)
