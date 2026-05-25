@@ -240,7 +240,7 @@ public class GenericDialog
      * @param digits
      *            the number of digits to the right of the decimal point
      * @param columns
-     *            sizeX of field in characters
+     *            the size of the field in characters
      * @param units
      *            (optional) a string displayed to the right of the field
      * @return the widget of the text field
@@ -261,7 +261,7 @@ public class GenericDialog
      * @param digits
      *            the number of digits to the right of the decimal point
      * @param columns
-     *            sizeX of field in characters
+     *            the size of the field in characters
      * @param units
      *            (optional) a string displayed to the right of the field
      * @param toolTipText
@@ -287,12 +287,8 @@ public class GenericDialog
         if (numericFields == null) 
         {
             numericFields = new ArrayList<JTextField>(5);
-//          defaultValues = new Vector(5);
-//          defaultText = new Vector(5);
         }
         numericFields.add(tf);
-        // defaultValues.addElement(new Double(defaultValue));
-        // defaultText.addElement(tf.getText());
 
         // add widgets to the dialog layout
         c.gridx = 0;
@@ -337,6 +333,86 @@ public class GenericDialog
         return tf;
     }
 
+    /**
+     * Adds a text field containing an integer numeric value.
+     * 
+     * @param label
+     *            the label to display before the text field
+     * @param defaultValue
+     *            the initial value within the text field
+     * @return the widget of the text field
+     */
+    public JTextField addIntegerField(String label, int defaultValue)
+    {
+        return addIntegerField(label, defaultValue, 6, null);
+    }
+    
+    /**
+     * Adds a text field containing an integer numeric value.
+     * 
+     * @param label
+     *            the label to display before the text field
+     * @param defaultValue
+     *            the initial value within the text field
+     * @param columns
+     *            the size of the field in characters
+     * @param toolTipText
+     *            (optional) a tooltip string used to display information about
+     *            this option
+     * @return the widget of the text field
+     */
+    public JTextField addIntegerField(String label, int defaultValue, int columns, String toolTipText)
+    {
+        // creates the label widget
+        JLabel labelItem = new JLabel(formatLabel(label));
+        if (toolTipText != null)
+        {
+            labelItem.setToolTipText(toolTipText);
+        }
+
+        // create the widget containing the text
+        String text = formatNumber(defaultValue, 0);
+        JTextField tf = createNumericTextField(text, columns);
+        
+        // add to the list of text fields
+        if (numericFields == null) 
+        {
+            numericFields = new ArrayList<JTextField>(5);
+        }
+        numericFields.add(tf);
+
+        // add widgets to the dialog layout
+        c.gridx = 0;
+        c.gridy = currentRow;
+        c.anchor = GridBagConstraints.EAST;
+        c.gridwidth = 1;
+
+        // adapt insets for first row
+        if (firstNumericField)
+            c.insets = getInsets(5, 5, 3, 5);
+        else
+            c.insets = getInsets(0, 5, 3, 5);
+        gridLayout.setConstraints(labelItem, c);
+        this.dialog.add(labelItem);
+
+        c.gridx = 1;
+        c.gridy = currentRow;
+        c.anchor = GridBagConstraints.WEST;
+        tf.setEditable(true);
+
+        if (firstNumericField) tf.selectAll();
+        firstNumericField = false;
+
+        gridLayout.setConstraints(tf, c);
+        this.dialog.add(tf);
+        
+        // if (Recorder.record || macro)
+        // saveLabel(tf, label);
+        currentRow++;
+
+        return tf;
+    }
+
     public JTextField[] addNumericFields(String label, double[] defaultValues, int digits)
     {
         return addNumericFields(label, defaultValues, digits, 6, null, null);
@@ -352,7 +428,7 @@ public class GenericDialog
      * @param digits
      *            the number of digits to the right of the decimal point
      * @param columns
-     *            sizeX of field in characters
+     *            the size of the field in characters
      * @param units
      *            (optional) a string displayed to the right of the field
      * @param toolTipText
@@ -440,7 +516,7 @@ public class GenericDialog
      * @param defaultValue
      *            the initial value within the text field
      * @param columns
-     *            sizeX of field in characters
+     *            the size of the field in characters
      * @param units
      *            (optional) a string displayed to the right of the field
      * @param toolTipText
@@ -1201,8 +1277,12 @@ public class GenericDialog
     }
 
     /**
-     * Returns the contents of the next numeric field, or NaN if the field does
-     * not contain a number.
+     * Returns the contents of the next numeric field, , throwing an exception if
+     * the next numeric field does not contain a number.
+     * 
+     * @return the next numeric entry as a double
+     * @throws NumberFormatException
+     *             if the next numeric field does not contain a number
      */
     public double getNextNumber()
     {
@@ -1211,12 +1291,29 @@ public class GenericDialog
             throw new RuntimeException("no Numeric Field was added");
         }
 
-        JTextField tf = numericFields.get(numericFieldIndex);
+        JTextField tf = numericFields.get(numericFieldIndex++);
 
-        double value = Double.parseDouble(tf.getText());
+        return Double.parseDouble(tf.getText());
+    }
 
-        numericFieldIndex++;
-        return value;
+    /**
+     * Returns the contents of the next integer field, throwing an exception if
+     * the next numeric field does not contain a number.
+     * 
+     * @return the next integer entry
+     * @throws NumberFormatException
+     *             if the next numeric field does not contain a number
+     */
+    public int getNextInteger()
+    {
+        if (numericFields == null)
+        {
+            throw new RuntimeException("no Numeric Field was added");
+        }
+
+        JTextField tf = numericFields.get(numericFieldIndex++);
+
+        return Integer.parseInt(tf.getText());
     }
 
     /**
@@ -1230,13 +1327,10 @@ public class GenericDialog
             throw new RuntimeException("no Numeric Field was added");
         }
 
-        JTextField[] textFields = numericFieldArrays.get(numericFieldArrayIndex);
-        double[] values = Stream.of(textFields)
+        JTextField[] textFields = numericFieldArrays.get(numericFieldArrayIndex++);
+        return Stream.of(textFields)
                 .mapToDouble(tf -> Double.parseDouble(tf.getText()))
                 .toArray();
-
-        numericFieldArrayIndex++;
-        return values;
     }
 
     /**
@@ -1250,13 +1344,10 @@ public class GenericDialog
             throw new RuntimeException("no IntegerFieldArray was added");
         }
 
-        JTextField[] textFields = integerFieldArrays.get(integerFieldArrayIndex);
-        int[] values = Stream.of(textFields)
+        JTextField[] textFields = integerFieldArrays.get(integerFieldArrayIndex++);
+        return Stream.of(textFields)
                 .mapToInt(tf -> Integer.parseInt(tf.getText()))
                 .toArray();
-
-        integerFieldArrayIndex++;
-        return values;
     }
 
     /** Returns the contents of the next text field. */
@@ -1264,7 +1355,7 @@ public class GenericDialog
     {
         if (stringFields == null) return "";
 
-        JTextField tf = stringFields.get(textFieldIndex);
+        JTextField tf = stringFields.get(textFieldIndex++);
         String text = tf.getText();
 
         // if (macro) {
@@ -1290,7 +1381,6 @@ public class GenericDialog
         // recordOption(tf, s);
         // }
 
-        textFieldIndex++;
         return text;
     }
 
@@ -1313,7 +1403,7 @@ public class GenericDialog
     public String getNextChoice()
     {
         if (choices == null) return "";
-        JComboBox<String> thisChoice = choices.get(comboBoxIndex);
+        JComboBox<String> thisChoice = choices.get(comboBoxIndex++);
         String item = (String) thisChoice.getSelectedItem();
         // if (macro) {
         // String label = (String)labels.get((Object)thisChoice);
@@ -1324,7 +1414,6 @@ public class GenericDialog
 
         // if (recorderOn)
         // recordOption(thisChoice, item);
-        comboBoxIndex++;
         return item;
     }
 
