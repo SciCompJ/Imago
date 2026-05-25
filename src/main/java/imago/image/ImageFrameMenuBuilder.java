@@ -487,6 +487,8 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         addPlugin(binaryMenu, imago.image.plugins.binary.BinaryImage3DDepthMap.class, "3D Binary Image Depth Map");
         addPlugin(binaryMenu, imago.image.plugins.binary.ImageGeodesicDistanceMap.class, "Geodesic Distance Map...");
         binaryMenu.addSeparator();
+        addPlugin(binaryMenu, imago.image.plugins.binary.BinaryImageSizeOpening.class, "Size Filtering...");
+        binaryMenu.addSeparator();
         addPlugin(binaryMenu, imago.image.plugins.binary.BinaryImageSkeleton.class, "IJ Skeleton");
         addPlugin(binaryMenu, imago.image.plugins.binary.ClassifySkeletonPixels.class, "Classify Skeleton Pixels");
         addPlugin(binaryMenu, imago.image.plugins.binary.BinaryImageSplitCoalescentParticles.class, "Split Particles...");
