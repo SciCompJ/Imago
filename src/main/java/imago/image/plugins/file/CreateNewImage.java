@@ -177,9 +177,9 @@ public class CreateNewImage implements FramePlugin
         // create dialog to enter options
         GenericDialog gd = new GenericDialog(frame, "Create Image");
         gd.addTextField("Name: ", baseName);
-        gd.addNumericField("Size X: ", sizeX_init, 0);
-        gd.addNumericField("Size Y: ", sizeY_init, 0);
-        gd.addNumericField("Size Z: ", sizeZ_init, 0);
+        gd.addIntegerField("Size X: ", sizeX_init);
+        gd.addIntegerField("Size Y: ", sizeY_init);
+        gd.addIntegerField("Size Z: ", sizeZ_init);
         gd.addChoice("Image Type: ", Type.getAllLabels(), type_init.toString());
         gd.addNumericField("Fill Value: ", 0, 0);
         gd.showDialog();
@@ -191,9 +191,9 @@ public class CreateNewImage implements FramePlugin
 
         // parse dialog results
         String imageName = gd.getNextString();
-        int sizeX = (int) gd.getNextNumber();
-        int sizeY = (int) gd.getNextNumber();
-        int sizeZ = (int) gd.getNextNumber();
+        int sizeX = gd.getNextInteger();
+        int sizeY = gd.getNextInteger();
+        int sizeZ = gd.getNextInteger();
         Type type = Type.fromLabel(gd.getNextChoice());
         double fillValue = gd.getNextNumber();
 
@@ -207,7 +207,7 @@ public class CreateNewImage implements FramePlugin
         Array<?> array = factory.create(dims, fillValue);
         long t1 = System.nanoTime();
         factory.removeAlgoListener(frame);
-        frame.algoTerminated("BoxFilter3x3", (t1 - t0) / 1_000_000.0);
+        frame.algoTerminated("Create New Image", (t1 - t0) / 1_000_000.0);
         
         // Create image
         Image image = new Image(array);

@@ -57,9 +57,9 @@ public class ImportImageRawData implements FramePlugin
         
         // Opens a dialog to select image size and type
         GenericDialog gd = new GenericDialog(frame, "Import Raw Data");
-        gd.addNumericField("Size X ", 200, 0);
-        gd.addNumericField("Size Y ", 200, 0);
-        gd.addNumericField("Size Z ", 1, 0);
+        gd.addIntegerField("Size X ", 200);
+        gd.addIntegerField("Size Y ", 200);
+        gd.addIntegerField("Size Z ", 1);
         gd.addChoice("Data Type ", EnumSet.allOf(DataType.class), DataType.UINT8);
         gd.addChoice("Byte Order ", new String[]{"Little Endian", "Big Endian"}, "Little Endian");
         gd.addCheckBox("Virtual Image", false);
@@ -71,9 +71,9 @@ public class ImportImageRawData implements FramePlugin
         }
         
         // parse dialog results
-        int sizeX = (int) gd.getNextNumber();
-        int sizeY = (int) gd.getNextNumber();
-        int sizeZ = (int) gd.getNextNumber();
+        int sizeX = gd.getNextInteger();
+        int sizeY = gd.getNextInteger();
+        int sizeZ = gd.getNextInteger();
         DataType type = DataType.fromLabel(gd.getNextChoice());
         ByteOrder byteOrder = gd.getNextChoiceIndex() == 0 ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN;
         boolean virtualImage = gd.getNextBoolean();

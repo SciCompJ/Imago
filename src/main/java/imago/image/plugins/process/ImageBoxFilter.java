@@ -45,7 +45,7 @@ public class ImageBoxFilter implements FramePlugin
 		GenericDialog gd = new GenericDialog(frame, "Flat Blur");
 		for (int d = 0; d < nd; d++)
 		{
-			gd.addNumericField("Size dim. " + (d+1), 3, 0);
+			gd.addIntegerField("Size dim. " + (d+1), 3);
 		}
         gd.addEnumChoice("Output Type", ScalarOutputTypes.class, ScalarOutputTypes.SAME_AS_INPUT);
 		
@@ -60,7 +60,7 @@ public class ImageBoxFilter implements FramePlugin
 		int[] diameters = new int[nd];
 		for (int d = 0; d < nd; d++)
 		{
-			diameters[d] = (int) gd.getNextNumber();
+			diameters[d] = gd.getNextInteger();
 		}
 		ScalarArray.Factory<?> factory = ((ScalarOutputTypes) gd.getNextEnumChoice()).factory();
 

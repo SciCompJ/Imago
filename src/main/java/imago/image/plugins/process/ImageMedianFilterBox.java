@@ -41,7 +41,7 @@ public class ImageMedianFilterBox implements FramePlugin
         GenericDialog gd = new GenericDialog(frame, "Median Filter");
         for (int d = 0; d < nd; d++)
         {
-            gd.addNumericField("Size dim. " + (d + 1), 3, 0);
+            gd.addIntegerField("Size dim. " + (d + 1), 3);
         }
         gd.showDialog();
 
@@ -52,7 +52,7 @@ public class ImageMedianFilterBox implements FramePlugin
         int[] diameters = new int[nd];
         for (int d = 0; d < nd; d++)
         {
-            diameters[d] = (int) gd.getNextNumber();
+            diameters[d] = gd.getNextInteger();
         }
 
         // create median box operator

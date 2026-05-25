@@ -244,12 +244,12 @@ public class ImageMorphologicalFilter implements FramePlugin
         if (nd == 2)
 		{
             gd.addEnumChoice("Element", Strel2D.Shape.class, this.shape2d);
-	        gd.addNumericField("Radius (in pixels)", this.radius, 0);
+	        gd.addIntegerField("Radius (in pixels)", this.radius);
 		}
 		else
 		{
             gd.addEnumChoice("Element", Strel3D.Shape.class, this.shape3d);
-	        gd.addNumericField("Radius (in voxels)", this.radius, 0);
+	        gd.addIntegerField("Radius (in voxels)", this.radius);
         }
 		gd.showDialog();
 		
@@ -267,14 +267,14 @@ public class ImageMorphologicalFilter implements FramePlugin
 		{
             this.shape2d = (Strel2D.Shape) gd.getNextEnumChoice();
             shapeSuffix = this.shape2d.suffix();
-	        this.radius  = (int) gd.getNextNumber();
+	        this.radius  = gd.getNextInteger();
 		    strel = shape2d.fromRadius(radius);
 		}
 		else
 		{
             this.shape3d = (Strel3D.Shape) gd.getNextEnumChoice();
             shapeSuffix = this.shape3d.suffix();
-	        this.radius  = (int) gd.getNextNumber();
+	        this.radius  = gd.getNextInteger();
 		    strel = shape3d.fromRadius(radius);
 		}
 

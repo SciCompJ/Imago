@@ -79,8 +79,8 @@ public class ImageCropThumbnailList implements ImageFramePlugin
         JComboBox<String> tableCombo = gd.addChoice("Table", tableNames, tableNames[0]);
         JComboBox<String> xPosCombo = gd.addChoice("X-Position", colNames, colNames[0]);
         JComboBox<String> yPosCombo = gd.addChoice("Y-Position", colNames, colNames[0]);
-        gd.addNumericField("Size X: ", sizeX_init, 0);
-        gd.addNumericField("Size Y: ", sizeY_init, 0);
+        gd.addIntegerField("Size X: ", sizeX_init);
+        gd.addIntegerField("Size Y: ", sizeY_init);
 
         // updates the combo box containing column names when table changes 
         tableCombo.addActionListener(evt -> {
@@ -106,8 +106,8 @@ public class ImageCropThumbnailList implements ImageFramePlugin
         String tableName = gd.getNextChoice();
         String xColName = gd.getNextChoice();
         String yColName = gd.getNextChoice();
-        int sizeX = (int) gd.getNextNumber();
-        int sizeY = (int) gd.getNextNumber();
+        int sizeX = gd.getNextInteger();
+        int sizeY = gd.getNextInteger();
         
         table = TableFrame.getTableFrame(gui, tableName).getTable();
         Column xColumn = table.column(table.findColumnIndex(xColName));

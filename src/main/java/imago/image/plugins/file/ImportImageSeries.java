@@ -46,9 +46,9 @@ public class ImportImageSeries implements FramePlugin
         
         // create a dialog to choose files to read
         GenericDialog gd = new GenericDialog(frame, "Import Series");
-        gd.addNumericField("First Image", 1, 0);
-        gd.addNumericField("Last Image", nFiles, 0);
-        gd.addNumericField("Increment", 1, 0);
+        gd.addIntegerField("First Image", 1);
+        gd.addIntegerField("Last Image", nFiles);
+        gd.addIntegerField("Increment", 1);
         gd.addTextField("File Name Pattern", "*.*");
         gd.addCheckBox("Virtual", false);
 
@@ -58,9 +58,9 @@ public class ImportImageSeries implements FramePlugin
             return;
         }
         
-        int firstImageIndex = (int) gd.getNextNumber() - 1;
-        int lastImageIndex = (int) gd.getNextNumber() - 1;
-        int imageIndexIncr = (int) gd.getNextNumber();
+        int firstImageIndex = gd.getNextInteger() - 1;
+        int lastImageIndex = gd.getNextInteger() - 1;
+        int imageIndexIncr = gd.getNextInteger();
         String stringToContains = gd.getNextString();
         boolean virtual = gd.getNextBoolean();
         

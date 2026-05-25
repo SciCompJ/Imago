@@ -62,7 +62,7 @@ public class ImageIteratedGeodesicDilations implements FramePlugin
 		GenericDialog gd = new GenericDialog(frame, "Geodesic Dilations");
 		gd.addChoice("Marker: ", imageNameArray, firstImageName);
 		gd.addChoice("Mask: ", imageNameArray, firstImageName);
-		gd.addNumericField("Iterations: ", 3, 0);
+		gd.addIntegerField("Iterations: ", 3);
         gd.showDialog();
 		
 		if (gd.wasCanceled()) 
@@ -73,7 +73,7 @@ public class ImageIteratedGeodesicDilations implements FramePlugin
 		// parse dialog results
 		Image markerImage = ImageHandle.findFromName(app, gd.getNextChoice()).getImage();
 		Image maskImage = ImageHandle.findFromName(app, gd.getNextChoice()).getImage();
-		int nIters = (int) gd.getNextNumber();
+		int nIters = gd.getNextInteger();
 
 		// extract arrays and check dimensions
 		Array<?> marker = markerImage.getData();

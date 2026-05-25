@@ -32,7 +32,7 @@ public class LabelMapSizeOpening implements FramePlugin
         
         // Create dialog for entering parameters
         GenericDialog gd = new GenericDialog(frame, "Size Opening");
-        gd.addNumericField("Min Pixel Count:", 100, 0);
+        gd.addIntegerField("Min Pixel/Voxel Count:", 100);
         gd.showDialog();
         
         if (gd.getOutput() == GenericDialog.Output.CANCEL) 
@@ -41,7 +41,7 @@ public class LabelMapSizeOpening implements FramePlugin
         }
         
         // retrieve option values
-        int minCount = (int) gd.getNextNumber();
+        int minCount = gd.getNextInteger();
         
         Image resImage = new net.sci.image.label.filters.LabelMapSizeOpening(minCount).process(image);
         resImage.setName(image.getName() + "-sizeOp" + minCount);

@@ -37,9 +37,9 @@ public class Image3DGetSlice implements FramePlugin
 		Image image	= doc.getImage();
 
 		GenericDialog gd = new GenericDialog(frame, "Extract planar slice");
-        gd.addNumericField("Dim. 1 ", 0, 0);
-        gd.addNumericField("Dim. 2 ", 1, 0);
-        gd.addNumericField("Slice index ", 0, 0);
+        gd.addIntegerField("Dim. 1 ", 0);
+        gd.addIntegerField("Dim. 2 ", 1);
+        gd.addIntegerField("Slice index ", 0);
 		gd.showDialog();
 		
 		if (gd.getOutput() == GenericDialog.Output.CANCEL) 
@@ -48,9 +48,9 @@ public class Image3DGetSlice implements FramePlugin
 		}
 		
 		// parse dialog results
-        int dim1 = (int) gd.getNextNumber();
-        int dim2 = (int) gd.getNextNumber();
-        int sliceIndex = (int) gd.getNextNumber();
+        int dim1 = gd.getNextInteger();
+        int dim2 = gd.getNextInteger();
+        int sliceIndex = gd.getNextInteger();
 
         int[] refPos = new int[]{sliceIndex, sliceIndex, sliceIndex};
         

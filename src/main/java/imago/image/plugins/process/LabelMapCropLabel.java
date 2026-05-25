@@ -34,8 +34,8 @@ public class LabelMapCropLabel implements FramePlugin
         
         // Create dialog for entering parameters
         GenericDialog gd = new GenericDialog(frame, "Crop Label");
-        gd.addNumericField("Region Label", 1, 0);
-        gd.addNumericField("Add Border (pixels)", 0, 0);
+        gd.addIntegerField("Region Label", 1);
+        gd.addIntegerField("Add Border (pixels)", 0);
         gd.showDialog();
         
         if (gd.getOutput() == GenericDialog.Output.CANCEL) 
@@ -44,8 +44,8 @@ public class LabelMapCropLabel implements FramePlugin
         }
         
         // retrieve option values
-        int label = (int) gd.getNextNumber();
-        int border = (int) gd.getNextNumber();
+        int label = gd.getNextInteger();
+        int border = gd.getNextInteger();
         
         IntArray<?> res = LabelImages.cropLabel(array, label, border);
         Image resImage = new Image(res, image);
