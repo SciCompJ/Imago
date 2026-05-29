@@ -7,10 +7,6 @@ import java.awt.Color;
 import java.util.Collection;
 
 import imago.app.ImagoApp;
-import imago.app.scene.GroupNode;
-import imago.app.scene.ImageSerialSectionsNode;
-import imago.app.scene.ImageSliceNode;
-import imago.app.scene.ShapeNode;
 import imago.app.shape.Style;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
@@ -20,16 +16,10 @@ import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import imago.shape.GeometryHandle;
 import imago.shape.ShapeManager;
-import net.sci.algo.AlgoEvent;
 import net.sci.array.Array;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray3D;
-import net.sci.geom.geom3d.Plane3D;
-import net.sci.geom.geom3d.Point3D;
-import net.sci.geom.geom3d.Vector3D;
-import net.sci.geom.geom3d.polyline.Polyline3D;
 import net.sci.geom.mesh3d.DefaultTriMesh3D;
-import net.sci.geom.mesh3d.process.IntersectionMeshPlane;
 import net.sci.image.Image;
 import net.sci.image.vectorize.MorphologicalMarchingCubes;
 
@@ -108,42 +98,11 @@ public class Image3DIsosurface implements FramePlugin
 
         if (addToImage)
         {
-            iFrame.getStatusBar().setCurrentStepLabel("Add isosurface to image shape tree");
+            iFrame.getStatusBar().setCurrentStepLabel("Add to image shape tree");
             ImageHandle targetHandle = ImageHandle.findFromName(app, imageToOverlayName);
 
-            // get serial sections node
-            ImageSerialSectionsNode sectionsNode = new ImageSerialSectionsNode("isosurface");
-            
-            // create slice for display of mesh-plane intersection
-            Style sliceStyle = new Style().setLineWidth(2.5).setLineColor(Color.MAGENTA);
-
-            // for each slice, computes the intersection polygon, and if it is not empty, 
-            // add it into a new "ImageSliceNode" within the sectionsNode instance.
-            int sliceCount = scalar.size(2);
-            for (int z = 0; z < sliceCount; z++)
-            {
-                frame.algoProgressChanged(new AlgoEvent(this, "", z, sliceCount));
-                Plane3D plane = new Plane3D(new Point3D(0, 0, z+0.003), new Vector3D(0, 0, 1));
-                Collection<Polyline3D> polylines = IntersectionMeshPlane.intersectionMeshPlane(mesh, plane);
-
-                if (!polylines.isEmpty())
-                {
-                    String name = String.format("slice-%03d", z);
-                    ImageSliceNode sliceNode = new ImageSliceNode(name, z);
-                    
-                    int i = 0;
-                    for (Polyline3D poly : polylines)
-                    {
-                        sliceNode.addNode(new ShapeNode("poly" + (i++), poly.projectXY(), sliceStyle));
-                    }
-                    sectionsNode.addSliceNode(sliceNode);
-                }
-            }
-            
-            frame.algoProgressChanged(new AlgoEvent(this, "", 1, 1));
-            
-            // add new node to image handle
-            ((GroupNode) handle.getRootNode()).addNode(sectionsNode);
+            Style style = new Style().setLineWidth(2.5).setLineColor(Color.MAGENTA);
+            targetHandle.addGeometryNode("isosurface", mesh, style);
             targetHandle.notifyImageHandleChange(ImageHandle.Event.SHAPES_MASK | ImageHandle.Event.CHANGE_MASK);
         }
         

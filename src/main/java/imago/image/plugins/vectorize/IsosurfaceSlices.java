@@ -33,9 +33,11 @@ import net.sci.image.vectorize.MorphologicalMarchingCubes;
  * Computes isosurface of the current image, and saves the mesh into a text file
  * in OFF format.
  * 
+ * @derpecated replaced by ExportIsosurface
  * @author dlegland
  *
  */
+@Deprecated
 public class IsosurfaceSlices implements FramePlugin
 {
 
@@ -101,6 +103,7 @@ public class IsosurfaceSlices implements FramePlugin
         iFrame.getStatusBar().setCurrentStepLabel("Add isosurface to image shape tree");
         ImageHandle targetHandle = ImageHandle.findFromName(app, imageToOverlayName);
         
+        targetHandle.addGeometryNode("isosurface", mesh, null);
         // get serial sections node
         String nodeName = "isosurface";
         ImageSerialSectionsNode sectionsNode = getIsosurfaceNode(targetHandle, nodeName); 
