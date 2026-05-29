@@ -12,11 +12,26 @@ import imago.app.ImagoApp;
 import imago.app.ObjectHandle;
 import imago.app.Workspace;
 import imago.app.scene.GroupNode;
+import imago.app.scene.ImageSerialSectionsNode;
+import imago.app.scene.ImageSliceNode;
 import imago.app.scene.Node;
+import imago.app.scene.ShapeNode;
 import imago.app.shape.Shape;
+import imago.app.shape.Style;
 import imago.util.imagej.ImagejRoi;
 import imago.util.imagej.ImagejRoiDecoder;
 import net.sci.array.Array;
+import net.sci.geom.Geometry;
+import net.sci.geom.geom3d.Geometry3D;
+import net.sci.geom.geom3d.Plane3D;
+import net.sci.geom.geom3d.Point3D;
+import net.sci.geom.geom3d.Vector3D;
+import net.sci.geom.geom3d.polyline.Polyline3D;
+import net.sci.geom.mesh3d.DefaultTriMesh3D;
+import net.sci.geom.mesh3d.EdgeMesh3D;
+import net.sci.geom.mesh3d.Mesh3D;
+import net.sci.geom.mesh3d.Meshes3D;
+import net.sci.geom.mesh3d.process.IntersectionMeshPlane;
 import net.sci.image.Image;
 import net.sci.image.io.tiff.ImagejMetadata;
 
@@ -268,6 +283,66 @@ public class ImageHandle extends ObjectHandle
     public Node getRootNode()
     {
     	return this.rootNode;
+    }
+    
+    public Node addGeometryNode(String nodeName, Geometry geom, Style style)
+    {
+        return switch (geom)
+        {
+            case Geometry3D geom3d -> addGeometry3dNode(nodeName, geom3d, style);
+            default -> throw new RuntimeException(
+                    "Unable to manage geometry: " + geom.getClass().getName());
+        };
+    }
+    
+    private Node addGeometry3dNode(String nodeName, Geometry3D geom, Style style)
+    {
+        // get serial sections node
+        ImageSerialSectionsNode sectionsNode = new ImageSerialSectionsNode(nodeName);
+        
+        if (image.getDimension() < 3)
+        {
+            throw new RuntimeException("Requires a 3D image");
+        }
+        int sliceCount = image.getSize(2);
+        
+        // for each slice, computes the intersection polygon, and if it is not empty, 
+        // add it into a new "ImageSliceNode" within the sectionsNode instance.
+        if (geom instanceof Mesh3D mesh)
+        {
+            // requires an instance of "EdgeMesh" specialization for computing
+            // intersections with planes
+            EdgeMesh3D edgeMesh = mesh instanceof EdgeMesh3D ? (EdgeMesh3D) mesh
+                    : DefaultTriMesh3D.convert(Meshes3D.triangulate(mesh));
+            
+            for (int z = 0; z < sliceCount; z++)
+            {
+                Plane3D plane = new Plane3D(Point3D.of(0, 0, z + 0.0003), Vector3D.of(0, 0, 1));
+                Collection<Polyline3D> polylines = IntersectionMeshPlane.intersectionMeshPlane(edgeMesh, plane);
+
+                if (!polylines.isEmpty())
+                {
+                    String name = String.format("slice-%03d", z);
+                    ImageSliceNode sliceNode = new ImageSliceNode(name, z);
+
+                    int i = 0;
+                    for (Polyline3D poly : polylines)
+                    {
+                        sliceNode.addNode(new ShapeNode("poly" + (i++), poly.projectXY(), style));
+                    }
+                    sectionsNode.addSliceNode(sliceNode);
+                }
+            }
+        }
+        else
+        {
+            throw new RuntimeException("Unable to manage geometry class: " + geom.getClass().getName());
+        }
+        
+        // add new node to image handle
+        this.rootNode.addNode(sectionsNode);
+        
+        return sectionsNode;
     }
     
 	
