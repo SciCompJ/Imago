@@ -3,12 +3,14 @@
  */
 package imago.image.plugins.vectorize;
 
+import java.awt.Color;
 import java.util.Collection;
 import java.util.List;
 
 import imago.app.ImagoApp;
 import imago.app.scene.GroupNode;
 import imago.app.scene.ShapeNode;
+import imago.app.shape.Style;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
@@ -23,7 +25,14 @@ import net.sci.array.Array;
 import net.sci.array.binary.Binary;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.binary.BinaryArray2D;
+import net.sci.array.binary.BinaryArray3D;
 import net.sci.geom.geom2d.Point2D;
+import net.sci.geom.geom3d.Point3D;
+import net.sci.geom.mesh3d.DefaultTriMesh3D;
+import net.sci.geom.mesh3d.Mesh3D;
+import net.sci.geom.mesh3d.Meshes3D;
+import net.sci.geom.mesh3d.TriMesh3D;
+import net.sci.geom.mesh3d.process.QuickHull3D;
 import net.sci.geom.polygon2d.Polygon2D;
 import net.sci.geom.polygon2d.Polygons2D;
 import net.sci.image.Image;
@@ -120,11 +129,66 @@ public class BinaryImageConvexHull extends AlgoStub implements FramePlugin
                 manager.setVisible(true);
             }
         }
+        else if (nd == 3)
+        {
+            BinaryArray3D array3d = BinaryArray3D.wrap(BinaryArray.wrap(array));
+            long t0 = System.nanoTime();
+            Mesh3D hull = process3d(array3d);
+            TriMesh3D trimesh = Meshes3D.triangulate(hull);
+            // convert to a mesh with management of edges 
+            DefaultTriMesh3D mesh = DefaultTriMesh3D.convert(trimesh);
+            // cleanup listener and status bar
+            iFrame.getStatusBar().setProgressBarPercent(0);
+
+            if (addToImage)
+            {
+                iFrame.getStatusBar().setCurrentStepLabel("Add convex hull to image shape tree");
+                ImageHandle targetHandle = ImageHandle.findFromName(app, imageToOverlayName);
+                
+                // create slice for display of mesh-plane intersection
+                Style sliceStyle = new Style().setLineWidth(2.5).setLineColor(Color.MAGENTA);
+                targetHandle.addGeometryNode("convexHull", mesh, sliceStyle);
+
+                targetHandle.notifyImageHandleChange(ImageHandle.Event.SHAPES_MASK | ImageHandle.Event.CHANGE_MASK);
+            }
+            
+            // display elapsed time
+            long t1 = System.nanoTime();
+            iFrame.getStatusBar().setCurrentStepLabel("");
+            iFrame.showElapsedTime("Compute Convex Hull", (t1 - t0) / 1_000_000.0, image);
+            
+            if (addToShapeManager)
+            {
+                GeometryHandle geomHandle = GeometryHandle.create(app, mesh);
+                
+                // opens a dialog to choose name
+                String name = geomHandle.getName();
+                name = ImagoGui.showInputDialog(frame, "Name of new geometry:", "Choose Geometry Name", name);
+                geomHandle.setName(name);
+                
+                // ensure ShapeManager is visible
+                ShapeManager manager = ShapeManager.getInstance(frame.getGui());
+                manager.repaint();
+                manager.setVisible(true);
+            }
+
+        }
         else
         {
-            frame.showErrorDialog("Requires a 2D image", "Dimensionality Error");
+            frame.showErrorDialog("Requires a 2D or a 3 binary image", "Dimensionality Error");
             return;
         }
+    }
+    
+    public Mesh3D process3d(BinaryArray3D array)
+    {
+        BinaryImageBoundaryFacetMidPoints algo = new BinaryImageBoundaryFacetMidPoints();
+        Collection<Point3D> pts = algo.processBinary3d(array);
+        
+        QuickHull3D op = new QuickHull3D();
+        Mesh3D hull = op.process(pts);
+        
+        return hull;
     }
 
 }
