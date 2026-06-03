@@ -34,6 +34,7 @@ import net.sci.geom.geom2d.curve.Circle2D;
 import net.sci.geom.geom2d.curve.Ellipse2D;
 import net.sci.geom.geom2d.curve.MultiCurve2D;
 import net.sci.geom.graph.Graph2D;
+import net.sci.geom.mesh2d.Mesh2D;
 import net.sci.geom.polygon2d.LinearRing2D;
 import net.sci.geom.polygon2d.PolygonalDomain2D;
 import net.sci.geom.polygon2d.Polyline2D;
@@ -192,6 +193,10 @@ public class ShapeDrawer
                     drawPolyline(g2, poly);
                 }
             }
+            case Mesh2D mesh -> {
+                drawMeshEdges(g2, mesh);
+                drawMeshVertices(g2, mesh);
+            }
             case Graph2D graph -> {
                 drawGraphEdges(g2, graph);
                 drawGraphVertices(g2, graph);
@@ -267,6 +272,36 @@ public class ShapeDrawer
     
     // ===================================================================
     // Specific geometry paint methods
+
+    /**
+     * Draws edges of a graph on the specified graphics. Paint settings are
+     * assumed to be already defined.
+     * 
+     * @param graph
+     *            the graph whose edge need to be paint
+     */
+    private void drawMeshVertices(Graphics2D g2, Mesh2D graph)
+    {
+        for (Mesh2D.Vertex v : graph.vertices())
+        {
+            drawPoint(g2, v.position());
+        }
+    }
+    
+    /**
+     * Draws edges of a graph on the specified graphics. Paint settings are
+     * assumed to be already defined.
+     * 
+     * @param graph
+     *            the graph whose edge need to be paint
+     */
+    private void drawMeshEdges(Graphics2D g2, Mesh2D graph)
+    {
+        for (Mesh2D.Face face : graph.faces())
+        {
+            drawPolygon(g2, face.polygon());
+        }
+    }
 
     /**
      * Draws edges of a graph on the specified graphics. Paint settings are
