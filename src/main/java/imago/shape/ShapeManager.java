@@ -314,6 +314,8 @@ public class ShapeManager extends ImagoFrame
             addPlugin(processMenu, imago.shape.plugins.process.ComputeBounds.class, "Compute Bounds");
             addPlugin(processMenu, imago.shape.plugins.process.ComputeConvexHull.class, "Compute Convex Hull");
             processMenu.addSeparator();
+            addPlugin(processMenu, imago.shape.plugins.process.ComputeDelaunayTriangulation2D.class, "Delaunay Triangulation 2D");
+            processMenu.addSeparator();
             addPlugin(processMenu, imago.shape.plugins.process.SmoothMesh3D.class, "Smooth Mesh 3D");
             menuBar.add(processMenu);
 
