@@ -41,9 +41,13 @@ public class SelectPolygonTool extends ImageTool
     
     enum State
     {
+        /** Either nothing selected, or a polygon is selected and the mouse is released*/
         REST,
+        /** Started to add vertices to the polygon */
         POLYGON_STARTED,
+        /** A polygon was selected; moving the mouse will be drag the polygon */
         SELECT_POLYGON,
+        /** A polygon vertex was selected; moving the mouse will be drag the vertex */
         SELECT_VERTEX;
     }
     
@@ -223,7 +227,6 @@ public class SelectPolygonTool extends ImageTool
                     
                     // if no vertex was found, check distance to polygon boundary
                     minDist = this.currentPolygon.boundary().distance(pos);
-                    System.out.println("dist to boundary: " + minDist);
                     if (minDist > SNAP_DISTANCE)
                     {
                         // reset to restful state
@@ -317,42 +320,43 @@ public class SelectPolygonTool extends ImageTool
         
         switch (this.state)
         {
-            case SELECT_POLYGON:
-            {
+            case SELECT_POLYGON -> {
                 Point2D pos = display.displayToImage(point);
                 Point2D lastPos = display.displayToImage(this.lastPoint);
-                AffineTransform2D transfo = AffineTransform2D.createTranslation(Vector2D.of(lastPos, pos));
-                
+                AffineTransform2D transfo = AffineTransform2D
+                        .createTranslation(Vector2D.of(lastPos, pos));
+
                 // apply translation to each selected point
                 for (int i = 0; i < selectedPoints.size(); i++)
                 {
                     this.selectedPoints.set(i, this.selectedPoints.get(i).transform(transfo));
                 }
-                
+
                 updatePolygon();
                 updateSelection(display, this.currentPolygon);
                 this.frame.repaint();
-                break;
-           }
-            
-            case SELECT_VERTEX:
-            {
+            }
+
+            case SELECT_VERTEX -> {
                 Point2D pos = display.displayToImage(point);
                 Point2D lastPos = display.displayToImage(this.lastPoint);
-                AffineTransform2D transfo = AffineTransform2D.createTranslation(Vector2D.of(lastPos, pos));
-                
+                AffineTransform2D transfo = AffineTransform2D
+                        .createTranslation(Vector2D.of(lastPos, pos));
+
                 // apply translation the selected point
-                this.selectedPoints.set(selectedPointIndex, this.selectedPoints.get(selectedPointIndex).transform(transfo));
-                
+                this.selectedPoints.set(selectedPointIndex,
+                        this.selectedPoints.get(selectedPointIndex).transform(transfo));
+
                 updatePolygon();
                 updateSelection(display, this.currentPolygon);
                 this.frame.repaint();
-                break;
+                this.state = State.SELECT_POLYGON;
             }
-            
-            default:
-                break;
-        }
+
+            default -> {}
+        };
+        
+
     }
 
     private void updatePolygon()
