@@ -137,7 +137,7 @@ public class ShapeDrawer
         else if (geom instanceof Geometry2D)
         {
             // setup line draw style
-            Stroke stroke = new BasicStroke((float) shape.getLineWidth());
+            Stroke stroke = new BasicStroke((float) shape.getLineWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
             g2.setStroke(stroke);
             g2.setColor(shape.getColor());
             
@@ -189,17 +189,16 @@ public class ShapeDrawer
             case MultiCurve2D multiCurve -> {
                 for (Curve2D curve : multiCurve.curves())
                 {
-                    Polyline2D poly = curve.asPolyline(120);
-                    drawPolyline(g2, poly);
+                    drawPolyline(g2, curve.asPolyline(120));
                 }
             }
             case Mesh2D mesh -> {
                 drawMeshEdges(g2, mesh);
-                drawMeshVertices(g2, mesh);
+                drawMarkers(g2, mesh.vertexPositions(), vertexStyle);
             }
             case Graph2D graph -> {
                 drawGraphEdges(g2, graph);
-                drawGraphVertices(g2, graph);
+                drawMarkers(g2, graph.vertexPositions(), vertexStyle);
             }
              
             default -> System.out.println("ShapeDrawer can not draw geometry with class: " + geom.getClass());
@@ -251,18 +250,18 @@ public class ShapeDrawer
 
         switch (geom)
         {
-            case Point2D point -> drawVertex(g2, point, vertexStyle);
+            case Point2D point -> drawMarker(g2, point, vertexStyle);
             case MultiPoint2D multi -> 
             {
-                multi.points().stream().forEach(p -> drawVertex(g2, p, vertexStyle));
+                drawMarkers(g2, multi.points(), vertexStyle);
             }
             case Polyline2D poly -> 
             {
-                poly.vertexPositions().stream().forEach(p -> drawVertex(g2, p, vertexStyle));
+                drawMarkers(g2, poly.vertexPositions(), vertexStyle);
             }
             case PolygonalDomain2D poly -> 
             {
-                poly.vertexPositions().stream().forEach(p -> drawVertex(g2, p, vertexStyle));
+                drawMarkers(g2, poly.vertexPositions(), vertexStyle);
             }
              
             default -> System.out.println("ShapeDrawer can not draw vertices of geometry with class: " + geom.getClass());
@@ -280,21 +279,6 @@ public class ShapeDrawer
      * @param graph
      *            the graph whose edge need to be paint
      */
-    private void drawMeshVertices(Graphics2D g2, Mesh2D graph)
-    {
-        for (Mesh2D.Vertex v : graph.vertices())
-        {
-            drawPoint(g2, v.position());
-        }
-    }
-    
-    /**
-     * Draws edges of a graph on the specified graphics. Paint settings are
-     * assumed to be already defined.
-     * 
-     * @param graph
-     *            the graph whose edge need to be paint
-     */
     private void drawMeshEdges(Graphics2D g2, Mesh2D graph)
     {
         for (Mesh2D.Face face : graph.faces())
@@ -303,21 +287,6 @@ public class ShapeDrawer
         }
     }
 
-    /**
-     * Draws edges of a graph on the specified graphics. Paint settings are
-     * assumed to be already defined.
-     * 
-     * @param graph
-     *            the graph whose edge need to be paint
-     */
-    private void drawGraphVertices(Graphics2D g2, Graph2D graph)
-    {
-        for (Graph2D.Vertex v : graph.vertices())
-        {
-            drawPoint(g2, v.position());
-        }
-    }
-    
     /**
      * Draws edges of a graph on the specified graphics. Paint settings are
      * assumed to be already defined.
@@ -385,12 +354,46 @@ public class ShapeDrawer
     }
     
     /**
-     * Draws a Vertex on the specified graphics. Paint settings are assumed to be
-     * already defined.
+     * Draws a series of markers on the specified graphics, using the same style
+     * for all markers.
      * 
-     * @param point the position of the vertex to draw
+     * @param markers
+     *            the list of marker positions
+     * @param style
+     *            the drawing style for the markers
      */
-    private void drawVertex(Graphics2D g2, Point2D point, Style style)
+    private void drawMarkers(Graphics2D g2, Iterable<Point2D> markers, Style style)
+    {
+        for (Point2D point : markers)
+        {
+            point = userToDisplay(point);
+            float xc = (float) point.x();
+            float yc = (float) point.y();
+            float r = style.getMarkerSize() * 0.5f;
+
+            // setup fill
+            g2.setPaint(style.getFillColor());
+            style.getMarkerType().fill(g2, xc, yc, r);
+
+            // setup line draw style
+            Stroke stroke = new BasicStroke((float) style.getLineWidth());
+            g2.setStroke(stroke);
+            g2.setColor(style.getLineColor());
+
+            style.getMarkerType().draw(g2, xc, yc, r);
+        }
+    }
+
+    /**
+     * Draws a marker on the specified graphics. First fills the interior, then
+     * draw the lines.
+     * 
+     * @param point
+     *            the position of the marker to draw
+     * @param style
+     *            the drawing style for the marker
+     */
+    private void drawMarker(Graphics2D g2, Point2D point, Style style)
     {
         point = userToDisplay(point);
         float xc = (float) point.x();
