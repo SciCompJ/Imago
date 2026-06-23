@@ -3,13 +3,10 @@
  */
 package imago.table.plugins.edit;
 
-import java.util.ArrayList;
-
 import imago.app.ImagoApp;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
-import imago.gui.ImagoGui;
 import imago.table.TableFrame;
 import imago.table.TableHandle;
 import net.sci.table.Table;
@@ -29,23 +26,20 @@ public class ConcatenateTableColumns implements FramePlugin
     @Override
     public void run(ImagoFrame frame, String args)
     {
-        // collect the names of frames containing tables
-        ArrayList<String> tableNames = findTableNameList(frame.getGui());
+        // collect the names of current tables
+        ImagoApp app = frame.getGui().getAppli();
+        String[] tableNames = TableHandle.getAllNames(app).toArray(new String[]{});
         
         // do not continue if no table exist
-        if (tableNames.size() == 0)
+        if (tableNames.length == 0)
         {
             return;
         }
-        
-        // Convert table name list to String array
-        String[] tableNameArray = tableNames.toArray(new String[]{});
-        String firstTableName = tableNameArray[0];
                 
         // Create Dialog for choosing image names
         GenericDialog dialog = new GenericDialog(frame, "Merge tables");
-        dialog.addChoice("First Table:", tableNameArray, firstTableName);
-        dialog.addChoice("Second Table:", tableNameArray, firstTableName);
+        dialog.addChoice("First Table:", tableNames, tableNames[0]);
+        dialog.addChoice("Second Table:", tableNames, tableNames[0]);
 
         // Display dialog and wait for OK or Cancel
         dialog.showDialog();
@@ -58,7 +52,6 @@ public class ConcatenateTableColumns implements FramePlugin
         String tableName2 = dialog.getNextChoice();
         
         // retrieve tables by their names
-        ImagoApp app = frame.getGui().getAppli();
         Table table1 = TableHandle.findFromName(app, tableName1).getTable();
         Table table2 = TableHandle.findFromName(app, tableName2).getTable();
         if (table1.rowCount() != table2.rowCount())
@@ -72,17 +65,8 @@ public class ConcatenateTableColumns implements FramePlugin
         TableFrame.create(res, frame);
     }
     
-    private ArrayList<String> findTableNameList(ImagoGui gui)
-    {
-        ArrayList<String> tableNames = new ArrayList<>();
-        gui.getFrames().stream()
-            .filter(frame -> frame instanceof TableFrame)
-            .forEach(frame -> tableNames.add(((TableFrame) frame).getTable().getName()));
-        return tableNames;
-    }
-    
     public boolean isEnabled(ImagoFrame frame)
     {
-        return findTableNameList(frame.getGui()).size() > 0;
+        return TableHandle.getAllNames(frame.getGui().getAppli()).size() > 0;
     }
 }

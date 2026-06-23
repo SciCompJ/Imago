@@ -82,15 +82,10 @@ public class TableHandle extends ObjectHandle
      */
     public static final Collection<String> getAllNames(ImagoApp app)
     {
-        ArrayList<String> res = new ArrayList<String>();
-        for (ObjectHandle handle : app.getWorkspace().getHandles())
-        {
-            if (handle instanceof TableHandle)
-            {
-                res.add(handle.getName());
-            }
-        }
-        return res;
+        return app.getWorkspace().getHandles().stream()
+                .filter(handle -> handle instanceof TableHandle)
+                .map(handle -> handle.getName())
+                .toList();
     }
     
     public static final TableHandle findFromName(ImagoApp app, String handleName)

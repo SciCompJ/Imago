@@ -290,6 +290,7 @@ public class ShapeManager extends ImagoFrame
             ShapeManager sm = (ShapeManager) frame;
                 
             JMenu fileMenu = new JMenu("File");
+            addPlugin(fileMenu, imago.shape.plugins.file.GeometryFromCoordinates.class, "Create Shape From Coordinates...");
             addPlugin(fileMenu, imago.shape.plugins.file.ImportRoiListFromJson.class, "Import Roi List...");
             addPlugin(fileMenu, imago.shape.plugins.file.ImportImagejRoi.class, "Import ImageJ ROI...");
             fileMenu.addSeparator();

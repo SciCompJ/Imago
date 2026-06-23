@@ -115,7 +115,6 @@ public class TableFrame extends ImagoFrame
     }
     
     
-    
     // ===================================================================
     // Class variables
 
