@@ -329,44 +329,6 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         addPlugin(vectorMenu, imago.image.plugins.convert.VectorImageToTable.class, "Convert To Table", hasVectorImage);
         menu.add(vectorMenu);
 
-        // Change the geometry of image, and and extract slices
-        menu.addSeparator();
-        JMenu geometryMenu = new JMenu("Geometry");
-        geometryMenu.setEnabled(hasImage);
-        addPlugin(geometryMenu, new ImageFlip(0), "Horizontal Flip ");
-        addPlugin(geometryMenu, new ImageFlip(1), "Vertical Flip");
-        addPlugin(geometryMenu, new ImageFlip(2), "Z-Flip");
-        geometryMenu.addSeparator();
-        addArrayOperatorPlugin(geometryMenu, new Rotate90(-1), "Rotate Counter-Clockwise", hasImage2D);
-        addArrayOperatorPlugin(geometryMenu, new Rotate90(+1), "Rotate Clockwise", hasImage2D);
-        addPlugin(geometryMenu, imago.image.plugins.shape.ImageRotateBy90Degrees.class, "Rotate by 90 degrees...");
-        addPlugin(geometryMenu, imago.image.plugins.shape.ImageRotateAroundCenter.class, "Rotate...", hasImage2D);
-        addPlugin(geometryMenu, imago.image.plugins.shape.ImageRotatedCrop.class, "Rotated Crop...", hasImage2D || hasImage3D);
-        geometryMenu.addSeparator();
-        addPlugin(geometryMenu, imago.image.plugins.shape.ImageReshape.class, "Reshape Image...", hasImage);
-        addPlugin(geometryMenu, imago.image.plugins.shape.ImagePermuteDims.class, "Permute Image Dimensions...", hasImage);
-        geometryMenu.addSeparator();
-        addPlugin(geometryMenu, imago.image.plugins.shape.ImageConcatenate.class, "Concatenate..."); 
-        addPlugin(geometryMenu, imago.image.plugins.shape.ImageAddBorders.class, "Add Borders..."); 
-        addPlugin(geometryMenu, imago.image.plugins.shape.ImageSubsample.class, "Subsample...", hasImage);
-        addPlugin(geometryMenu, imago.image.plugins.shape.ImageDownsample.class, "Downsample...", hasImage);
-        geometryMenu.addSeparator();
-        addPlugin(geometryMenu, imago.image.plugins.process.ImageCropThumbnailList.class, "Crop Thumbnails from Positions...", hasImage);
-        
-        menu.add(geometryMenu);
-        
-        // Create the menu for 3D images
-        JMenu stackMenu = new JMenu("3D Images");
-        stackMenu.setEnabled(hasImage3D);
-        addPlugin(stackMenu, imago.image.plugins.shape.Image3DGetCurrentSlice.class, "Extract Current Slice", hasImage3D);
-        addPlugin(stackMenu, imago.image.plugins.shape.Image3DGetSlice.class, "Extract Slice...", hasImage3D);
-        addPlugin(stackMenu, imago.image.plugins.shape.Image3DOrthoslicesMontage.class, "OrthoSlices Montage...", hasImage3D);
-        addPlugin(stackMenu, imago.image.plugins.shape.Image3DSliceMontage.class, "Image 3D Montage...", hasImage3D);
-        addPlugin(stackMenu, imago.image.plugins.shape.ImageOrthogonalProjection.class, "Orthogonal Projection...", hasImage3D && hasScalarImage);
-        stackMenu.addSeparator();
-        addPlugin(stackMenu, imago.image.plugins.process.Image3DSetOrthoSlicesDisplay.class, "Set Orthoslices Display", hasImage3D);
-        menu.add(stackMenu);
-
         menu.addSeparator();
         addPlugin(menu, imago.image.plugins.process.ImageDuplicate.class, "Duplicate", hasImage);
         addArrayOperatorPlugin(menu, new ImageInverter(), "Invert", "%s-inv");
@@ -426,14 +388,14 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         addPlugin(morphologyMenu, imago.image.plugins.process.ImageMorphologicalFilter.class, "Morphological Filters...");
         addPlugin(morphologyMenu, imago.image.plugins.binary.BinaryImageMorphologicalFilter.class, "Binary Morphological Filters...");
         addPlugin(morphologyMenu, imago.image.plugins.binary.BinaryImageMorphologicalFilterBall.class, "Ball Binary Morphological Filters...");
-
         morphologyMenu.addSeparator();
         addPlugin(morphologyMenu, imago.image.plugins.process.ImageRegionalExtrema.class, "Regional Min./Max...", hasScalarImage);
         addPlugin(morphologyMenu, imago.image.plugins.process.ImageExtendedExtrema.class, "Extended Min./Max...", hasScalarImage);
         addPlugin(morphologyMenu, imago.image.plugins.process.ImageImposeExtrema.class, "Impose Min./Max...", hasScalarImage);
+        morphologyMenu.addSeparator();
         addPlugin(morphologyMenu, imago.image.plugins.process.ImageMorphologicalReconstruction.class, "Morphological Reconstruction...");
         addPlugin(morphologyMenu, imago.image.plugins.binary.BinaryImageMorphologicalReconstruction.class, "Binary Morphological Reconstruction...");
-        addPlugin(morphologyMenu, imago.image.plugins.process.ImageIteratedGeodesicDilations.class, "Geodesic Dilation...");
+        addPlugin(morphologyMenu, imago.image.plugins.process.ImageIteratedGeodesicDilations.class, "Iterated Geodesic Dilation...");
         morphologyMenu.addSeparator();
         addPlugin(morphologyMenu, imago.image.plugins.process.ImageFillHoles.class, "Fill Holes");
         addPlugin(morphologyMenu, imago.image.plugins.binary.BinaryImageFillHoles.class, "Binary Fill Holes");
@@ -441,7 +403,31 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         addPlugin(morphologyMenu, imago.image.plugins.binary.BinaryImageKillBorders.class, "Binary Kill Borders");
         menu.add(morphologyMenu);
         
+        // Change the geometry of image, and and extract slices
         menu.addSeparator();
+        JMenu geometryMenu = new JMenu("Geometry");
+        geometryMenu.setEnabled(hasImage);
+        addPlugin(geometryMenu, new ImageFlip(0), "Horizontal Flip ");
+        addPlugin(geometryMenu, new ImageFlip(1), "Vertical Flip");
+        addPlugin(geometryMenu, new ImageFlip(2), "Z-Flip");
+        geometryMenu.addSeparator();
+        addArrayOperatorPlugin(geometryMenu, new Rotate90(-1), "Rotate Counter-Clockwise", hasImage2D);
+        addArrayOperatorPlugin(geometryMenu, new Rotate90(+1), "Rotate Clockwise", hasImage2D);
+        addPlugin(geometryMenu, imago.image.plugins.shape.ImageRotateBy90Degrees.class, "Rotate by 90 degrees...");
+        addPlugin(geometryMenu, imago.image.plugins.shape.ImageRotateAroundCenter.class, "Rotate...", hasImage2D);
+        addPlugin(geometryMenu, imago.image.plugins.shape.ImageRotatedCrop.class, "Rotated Crop...", hasImage2D || hasImage3D);
+        geometryMenu.addSeparator();
+        addPlugin(geometryMenu, imago.image.plugins.shape.ImageReshape.class, "Reshape Image...", hasImage);
+        addPlugin(geometryMenu, imago.image.plugins.shape.ImagePermuteDims.class, "Permute Image Dimensions...", hasImage);
+        geometryMenu.addSeparator();
+        addPlugin(geometryMenu, imago.image.plugins.shape.ImageConcatenate.class, "Concatenate..."); 
+        addPlugin(geometryMenu, imago.image.plugins.shape.ImageAddBorders.class, "Add Borders..."); 
+        addPlugin(geometryMenu, imago.image.plugins.shape.ImageSubsample.class, "Subsample...", hasImage);
+        addPlugin(geometryMenu, imago.image.plugins.shape.ImageDownsample.class, "Downsample...", hasImage);
+        geometryMenu.addSeparator();
+        addPlugin(geometryMenu, imago.image.plugins.process.ImageCropThumbnailList.class, "Crop Thumbnails from Positions...", hasImage);
+        menu.add(geometryMenu);
+        
         JMenu transformsMenu = new JMenu("Geometric transforms");
         addPlugin(transformsMenu, imago.image.plugins.register.ImagePair2DRegister.class, "Simple Image Registration", hasScalarImage);
         addPlugin(transformsMenu, imago.image.plugins.register.ApplyExistingTransformToImage.class, "Apply Transform To Image", hasScalarImage);
@@ -452,6 +438,18 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
                 "Show Transform Manager");
         menu.add(transformsMenu);
         
+        // Create the menu for 3D images
+        JMenu stackMenu = new JMenu("3D Images");
+        stackMenu.setEnabled(hasImage3D);
+        addPlugin(stackMenu, imago.image.plugins.shape.Image3DGetCurrentSlice.class, "Extract Current Slice", hasImage3D);
+        addPlugin(stackMenu, imago.image.plugins.shape.Image3DGetSlice.class, "Extract Slice...", hasImage3D);
+        addPlugin(stackMenu, imago.image.plugins.shape.Image3DOrthoslicesMontage.class, "OrthoSlices Montage...", hasImage3D);
+        addPlugin(stackMenu, imago.image.plugins.shape.Image3DSliceMontage.class, "Image 3D Montage...", hasImage3D);
+        addPlugin(stackMenu, imago.image.plugins.shape.ImageOrthogonalProjection.class, "Orthogonal Projection...", hasImage3D && hasScalarImage);
+        stackMenu.addSeparator();
+        addPlugin(stackMenu, imago.image.plugins.process.Image3DSetOrthoSlicesDisplay.class, "Set Orthoslices Display", hasImage3D);
+        menu.add(stackMenu);
+
         menu.addSeparator();
         addPlugin(menu, imago.image.plugins.vectorize.ImageFindNonZeroPixels.class, "Find Non-Zeros Elements", hasImage2D && hasScalarImage);
         addPlugin(menu, imago.image.plugins.vectorize.ImageIsocontour.class, "Isocontour...");
