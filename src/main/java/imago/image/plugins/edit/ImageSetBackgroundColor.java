@@ -3,14 +3,15 @@
  */
 package imago.image.plugins.edit;
 
+import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
+import imago.image.ImageDataRenderer;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
-import imago.gui.FramePlugin;
+import imago.image.render.IndexedColorMapImageRenderer;
 import net.sci.array.color.Color;
 import net.sci.array.color.CommonColors;
-import net.sci.image.Image;
 
 /**
  * Changes the background color (used for display of labels) for this image.
@@ -20,6 +21,9 @@ import net.sci.image.Image;
  */
 public class ImageSetBackgroundColor implements FramePlugin
 {
+    /**
+     * Default empty constructor
+     */
 	public ImageSetBackgroundColor()
 	{
 	}
@@ -34,9 +38,8 @@ public class ImageSetBackgroundColor implements FramePlugin
 	public void run(ImagoFrame frame, String args)
 	{
         // get current image data
-        ImageFrame viewer = (ImageFrame) frame;
-        ImageHandle handle = viewer.getImageHandle();
-        Image image = handle.getImage();
+        ImageFrame iFrame = (ImageFrame) frame;
+        ImageHandle handle = iFrame.getImageHandle();
 
         GenericDialog gd = new GenericDialog(frame, "Choose Background Color");
         gd.addChoice("Background Color:", CommonColors.all(), CommonColors.BLACK);
@@ -47,8 +50,12 @@ public class ImageSetBackgroundColor implements FramePlugin
         // parse dialog results
         Color bgColor = CommonColors.fromLabel(gd.getNextChoice()).getColor();
 
-        // update image
-        image.getDisplaySettings().setBackgroundColor(bgColor);
+        // update image renderer
+        ImageDataRenderer renderer = iFrame.getImageViewer().getRenderer();
+        if (renderer instanceof IndexedColorMapImageRenderer r)
+        {
+            r.setBackgroundColor(bgColor);
+        }
         
         // notify associated viewers
 		handle.notifyImageHandleChange(ImageHandle.Event.LUT_MASK | ImageHandle.Event.CHANGE_MASK);

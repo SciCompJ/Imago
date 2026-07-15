@@ -210,7 +210,7 @@ public class StackSliceViewer extends XYImageViewer
     {
         Image image = this.getImageToDisplay();
         Image slice = ImageSlicer.slice2d(image, this.slicingPosition[2]);
-        this.awtImage = slice.getType().createAwtImage(slice);
+        this.awtImage = this.renderer.render(slice.getData());
     }
     
     public void repaint()
@@ -218,7 +218,6 @@ public class StackSliceViewer extends XYImageViewer
         this.panel.repaint();
     }
     
-
     
     // ===================================================================
     // tool management

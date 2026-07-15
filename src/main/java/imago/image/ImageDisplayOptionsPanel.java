@@ -4,6 +4,7 @@
 package imago.image;
 
 import imago.gui.panels.CollapsiblePanel;
+import imago.image.ImageViewer.VectorImageDisplayMode;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.Locale;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -59,7 +61,7 @@ public class ImageDisplayOptionsPanel extends JPanel
     Image image;
 
     
-    ValueSliderPanel channelPanel;
+    ValueSliderPanel channelIndexPanel;
     
     ValueSliderPanel zSlicePanel;
     
@@ -86,7 +88,12 @@ public class ImageDisplayOptionsPanel extends JPanel
         
         if (this.image.isVectorImage())
         {
-            JPanel panel = createChannelPanel();
+            JPanel panel = new JPanel();
+            panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+            
+            panel.add(createVectorImageDisplayTypeCombo());
+            panel.add(createChannelPanel());
+            
             panel.setBorder(BorderFactory.createEtchedBorder());
             this.add(new CollapsiblePanel("Channels Display", panel));
         }
@@ -106,11 +113,25 @@ public class ImageDisplayOptionsPanel extends JPanel
         this.invalidate();
     }
 
+    private JComboBox<String> createVectorImageDisplayTypeCombo()
+    {
+        String[] choices = new String[] {"Single Channel", "Norm", "Max Norm"};
+        JComboBox<String> cb = new JComboBox<String>(choices);
+        cb.addActionListener(evt -> {
+            int index = cb.getSelectedIndex(); 
+            switch(index)
+            {
+                case 0 -> imageViewer.setVectorImageDisplayMode(VectorImageDisplayMode.CHANNEL);
+                case 1 -> imageViewer.setVectorImageDisplayMode(VectorImageDisplayMode.NORM);
+                case 2 -> imageViewer.setVectorImageDisplayMode(VectorImageDisplayMode.MAX);
+            }
+            imageViewer.refreshDisplay();
+        });
+        return cb;
+    }
+    
     private JPanel createChannelPanel()
     {
-//        VectorArray<?> array = VectorArray.wrap(this.);
-//        VectorArray<?> array = (VectorArray<?>) this.image.getData();
-        
         int nChannels = countChannels(image.getData());
         
         int channelIndex = imageViewer.getCurrentChannelIndex();
@@ -119,27 +140,27 @@ public class ImageDisplayOptionsPanel extends JPanel
             channelIndex = nChannels - 1;
             imageViewer.setCurrentChannelIndex(channelIndex);
         }
-        this.channelPanel = new ValueSliderPanel("Channel", 0, nChannels - 1, channelIndex);
+        this.channelIndexPanel = new ValueSliderPanel("Channel", 0, nChannels - 1, channelIndex);
         
-        channelPanel.slider.addChangeListener(evt ->
+        channelIndexPanel.slider.addChangeListener(evt ->
         {
-            int index = this.channelPanel.slider.getValue();
+            int index = this.channelIndexPanel.slider.getValue();
             String text = String.format("%d", index);
-            channelPanel.textField.setText(text);
+            channelIndexPanel.textField.setText(text);
             imageViewer.setCurrentChannelIndex(index);
             imageViewer.refreshDisplay();
         });
         
-        channelPanel.textField.addActionListener(evt -> 
+        channelIndexPanel.textField.addActionListener(evt -> 
         {
-            String text = this.channelPanel.textField.getText();
+            String text = this.channelIndexPanel.textField.getText();
             int index = Integer.parseInt(text);
-            this.channelPanel.slider.setValue(index);
+            this.channelIndexPanel.slider.setValue(index);
             imageViewer.setCurrentChannelIndex(index);
             imageViewer.refreshDisplay();
         });
         
-        return this.channelPanel;
+        return this.channelIndexPanel;
     }
     
     private int countChannels(Array<?> array)

@@ -197,7 +197,7 @@ public class Image5DXYSliceViewer extends XYImageViewer
     {
         Image image = this.getImageToDisplay();
         Image slice = ImageSlicer.slice2d(image, 0, 1, this.slicingPosition);
-        this.awtImage = image.getType().createAwtImage(slice);
+        this.awtImage = this.renderer.render(slice.getData());
     }
 
     public void repaint()

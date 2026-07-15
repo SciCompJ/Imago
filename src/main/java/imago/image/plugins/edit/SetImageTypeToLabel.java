@@ -6,6 +6,7 @@ package imago.image.plugins.edit;
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
+import imago.image.ImageDataRenderer;
 import imago.image.ImageFrame;
 import imago.image.ImageFrameMenuBuilder;
 import imago.image.ImageHandle;
@@ -59,6 +60,9 @@ public class SetImageTypeToLabel implements FramePlugin
         // recompute display range to ensure labels are displayed with full colormap range
         int[] minMax = array instanceof BinaryArray ? new int[] {0, 1} : ((IntArray<?>) array).intRange();
         image.getDisplaySettings().setDisplayRange(new double[] {0, minMax[1]});
+        
+        // update image viewer
+        imageFrame.getImageViewer().setRenderer(ImageDataRenderer.createRenderer(image));
 
         // notify changes
         handle.notifyImageHandleChange(ImageHandle.Event.IMAGE_MASK | ImageHandle.Event.CHANGE_MASK);

@@ -64,7 +64,7 @@ public class PlanarImageViewer extends XYImageViewer implements ComponentListene
             throw new IllegalArgumentException("Requires a planar image as input");
         }
 
-        this.awtImage = image.getType().createAwtImage(image);
+        this.awtImage = this.renderer.render(image.getData());
 
         setupLayout();
     }
@@ -265,7 +265,7 @@ public class PlanarImageViewer extends XYImageViewer implements ComponentListene
     public void updateAwtImage()
     {
         Image image = this.getImageToDisplay();
-        this.awtImage = image.getType().createAwtImage(image);
+        this.awtImage = this.renderer.render(image.getData());
     }
 
     public void repaint()

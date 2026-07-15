@@ -5,7 +5,9 @@ package imago.image.plugins.edit;
 
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
+import imago.image.ImageDataRenderer;
 import imago.image.ImageFrame;
+import imago.image.render.IndexedColorMapImageRenderer;
 import imago.table.TableFrame;
 import net.sci.array.color.Color;
 import net.sci.array.color.ColorMap;
@@ -38,8 +40,14 @@ public class ImageColorMapDisplay implements FramePlugin
         ImageFrame iframe = (ImageFrame) frame;
         Image image = iframe.getImageHandle().getImage();
         
-        // retrieve image color map
-        ColorMap colorMap = image.getDisplaySettings().getColorMap();
+        // retrieve colormap of the viewer
+        ImageDataRenderer renderer = iframe.getImageViewer().getRenderer();
+        
+        ColorMap colorMap = switch (renderer)
+        {
+            case IndexedColorMapImageRenderer r -> r.getColorMap();
+            default -> null;
+        };
         if (colorMap == null)
         {
             frame.showErrorDialog("The current image is not associated to a colormap", "Image Error");

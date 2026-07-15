@@ -5,12 +5,14 @@ package imago.image.plugins.edit;
 
 import java.util.Locale;
 
+import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
+import imago.image.ImageDataRenderer;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import imago.image.ImageViewer;
-import imago.gui.FramePlugin;
+import imago.image.render.IndexedColorMapImageRenderer;
 import net.sci.array.Array;
 import net.sci.array.Array3D;
 import net.sci.array.color.RGB16;
@@ -24,7 +26,10 @@ import net.sci.array.numeric.VectorArray;
 import net.sci.image.Image;
 
 /**
- * Opens a dialog to choose the display range of values for current image.
+ * Opens a dialog to manually choose the display range of values for current
+ * image.
+ * 
+ * Note that this updates the current viewer, not the image settings.
  * 
  * @author David Legland
  *
@@ -48,9 +53,13 @@ public class SetImageDisplayRange implements FramePlugin
     public void run(ImagoFrame frame, String args)
     {
         // get current frame
-        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-        Image image = doc.getImage();
-
+        ImageFrame iFrame = (ImageFrame) frame;
+        ImageHandle handle = iFrame.getImageHandle();
+        ImageViewer viewer = iFrame.getImageViewer();
+        ImageDataRenderer renderer = viewer.getRenderer();
+        
+        // retrieve image data
+        Image image = iFrame.getImageHandle().getImage();
         Array<?> array = image.getData();
 
         // Compute min and max values within the array
@@ -62,14 +71,19 @@ public class SetImageDisplayRange implements FramePlugin
         }
         double[] extent = computeValueExtent(array);
 
-        double[] displayRange = image.getDisplaySettings().getDisplayRange();
+        // retrieve current value from viewer
+        double[] newRange = switch (renderer)
+        {
+            case IndexedColorMapImageRenderer r -> r.getDisplayRange();
+            default -> throw new IllegalArgumentException("Unexpected value: " + renderer);
+        };
 
         // Create new dialog populated with widgets
         GenericDialog gd = new GenericDialog(frame, "Set Display Range");
         String labelMin = String.format(Locale.ENGLISH, "Min value (%6.2f) ", extent[0]);
-        gd.addNumericField(labelMin, displayRange[0], 3, "Minimal value to display as black");
+        gd.addNumericField(labelMin, newRange[0], 3, "Minimal value to display as black");
         String labelMax = String.format(Locale.ENGLISH, "Max value (%6.2f) ", extent[1]);
-        gd.addNumericField(labelMax, displayRange[1], 3, "Maximal value to display as white");
+        gd.addNumericField(labelMax, newRange[1], 3, "Maximal value to display as white");
 
         // wait for user validation or cancellation
         gd.showDialog();
@@ -84,12 +98,17 @@ public class SetImageDisplayRange implements FramePlugin
         extent = new double[] { minRange, maxRange };
 
         // update display settings
-        image.getDisplaySettings().setDisplayRange(extent);
+        if (renderer instanceof IndexedColorMapImageRenderer r)
+        {
+            r.setDisplayRange(extent);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Unexpected value: " + renderer);
+        }
 
         // refresh display
-        ImageViewer viewer = ((ImageFrame) frame).getImageViewer();
-        viewer.refreshDisplay();
-        viewer.repaint();
+        handle.notifyImageHandleChange(ImageHandle.Event.DISPLAY_RANGE_MASK | ImageHandle.Event.CHANGE_MASK);
     }
 
     private double[] computeValueExtent(Array<?> array)

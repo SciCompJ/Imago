@@ -5,8 +5,12 @@ package imago.image.plugins.edit;
 
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
+import imago.image.ImageDataRenderer;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
+import imago.image.ImageViewer;
+import imago.image.render.BinaryImageRenderer;
+import imago.image.render.IndexedColorMapImageRenderer;
 import net.sci.array.color.ColorMap;
 import net.sci.array.color.ColorMapFactory;
 import net.sci.image.Image;
@@ -40,12 +44,12 @@ public class ImageSetColorMapFactory implements FramePlugin
 	public void run(ImagoFrame frame, String args)
 	{
 		// get current image data
-		ImageFrame viewer = (ImageFrame) frame;
-		ImageHandle handle = viewer.getImageHandle();
+		ImageFrame iframe = (ImageFrame) frame;
+		ImageHandle handle = iframe.getImageHandle();
 		Image image	= handle.getImage();
 
 		// compute number of colors in the colormap, keeping one value for background
-		int nColors = 255;
+		int nColors = 256;
 		if (image.isLabelImage())
 		{
             nColors = (int) image.getDisplaySettings().getDisplayRange()[1];
@@ -53,8 +57,16 @@ public class ImageSetColorMapFactory implements FramePlugin
 		
 		// compute a new colormap using the current factory
 		ColorMap colorMap = factory.createColorMap(nColors);
-		image.getDisplaySettings().setColorMap(colorMap);
 		
+		ImageViewer viewer = iframe.getImageViewer();
+        ImageDataRenderer renderer = viewer.getRenderer();
+        switch (renderer)
+        {
+            case BinaryImageRenderer r -> r.setColorMap(colorMap);
+            case IndexedColorMapImageRenderer r -> r.setColorMap(colorMap);
+            default -> throw new IllegalArgumentException("Unexpected value: " + renderer);
+        }
+
 		// notify changes
         handle.notifyImageHandleChange(ImageHandle.Event.LUT_MASK | ImageHandle.Event.CHANGE_MASK);
 	}

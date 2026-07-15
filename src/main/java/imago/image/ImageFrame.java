@@ -85,7 +85,17 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         // Create the frame
         ImageFrame frame = new ImageFrame(gui, handle);
         gui.updateFrameLocation(frame, parentFrame);
-            
+        
+        // if parent image has same type, duplicate the renderer of parent frame 
+        if (parentFrame != null && parentFrame instanceof ImageFrame)
+        {
+            ImageFrame parentImageFrame = ((ImageFrame) parentFrame);
+            if (image.getType() == parentImageFrame.getImageHandle().getImage().getType())
+            {
+                frame.getImageViewer().setRenderer(parentImageFrame.getImageViewer().getRenderer().duplicate());
+            }
+        }
+        
         // link the frames
         gui.addFrame(frame);
         if (parentFrame != null)

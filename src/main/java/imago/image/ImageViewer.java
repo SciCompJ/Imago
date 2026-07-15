@@ -3,8 +3,13 @@
  */
 package imago.image;
 
+
 import imago.image.ImageHandle.Event;
+import imago.image.render.VectorImageChannelRenderer;
+import imago.image.render.VectorImageMaxNormRenderer;
+import imago.image.render.VectorImageNormRenderer;
 import net.sci.array.numeric.ScalarArray;
+import net.sci.array.numeric.Vector;
 import net.sci.array.numeric.VectorArray;
 import net.sci.geom.Geometry;
 import net.sci.image.Image;
@@ -81,7 +86,8 @@ public abstract class ImageViewer implements ImageHandle.Listener
      * The strategy for displaying a vector image.
      */
     protected VectorImageDisplayMode vectorImageDisplayMode = VectorImageDisplayMode.CHANNEL;
-
+    protected ImageDataRenderer renderer;
+    
     /**
      * The index of the current channel, when the image data is a vector array,
      * and when the viewer displays a single channel.
@@ -104,6 +110,9 @@ public abstract class ImageViewer implements ImageHandle.Listener
         {
             this.slicingPosition[d] = (int) Math.floor(image.getSize(d) / 2);
         }
+        
+        this.renderer = ImageDataRenderer.createRenderer(image);
+
         
 //        this.imageHandle.addImageHandleListener(this);
     }
@@ -192,7 +201,17 @@ public abstract class ImageViewer implements ImageHandle.Listener
 
     }
 
-    
+    public ImageDataRenderer getRenderer()
+    {
+        return renderer;
+    }
+
+    public void setRenderer(ImageDataRenderer renderer)
+    {
+        this.renderer = renderer;
+    }
+
+
     // ===================================================================
     // Tool management methods
 
@@ -297,6 +316,17 @@ public abstract class ImageViewer implements ImageHandle.Listener
     public void setVectorImageDisplayMode(VectorImageDisplayMode vectorImageDisplayMode)
     {
         this.vectorImageDisplayMode = vectorImageDisplayMode;
+        
+        if (Vector.class.isAssignableFrom(this.image.getData().elementClass()))
+        {
+            setRenderer(switch(vectorImageDisplayMode) {
+                case CHANNEL -> new VectorImageChannelRenderer().setChannel(currentChannelIndex);
+                case NORM -> new VectorImageNormRenderer();
+                case MAX -> new VectorImageMaxNormRenderer();
+                default ->
+                    throw new IllegalArgumentException("Unexpected value: " + vectorImageDisplayMode);
+            });
+        }
     }
 
     /**
@@ -314,6 +344,10 @@ public abstract class ImageViewer implements ImageHandle.Listener
     public void setCurrentChannelIndex(int currentChannelIndex)
     {
         this.currentChannelIndex = currentChannelIndex;
+        if (renderer instanceof VectorImageChannelRenderer)
+        {
+            ((VectorImageChannelRenderer) renderer).setChannel(currentChannelIndex);
+        }
     }
 
     /**
@@ -324,6 +358,7 @@ public abstract class ImageViewer implements ImageHandle.Listener
      *            the vector array to convert
      * @return an instance of ScalarArray representing the input array.
      */
+    @Deprecated
     protected ScalarArray<?> computeVectorArrayDisplay(VectorArray<?, ?> array)
     {
         return switch (this.vectorImageDisplayMode)
