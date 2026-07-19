@@ -24,7 +24,7 @@ class DefaultIntensityImageRendererTest
     @Test
     final void test_render()
     {
-        Float32Array2D array = Float32Array2D.fromFloatArray(new float[][] { 
+        Float32Array2D array = Float32Array2D.of(new float[][] { 
             { 0.0f, 0.0f, 263f, 263f, 263f }, 
             { 0.0f, 0.0f, 263f, 263f, 263f },
             { 263f, 263f, 0.0f, 0.0f, 0.0f }, 
@@ -50,7 +50,7 @@ class DefaultIntensityImageRendererTest
     @Test
     final void test_render_setColorMap()
     {
-        Float32Array2D array = Float32Array2D.fromFloatArray(new float[][] { 
+        Float32Array2D array = Float32Array2D.of(new float[][] { 
             { 0.0f, 0.0f, 263f, 263f, 263f }, 
             { 0.0f, 0.0f, 263f, 263f, 263f },
             { 263f, 263f, 0.0f, 0.0f, 0.0f }, 
