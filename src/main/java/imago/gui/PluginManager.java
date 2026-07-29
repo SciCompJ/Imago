@@ -13,6 +13,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.jar.JarEntry;
@@ -57,6 +59,11 @@ public class PluginManager
 
     // ===================================================================
     // General methods
+    
+    public Collection<PluginHandler> pluginHandlers()
+    {
+        return Collections.unmodifiableList(this.pluginHandlers);
+    }
 
     /**
      * Returns an instance of the plugin associated to the specified class. If
