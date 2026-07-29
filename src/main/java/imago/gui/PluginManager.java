@@ -272,7 +272,7 @@ public class PluginManager
             for (String entry : entries)
             {
                 PluginHandler handler = createPluginHandler(file, entry);
-                if (handler != null && handler.plugin != null)
+                if (handler != null)
                 {
                     this.pluginHandlers.add(handler);
                 }
@@ -312,7 +312,8 @@ public class PluginManager
 
             // read lines from configuration file
             reader.lines()
-                .filter(s -> s.length() >= 3 && !s.startsWith("#")) // Do not process empty lines or comment lines
+                .filter(s -> s.length() >= 3 )      // Do not process empty lines
+                .filter(s -> !s.startsWith("#"))    // Do not process comment lines
                 .forEach(entries::add);
             
             is.close();
@@ -323,42 +324,64 @@ public class PluginManager
 
     /**
      * Creates a new PluginHandler from a jarFile and a configuration entry.
+     * Each configuration entry is composed of three tokens:
+     * <ol>
+     * <li>the path within menu</li>
+     * <li>the label of the menu entry</li>
+     * <li>the class name</li>
+     * </ol>
+     * If the label is equal to "-", this should be interpreted as a menu
+     * separator
+     * 
+     * Example:
+     * {@snippet :
+     * Plugins>Demos, "Hello Imago", imago.plugins.HelloImagoPlugin
+     * }
+     *
      * 
      * @param jarFile
-     *            the jar file
+     *            the jar file containing plugin class
      * @param entry
-     *            a string with menu location, menu item name, and class name.
+     *            a onle-line string with menu location, menu item name, and
+     *            class name.
      * @return a new PluginHandler
      * @throws IOException
      */
-    private PluginHandler createPluginHandler(File file, String entry) throws IOException
+    private PluginHandler createPluginHandler(File jarFile, String entry) throws IOException
     {
         entry = entry.trim();
         String[] tokens = entry.split(",", 3);
+        
+        // retrieve path and label of the menu entry
+        String menuPath = tokens[0].trim();
+        String label = removeEndingDoubleQuotes(tokens[1].trim());
+
+        // process the special case of separator, by creating a plugin handler with a null plugin
+        if (tokens.length >= 2 && label.equals("-"))
+        {
+            return new PluginHandler(null, label, menuPath);
+        }
+        
         if (tokens.length != 3)
         {
             throw new RuntimeException("Unable to parse plugin entry: " + entry);
         }
-        
-        // configuration entry is composed of three tokens:
-        // 1) the path within menu
-        // 2) the label of the meny entry
-        // 3) the class name
-        String menuPath = tokens[0].trim();
-        String menuItemLabel = tokens[1].trim();
+
+        // create the plugin from its class name
         String className = tokens[2].trim();
+        FramePlugin plugin = loadPluginFromJar(jarFile, className);
 
-        // load the plugin
-        FramePlugin plugin = loadPluginFromJar(file, className);
-
-        // remove double quotes from plugin name
-        if (menuItemLabel.startsWith("\"") && menuItemLabel.endsWith("\""))
-        {
-            menuItemLabel = menuItemLabel.substring(1, menuItemLabel.length()-1);
-        }
-        
         // encapsulate the plugin within a Handler
-        return new PluginHandler(plugin, menuItemLabel, menuPath);
+        return new PluginHandler(plugin, label, menuPath);
+    }
+    
+    private static final String removeEndingDoubleQuotes(String str)
+    {
+        if (str.startsWith("\"") && str.endsWith("\""))
+        {
+            return str.substring(1, str.length()-1);
+        }
+        return str;
     }
 
     private FramePlugin loadPluginFromJar(File file, String className) throws IOException

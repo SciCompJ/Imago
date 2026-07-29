@@ -142,8 +142,15 @@ public class FrameMenuBuilder
             }
         }
         
-        FramePlugin plugin = handler.getPlugin();
-        addPlugin(menu, handler.getPlugin(), handler.getName(), plugin.isEnabled(frame));
+        if (!handler.name.equals("-"))
+        {
+            FramePlugin plugin = handler.getPlugin();
+            addPlugin(menu, handler.getPlugin(), handler.getName(), plugin.isEnabled(frame));
+        }
+        else
+        {
+            menu.addSeparator();
+        }
     }
     
     private JMenu getSubMenu(JMenu baseMenu, String subMenuName)
