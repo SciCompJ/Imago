@@ -3,13 +3,15 @@
  */
 package imago.developer.plugins;
 
+import java.util.Arrays;
+
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.gui.PluginHandler;
 import imago.gui.PluginManager;
+import imago.gui.frames.JTableFrame;
 
 /**
- * 
  */
 public class PrintUserPluginList implements FramePlugin
 {
@@ -42,6 +44,31 @@ public class PrintUserPluginList implements FramePlugin
                 
             }
         }
+        
+        // Table header
+        String[] colNames = new String[]{"Name", "Path", "Class"};
+        int nRows = mgr.pluginHandlers().size();
+        Object[][] data = new Object[nRows][colNames.length];
+        int iRow = 0;
+        
+        for (PluginHandler handle : mgr.pluginHandlers())
+        {
+            FramePlugin plugin = handle.getPlugin();
+            if (plugin != null)
+            {
+                String name = handle.getName();
+                String path = handle.getMenuPath();
+                String className = plugin.getClass().getName();
+                
+                String[] row = new String[] {name, path, className};
+                data[iRow++] = row;
+            }
+        }
+        
+        // remove menu separators
+        data = Arrays.copyOf(data, iRow);
+        
+        new JTableFrame(frame, "User Plugins", data, colNames).setVisible(true);
     }
 
 }
