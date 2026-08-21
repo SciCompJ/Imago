@@ -5,6 +5,10 @@ package imago.image.viewers;
 
 import imago.image.ImageHandle;
 import imago.image.ImageViewer;
+import net.sci.array.Array;
+import net.sci.array.Array2D;
+import net.sci.array.Array3D;
+import net.sci.array.shape.Slicer;
 
 /**
  * A specialization of ImageViewer that displays an image as a 2D planar view
@@ -30,4 +34,45 @@ public abstract class XYImageViewer extends ImageViewer
      * @return the display used for drawing the image
      */
     public abstract ImageDisplay getImageDisplay();
+    
+    /**
+     * Returns the current slice of the reference image as a 2D Array. Tries to
+     * return a view when possible.
+     * 
+     * @return the 2D array corresponding to the current slice.
+     */
+    public Array2D<?> getCurrentSlice()
+    {
+        return getXYSlice(image.getData());
+    }
+    
+    /**
+     * Returns the current slice of the current display image as a 2D Array.
+     * Tries to return a view when possible.
+     * 
+     * @return the 2D array corresponding to the current slice of the display
+     *         image.
+     */
+    public Array2D<?> getCurrentDisplaySlice()
+    {
+        return getXYSlice(getImageToDisplay().getData());
+    }
+    
+    private Array2D<?> getXYSlice(Array<?> array)
+    {
+        // select the 2D array to update
+        if (array.dimensionality() == 2)
+        {
+            return Array2D.wrap(array);
+        }
+        else if (array.dimensionality() == 3)
+        {
+            int zi = this.slicingPosition[2];
+            return Array3D.wrap(array).slice(zi);
+        }
+        else
+        {
+            return Array2D.wrap(new Slicer(new int[] {0, 1}, this.slicingPosition).process(array));
+        }
+    }
 }
