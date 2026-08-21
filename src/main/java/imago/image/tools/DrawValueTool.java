@@ -33,32 +33,16 @@ import net.sci.image.Image;
 public class DrawValueTool extends ImageTool
 {
     /**
-     * Basic constructor.
+     * Default constructor.
      * 
      * @param viewer
-     *            reference to the mage viewer
+     *            reference to the image viewer frame
      * @param name
      *            the name of this tool
      */
     public DrawValueTool(ImageFrame viewer, String name)
     {
         super(viewer, name);
-    }
-
-    /* (non-Javadoc)
-     * @see imago.gui.ImagoTool#select()
-     */
-    @Override
-    public void select()
-    {
-    }
-
-    /* (non-Javadoc)
-     * @see imago.gui.ImagoTool#deselect()
-     */
-    @Override
-    public void deselect()
-    {
     }
 
     @Override

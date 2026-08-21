@@ -29,31 +29,19 @@ import net.sci.image.Image;
  */
 public class DisplayCurrentValueTool extends ImageTool
 {
-
+    /**
+     * Default constructor.
+     * 
+     * @param viewer
+     *            reference to the image viewer frame
+     * @param name
+     *            the name of this tool
+     */
 	public DisplayCurrentValueTool(ImageFrame viewer, String name)
 	{
 		super(viewer, name);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see imago.gui.ImagoTool#select()
-	 */
-	@Override
-	public void select()
-	{
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see imago.gui.ImagoTool#deselect()
-	 */
-	@Override
-	public void deselect()
-	{
-	}
     
     /*
      * (non-Javadoc)

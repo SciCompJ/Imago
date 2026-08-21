@@ -28,6 +28,14 @@ public class SelectRectangleTool extends ImageTool
     // state: 0 for first point, 1 for second point, to for waiting state.
     int state = 0;
     
+    /**
+     * Default constructor.
+     * 
+     * @param viewer
+     *            reference to the image viewer frame
+     * @param name
+     *            the name of this tool
+     */
     public SelectRectangleTool(ImageFrame viewer, String name)
     {
         super(viewer, name);
@@ -41,20 +49,7 @@ public class SelectRectangleTool extends ImageTool
     @Override
     public void select()
     {
-        System.out.println("selected the 'selectRectangle' tool");
-        
         this.state = 0;
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see imago.gui.ImagoTool#deselect()
-     */
-    @Override
-    public void deselect()
-    {
-        System.out.println("deselected the 'selectRectangle' tool");
     }
     
     /**

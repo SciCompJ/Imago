@@ -67,14 +67,6 @@ public class DrawBrushValueTool extends ImageTool
     // =============================================================
     // Implementation of the ImagoTool methods
 
-     /* (non-Javadoc)
-     * @see imago.gui.ImagoTool#select()
-     */
-    @Override
-    public void select()
-    {
-    }
-
     /* (non-Javadoc)
      * @see imago.gui.ImagoTool#deselect()
      */

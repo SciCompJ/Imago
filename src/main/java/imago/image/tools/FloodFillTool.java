@@ -41,22 +41,6 @@ public class FloodFillTool extends ImageTool
         super(viewer, name);
     }
 
-    /* (non-Javadoc)
-     * @see imago.gui.ImagoTool#select()
-     */
-    @Override
-    public void select()
-    {
-    }
-
-    /* (non-Javadoc)
-     * @see imago.gui.ImagoTool#deselect()
-     */
-    @Override
-    public void deselect()
-    {
-    }
-
     @Override
     public void mousePressed(MouseEvent evt)
     {

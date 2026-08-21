@@ -8,125 +8,136 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 /**
- * Abstract class for processing mouse event on an ImageFrame.
+ * Abstract class for "tools", that process mouse events on an ImageFrame.
  * 
  * @author David Legland
  *
  */
 public abstract class ImageTool implements MouseListener, MouseMotionListener
 {
-	// ===================================================================
-	// Class variables
+    // ===================================================================
+    // Class variables
 
-	protected ImageFrame frame;
+    /**
+     * The frame to listen
+     */
+    protected ImageFrame frame;
 
-	protected String name;
+    /**
+     * The name of the tool, mostly used for monitoring. 
+     */
+    protected String name;
 
-	
-	// ===================================================================
-	// Constructor
+    
+    // ===================================================================
+    // Constructor
 
-	protected ImageTool(ImageFrame frame, String name)
-	{
-		this.frame = frame;
-		this.name = name;
-	}
+    protected ImageTool(ImageFrame frame, String name)
+    {
+        this.frame = frame;
+        this.name = name;
+    }
 
-	// ===================================================================
-	// Public methods
+    
+    // ===================================================================
+    // Public methods
 
-	public String getName()
-	{
-		return this.name;
-	}
+    public String getName()
+    {
+        return this.name;
+    }
 
-	/**
-	 * Called when this tool is selected.
-	 * Can be used to set up local variables.
-	 */
-	public abstract void select();
+    /**
+     * Called when this tool is selected. Can be used to set up local variables.
+     */
+    public void select()
+    {
+    }
 
-	/**
-	 * Called when this tool is deselected.
-	 * Can be used to free resources, or updating the view.
-	 */
-	public abstract void deselect();
+    /**
+     * Called when this tool is deselected. Can be used to free resources, or
+     * updating the view.
+     */
+    public void deselect()
+    {
+    }
 
-	// ===================================================================
-	// Mouse events management
+    
+    // ===================================================================
+    // Mouse events management
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
-	 */
-	@Override
-	public void mouseClicked(MouseEvent arg0)
-	{
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+     */
+    @Override
+    public void mouseClicked(MouseEvent arg0)
+    {
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
-	 */
-	@Override
-	public void mouseEntered(MouseEvent arg0)
-	{
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+     */
+    @Override
+    public void mouseEntered(MouseEvent arg0)
+    {
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
-	 */
-	@Override
-	public void mouseExited(MouseEvent arg0)
-	{
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+     */
+    @Override
+    public void mouseExited(MouseEvent arg0)
+    {
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
-	 */
-	@Override
-	public void mousePressed(MouseEvent arg0)
-	{
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+     */
+    @Override
+    public void mousePressed(MouseEvent arg0)
+    {
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
-	 */
-	@Override
-	public void mouseReleased(MouseEvent arg0)
-	{
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+     */
+    @Override
+    public void mouseReleased(MouseEvent arg0)
+    {
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent
-	 * )
-	 */
-	@Override
-	public void mouseDragged(MouseEvent arg0)
-	{
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent
+     * )
+     */
+    @Override
+    public void mouseDragged(MouseEvent arg0)
+    {
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
-	 */
-	@Override
-	public void mouseMoved(MouseEvent arg0)
-	{
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
+     */
+    @Override
+    public void mouseMoved(MouseEvent arg0)
+    {
+    }
 
 }

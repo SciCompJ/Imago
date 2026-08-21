@@ -69,6 +69,14 @@ public class SelectPolygonTool extends ImageTool
     DefaultPolygon2D currentPolygon = null;
 
     
+    /**
+     * Default constructor.
+     * 
+     * @param viewer
+     *            reference to the image viewer frame
+     * @param name
+     *            the name of this tool
+     */
     public SelectPolygonTool(ImageFrame viewer, String name)
     {
         super(viewer, name);
@@ -82,8 +90,6 @@ public class SelectPolygonTool extends ImageTool
     @Override
     public void select()
     {
-        System.out.println("selected the 'selectPolygon' tool");
-        
         this.selectedPoints.clear();
         this.lastPoint = null;
         this.state = State.REST;
@@ -98,7 +104,6 @@ public class SelectPolygonTool extends ImageTool
     @Override
     public void deselect()
     {
-        System.out.println("deselected the 'selectPolygon' tool");
         this.selectedPoints.clear();
 
         ImageViewer viewer =  this.frame.getImageViewer();

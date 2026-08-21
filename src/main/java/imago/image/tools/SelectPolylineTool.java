@@ -36,6 +36,14 @@ public class SelectPolylineTool extends ImageTool
      */
     boolean polylineStarted = false;
     
+    /**
+     * Default constructor.
+     * 
+     * @param viewer
+     *            reference to the image viewer frame
+     * @param name
+     *            the name of this tool
+     */
     public SelectPolylineTool(ImageFrame viewer, String name)
     {
         super(viewer, name);
@@ -49,8 +57,6 @@ public class SelectPolylineTool extends ImageTool
     @Override
     public void select()
     {
-        System.out.println("selected the 'selectPolyline' tool");
-        
         this.selectedPoints.clear();
         this.lastClickedPoint = null;
         this.polylineStarted = false;
@@ -64,7 +70,6 @@ public class SelectPolylineTool extends ImageTool
     @Override
     public void deselect()
     {
-        System.out.println("deselected the 'selectPolyline' tool");
         this.selectedPoints.clear();
     }
     

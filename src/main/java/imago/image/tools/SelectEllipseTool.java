@@ -28,6 +28,14 @@ public class SelectEllipseTool extends ImageTool
     // 1 -> wait for second point
     int state = 0;
     
+    /**
+     * Default constructor.
+     * 
+     * @param viewer
+     *            reference to the image viewer frame
+     * @param name
+     *            the name of this tool
+     */
     public SelectEllipseTool(ImageFrame viewer, String name)
     {
         super(viewer, name);
@@ -41,20 +49,9 @@ public class SelectEllipseTool extends ImageTool
     @Override
     public void select()
     {
-        System.out.println("selected the 'selectEllipse' tool");
         this.state = 0;
     }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see imago.gui.ImagoTool#deselect()
-     */
-    @Override
-    public void deselect()
-    {
-        System.out.println("deselected the 'selectEllipse' tool");
-    }
+
     
     /**
      * When the button is pressed, the current mouse position is registered, and
