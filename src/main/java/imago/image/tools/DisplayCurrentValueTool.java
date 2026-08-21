@@ -61,7 +61,7 @@ public class DisplayCurrentValueTool extends ImageTool
         ImageDisplay display = (ImageDisplay) evt.getSource();
         Point point = new Point(evt.getX(), evt.getY());
         
-        // convert panem coordinate system to array coordinate system
+        // convert display coordinate system to array coordinate system
         Point2D pos2d = display.displayToImage(point);
         double x = pos2d.x();
         double y = pos2d.y();
@@ -139,10 +139,9 @@ public class DisplayCurrentValueTool extends ImageTool
      */
 	private static final String createValueString(Array<?> array, int[] pos)
 	{
-	    Class<?> elementClass = array.elementClass();
-        if (Scalar.class.isAssignableFrom(elementClass))
+        if (array.elementInstanceOf(Scalar.class))
         {
-            if (Int.class.isAssignableFrom(elementClass))
+            if (array.elementInstanceOf(Int.class))
             {
                 // Case of integer scalar images
                 int val = ((Int<?>) array.get(pos)).intValue();
@@ -155,19 +154,18 @@ public class DisplayCurrentValueTool extends ImageTool
                 return String.format(Locale.US, "val=%g", val);
             }
         } 
-        else if (RGB8.class == elementClass)
+        else if (array.elementInstanceOf(RGB8.class))
         {
             // Case of RGB color images
             int[] rgb = ((RGB8) array.get(pos)).getSamples();
             return String.format("rgb=[%d,%d,%d]", rgb[0], rgb[1], rgb[2]);
         } 
-        else if (RGB16.class == elementClass)
+        else if (array.elementInstanceOf(RGB16.class))
         {
-            // Case of RGB color images
             int[] rgb = ((RGB16) array.get(pos)).getSamples();
             return String.format("rgb=[%d,%d,%d]", rgb[0], rgb[1], rgb[2]);
         }
-        else if (Vector.class.isAssignableFrom(elementClass))
+        else if (array.elementInstanceOf(Vector.class))
         {
             // in case of Vector array, compute the norm of the pixel for display
             double[] values = ((Vector<?,?>) array.get(pos)).getValues();
@@ -177,7 +175,7 @@ public class DisplayCurrentValueTool extends ImageTool
         else
         {
             throw new IllegalArgumentException(
-                    "Unable to manage array cotnaining elements of class " + elementClass);
+                    "Unable to manage array cotnaining elements of class " + array.elementClass());
         }
 	}
 }

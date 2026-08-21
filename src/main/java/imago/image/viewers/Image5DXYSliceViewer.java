@@ -20,8 +20,6 @@ import javax.swing.event.ChangeListener;
 import imago.image.ImageHandle;
 import imago.image.ImageTool;
 import net.sci.geom.Geometry;
-import net.sci.image.Image;
-import net.sci.image.shape.ImageSlicer;
 
 /**
  * A Panel that displays a single (XY)-slice of a multi-dimensional image.
@@ -195,9 +193,7 @@ public class Image5DXYSliceViewer extends XYImageViewer
 
     private void recomputeAwtImage()
     {
-        Image image = this.getImageToDisplay();
-        Image slice = ImageSlicer.slice2d(image, 0, 1, this.slicingPosition);
-        this.awtImage = this.renderer.render(slice.getData());
+        this.awtImage = this.renderer.render(getCurrentDisplaySlice());
     }
 
     public void repaint()

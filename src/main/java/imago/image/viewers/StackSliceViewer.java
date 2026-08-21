@@ -28,8 +28,6 @@ import imago.image.ImageHandle;
 import imago.image.ImageTool;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;
-import net.sci.image.Image;
-import net.sci.image.shape.ImageSlicer;
 
 /**
  * A Panel that displays a single slice of the current 3D image.
@@ -208,9 +206,7 @@ public class StackSliceViewer extends XYImageViewer
 
     private void recomputeAwtImage()
     {
-        Image image = this.getImageToDisplay();
-        Image slice = ImageSlicer.slice2d(image, this.slicingPosition[2]);
-        this.awtImage = this.renderer.render(slice.getData());
+        this.awtImage = this.renderer.render(getCurrentDisplaySlice());
     }
     
     public void repaint()

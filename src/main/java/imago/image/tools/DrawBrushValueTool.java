@@ -14,15 +14,15 @@ import imago.image.ImageViewer;
 import imago.image.viewers.ImageDisplay;
 import imago.image.viewers.PlanarImageViewer;
 import imago.image.viewers.StackSliceViewer;
+import imago.image.viewers.XYImageViewer;
 import net.sci.array.Array;
 import net.sci.array.Array2D;
-import net.sci.array.Array3D;
 import net.sci.array.color.RGB8;
 import net.sci.array.color.RGB8Array;
 import net.sci.array.color.RGB8Array2D;
+import net.sci.array.numeric.Scalar;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray2D;
-import net.sci.array.numeric.ScalarArray3D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.curve.Circle2D;
 import net.sci.image.Image;
@@ -83,50 +83,50 @@ public class DrawBrushValueTool extends ImageTool
     @Override
     public void mousePressed(MouseEvent evt)
     {
+        // check viewer class
+        if (!(this.frame.getImageViewer() instanceof XYImageViewer)) return;
+        XYImageViewer viewer = (XYImageViewer) this.frame.getImageViewer();
+        
         // retrieve image data
-        Image image = this.frame.getImageViewer().getImage();
+        Image image = viewer.getImage();
         Array<?> array = image.getData();
-        if (!(array instanceof ScalarArray || array instanceof RGB8Array))
-        {
-            return;
-        }
         if (!array.isModifiable())
         {
             return;
         }
-        
-        // Coordinate of mouse cursor
+
+        // Coordinates of mouse cursor
         ImageDisplay display = (ImageDisplay) evt.getSource();
         Point point = new Point(evt.getX(), evt.getY());
         Point2D pos = display.displayToImage(point);
-        
-//        System.out.println("[DrawBrushValue] Mouse pressed at (" + x + " ; " + y);
-        
+
         // convert to array coord
         int xi = (int) Math.round(pos.x());
         int yi = (int) Math.round(pos.y());
-        
+
         // check position is within array bounds
         int sizeX = array.size(0);
         int sizeY = array.size(1);
         if (xi < 0 || yi < 0) return;
         if (xi >= sizeX || yi >= sizeY) return;
-        
+
         // keep coordinates for next mouse move
         xprev = xi;
         yprev = yi;
-        
+
         UserPreferences prefs = this.frame.getGui().getAppli().userPreferences;
         double value = prefs.brushValue;
         double radius = prefs.brushRadius;
         double r2 = (radius + 0.5) * (radius + 0.5);
         int ri = (int) Math.floor(radius);
-        
-        if (array instanceof ScalarArray)
+
+        Array2D<?> slice = viewer.getCurrentSlice();
+        if (slice.elementInstanceOf(Scalar.class))
         {
-            // select the 2D array to update
-            ScalarArray2D<?> array2d = wrapScalarSlice(array);
-            
+            // convert slice to a scalar array view
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            ScalarArray2D<?> array2d = ScalarArray2D.wrap(ScalarArray.wrap((Array<? extends Scalar>) slice));
+
             // update the array
             for (int y2 = yi - ri; y2 <= yi + ri; y2++)
             {
@@ -136,12 +136,12 @@ public class DrawBrushValueTool extends ImageTool
                 fillHorizontalInterval(array2d, Math.max(xi - deltaX, 0), Math.min(xi + deltaX, sizeX - 1), y2, value);
             }
         }
-        else if (array instanceof RGB8Array)
+        else if (slice.elementInstanceOf(RGB8.class))
         {
-            // select the 2D array to update
-            RGB8Array2D array2d = RGB8Array2D.wrap(RGB8Array.wrap(wrapSlice(array)));
+            // convert slice to an RGB8 array view
+            RGB8Array2D array2d = RGB8Array2D.wrap(RGB8Array.wrap(slice));
             RGB8 rgbValue = prefs.brushColor;
-            
+
             // update the array
             for (int y2 = yi - ri; y2 <= yi + ri; y2++)
             {
@@ -152,13 +152,12 @@ public class DrawBrushValueTool extends ImageTool
             }
         }
 
-        
         // refresh display
-        this.frame.getImageViewer().refreshDisplay();
+        viewer.refreshDisplay();
         this.frame.repaint();
-        
+
         // propagate to other viewers
-        this.frame.getImageViewer().getImageHandle().notifyImageHandleChange(ImageHandle.Event.CHANGE_MASK | ImageHandle.Event.IMAGE_MASK);
+        viewer.getImageHandle().notifyImageHandleChange(ImageHandle.Event.CHANGE_MASK | ImageHandle.Event.IMAGE_MASK);
     }
     
     @Override
@@ -205,8 +204,12 @@ public class DrawBrushValueTool extends ImageTool
     @Override
     public void mouseDragged(MouseEvent evt)
     {
+        // check viewer class
+        if (!(this.frame.getImageViewer() instanceof XYImageViewer)) return;
+        XYImageViewer viewer = (XYImageViewer) this.frame.getImageViewer();
+        
         // retrieve image data
-        Image image = this.frame.getImageViewer().getImage();
+        Image image = viewer.getImage();
         Array<?> array = image.getData();
         if (!array.isModifiable())
         {
@@ -238,22 +241,25 @@ public class DrawBrushValueTool extends ImageTool
         UserPreferences prefs = this.frame.getGui().getAppli().userPreferences;
         double radius = prefs.brushRadius;
         
-        if (array instanceof ScalarArray)
+        Array2D<?> slice = viewer.getCurrentSlice();
+        if (slice.elementInstanceOf(Scalar.class))
         {
-            // use a faster processing for scalar arrays
-            ScalarArray2D<?> array2d = wrapScalarSlice(array);
+            // convert slice to a scalar array view
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            ScalarArray2D<?> array2d = ScalarArray2D.wrap(ScalarArray.wrap((Array<? extends Scalar>) slice));
+            
             double value = prefs.brushValue;
-            drawLineOnArray(array2d, xprev, yprev, xi, yi, radius, value);
+            // use a faster processing for scalar arrays
+            drawLineOnScalarArray(array2d, xprev, yprev, xi, yi, radius, value);
         }
-        else if (array instanceof RGB8Array)
+        else if (slice.elementInstanceOf(RGB8.class))
         {
             // select the 2D array to update
-            RGB8Array2D array2d = RGB8Array2D.wrap(RGB8Array.wrap(wrapSlice(array)));
+            RGB8Array2D array2d = RGB8Array2D.wrap(RGB8Array.wrap(slice));
             RGB8 rgbValue = prefs.brushColor;
             drawLineOnArray(array2d, xprev, yprev, xi, yi, radius, rgbValue);
         }
         
-
         // keep coordinates for next mouse move
         xprev = xi;
         yprev = yi;
@@ -261,8 +267,8 @@ public class DrawBrushValueTool extends ImageTool
         // refresh display
         updateCursor(xi, yi);
         
-        this.frame.getImageViewer().getImageHandle().notifyImageHandleChange(ImageHandle.Event.CHANGE_MASK | ImageHandle.Event.IMAGE_MASK);
-        this.frame.getImageViewer().refreshDisplay();
+        viewer.getImageHandle().notifyImageHandleChange(ImageHandle.Event.CHANGE_MASK | ImageHandle.Event.IMAGE_MASK);
+        viewer.refreshDisplay();
         this.frame.repaint();
     }
     
@@ -281,11 +287,6 @@ public class DrawBrushValueTool extends ImageTool
         {
             ((StackSliceViewer) viewer).getImageDisplay().setCustomCursor(cursor);
         }        
-    }
-    
-    private static void drawLineOnArray(ScalarArray2D<?> array, int x1, int y1, int x2, int y2, double radius, double value)
-    {
-        drawLineOnScalarArray(array, x1, y1, x2, y2, radius, value);
     }
     
     private static void drawLineOnScalarArray(ScalarArray2D<?> array, int x1, int y1, int x2, int y2, double radius, double value)
@@ -552,37 +553,5 @@ public class DrawBrushValueTool extends ImageTool
         {
             array.set(x, y, value);
         }
-    }
-    
-    private Array2D<?> wrapSlice(Array<?> array)
-    {
-        // select the 2D array to update
-        if (array.dimensionality() == 2)
-        {
-            return Array2D.wrap(array);
-        }
-        else if (array.dimensionality() == 3)
-        {
-            int zi = this.frame.getImageViewer().getSlicingPosition(2);
-            return Array3D.wrap(array).slice(zi);
-        }
-        
-        throw new RuntimeException("Requires either a 2D or a 3D array");
-    }
-    
-    private ScalarArray2D<?> wrapScalarSlice(Array<?> array)
-    {
-        // select the 2D array to update
-        if (array.dimensionality() == 2)
-        {
-            return ScalarArray2D.wrap((ScalarArray<?>) array);
-        }
-        else if (array.dimensionality() == 3)
-        {
-            int zi = this.frame.getImageViewer().getSlicingPosition(2);
-            return ScalarArray3D.wrap((ScalarArray<?>) array).slice(zi);
-        }
-        
-        throw new RuntimeException("Requires either a 2D or a 3D array");
     }
 }

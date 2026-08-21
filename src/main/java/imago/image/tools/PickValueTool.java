@@ -7,9 +7,9 @@ import imago.app.UserPreferences;
 import imago.image.ImageFrame;
 import imago.image.ImageTool;
 import imago.image.viewers.ImageDisplay;
+import imago.image.viewers.XYImageViewer;
 import net.sci.array.Array;
 import net.sci.array.Array2D;
-import net.sci.array.Array3D;
 import net.sci.array.color.RGB8;
 import net.sci.array.color.RGB8Array;
 import net.sci.array.color.RGB8Array2D;
@@ -37,18 +37,22 @@ public class PickValueTool extends ImageTool
     @Override
     public void mousePressed(MouseEvent evt)
     {
-        // Coordinate of mouse cursor
-        ImageDisplay display = (ImageDisplay) evt.getSource();
-        Point point = new Point(evt.getX(), evt.getY());
-        Point2D pos = display.displayToImage(point);
+        // check viewer class
+        if (!(this.frame.getImageViewer() instanceof XYImageViewer)) return;
+        XYImageViewer viewer = (XYImageViewer) this.frame.getImageViewer();
         
-        Image image = this.frame.getImageViewer().getImage();
+        // retrieve image data
+        Image image = viewer.getImage();
         Array<?> array = image.getData();
         if (!array.isModifiable())
         {
             return;
         }
-        
+
+        // Coordinate of mouse cursor
+        ImageDisplay display = (ImageDisplay) evt.getSource();
+        Point point = new Point(evt.getX(), evt.getY());
+        Point2D pos = display.displayToImage(point);
         
         // convert to array coord
         int xi = (int) Math.round(pos.x());
@@ -63,39 +67,23 @@ public class PickValueTool extends ImageTool
         if (xi >= sizeX || yi >= sizeY) return;
         
         UserPreferences prefs = frame.getGui().getAppli().userPreferences;
-        Array2D<?> currentSlice = wrapSlice(array);
         
-        if (Scalar.class.isAssignableFrom(array.elementClass()))
+        Array2D<?> slice = viewer.getCurrentSlice();
+        if (slice.elementInstanceOf(Scalar.class))
         {
             @SuppressWarnings({ "rawtypes", "unchecked" })
-            ScalarArray2D<?> scalar2d = ScalarArray2D.wrap(ScalarArray.wrap((Array<? extends Scalar>) currentSlice));
+            ScalarArray2D<?> scalar2d = ScalarArray2D.wrap(ScalarArray.wrap((Array<? extends Scalar>) slice));
             double value = scalar2d.getValue(xi, yi);
             prefs.brushValue = value;
         } 
-        else if (RGB8.class.isAssignableFrom(array.elementClass()))
+        else if (slice.elementInstanceOf(RGB8.class))
         {
-            RGB8Array2D array2d = RGB8Array2D.wrap(RGB8Array.wrap(currentSlice));
+            RGB8Array2D array2d = RGB8Array2D.wrap(RGB8Array.wrap(slice));
             RGB8 rgbValue = array2d.get(xi, yi);
             prefs.brushColor = rgbValue;
         }
         
         this.frame.getImageViewer().refreshDisplay();
         this.frame.repaint();
-    }
-    
-    private Array2D<?> wrapSlice(Array<?> array)
-    {
-        // select the 2D array to update
-        if (array.dimensionality() == 2)
-        {
-            return Array2D.wrap(array);
-        }
-        else if (array.dimensionality() == 3)
-        {
-            int zi = this.frame.getImageViewer().getSlicingPosition(2);
-            return Array3D.wrap(array).slice(zi);
-        }
-        
-        throw new RuntimeException("Requires either a 2D or a 3D array");
     }
 }

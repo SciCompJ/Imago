@@ -10,15 +10,15 @@ import imago.app.UserPreferences;
 import imago.image.ImageFrame;
 import imago.image.ImageTool;
 import imago.image.viewers.ImageDisplay;
+import imago.image.viewers.XYImageViewer;
 import net.sci.array.Array;
 import net.sci.array.Array2D;
-import net.sci.array.Array3D;
 import net.sci.array.color.RGB8;
 import net.sci.array.color.RGB8Array;
 import net.sci.array.color.RGB8Array2D;
+import net.sci.array.numeric.Scalar;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray2D;
-import net.sci.array.numeric.ScalarArray3D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.image.Image;
 
@@ -48,24 +48,26 @@ public class DrawValueTool extends ImageTool
     @Override
     public void mousePressed(MouseEvent evt)
     {
-        // Coordinate of mouse cursor
-        ImageDisplay display = (ImageDisplay) evt.getSource();
-        Point point = new Point(evt.getX(), evt.getY());
-        Point2D pos = display.displayToImage(point);
+        // check viewer class
+        if (!(this.frame.getImageViewer() instanceof XYImageViewer)) return;
+        XYImageViewer viewer = (XYImageViewer) this.frame.getImageViewer();
         
-        Image image = this.frame.getImageViewer().getImage();
+        // retrieve image data
+        Image image = viewer.getImage();
         Array<?> array = image.getData();
         if (!array.isModifiable())
         {
             return;
         }
         
+        // Coordinate of mouse cursor
+        ImageDisplay display = (ImageDisplay) evt.getSource();
+        Point point = new Point(evt.getX(), evt.getY());
+        Point2D pos = display.displayToImage(point);
         
         // convert to array coord
         int xi = (int) Math.round(pos.x());
         int yi = (int) Math.round(pos.y());
-        
-        System.out.println("[DrawValue] Mouse pressed at (" + xi + " ; " + yi);
         
         // check position is within array bounds
         int sizeX = array.size(0);
@@ -74,54 +76,27 @@ public class DrawValueTool extends ImageTool
         if (xi >= sizeX || yi >= sizeY) return;
         
         UserPreferences prefs = frame.getGui().getAppli().userPreferences;
-        double value = prefs.brushValue;
         
-        if (array instanceof ScalarArray)
+        Array2D<?> slice = viewer.getCurrentSlice();
+        if (slice.elementInstanceOf(Scalar.class))
         {
-            ScalarArray2D<?> array2d = wrapScalarSlice(array);
+            // convert slice to a scalar array view
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            ScalarArray2D<?> array2d = ScalarArray2D.wrap(ScalarArray.wrap((Array<? extends Scalar>) slice));
+            // update array
+            double value = prefs.brushValue;
             array2d.setValue(xi, yi, value);
         } 
-        else if (array instanceof RGB8Array)
+        else if (slice.elementInstanceOf(RGB8.class))
         {
-            // select the 2D array to update
-            RGB8Array2D array2d = RGB8Array2D.wrap(RGB8Array.wrap(wrapSlice(array)));
-            RGB8 rgbValue = RGB8.fromValue(value);
+            // convert slice to an RGB8 array view
+            RGB8Array2D array2d = RGB8Array2D.wrap(RGB8Array.wrap(slice));
+            // update array
+            RGB8 rgbValue = prefs.brushColor;
             array2d.set(xi, yi, rgbValue);
         }
         
         this.frame.getImageViewer().refreshDisplay();
         this.frame.repaint();
-    }
-    
-    private Array2D<?> wrapSlice(Array<?> array)
-    {
-        // select the 2D array to update
-        if (array.dimensionality() == 2)
-        {
-            return Array2D.wrap(array);
-        }
-        else if (array.dimensionality() == 3)
-        {
-            int zi = this.frame.getImageViewer().getSlicingPosition(2);
-            return Array3D.wrap(array).slice(zi);
-        }
-        
-        throw new RuntimeException("Requires either a 2D or a 3D array");
-    }
-    
-    private ScalarArray2D<?> wrapScalarSlice(Array<?> array)
-    {
-        // select the 2D array to update
-        if (array.dimensionality() == 2)
-        {
-            return ScalarArray2D.wrap((ScalarArray<?>) array);
-        }
-        else if (array.dimensionality() == 3)
-        {
-            int zi = this.frame.getImageViewer().getSlicingPosition(2);
-            return ScalarArray3D.wrap((ScalarArray<?>) array).slice(zi);
-        }
-        
-        throw new RuntimeException("Requires either a 2D or a 3D array");
     }
 }

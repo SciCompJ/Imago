@@ -10,7 +10,9 @@ import imago.app.UserPreferences;
 import imago.image.ImageFrame;
 import imago.image.ImageTool;
 import imago.image.viewers.ImageDisplay;
+import imago.image.viewers.XYImageViewer;
 import net.sci.array.Array;
+import net.sci.array.numeric.Scalar;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray2D;
 import net.sci.array.numeric.ScalarArray3D;
@@ -45,36 +47,36 @@ public class FloodFillTool extends ImageTool
     public void mousePressed(MouseEvent evt)
     {
         System.out.println("flood-fill");
+        // check viewer class
+        if (!(this.frame.getImageViewer() instanceof XYImageViewer)) return;
+        XYImageViewer viewer = (XYImageViewer) this.frame.getImageViewer();
         
-        // Coordinate of mouse cursor
+        // retrieve image data
+        Image image = viewer.getImage();
+        Array<?> array = image.getData();
+        if (!array.isModifiable())
+        {
+            return;
+        }
+        
+        // 
+        if (!(array.elementInstanceOf(Scalar.class)))
+        {
+            return;
+        }
+
+        // Coordinates of mouse cursor
         ImageDisplay display = (ImageDisplay) evt.getSource();
         Point point = new Point(evt.getX(), evt.getY());
         Point2D pos = display.displayToImage(point);
         double x = pos.x();
         double y = pos.y();
         
-        Image image = this.frame.getImageViewer().getImage();
-        Array<?> array = image.getData();
-        if (!(array instanceof ScalarArray))
-        {
-            return;
-        }
-        if (!array.isModifiable())
-        {
-            return;
-        }
-        
-//        System.out.println("[DrawValue] Mouse pressed at (" + x + " ; " + y);
-        
-        int sizeX = array.size(0);
-        int sizeY = array.size(1);
-
-        // convert to array coord
-        // TODO: manage spatial calibration
+        // check position is within array bounds
         int xi = (int) Math.round(x);
         int yi = (int) Math.round(y);
         if (xi < 0 || yi < 0) return;
-        if (xi >= sizeX || yi >= sizeY) return;
+        if (xi >= array.size(0) || yi >= array.size(1)) return;
         
         UserPreferences prefs = frame.getGui().getAppli().userPreferences;
         double value = prefs.brushValue;
@@ -87,12 +89,11 @@ public class FloodFillTool extends ImageTool
         else if (array.dimensionality() == 3)
         {
             ScalarArray3D<?> array3d = ScalarArray3D.wrap((ScalarArray<?>) array);
-            int zi = this.frame.getImageViewer().getSlicingPosition(2);
+            int zi = viewer.getSlicingPosition(2);
             FloodFill.floodFill(array3d, xi, yi, zi, value, 6);
         }
         
-        this.frame.getImageViewer().refreshDisplay();
+        viewer.refreshDisplay();
         this.frame.repaint();
     }
-
 }

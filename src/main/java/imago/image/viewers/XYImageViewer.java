@@ -8,7 +8,7 @@ import imago.image.ImageViewer;
 import net.sci.array.Array;
 import net.sci.array.Array2D;
 import net.sci.array.Array3D;
-import net.sci.array.shape.Slicer;
+import net.sci.array.shape.Slice;
 
 /**
  * A specialization of ImageViewer that displays an image as a 2D planar view
@@ -47,8 +47,7 @@ public abstract class XYImageViewer extends ImageViewer
     }
     
     /**
-     * Returns the current slice of the current display image as a 2D Array.
-     * Tries to return a view when possible.
+     * Returns a view on the current slice of the current display image as a 2D Array.
      * 
      * @return the 2D array corresponding to the current slice of the display
      *         image.
@@ -60,19 +59,12 @@ public abstract class XYImageViewer extends ImageViewer
     
     private Array2D<?> getXYSlice(Array<?> array)
     {
-        // select the 2D array to update
-        if (array.dimensionality() == 2)
+        return switch (array.dimensionality())
         {
-            return Array2D.wrap(array);
-        }
-        else if (array.dimensionality() == 3)
-        {
-            int zi = this.slicingPosition[2];
-            return Array3D.wrap(array).slice(zi);
-        }
-        else
-        {
-            return Array2D.wrap(new Slicer(new int[] {0, 1}, this.slicingPosition).process(array));
-        }
+            case 2 -> Array2D.wrap(array);
+            case 3 -> Array3D.wrap(array).slice(this.slicingPosition[2]);
+            default -> Array2D
+                    .wrap(new Slice(new int[] { 0, 1 }, this.slicingPosition).createView(array));
+        };
     }
 }
