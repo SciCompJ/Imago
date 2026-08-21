@@ -6,11 +6,6 @@ package imago.image;
 
 import imago.image.ImageHandle.Event;
 import imago.image.render.VectorImageChannelRenderer;
-import imago.image.render.VectorImageMaxNormRenderer;
-import imago.image.render.VectorImageNormRenderer;
-import net.sci.array.numeric.ScalarArray;
-import net.sci.array.numeric.Vector;
-import net.sci.array.numeric.VectorArray;
 import net.sci.geom.Geometry;
 import net.sci.image.Image;
 
@@ -28,21 +23,6 @@ public abstract class ImageViewer implements ImageHandle.Listener
 {
     // ===================================================================
     // Public constants
-
-    /**
-     * Determines the strategy for displaying a vector image.
-     */
-    public static enum VectorImageDisplayMode
-    {
-        /** Display a single channel/component of the vector image. */
-        CHANNEL,
-        /** Display the norm of each pixel of the vector image. */
-        NORM,
-        /**
-         * Display the maximal channel value of each pixel of the vector image.
-         */
-        MAX,
-    }
 
     /**
      * The behavior of the zoom when the component is resized.
@@ -85,7 +65,6 @@ public abstract class ImageViewer implements ImageHandle.Listener
     /**
      * The strategy for displaying a vector image.
      */
-    protected VectorImageDisplayMode vectorImageDisplayMode = VectorImageDisplayMode.CHANNEL;
     protected ImageDataRenderer renderer;
     
     /**
@@ -302,34 +281,6 @@ public abstract class ImageViewer implements ImageHandle.Listener
     }
 
     /**
-     * @return the vectorImageDisplayMode
-     */
-    public VectorImageDisplayMode getVectorImageDisplayMode()
-    {
-        return vectorImageDisplayMode;
-    }
-
-    /**
-     * @param vectorImageDisplayMode
-     *            the vectorImageDisplayMode to set
-     */
-    public void setVectorImageDisplayMode(VectorImageDisplayMode vectorImageDisplayMode)
-    {
-        this.vectorImageDisplayMode = vectorImageDisplayMode;
-        
-        if (Vector.class.isAssignableFrom(this.image.getData().elementClass()))
-        {
-            setRenderer(switch(vectorImageDisplayMode) {
-                case CHANNEL -> new VectorImageChannelRenderer().setChannel(currentChannelIndex);
-                case NORM -> new VectorImageNormRenderer();
-                case MAX -> new VectorImageMaxNormRenderer();
-                default ->
-                    throw new IllegalArgumentException("Unexpected value: " + vectorImageDisplayMode);
-            });
-        }
-    }
-
-    /**
      * @return the currentChannelIndex
      */
     public int getCurrentChannelIndex()
@@ -350,25 +301,6 @@ public abstract class ImageViewer implements ImageHandle.Listener
         }
     }
 
-    /**
-     * Computes the scalar array that will be displayed, based on the current
-     * settings of the viewer.
-     * 
-     * @param array
-     *            the vector array to convert
-     * @return an instance of ScalarArray representing the input array.
-     */
-    @Deprecated
-    protected ScalarArray<?> computeVectorArrayDisplay(VectorArray<?, ?> array)
-    {
-        return switch (this.vectorImageDisplayMode)
-        {
-            case CHANNEL -> array.channel(this.currentChannelIndex);
-            case NORM -> VectorArray.norm(array);
-            case MAX -> VectorArray.maxNorm(array);
-            default -> throw new RuntimeException("Unknown mode for converting vector image...");
-        };
-    }
 
     // ===================================================================
     // Display management methods

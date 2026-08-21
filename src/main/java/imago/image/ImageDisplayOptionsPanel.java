@@ -4,7 +4,9 @@
 package imago.image;
 
 import imago.gui.panels.CollapsiblePanel;
-import imago.image.ImageViewer.VectorImageDisplayMode;
+import imago.image.render.VectorImageChannelRenderer;
+import imago.image.render.VectorImageMaxNormRenderer;
+import imago.image.render.VectorImageNormRenderer;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -118,13 +120,15 @@ public class ImageDisplayOptionsPanel extends JPanel
         String[] choices = new String[] {"Single Channel", "Norm", "Max Norm"};
         JComboBox<String> cb = new JComboBox<String>(choices);
         cb.addActionListener(evt -> {
-            int index = cb.getSelectedIndex(); 
-            switch(index)
+            int index = cb.getSelectedIndex();
+            ImageDataRenderer renderer = switch(index)
             {
-                case 0 -> imageViewer.setVectorImageDisplayMode(VectorImageDisplayMode.CHANNEL);
-                case 1 -> imageViewer.setVectorImageDisplayMode(VectorImageDisplayMode.NORM);
-                case 2 -> imageViewer.setVectorImageDisplayMode(VectorImageDisplayMode.MAX);
-            }
+                case 0 -> new VectorImageChannelRenderer().setChannel(imageViewer.getCurrentChannelIndex());
+                case 1 -> new VectorImageNormRenderer();
+                case 2 -> new VectorImageMaxNormRenderer();
+                default -> throw new RuntimeException("Out of Bound index: " + index);
+            };
+            imageViewer.setRenderer(renderer);
             imageViewer.refreshDisplay();
         });
         return cb;
