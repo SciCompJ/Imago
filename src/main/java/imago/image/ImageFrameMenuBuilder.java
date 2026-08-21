@@ -17,6 +17,7 @@ import imago.image.plugins.shape.ImageFlip;
 import imago.image.tools.DrawBrushValueTool;
 import imago.image.tools.DrawValueTool;
 import imago.image.tools.FloodFillTool;
+import imago.image.tools.PickValueTool;
 import imago.image.tools.SelectEllipseTool;
 import imago.image.tools.SelectLineSegmentTool;
 import imago.image.tools.SelectPolygonTool;
@@ -599,6 +600,7 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
             addPlugin(toolsMenu, new ChangeCurrentTool(new DrawBrushValueTool(viewer, "drawBrushValue")), "Draw (Brush)");
             addPlugin(toolsMenu, new ChangeCurrentTool(new FloodFillTool(viewer, "floodFillValue")), "Flood-Fill",
                     hasScalarImage);
+            addPlugin(toolsMenu, new ChangeCurrentTool(new PickValueTool(viewer, "pickValue")), "Pick Value/Color");
             
             toolsMenu.addSeparator();
             addPlugin(toolsMenu, new ImageSetScaleFromLineSelection(), "Set Scale from Selection...", hasImage);

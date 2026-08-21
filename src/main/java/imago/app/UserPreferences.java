@@ -11,6 +11,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
 
+import net.sci.array.color.RGB8;
+
 /**
  * Global settings for GUI interactions, such as brush size or color.
  * 
@@ -63,6 +65,10 @@ public class UserPreferences
         {
             prefs.brushValue = Double.parseDouble((String) props.get("imago.tools.brush.value"));
         }
+        if (props.containsKey("imago.tools.brush.colorIntCode"))
+        {
+            prefs.brushColor = RGB8.fromIntCode(Integer.parseInt((String) props.get("imago.tools.brush.colorIntCode")));
+        }
         if (props.containsKey("imago.files.open.useSystemDialog"))
         {
             prefs.useFileOpenSystemDialog = Boolean.parseBoolean((String) props.get("imago.files.open.useSystemDialog"));
@@ -94,6 +100,12 @@ public class UserPreferences
      * Default is 255, corresponding to white for UInt8 images.
      */
     public double brushValue = 255;
+    
+    /**
+     * The color of the brush for color images.
+     * Default is white.
+     */
+    public RGB8 brushColor = RGB8.WHITE;
     
     /**
      * The radius of the brush.
@@ -129,6 +141,7 @@ public class UserPreferences
         props.put("imago.files.save.useSystemDialog", Boolean.toString(this.useSaveFileSystemDialog));
         props.put("imago.tools.brush.radius", Double.toString(this.brushRadius));
         props.put("imago.tools.brush.value", Double.toString(this.brushValue));
+        props.put("imago.tools.brush.colorIntCode", Integer.toString(this.brushColor.intCode()));
         
         // use Property class to save user preferences
         try (OutputStream output = new FileOutputStream(file)) 

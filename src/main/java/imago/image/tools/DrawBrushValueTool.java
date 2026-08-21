@@ -140,7 +140,7 @@ public class DrawBrushValueTool extends ImageTool
         {
             // select the 2D array to update
             RGB8Array2D array2d = RGB8Array2D.wrap(RGB8Array.wrap(wrapSlice(array)));
-            RGB8 rgbValue = RGB8.fromValue(value);
+            RGB8 rgbValue = prefs.brushColor;
             
             // update the array
             for (int y2 = yi - ri; y2 <= yi + ri; y2++)
@@ -236,20 +236,20 @@ public class DrawBrushValueTool extends ImageTool
         
         // retrieve brush settings
         UserPreferences prefs = this.frame.getGui().getAppli().userPreferences;
-        double value = prefs.brushValue;
         double radius = prefs.brushRadius;
         
         if (array instanceof ScalarArray)
         {
             // use a faster processing for scalar arrays
             ScalarArray2D<?> array2d = wrapScalarSlice(array);
+            double value = prefs.brushValue;
             drawLineOnArray(array2d, xprev, yprev, xi, yi, radius, value);
         }
         else if (array instanceof RGB8Array)
         {
             // select the 2D array to update
             RGB8Array2D array2d = RGB8Array2D.wrap(RGB8Array.wrap(wrapSlice(array)));
-            RGB8 rgbValue = RGB8.fromValue(value);
+            RGB8 rgbValue = prefs.brushColor;
             drawLineOnArray(array2d, xprev, yprev, xi, yi, radius, rgbValue);
         }
         
