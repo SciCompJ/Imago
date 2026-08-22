@@ -3,11 +3,11 @@
  */
 package imago.image.plugins.edit;
 
+import java.util.prefs.Preferences;
+
+import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
-import imago.gui.ImagoGui;
-import imago.app.UserPreferences;
-import imago.gui.FramePlugin;
 
 /**
  * Choose whether file dialogs must use Native widget toolkit (AWT), or the more
@@ -21,13 +21,12 @@ public class ChooseFileDialogWidgetToolkit implements FramePlugin
     @Override
     public void run(ImagoFrame frame, String args)
     {
-        ImagoGui gui = frame.getGui();
-        UserPreferences prefs = gui.getAppli().userPreferences;
-        
+        Preferences prefs = Preferences.userRoot().node("imago/file");
+
         // open a dialog initialized with current preferences
         GenericDialog dlg = new GenericDialog(frame, "File Dialog Widgets");
-        dlg.addCheckBox("Native Dialog for Opening files", prefs.useFileOpenSystemDialog);
-        dlg.addCheckBox("Native Dialog for Saving files", prefs.useSaveFileSystemDialog);
+        dlg.addCheckBox("Native Dialog for Opening files", prefs.getBoolean("UseFileOpenSystemDialog", false));
+        dlg.addCheckBox("Native Dialog for Saving files", prefs.getBoolean("UseFileSaveSystemDialog", false));
 
         // wait for user
         dlg.showDialog();
@@ -37,7 +36,7 @@ public class ChooseFileDialogWidgetToolkit implements FramePlugin
         }
 
         // update preferences
-        prefs.useFileOpenSystemDialog = dlg.getNextBoolean();
-        prefs.useSaveFileSystemDialog = dlg.getNextBoolean();
+        prefs.getBoolean("UseFileOpenSystemDialog", dlg.getNextBoolean());
+        prefs.getBoolean("UseFileSaveSystemDialog", dlg.getNextBoolean());
     }
 }

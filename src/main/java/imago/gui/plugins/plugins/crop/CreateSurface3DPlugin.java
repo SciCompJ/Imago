@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.function.Consumer;
+import java.util.prefs.Preferences;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -28,7 +29,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import imago.app.ImagoApp;
-import imago.app.UserPreferences;
 import imago.app.scene.ImageSerialSectionsNode;
 import imago.app.scene.ShapeNode;
 import imago.gui.FramePlugin;
@@ -434,8 +434,8 @@ public class CreateSurface3DPlugin implements FramePlugin, ListSelectionListener
         // update last open path
         this.imagePath = file.getAbsolutePath();
         this.lastOpenPath = file.getPath();
-        UserPreferences prefs = this.imageFrame.getGui().getAppli().userPreferences;
-        prefs.lastOpenPath = lastOpenPath;
+        Preferences prefs = Preferences.userRoot().node("imago/file");
+        prefs.put("LastOpenPath", this.lastOpenPath);
     }
     
     private void initializeImage(Image image)

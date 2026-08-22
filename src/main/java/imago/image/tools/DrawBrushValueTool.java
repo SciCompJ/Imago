@@ -275,7 +275,8 @@ public class DrawBrushValueTool extends ImageTool
     private void updateCursor(int xi, int yi)
     {
         // create cursor shape
-        double radius = this.frame.getGui().getAppli().userPreferences.brushRadius + 0.5;
+        Preferences prefs = Preferences.userNodeForPackage(getClass());
+        double radius = prefs.getDouble("BrushRadius", 5) + 0.5;
         Circle2D cursor = new Circle2D(new Point2D(xi+0.5, yi+0.5), radius);
         
         ImageViewer viewer = this.frame.getImageViewer();

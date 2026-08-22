@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.prefs.Preferences;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -283,13 +284,15 @@ public class ImagoGui
      */
     public File chooseFileToOpen(ImagoFrame frame, String title, FileFilter... fileFilters)
     {
-        if (app.userPreferences.useFileOpenSystemDialog)
+        Preferences prefs = Preferences.userRoot().node("imago/file");
+        if (prefs.getBoolean("UseFileOpenSystemDialog", false))
         {
             return chooseFileToOpen_awt(frame, title, fileFilters);
         }
         
         // create dialog using last open path
-        JFileChooser dlg = new JFileChooser(this.app.userPreferences.lastOpenPath);
+        String lastPath = prefs.get("LastOpenPath", "");
+        JFileChooser dlg = new JFileChooser(lastPath);
 
         // setup dialog title
         if (title != null)
@@ -314,7 +317,7 @@ public class ImagoGui
                 // update path for future opening
                 File file = dlg.getSelectedFile();
                 String path = file.getParent();
-                this.app.userPreferences.lastOpenPath = path;
+                prefs.put("LastOpenPath", path);
             }
         });
 
@@ -330,7 +333,9 @@ public class ImagoGui
     private File chooseFileToOpen_awt(ImagoFrame frame, String title, FileFilter... fileFilters)
     {
         FileDialog dlg = new FileDialog(frame == null ? null : frame.getWidget(), "Choose a file", FileDialog.LOAD);
-        dlg.setDirectory(this.app.userPreferences.lastOpenPath);
+        Preferences prefs = Preferences.userRoot().node("imago/file");
+        String lastPath = prefs.get("LastOpenPath", "");
+        dlg.setDirectory(lastPath);
         if (fileFilters.length > 0)
         {
             FileFilter filter = fileFilters[0];
@@ -342,7 +347,7 @@ public class ImagoGui
         String file = dlg.getFile();
         if (file == null) return null;
         String dir = dlg.getDirectory();
-        this.app.userPreferences.lastOpenPath = dir;
+        prefs.put("LastOpenPath", dir);
         
         return new File(dir, file);
     }
@@ -363,13 +368,15 @@ public class ImagoGui
      */
     public File chooseFileToSave(ImagoFrame frame, String title, String defaultName, FileFilter... fileFilters)
     {
-        if (app.userPreferences.useSaveFileSystemDialog)
+        Preferences prefs = Preferences.userRoot().node("imago/file");
+        if (prefs.getBoolean("UseFileSaveSystemDialog", false))
         {
             return chooseFileToSave_awt(frame, title, defaultName, fileFilters);
         }
         
         // create dialog using last open path
-        JFileChooser dlg = new JFileChooser(this.app.userPreferences.lastSavePath);
+        String lastPath = prefs.get("LastSavePath", "");
+        JFileChooser dlg = new JFileChooser(lastPath);
 
         // setup dialog title
         if (title != null)
@@ -390,7 +397,7 @@ public class ImagoGui
         // if a name is selected, use it as default file
         if (defaultName != null)
         {
-            dlg.setSelectedFile(new File(this.app.userPreferences.lastSavePath, defaultName));
+            dlg.setSelectedFile(new File(lastPath, defaultName));
         }
 
         // add an action listener to keep path for future opening
@@ -400,7 +407,7 @@ public class ImagoGui
                 // update path for future opening
                 File file = dlg.getSelectedFile();
                 String path = file.getParent();
-                this.app.userPreferences.lastSavePath = path;
+                prefs.put("LastSavePath", path);
             }
         });
 
@@ -416,7 +423,9 @@ public class ImagoGui
     private File chooseFileToSave_awt(ImagoFrame frame, String title, String defaultName, FileFilter... fileFilters)
     {
         FileDialog dlg = new FileDialog(frame == null ? null : frame.getWidget(), "Choose a file", FileDialog.SAVE);
-        dlg.setDirectory(this.app.userPreferences.lastSavePath);
+        Preferences prefs = Preferences.userRoot().node("imago/file");
+        String lastPath = prefs.get("LastSavePath", "");
+        dlg.setDirectory(lastPath);
         if (fileFilters.length > 0)
         {
             FileFilter filter = fileFilters[0];
@@ -430,7 +439,7 @@ public class ImagoGui
         if (file == null) return null;
         
         String dir = dlg.getDirectory();
-        this.app.userPreferences.lastSavePath = dir;
+        prefs.put("LastSavePath", dir);
         return new File(dir, file);
     }
     
