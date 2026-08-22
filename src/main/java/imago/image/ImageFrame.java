@@ -31,6 +31,11 @@ import net.sci.algo.AlgoEvent;
 import net.sci.algo.AlgoListener;
 import net.sci.array.Array;
 import net.sci.array.ArrayOperator;
+import net.sci.array.numeric.Scalar;
+import net.sci.array.numeric.ScalarArray;
+import net.sci.array.numeric.Vector;
+import net.sci.array.numeric.VectorArray;
+import net.sci.array.numeric.process.ScalarArrayOperator;
 import net.sci.image.Image;
 import net.sci.image.ImageArrayOperator;
 import net.sci.image.ImageOperator;
@@ -343,6 +348,7 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
      *            the image containing the data array to process
      * @return a new Image instance encapsulating the result of array processing
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public Image runOperator(String opName, ArrayOperator op, Image image)
     {
         // reset status bar
@@ -355,9 +361,44 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         
         // run process, switching to the best appropriate method depending on
         // the class of the operator
-        Image result = (op instanceof ImageArrayOperator) 
-                ? ((ImageArrayOperator) op).process(image) 
-                : new Image(op.process(image.getData()), image);
+        Image result;
+        if (op instanceof ImageArrayOperator iap)
+        {
+            result = iap.process(image);
+        }
+        else
+        {
+            Array<?> array = image.getData();
+            Array<?> res;
+            if (op instanceof ScalarArrayOperator sao)
+            {
+                res = switch (array.sampleElement())
+                {
+                    case Scalar s -> sao.processScalar(ScalarArray.wrap((Array<? extends Scalar>) array));
+                    case Vector v -> {
+                        // use marginal approach to apply the operator to each
+                        // channel, and return a vector image with same class
+                        // and same number of channels as the source image
+                        VectorArray array2 = VectorArray.wrap((Array<? extends Vector>) array);
+                        VectorArray tmp = array2.newInstance(array2.size());
+                        for (int c = 0; c < array2.channelCount(); c++)
+                        {
+                            tmp.setChannel(c, sao.processScalar(array2.channel(c)));
+                        }
+                        yield tmp;
+                    }
+                    default -> throw new IllegalArgumentException(
+                            "Unable to apply scalar array operator on array with class: "
+                                    + array.getClass().getName());
+                };
+            }
+            else
+            {
+                // use default process method
+                res = op.process(array);
+            }
+            result = new Image(res, image);
+        }
         long t1 = System.nanoTime();
         
         // cleanup listener and status bar
