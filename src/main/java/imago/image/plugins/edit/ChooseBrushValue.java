@@ -3,20 +3,23 @@
  */
 package imago.image.plugins.edit;
 
+import java.util.prefs.Preferences;
+
+import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
-import imago.gui.ImagoGui;
-import imago.app.UserPreferences;
-import imago.gui.FramePlugin;
 
 /**
+ * Choose the intensity value of the brush.
+ * 
  * @author dlegland
  *
  */
 public class ChooseBrushValue implements FramePlugin
 {
-	/**
-	 */
+    /**
+     * Default constructor.
+     */
 	public ChooseBrushValue()
 	{
 	}
@@ -24,9 +27,8 @@ public class ChooseBrushValue implements FramePlugin
 	@Override
     public void run(ImagoFrame frame, String args)
 	{
-	    ImagoGui gui = frame.getGui();
-	    UserPreferences prefs = gui.getAppli().userPreferences;
-	    double brushValue = prefs.brushValue;
+        Preferences prefs = Preferences.userRoot().node("imago/image/tools");
+        double brushValue = prefs.getDouble("BrushValue", 255);
 	    
 	    GenericDialog dlg = new GenericDialog(frame, "Brush Value");
 	    dlg.addNumericField("Brush Value", brushValue, 2, "The value used to draw on intensity images");
@@ -38,9 +40,9 @@ public class ChooseBrushValue implements FramePlugin
 	    }
 	    
 	    double value = dlg.getNextNumber();
-	    prefs.brushValue = value;
+	    prefs.putDouble("BrushValue", value);
 
-	    System.out.println("brush value changed to: " + prefs.brushValue);
+	    System.out.println("brush value changed to: " + value);
 	}
 
 }

@@ -3,13 +3,12 @@
  */
 package imago;
 
-import imago.app.ImagoApp;
-import imago.gui.ImagoFrame;
-import imago.gui.ImagoGui;
-
 import java.io.File;
 import java.io.IOException;
 
+import imago.app.ImagoApp;
+import imago.gui.ImagoFrame;
+import imago.gui.ImagoGui;
 import net.sci.image.Image;
 
 /**

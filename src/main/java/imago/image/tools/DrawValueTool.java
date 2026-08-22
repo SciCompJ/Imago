@@ -5,8 +5,8 @@ package imago.image.tools;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.util.prefs.Preferences;
 
-import imago.app.UserPreferences;
 import imago.image.ImageFrame;
 import imago.image.ImageTool;
 import imago.image.viewers.ImageDisplay;
@@ -75,7 +75,7 @@ public class DrawValueTool extends ImageTool
         if (xi < 0 || yi < 0) return;
         if (xi >= sizeX || yi >= sizeY) return;
         
-        UserPreferences prefs = frame.getGui().getAppli().userPreferences;
+        Preferences prefs = Preferences.userNodeForPackage(getClass());
         
         Array2D<?> slice = viewer.getCurrentSlice();
         if (slice.elementInstanceOf(Scalar.class))
@@ -84,7 +84,7 @@ public class DrawValueTool extends ImageTool
             @SuppressWarnings({ "rawtypes", "unchecked" })
             ScalarArray2D<?> array2d = ScalarArray2D.wrap(ScalarArray.wrap((Array<? extends Scalar>) slice));
             // update array
-            double value = prefs.brushValue;
+            double value = prefs.getDouble("BrushValue", 255);
             array2d.setValue(xi, yi, value);
         } 
         else if (slice.elementInstanceOf(RGB8.class))
@@ -92,7 +92,7 @@ public class DrawValueTool extends ImageTool
             // convert slice to an RGB8 array view
             RGB8Array2D array2d = RGB8Array2D.wrap(RGB8Array.wrap(slice));
             // update array
-            RGB8 rgbValue = prefs.brushColor;
+            RGB8 rgbValue = RGB8.fromIntCode(prefs.getInt("BrushColorIntCode", 0xFFFFFF));
             array2d.set(xi, yi, rgbValue);
         }
         

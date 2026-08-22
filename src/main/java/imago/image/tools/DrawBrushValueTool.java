@@ -5,8 +5,8 @@ package imago.image.tools;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.util.prefs.Preferences;
 
-import imago.app.UserPreferences;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import imago.image.ImageTool;
@@ -51,7 +51,7 @@ public class DrawBrushValueTool extends ImageTool
     // Constructor
 
      /**
-     * Basic constructor.
+     * Default constructor.
      * 
      * @param viewer
      *            reference to the mage viewer
@@ -114,9 +114,8 @@ public class DrawBrushValueTool extends ImageTool
         xprev = xi;
         yprev = yi;
 
-        UserPreferences prefs = this.frame.getGui().getAppli().userPreferences;
-        double value = prefs.brushValue;
-        double radius = prefs.brushRadius;
+        Preferences prefs = Preferences.userNodeForPackage(getClass());
+        double radius = prefs.getDouble("BrushRadius", 5);
         double r2 = (radius + 0.5) * (radius + 0.5);
         int ri = (int) Math.floor(radius);
 
@@ -126,6 +125,7 @@ public class DrawBrushValueTool extends ImageTool
             // convert slice to a scalar array view
             @SuppressWarnings({ "rawtypes", "unchecked" })
             ScalarArray2D<?> array2d = ScalarArray2D.wrap(ScalarArray.wrap((Array<? extends Scalar>) slice));
+            double value = prefs.getDouble("BrushValue", 255);
 
             // update the array
             for (int y2 = yi - ri; y2 <= yi + ri; y2++)
@@ -140,8 +140,8 @@ public class DrawBrushValueTool extends ImageTool
         {
             // convert slice to an RGB8 array view
             RGB8Array2D array2d = RGB8Array2D.wrap(RGB8Array.wrap(slice));
-            RGB8 rgbValue = prefs.brushColor;
-
+            RGB8 rgbValue = RGB8.fromIntCode(prefs.getInt("BrushColorIntCode", 0xFFFFFF));
+            
             // update the array
             for (int y2 = yi - ri; y2 <= yi + ri; y2++)
             {
@@ -238,9 +238,9 @@ public class DrawBrushValueTool extends ImageTool
         if (xi >= sizeX || yi >= sizeY) return;
         
         // retrieve brush settings
-        UserPreferences prefs = this.frame.getGui().getAppli().userPreferences;
-        double radius = prefs.brushRadius;
-        
+        Preferences prefs = Preferences.userNodeForPackage(getClass());
+        double radius = prefs.getDouble("BrushRadius", 5);
+
         Array2D<?> slice = viewer.getCurrentSlice();
         if (slice.elementInstanceOf(Scalar.class))
         {
@@ -248,7 +248,7 @@ public class DrawBrushValueTool extends ImageTool
             @SuppressWarnings({ "rawtypes", "unchecked" })
             ScalarArray2D<?> array2d = ScalarArray2D.wrap(ScalarArray.wrap((Array<? extends Scalar>) slice));
             
-            double value = prefs.brushValue;
+            double value = prefs.getDouble("BrushValue", 255);
             // use a faster processing for scalar arrays
             drawLineOnScalarArray(array2d, xprev, yprev, xi, yi, radius, value);
         }
@@ -256,7 +256,7 @@ public class DrawBrushValueTool extends ImageTool
         {
             // select the 2D array to update
             RGB8Array2D array2d = RGB8Array2D.wrap(RGB8Array.wrap(slice));
-            RGB8 rgbValue = prefs.brushColor;
+            RGB8 rgbValue = RGB8.fromIntCode(prefs.getInt("BrushColorIntCode", 0xFFFFFF));
             drawLineOnArray(array2d, xprev, yprev, xi, yi, radius, rgbValue);
         }
         

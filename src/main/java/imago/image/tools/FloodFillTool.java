@@ -5,8 +5,8 @@ package imago.image.tools;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.util.prefs.Preferences;
 
-import imago.app.UserPreferences;
 import imago.image.ImageFrame;
 import imago.image.ImageTool;
 import imago.image.viewers.ImageDisplay;
@@ -78,9 +78,9 @@ public class FloodFillTool extends ImageTool
         if (xi < 0 || yi < 0) return;
         if (xi >= array.size(0) || yi >= array.size(1)) return;
         
-        UserPreferences prefs = frame.getGui().getAppli().userPreferences;
-        double value = prefs.brushValue;
-
+        Preferences prefs = Preferences.userNodeForPackage(getClass());
+        double value = prefs.getDouble("BrushValue", 255);
+        
         if (array.dimensionality() == 2)
         {
             ScalarArray2D<?> array2d = ScalarArray2D.wrap((ScalarArray<?>) array);
