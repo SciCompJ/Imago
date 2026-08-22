@@ -547,7 +547,8 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         }
 
         // image type
-        String typeString = image.getType().toString();
+        String dataTypeName = image.getData().elementClass().getSimpleName();
+        String typeString = String.format("%s (%s)", image.getType().toString(), dataTypeName);
 
         // setup title
         String titleString = name + " - " + dimString + " - " + typeString;
