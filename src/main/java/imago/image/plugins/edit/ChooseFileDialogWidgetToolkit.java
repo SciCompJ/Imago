@@ -36,7 +36,7 @@ public class ChooseFileDialogWidgetToolkit implements FramePlugin
         }
 
         // update preferences
-        prefs.getBoolean("UseFileOpenSystemDialog", dlg.getNextBoolean());
-        prefs.getBoolean("UseFileSaveSystemDialog", dlg.getNextBoolean());
+        prefs.putBoolean("UseFileOpenSystemDialog", dlg.getNextBoolean());
+        prefs.putBoolean("UseFileSaveSystemDialog", dlg.getNextBoolean());
     }
 }

@@ -88,6 +88,7 @@ public class FrameMenuBuilder
         addPlugin(devMenu, imago.developer.plugins.PrintFrameList.class, "Print Frame List");
         addPlugin(devMenu, imago.developer.plugins.PrintDocumentList.class, "Print Document List");
         addPlugin(devMenu, imago.developer.plugins.PrintWorkspaceContent.class, "Print Workspace Content");
+        addPlugin(devMenu, imago.developer.plugins.PrintUserPreferences.class, "Print User Preferences");
         menu.add(devMenu);
         menu.addSeparator();
 
