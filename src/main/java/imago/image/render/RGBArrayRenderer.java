@@ -14,12 +14,15 @@ import net.sci.array.color.RGB8;
 import net.sci.array.color.RGB8Array;
 
 /**
- * 
+ * A renderer for RGB images, that manages both 8-bits and 16-bits color images.
  */
 public class RGBArrayRenderer implements ImageDataRenderer
 {
     double[] displayRange = new double[] {0, Short.MAX_VALUE};
     
+    /**
+     * Default empty constructor.
+     */
     public RGBArrayRenderer()
     {
     }

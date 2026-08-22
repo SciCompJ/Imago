@@ -245,7 +245,7 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         // Management of image representation
         menu.addSeparator();
         JMenu displayRangeMenu = new JMenu("Display Range");
-        addPlugin(displayRangeMenu, imago.image.plugins.edit.SetImageDisplayRangeToDataType.class, "Set Data Type Display Range", hasScalarImage);
+        addPlugin(displayRangeMenu, imago.image.plugins.edit.SetImageDisplayRangeToDataType.class, "Set Data Type Display Range");
         addPlugin(displayRangeMenu, imago.image.plugins.edit.SetImageDisplayRangeToData.class, "Set Image Display Range", hasScalarImage | hasVectorImage);
         addPlugin(displayRangeMenu, imago.image.plugins.edit.SetImageDisplayRange.class, "Set Manual Display Range", hasScalarImage | hasVectorImage);
         menu.add(displayRangeMenu);

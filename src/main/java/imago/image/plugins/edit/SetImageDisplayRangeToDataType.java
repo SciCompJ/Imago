@@ -9,12 +9,12 @@ import imago.image.ImageDataRenderer;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import imago.image.render.IndexedColorMapImageRenderer;
+import imago.image.render.RGBArrayRenderer;
 import net.sci.array.Array;
-import net.sci.array.numeric.ScalarArray;
+import net.sci.array.color.RGB16;
+import net.sci.array.color.RGB8;
 import net.sci.array.numeric.UInt16;
-import net.sci.array.numeric.UInt16Array;
-import net.sci.array.numeric.UInt8Array;
-import net.sci.array.numeric.VectorArray;
+import net.sci.array.numeric.UInt8;
 
 /**
  * Setup the display range of current viewer according to image data type.
@@ -46,28 +46,25 @@ public class SetImageDisplayRangeToDataType implements FramePlugin
         ImageFrame iFrame = (ImageFrame) frame;
         ImageHandle handle = iFrame.getImageHandle();
 
-        // retrieve image data, converting to scalar array of necessary
+        // retrieve image data
 		Array<?> array = handle.getImage().getData();
-		if (array instanceof VectorArray) 
-		{
-			array = VectorArray.norm((VectorArray<?,?>) array);
-		}
-		if (!(array instanceof ScalarArray))
-		{
-			throw new IllegalArgumentException("Requires a scalar Array");
-		}
-		ScalarArray<?> scalarArray = (ScalarArray<?>) array;
 		
-        double[] extent = switch (scalarArray)
+        double[] extent = switch (array.sampleElement())
         {
-            case UInt8Array a -> new double[] { 0, 255 };
-            case UInt16Array a -> new double[] { 0, UInt16.MAX_INT };
+            case UInt8 a -> new double[] { 0, 255 };
+            case UInt16 a -> new double[] { 0, UInt16.MAX_INT };
+            case RGB8 a -> new double[] { 0, 255 };
+            case RGB16 a -> new double[] { 0, UInt16.MAX_INT };
             default -> new double[] { 0, 1 };
         };
 		System.out.println("  New value range: [" + extent[0] + " ; " + extent[1] + "]");
 		
         ImageDataRenderer renderer = iFrame.getImageViewer().getRenderer();
         if (renderer instanceof IndexedColorMapImageRenderer r)
+        {
+            r.setDisplayRange(extent);
+        }
+        else if (renderer instanceof RGBArrayRenderer r)
         {
             r.setDisplayRange(extent);
         }
