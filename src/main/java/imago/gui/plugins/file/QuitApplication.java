@@ -32,9 +32,6 @@ public class QuitApplication implements FramePlugin
 	{
 		ImagoGui gui = parentFrame.getGui();
 		
-		// save user preferences for next use
-		gui.getAppli().saveUserPreferences();
-		
 		Collection<ImagoFrame> frames = gui.getFrames();
         System.out.println("Need to close " + frames.size() + " frames");
         

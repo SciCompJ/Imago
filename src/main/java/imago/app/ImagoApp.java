@@ -3,8 +3,6 @@
  */
 package imago.app;
 
-import java.io.File;
-
 import imago.image.ImageHandle;
 import imago.shape.GeometryHandle;
 import imago.table.TableHandle;
@@ -30,11 +28,6 @@ public class ImagoApp
      */
     Workspace workspace = new Workspace();
 
-    /**
-     * Some global settings / preferences for current user.
-     */
-    public UserPreferences userPreferences = new UserPreferences();
-	
 	
 	// =============================================================
 	// Constructor
@@ -44,29 +37,8 @@ public class ImagoApp
 	 */
 	public ImagoApp()
 	{
-	    this.userPreferences = loadUserPreferences();
 	}
 	
-	private UserPreferences loadUserPreferences()
-	{
-	    // retrieve imago directory within user home directory
-        String userHome = System.getProperty("user.home");
-        File prefsDir = new File(userHome, ".imago");
-        if (!prefsDir.exists())
-        {
-            return new UserPreferences();
-        }
-        
-        // identify property file containing preferences
-        File initFile = new File(prefsDir, "imago_prefs.txt");
-        if (!initFile.exists())
-        {
-            return new UserPreferences();
-        }
-        
-        return UserPreferences.read(initFile);
-	}
-
 	
     // =============================================================
     // Global management of handles
@@ -131,31 +103,6 @@ public class ImagoApp
     
 
     // =============================================================
-    // Management of user preferences
-    
-    /**
-     * Save user preferences within default file in
-     * "[user.home]/.imago/imago_prefs.txt".
-     */
-    public void saveUserPreferences()
-    {
-        // retrieve imago directory within user home directory
-        String userHome = System.getProperty("user.home");
-        File prefsDir = new File(userHome, ".imago");
-        if (!prefsDir.exists())
-        {
-            prefsDir.mkdir();
-        }
-        
-        // identify property file containing preferences
-        File initFile = new File(prefsDir, "imago_prefs.txt");
-        
-        // save preferences
-        this.userPreferences.write(initFile);
-    }
-
-
-    // =============================================================
     // Management of workspace
 
     /**
@@ -165,5 +112,4 @@ public class ImagoApp
     {
         return workspace;
     }
-
 }
