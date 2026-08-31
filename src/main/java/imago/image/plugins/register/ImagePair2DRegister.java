@@ -8,20 +8,16 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Locale;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -29,7 +25,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -40,6 +35,8 @@ import imago.app.ImagoApp;
 import imago.gui.FramePlugin;
 import imago.gui.ImagoFrame;
 import imago.gui.util.GuiHelper;
+import imago.gui.widgets.NumericValueTextField;
+import imago.gui.widgets.NumericValueTextIncDecWidget;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import imago.imagepair.ImagePairFrame;
@@ -113,25 +110,17 @@ public class ImagePair2DRegister implements FramePlugin
     
     JComboBox<String> transformModelCombo;
 
-    JTextField outputSizeXField;
-    JTextField outputSizeYField;
+    NumericValueTextField outputSizeXWidget;
+    NumericValueTextField outputSizeYWidget;
 
     JLabel xShiftLabel;
-    JTextField xShiftTextField;
-    JButton xShiftDec;
-    JButton xShiftInc;
+    NumericValueTextIncDecWidget xShiftWidget;
     JLabel yShiftLabel;
-    JButton yShiftDec;
-    JButton yShiftInc;
-    JTextField yShiftTextField;
+    NumericValueTextIncDecWidget yShiftWidget;
     JLabel rotationAngleLabel;
-    JTextField rotationAngleTextField;
-    JButton rotAngleDec;
-    JButton rotAngleInc;
+    NumericValueTextIncDecWidget rotationAngleWidget;
     JLabel logScalingLabel;
-    JTextField logScalingTextField;
-    JButton scalingDec;
-    JButton scalingInc;
+    NumericValueTextIncDecWidget logScalingWidget;
     
     JCheckBox autoUpdateCheckBox;
     JButton runButton;
@@ -221,6 +210,22 @@ public class ImagePair2DRegister implements FramePlugin
         double sizeY = this.refImage.getSize(1);
         Point2D center = new Point2D(sizeX / 2, sizeY / 2);
         
+        // parse translation params
+        this.xShift = xShiftWidget.getValue();
+        this.yShift = yShiftWidget.getValue();
+        
+        // parse rotation angle (degrees)
+        if (this.transformModelCombo.getSelectedIndex() > 0)
+        {
+            this.rotationAngle = rotationAngleWidget.getValue();
+        }
+
+        // parse scaling factor
+        if (this.transformModelCombo.getSelectedIndex() > 1)
+        {
+            this.logScaling = logScalingWidget.getValue();
+        }
+
         int transfoIndex = this.transformModelCombo.getSelectedIndex();
         this.transform = switch (transfoIndex)
         {
@@ -237,6 +242,9 @@ public class ImagePair2DRegister implements FramePlugin
      */
     public void updateRegisteredImages()
     {
+        outputImageDims[0] = (int) outputSizeXWidget.getValue();
+        outputImageDims[1] = (int) outputSizeYWidget.getValue();
+        
         // apply transform on moving image
         @SuppressWarnings({ "unchecked", "rawtypes" })
         ScalarArray2D<?> ref2d = ScalarArray2D.wrap(ScalarArray.wrap((Array<Scalar>) refImage.getData()));
@@ -364,9 +372,20 @@ public class ImagePair2DRegister implements FramePlugin
         });
         
         
-        this.outputSizeXField = createNumericTextField(this.outputImageDims[0]);
-        this.outputSizeYField = createNumericTextField(this.outputImageDims[1]);
-
+        this.outputSizeXWidget = new NumericValueTextField(this.outputImageDims[0]);
+        this.outputSizeXWidget.addWidgetListener(evt -> {
+            if (this.autoUpdateCheckBox.isSelected())
+            {
+                runRegistration();
+            }
+        });
+        this.outputSizeYWidget = new NumericValueTextField(this.outputImageDims[1]);
+        this.outputSizeYWidget.addWidgetListener(evt -> {
+            if (this.autoUpdateCheckBox.isSelected())
+            {
+                runRegistration();
+            }
+        });
         this.transformModelCombo = new JComboBox<String>();
         this.transformModelCombo.addItem("Translation");
         this.transformModelCombo.addItem("Motion (Trans.+Rot.)");
@@ -380,47 +399,40 @@ public class ImagePair2DRegister implements FramePlugin
         });
         
         this.xShiftLabel = new JLabel("Shift X (pixels):");
-        this.xShiftTextField = createNumericTextField(0.0);
-        this.xShiftDec = createPlusMinusButton("-", evt -> {
-            setXShift(this.xShift - 1.0);
-            if (this.autoUpdateCheckBox.isSelected()) runRegistration();
-        });
-        this.xShiftInc = createPlusMinusButton("+", evt -> {
-            setXShift(this.xShift + 1.0);
-            if (this.autoUpdateCheckBox.isSelected()) runRegistration();
+        this.xShiftWidget = new NumericValueTextIncDecWidget(0.0, 1.0);
+        this.xShiftWidget.addWidgetListener(evt -> {
+            if (this.autoUpdateCheckBox.isSelected())
+            {
+                runRegistration();
+            }
         });
 
         this.yShiftLabel = new JLabel("Shift Y (pixels):");
-        this.yShiftTextField = createNumericTextField(0.0);
-        this.yShiftDec = createPlusMinusButton("-", evt -> {
-            setYShift(this.yShift - 1.0);
-            if (this.autoUpdateCheckBox.isSelected()) runRegistration();
-        });
-        this.yShiftInc = createPlusMinusButton("+", evt -> {
-            setYShift(this.yShift + 1.0);
-            if (this.autoUpdateCheckBox.isSelected()) runRegistration();
+        this.yShiftWidget = new NumericValueTextIncDecWidget(0.0, 1.0);
+        this.yShiftWidget.addWidgetListener(evt -> {
+            if (this.autoUpdateCheckBox.isSelected())
+            {
+                runRegistration();
+            }
         });
 
         this.rotationAngleLabel = new JLabel("Rotation angle (degrees):");
-        this.rotationAngleTextField = createNumericTextField(0.0);
-        this.rotAngleDec = createPlusMinusButton("-", evt -> {
-            setRotationAngle(this.rotationAngle - 1.0);
-            if (this.autoUpdateCheckBox.isSelected()) runRegistration();
-        });
-        this.rotAngleInc = createPlusMinusButton("+", evt -> {
-            setRotationAngle(this.rotationAngle + 1.0);   
-            if (this.autoUpdateCheckBox.isSelected()) runRegistration();
+        this.rotationAngleWidget = new NumericValueTextIncDecWidget(0.0, 1.0);
+        this.rotationAngleWidget.addWidgetListener(evt -> {
+            if (this.autoUpdateCheckBox.isSelected())
+            {
+                runRegistration();
+            }
         });
 
         this.logScalingLabel = new JLabel("Log_2 of scaling factor:");
-        this.logScalingTextField = createNumericTextField(0.0);
-        this.scalingDec = createPlusMinusButton("-", evt -> {
-            setLogScaling(this.logScaling - 0.01);
-            if (this.autoUpdateCheckBox.isSelected()) runRegistration();
-        });
-        this.scalingInc = createPlusMinusButton("+", evt -> {
-            setLogScaling(this.logScaling + 0.01);
-            if (this.autoUpdateCheckBox.isSelected()) runRegistration();
+        this.logScalingWidget = new NumericValueTextIncDecWidget(0.0, 0.01);
+        this.logScalingWidget.addWidgetListener(evt -> {
+            this.logScaling = logScalingWidget.getValue();
+            if (this.autoUpdateCheckBox.isSelected())
+            {
+                runRegistration();
+            }
         });
         
         this.autoUpdateCheckBox = new JCheckBox("Auto-Update", false);
@@ -437,77 +449,24 @@ public class ImagePair2DRegister implements FramePlugin
         if (transformModelCombo.getSelectedIndex() == 0)
         {
             this.rotationAngleLabel.setEnabled(false);
-            this.rotationAngleTextField.setText("0.0");
-            this.rotationAngleTextField.setEnabled(false);
+            this.rotationAngleWidget.setEnabled(false);
             this.logScalingLabel.setEnabled(false);
-            this.logScalingTextField.setText("0.0");
-            this.logScalingTextField.setEnabled(false);
+            this.logScalingWidget.setEnabled(false);
         }
         else if (transformModelCombo.getSelectedIndex() == 1)
         {
             this.rotationAngleLabel.setEnabled(true);
-            this.rotationAngleTextField.setText(doubleToString(this.rotationAngle));
-            this.rotationAngleTextField.setEnabled(true);
+            this.rotationAngleWidget.setEnabled(true);
             this.logScalingLabel.setEnabled(false);
-            this.logScalingTextField.setText("0.0");
-            this.logScalingTextField.setEnabled(false);
+            this.logScalingWidget.setEnabled(false);
         }
         else if (transformModelCombo.getSelectedIndex() == 2)
         {
             this.rotationAngleLabel.setEnabled(true);
-            this.rotationAngleTextField.setText(doubleToString(this.rotationAngle));
-            this.rotationAngleTextField.setEnabled(true);
+            this.rotationAngleWidget.setEnabled(true);
             this.logScalingLabel.setEnabled(true);
-            this.logScalingTextField.setText(doubleToString(this.logScaling));
-            this.logScalingTextField.setEnabled(true);
+            this.logScalingWidget.setEnabled(true);
         }
-    }
-    
-    private void setXShift(double value)
-    {
-        this.xShift = value;
-        xShiftTextField.setText(doubleToString(value));
-    }
-    
-    private void setYShift(double value)
-    {
-        this.yShift = value;
-        yShiftTextField.setText(doubleToString(value));
-    }
-    
-    private void setRotationAngle(double value)
-    {
-        this.rotationAngle = value;
-        rotationAngleTextField.setText(doubleToString(value));
-    }
-    
-    private void setLogScaling(double value)
-    {
-        this.logScaling = value;
-        logScalingTextField.setText(doubleToString(value));
-    }
-    
-    private JTextField createNumericTextField(double initialValue)
-    {
-        String text = doubleToString(initialValue);
-        JTextField textField = new JTextField(text, 10);
-        textField.addActionListener(evt -> processTextUpdate(textField));
-        textField.addFocusListener(new FocusAdapter()
-        {
-            @Override
-            public void focusLost(FocusEvent evt)
-            {
-                processTextUpdate(textField);
-            }
-        });
-        return textField;
-    }
-
-    private JButton createPlusMinusButton(String label, ActionListener act)
-    {
-        JButton button = new JButton(label);
-        button.addActionListener(act);
-        return button;
     }
     
     private void setupLayout(JFrame frame)
@@ -526,22 +485,22 @@ public class ImagePair2DRegister implements FramePlugin
         JPanel outputImagePanel = GuiHelper.createOptionsPanel("Output Image");
         outputImagePanel.setLayout(new GridLayout(3, 2));
         outputImagePanel.add(new JLabel("Size X: "));
-        outputImagePanel.add(outputSizeXField);
+        outputImagePanel.add(outputSizeXWidget.getComponent());
         outputImagePanel.add(new JLabel("Size Y: "));
-        outputImagePanel.add(outputSizeYField);
+        outputImagePanel.add(outputSizeYWidget.getComponent());
 
         JPanel registrationPanel = GuiHelper.createOptionsPanel("Registration");
         registrationPanel.setLayout(new GridLayout(5, 2));
         registrationPanel.add(new JLabel("Registration Type:"));
         registrationPanel.add(transformModelCombo);
         registrationPanel.add(xShiftLabel);
-        registrationPanel.add(createPanel(xShiftTextField, xShiftDec, xShiftInc));
+        registrationPanel.add(xShiftWidget.getComponent());
         registrationPanel.add(yShiftLabel);
-        registrationPanel.add(createPanel(yShiftTextField, yShiftDec, yShiftInc));
+        registrationPanel.add(yShiftWidget.getComponent());
         registrationPanel.add(rotationAngleLabel);
-        registrationPanel.add(createPanel(rotationAngleTextField, rotAngleDec, rotAngleInc));
+        registrationPanel.add(rotationAngleWidget.getComponent());
         registrationPanel.add(logScalingLabel);
-        registrationPanel.add(createPanel(logScalingTextField, scalingDec, scalingInc));
+        registrationPanel.add(logScalingWidget.getComponent());
         updateEnabledRegistrationWidgets();
         
         mainPanel.add(imagesPanel);
@@ -560,7 +519,7 @@ public class ImagePair2DRegister implements FramePlugin
         
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
-        addMenuItem(fileMenu, "Display Registered Image 1", evt -> ImageFrame.create(registeredImage2, parentFrame));
+        addMenuItem(fileMenu, "Display Registered Image 1", evt -> ImageFrame.create(registeredImage1, parentFrame));
         addMenuItem(fileMenu, "Display Registered Image 2", evt -> ImageFrame.create(registeredImage2, parentFrame));
         addMenuItem(fileMenu, "Create Registration Composite Image", evt -> onCreateComboImage());
         fileMenu.addSeparator();
@@ -575,59 +534,5 @@ public class ImagePair2DRegister implements FramePlugin
         JMenuItem item = new JMenuItem(label);
         item.addActionListener(listener);
         menu.add(item);
-    }
-    
-    private JPanel createPanel(JComponent comp, JButton button1, JButton button2)
-    {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panel.add(comp);
-        panel.add(button1);
-        panel.add(button2);
-        return panel;
-    }
-    
-    private void processTextUpdate(JTextField textField)
-    {
-        try
-        {
-            if (textField == xShiftTextField)
-            {
-                this.xShift = Double.parseDouble(xShiftTextField.getText());
-            }
-            else if (textField == yShiftTextField)
-            {
-                this.yShift = Double.parseDouble(yShiftTextField.getText());
-            }
-            else if (textField == rotationAngleTextField)
-            {
-                this.rotationAngle = Double.parseDouble(rotationAngleTextField.getText());
-            }
-            else if (textField == logScalingTextField)
-            {
-                this.logScaling = Double.parseDouble(logScalingTextField.getText());
-            }
-            else if (textField == outputSizeXField)
-            {
-                this.outputImageDims[0] = (int) Double.parseDouble(outputSizeXField.getText());
-            }
-            else if (textField == outputSizeYField)
-            {
-                this.outputImageDims[1] = (int) Double.parseDouble(outputSizeYField.getText());
-            }
-        }
-        catch (NumberFormatException ex)
-        {
-            return;
-        }
-        
-        if (this.autoUpdateCheckBox.isSelected())
-        {
-            runRegistration();
-        }
-    }
-    
-    private static final String doubleToString(double value)
-    {
-        return String.format(Locale.ENGLISH, "%.2f", value);
     }
 }
