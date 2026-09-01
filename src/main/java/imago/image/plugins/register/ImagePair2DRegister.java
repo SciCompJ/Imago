@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.EnumSet;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -37,15 +38,15 @@ import imago.gui.ImagoFrame;
 import imago.gui.util.GuiHelper;
 import imago.gui.widgets.NumericValueTextField;
 import imago.gui.widgets.NumericValueTextIncDecWidget;
+import imago.gui.widgets.WidgetListener;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
-import imago.imagepair.ImagePairFrame;
-import imago.imagepair.ImagePairViewer;
 import net.sci.array.Array;
 import net.sci.array.numeric.Scalar;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray2D;
 import net.sci.array.numeric.UInt8Array;
+import net.sci.array.numeric.interp.LinearInterpolatedArray2D;
 import net.sci.geom.geom2d.AffineTransform2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.Transform2D;
@@ -61,6 +62,33 @@ import net.sci.register.transform.TranslationModel2D;
 public class ImagePair2DRegister implements FramePlugin
 {
     // ===================================================================
+    // Enumerations
+    
+    public enum DisplayType
+    {
+        CHECKERBOARD("Checkerboard"), 
+        MAGENTA_GREEN("Magenta-Green"),
+        DIFFERENCE("Difference"),
+        ABSOLUTE_DIFFERENCE("Abs. Difference"),
+        MAX_INTENSITY("Max Of Intensities"),
+        AVERAGE("Average Intensity"),
+        SUM("Sum Of Intensities");
+        
+        String label;
+        
+        DisplayType(String label)
+        {
+            this.label = label;
+        }
+        
+        @Override
+        public String toString()
+        {
+            return label;
+        }
+    }
+    
+    // ===================================================================
     // Class properties
     
     ImagoFrame parentFrame;
@@ -69,9 +97,11 @@ public class ImagePair2DRegister implements FramePlugin
     
     Image movingImage;
     
-    ScalarArray.Factory<?> outputArrayFactory = UInt8Array.defaultFactory;
     int[] outputImageDims;
+    ScalarArray.Factory<?> outputArrayFactory = UInt8Array.defaultFactory;
     
+    protected DisplayType displayType = DisplayType.MAGENTA_GREEN;
+  
     /** the translation vector (in pixels) */
     double xShift = 0.0;
     double yShift = 0.0;
@@ -93,7 +123,7 @@ public class ImagePair2DRegister implements FramePlugin
     /** The result of the transform applied on the moving image */
     Image registeredImage2; 
     
-    ImagePairFrame resultDisplay = null;
+    SingleImageDisplayFrame resultDisplay = null;
     
     Image resultImage = null;
     
@@ -112,7 +142,8 @@ public class ImagePair2DRegister implements FramePlugin
 
     NumericValueTextField outputSizeXWidget;
     NumericValueTextField outputSizeYWidget;
-
+    JComboBox<DisplayType> displayTypeCombo;
+    
     JLabel xShiftLabel;
     NumericValueTextIncDecWidget xShiftWidget;
     JLabel yShiftLabel;
@@ -180,12 +211,11 @@ public class ImagePair2DRegister implements FramePlugin
         // need to update transform after updating images (to compute center)
         updateTransform();
         
+        // avoid running heavy computation many times
         if (!isComputing)
         {
-            // avoid running heavy computation many times
             isComputing = true;
-            // apply transform on moving image
-            updateRegisteredImages();
+            updateResultImage();
             updateResultDisplay();
             isComputing = false;
         }
@@ -238,32 +268,39 @@ public class ImagePair2DRegister implements FramePlugin
     }
 
     /**
-     * Applies the current transform on the moving image, and updates the display of fixed image.
+     * Creates a new empty result image from the two input images.
      */
-    public void updateRegisteredImages()
+    public void updateResultImage()
     {
-        outputImageDims[0] = (int) outputSizeXWidget.getValue();
-        outputImageDims[1] = (int) outputSizeYWidget.getValue();
+        // apply transform on fixed image
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        ScalarArray2D<?> ref2d = ScalarArray2D.wrap(ScalarArray.wrap((Array<Scalar>) refImage.getData()));
+        TransformedImage2D tim1 = new TransformedImage2D(new LinearInterpolatedArray2D(ref2d, Double.NaN), AffineTransform2D.IDENTITY);
         
         // apply transform on moving image
         @SuppressWarnings({ "unchecked", "rawtypes" })
-        ScalarArray2D<?> ref2d = ScalarArray2D.wrap(ScalarArray.wrap((Array<Scalar>) refImage.getData()));
-        ScalarArray2D<?> reg1 = computeTransformedArray2D(ref2d, AffineTransform2D.IDENTITY, outputImageDims, outputArrayFactory);
-        registeredImage1 = new Image(reg1, refImage);
-
-        // apply transform on moving image
-        @SuppressWarnings({ "unchecked", "rawtypes" })
         ScalarArray2D<?> moving2d = ScalarArray2D.wrap(ScalarArray.wrap((Array<Scalar>) movingImage.getData()));
-        ScalarArray2D<?> reg2 = computeTransformedArray2D(moving2d, transform, outputImageDims, outputArrayFactory);
-        registeredImage2 = new Image(reg2, movingImage);
-    }
-    
-    private static final ScalarArray2D<?> computeTransformedArray2D(ScalarArray2D<?> movArray, Transform2D transfo, int[] outputSize, ScalarArray.Factory<?> factory)
-    {
-        TransformedImage2D transformed = new TransformedImage2D(movArray, transfo);
-        ScalarArray2D<?> resArray = ScalarArray2D.wrapScalar2d(factory.create(outputSize));
-        resArray.fillValues(pos -> transformed.evaluate(pos[0], pos[1]));
-        return resArray;
+        TransformedImage2D tim2 = new TransformedImage2D(new LinearInterpolatedArray2D(moving2d, Double.NaN), transform);
+        
+        outputImageDims[0] = (int) outputSizeXWidget.getValue();
+        outputImageDims[1] = (int) outputSizeYWidget.getValue();
+        int sizeX = (int) outputSizeXWidget.getValue();
+        int sizeY = (int) outputSizeYWidget.getValue();
+        
+        FunctionPairRenderer2D compositer = switch (displayType)
+        {
+            case MAGENTA_GREEN -> new FunctionPairRenderer2D.MagentaGreen(sizeX, sizeY);
+            case MAX_INTENSITY -> new FunctionPairRenderer2D.MaxIntensity(sizeX, sizeY);
+            case AVERAGE -> new FunctionPairRenderer2D.AverageIntensity(sizeX, sizeY);
+            case DIFFERENCE -> new FunctionPairRenderer2D.Difference(sizeX, sizeY);
+            case ABSOLUTE_DIFFERENCE -> new FunctionPairRenderer2D.AbsoluteDifference(sizeX, sizeY);
+            case SUM -> new FunctionPairRenderer2D.IntensitySum(sizeX, sizeY);
+            case CHECKERBOARD -> new FunctionPairRenderer2D.CheckerBoard(sizeX, sizeY);
+            default -> throw new IllegalArgumentException("Unexpected value: " + displayType);
+        };
+
+        Array<?> resultArray = compositer.combine(tim1, tim2);
+        this.resultImage = new Image(resultArray, refImage);
     }
     
     /**
@@ -274,13 +311,12 @@ public class ImagePair2DRegister implements FramePlugin
     {
         if (resultDisplay == null)
         {
-            this.resultDisplay = ImagePairFrame.create(registeredImage1, registeredImage2, this.parentFrame);
+            this.resultDisplay = SingleImageDisplayFrame.create(resultImage, this.parentFrame);
         } 
         else
         {
-            ImagePairViewer viewer = this.resultDisplay.getViewer();
-            viewer.setReferenceImage(registeredImage1);
-            viewer.setMovingImage(registeredImage2);
+            SingleImageViewer viewer = this.resultDisplay.getViewer();
+            viewer.setImage(resultImage);
             viewer.refreshDisplay();
             this.resultDisplay.repaint();
         }
@@ -291,8 +327,10 @@ public class ImagePair2DRegister implements FramePlugin
      */
     private void onCreateComboImage()
     {
+        updateResultImage();
         updateResultDisplay();
-        Image res = this.resultDisplay.getViewer().getCompositeImage();
+        
+        Image res = this.resultDisplay.getViewer().getImage();
         res.setName(movingImage.getName() + "regCompo");
         ImageFrame.create(res, parentFrame);
     }
@@ -386,6 +424,19 @@ public class ImagePair2DRegister implements FramePlugin
                 runRegistration();
             }
         });
+        
+        // create widget for choosing composite type
+        DisplayType[] items = EnumSet.allOf(DisplayType.class).toArray(new DisplayType[] {});
+        displayTypeCombo = new JComboBox<DisplayType>(items);
+        displayTypeCombo.setSelectedItem(DisplayType.MAGENTA_GREEN);
+        displayTypeCombo.addItemListener(evt ->
+        {
+            if (evt.getStateChange() != ItemEvent.SELECTED) return;
+            this.displayType = (DisplayType) evt.getItem();
+            updateResultImage();
+            updateResultDisplay();
+        });
+
         this.transformModelCombo = new JComboBox<String>();
         this.transformModelCombo.addItem("Translation");
         this.transformModelCombo.addItem("Motion (Trans.+Rot.)");
@@ -398,47 +449,30 @@ public class ImagePair2DRegister implements FramePlugin
             }
         });
         
-        this.xShiftLabel = new JLabel("Shift X (pixels):");
-        this.xShiftWidget = new NumericValueTextIncDecWidget(0.0, 1.0);
-        this.xShiftWidget.addWidgetListener(evt -> {
+        WidgetListener listener = evt -> {
             if (this.autoUpdateCheckBox.isSelected())
             {
                 runRegistration();
             }
-        });
+        };
+        this.xShiftLabel = new JLabel("Shift X (pixels):");
+        this.xShiftWidget = new NumericValueTextIncDecWidget(0.0, 1.0);
+        this.xShiftWidget.addWidgetListener(listener);
 
         this.yShiftLabel = new JLabel("Shift Y (pixels):");
         this.yShiftWidget = new NumericValueTextIncDecWidget(0.0, 1.0);
-        this.yShiftWidget.addWidgetListener(evt -> {
-            if (this.autoUpdateCheckBox.isSelected())
-            {
-                runRegistration();
-            }
-        });
+        this.yShiftWidget.addWidgetListener(listener);
 
         this.rotationAngleLabel = new JLabel("Rotation angle (degrees):");
         this.rotationAngleWidget = new NumericValueTextIncDecWidget(0.0, 1.0);
-        this.rotationAngleWidget.addWidgetListener(evt -> {
-            if (this.autoUpdateCheckBox.isSelected())
-            {
-                runRegistration();
-            }
-        });
+        this.rotationAngleWidget.addWidgetListener(listener);
 
         this.logScalingLabel = new JLabel("Log_2 of scaling factor:");
         this.logScalingWidget = new NumericValueTextIncDecWidget(0.0, 0.01);
-        this.logScalingWidget.addWidgetListener(evt -> {
-            this.logScaling = logScalingWidget.getValue();
-            if (this.autoUpdateCheckBox.isSelected())
-            {
-                runRegistration();
-            }
-        });
+        this.logScalingWidget.addWidgetListener(listener);
         
         this.autoUpdateCheckBox = new JCheckBox("Auto-Update", false);
-        this.autoUpdateCheckBox.addActionListener(evt -> {
-            runRegistration();
-        });
+        this.autoUpdateCheckBox.addActionListener(evt -> runRegistration());
 
         this.runButton = new JButton("Run");
         this.runButton.addActionListener(evt -> runRegistration());
@@ -488,6 +522,8 @@ public class ImagePair2DRegister implements FramePlugin
         outputImagePanel.add(outputSizeXWidget.getComponent());
         outputImagePanel.add(new JLabel("Size Y: "));
         outputImagePanel.add(outputSizeYWidget.getComponent());
+        outputImagePanel.add(new JLabel("Display Type: "));
+        outputImagePanel.add(displayTypeCombo);
 
         JPanel registrationPanel = GuiHelper.createOptionsPanel("Registration");
         registrationPanel.setLayout(new GridLayout(5, 2));
