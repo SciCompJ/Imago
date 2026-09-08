@@ -219,6 +219,9 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         addPlugin(editMenu, imago.image.plugins.edit.AddPointShapeFromTable.class, "Add Point Shapes...");
         
         editMenu.addSeparator();
+        addPlugin(editMenu, imago.image.plugins.edit.ImageFillBinaryMask.class, "Fill Mask With Value...");
+        
+        editMenu.addSeparator();
         JMenu settingsMenu = new JMenu("Settings");
         addPlugin(settingsMenu, imago.image.plugins.edit.ChooseFileDialogWidgetToolkit.class, "Choose File Dialog Widget Toolkits...");
         settingsMenu.addSeparator();
