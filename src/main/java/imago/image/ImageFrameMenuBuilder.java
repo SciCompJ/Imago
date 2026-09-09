@@ -365,6 +365,7 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         addPlugin(mathsMenu, imago.image.plugins.process.ImageApplySingleValueOperator.class, "Math operator (image+value)...");
         addPlugin(mathsMenu, imago.image.plugins.process.ImageApplyMathBinaryOperator.class, "Math operator (Image pair)...");
         mathsMenu.addSeparator();
+        addPlugin(mathsMenu, imago.image.plugins.process.ImageAndValueRelationalOperator.class, "Relational operator (Image+value)...");
         addPlugin(mathsMenu, imago.image.plugins.process.ImageApplyLogicalBinaryOperator.class, "Logical operator (Image pair)...");
         menu.add(mathsMenu);
         menu.addSeparator();
