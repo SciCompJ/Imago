@@ -15,45 +15,50 @@ import net.sci.image.Image;
 
 
 /**
+ * Converts a scalar image to a new image containing an array of {@code UInt6}.
+ * 
  * @author David Legland
  *
  */
 public class ConvertImageToUInt16 implements FramePlugin 
 {
-	public ConvertImageToUInt16() 
-	{
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
-	public void run(ImagoFrame frame, String args)
-	{
-		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-		Image image = doc.getImage();
-		
-		if (image == null)
-		{
-			return;
-		}
-		Array<?> array = image.getData();
-		if (array == null)
-		{
-			return;
-		}
-		if (!(array instanceof ScalarArray))
-		{
+    /**
+     * Default empty constructor.
+     */
+   public ConvertImageToUInt16()
+    {
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void run(ImagoFrame frame, String args)
+    {
+        // get current frame
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
+        Image image = doc.getImage();
+
+        if (image == null)
+        { return; }
+        Array<?> array = image.getData();
+        if (array == null)
+        { return; }
+        if (!(array instanceof ScalarArray))
+        {
             ImagoGui.showErrorDialog(frame, "Requires a scalar image", "Data Type Error");
-			return;
-		}
-		
-		UInt16Array result = UInt16Array.convert((ScalarArray<?>) array);
-		Image resultImage = new Image(result, image);
-				
-		// add the image document to GUI
-		ImageFrame.create(resultImage, frame);
-	}
+            return;
+        }
+
+        UInt16Array result = UInt16Array.convert((ScalarArray<?>) array);
+        Image resultImage = new Image(result, image);
+        resultImage.setDisplaySettings(image.getDisplaySettings().duplicate());
+
+        // add the image document to GUI
+        ImageFrame.create(resultImage, frame);
+    }
 
 }

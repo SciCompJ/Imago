@@ -12,46 +12,49 @@ import net.sci.array.numeric.Float64Array;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.image.Image;
 
-
 /**
+ * Converts a scalar image to a new intensity image containing an array of
+ * {@code Float64}.
+ * 
  * @author David Legland
  *
  */
-public class ConvertImageToFloat64 implements FramePlugin 
+public class ConvertImageToFloat64 implements FramePlugin
 {
-	public ConvertImageToFloat64() 
-	{
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
-	public void run(ImagoFrame frame, String args) 
-	{
-		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-		Image image = doc.getImage();
-		
-		if (image == null)
-		{
-			return;
-		}
-		Array<?> array = image.getData();
-		if (array == null)
-		{
-			return;
-		}
+    /**
+     * Default empty constructor.
+     */
+    public ConvertImageToFloat64()
+    {
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void run(ImagoFrame frame, String args)
+    {
+        // get current frame
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
+        Image image = doc.getImage();
+
+        if (image == null)
+        { return; }
+        Array<?> array = image.getData();
+        if (array == null)
+        { return; }
         if (!(array instanceof ScalarArray))
-        {
-            return;
-        }
+        { return; }
 
         Float64Array result = Float64Array.convert((ScalarArray<?>) array);
         Image resultImage = new Image(result, image);
+        resultImage.setDisplaySettings(image.getDisplaySettings().duplicate());
 
         // add the image document to GUI
         ImageFrame.create(resultImage, frame);
-	}
+    }
 
 }

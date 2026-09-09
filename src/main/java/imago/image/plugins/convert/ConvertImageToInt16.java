@@ -13,46 +13,51 @@ import net.sci.array.numeric.Int16Array;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.image.Image;
 
-
 /**
+ * Converts a scalar image to a new grayscale image containing an array of
+ * {@code Int6}.
+ * 
  * @author David Legland
  *
  */
-public class ConvertImageToInt16 implements FramePlugin 
+public class ConvertImageToInt16 implements FramePlugin
 {
-	public ConvertImageToInt16() 
-	{
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
-	public void run(ImagoFrame frame, String args)
-	{
-		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-		Image image = doc.getImage();
-		
-		if (image == null)
-		{
-			return;
-		}
-		Array<?> array = image.getData();
-		if (array == null)
-		{
-			return;
-		}
-		if (!(array instanceof ScalarArray))
-		{
+    /**
+     * Default empty constructor.
+     */
+    public ConvertImageToInt16()
+    {
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void run(ImagoFrame frame, String args)
+    {
+        // get current frame
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
+        Image image = doc.getImage();
+
+        if (image == null)
+        { return; }
+        Array<?> array = image.getData();
+        if (array == null)
+        { return; }
+        if (!(array instanceof ScalarArray))
+        {
             ImagoGui.showErrorDialog(frame, "Requires a scalar image", "Data Type Error");
-			return;
-		}
-		
+            return;
+        }
+
         Int16Array result = Int16Array.convert((ScalarArray<?>) array);
         Image resultImage = new Image(result, image);
+        resultImage.setDisplaySettings(image.getDisplaySettings().duplicate());
 
         // add the image document to GUI
         ImageFrame.create(resultImage, frame);
-	}
+    }
 }

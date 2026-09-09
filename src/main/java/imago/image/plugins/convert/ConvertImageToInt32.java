@@ -13,47 +13,51 @@ import net.sci.array.numeric.Int32Array;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.image.Image;
 
-
 /**
+ * Converts a scalar image to a new image containing an array of
+ * {@code Int32}.
+ * 
  * @author David Legland
  *
  */
-public class ConvertImageToInt32 implements FramePlugin 
+public class ConvertImageToInt32 implements FramePlugin
 {
-	public ConvertImageToInt32() 
-	{
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
-	public void run(ImagoFrame frame, String args)
-	{
-		// get current frame
-		ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-		Image image = doc.getImage();
-		
-		if (image == null)
-		{
-			return;
-		}
-		Array<?> array = image.getData();
-		if (array == null)
-		{
-			return;
-		}
-		if (!(array instanceof ScalarArray))
-		{
-            ImagoGui.showErrorDialog(frame, "Requires a scalar image", "Data Type Error");
-			return;
-		}
+    /**
+     * Default empty constructor.
+     */
+    public ConvertImageToInt32()
+    {
+    }
 
-		
-		Int32Array result = Int32Array.convert((ScalarArray<?>) array);
-		Image resultImage = new Image(result, image);
-				
-		// add the image document to GUI
-		ImageFrame.create(resultImage, frame);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void run(ImagoFrame frame, String args)
+    {
+        // get current frame
+        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
+        Image image = doc.getImage();
+
+        if (image == null)
+        { return; }
+        Array<?> array = image.getData();
+        if (array == null)
+        { return; }
+        if (!(array instanceof ScalarArray))
+        {
+            ImagoGui.showErrorDialog(frame, "Requires a scalar image", "Data Type Error");
+            return;
+        }
+
+        Int32Array result = Int32Array.convert((ScalarArray<?>) array);
+        Image resultImage = new Image(result, image);
+        resultImage.setDisplaySettings(image.getDisplaySettings().duplicate());
+
+        // add the image document to GUI
+        ImageFrame.create(resultImage, frame);
+    }
 }
