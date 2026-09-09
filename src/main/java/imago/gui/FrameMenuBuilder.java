@@ -29,7 +29,7 @@ public class FrameMenuBuilder
      */
     protected ImagoFrame frame;
     
-    static Icon emptyIcon;
+    static final Icon emptyIcon;
     static 
     {
         int width = 16;
@@ -44,6 +44,8 @@ public class FrameMenuBuilder
         }
         emptyIcon = new ImageIcon(image);
     }
+    
+    static final Insets menuLabelMargin = new Insets(0, 0, 0, 16);
     
 
     // ===================================================================
@@ -191,7 +193,7 @@ public class FrameMenuBuilder
         JMenuItem item = new JMenuItem(label);
         item.addActionListener(action);
         item.setIcon(emptyIcon);
-        item.setMargin(new Insets(0, 0, 0, 0));
+        item.setMargin(new Insets(0, 0, 0, 16));
         item.setEnabled(plugin.isEnabled(frame));
         menu.add(item);
         return item;
@@ -219,6 +221,7 @@ public class FrameMenuBuilder
         if (plugin == null) return null;
         JMenuItem item = createPluginMenuItem(plugin, label);
         item.setEnabled(enabled);
+        item.setMargin(menuLabelMargin);
         menu.add(item);
         return item;
     }
@@ -228,7 +231,7 @@ public class FrameMenuBuilder
         JMenuItem item = new JMenuItem(label);
         item.addActionListener(new PluginRunner(frame, plugin));
         item.setIcon(emptyIcon);
-        item.setMargin(new Insets(0, 0, 0, 0));
+        item.setMargin(menuLabelMargin);
         return item;
     }
     
@@ -236,11 +239,12 @@ public class FrameMenuBuilder
     // ===================================================================
     // menu item creation methods
     
-    protected static final JMenuItem createMenuItem(JMenu menu, String label, ActionListener lst)
+    public static final JMenuItem createMenuItem(JMenu menu, String label, ActionListener lst)
     {
         JMenuItem item = new JMenuItem(label);
         item.addActionListener(lst);
         item.setIcon(emptyIcon);
+        item.setMargin(menuLabelMargin);
         menu.add(item);
         return item;
     }
@@ -250,6 +254,7 @@ public class FrameMenuBuilder
         JMenuItem item = new JMenuItem(label);
         item.addActionListener(listener);
         item.setIcon(emptyIcon);
+        item.setMargin(menuLabelMargin);
         item.setEnabled(enabled);
         menu.add(item);
         return item;
