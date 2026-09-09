@@ -279,5 +279,4 @@ public class SingleImageViewer
 	{
 	    return this.mainPanel;
 	}
-
 }

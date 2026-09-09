@@ -10,10 +10,13 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
 import imago.app.ImagoApp;
+import imago.gui.FrameMenuBuilder;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.image.ImageFrame;
@@ -57,12 +60,6 @@ public class SingleImageDisplayFrame extends ImagoFrame
     
     SingleImageViewer viewer;
     
-//    /** The panel containing display options.*/ 
-//    JPanel displayOptionsPanel;
-    
-//    /** Used to display information about image, cursor, current process... */
-//    StatusBar statusBar;
-    
     /**
      * The widget for displaying side-by-side the options panel and the image
      * display.
@@ -80,12 +77,9 @@ public class SingleImageDisplayFrame extends ImagoFrame
         
         // Create the different panels
         createViewer();
-//        this.displayOptionsPanel = imagePairViewer.createOptionsPanel();
-//        this.displayOptionsPanel.setSize(this.displayOptionsPanel.getPreferredSize());
-        
-//        this.statusBar = new StatusBar();
 
         // layout the frame
+        setupMenuBar();
         setupLayout();
         jFrame.doLayout();
         
@@ -104,6 +98,7 @@ public class SingleImageDisplayFrame extends ImagoFrame
         });
         
         putFrameMiddleScreen();
+        viewer.repaint();
     }
     
     private void createViewer()
@@ -112,10 +107,6 @@ public class SingleImageDisplayFrame extends ImagoFrame
         if (refImage.getDimension() == 2)
         {
             this.viewer = new SingleImageViewer(refImage);
-
-//            ImagoTool cursorDisplay = new DisplayCurrentValueTool(this, "showValue");
-//            viewer.getImageDisplay().addMouseListener(cursorDisplay);
-//            viewer.getImageDisplay().addMouseMotionListener(cursorDisplay);
         }
         else
         {
@@ -123,22 +114,33 @@ public class SingleImageDisplayFrame extends ImagoFrame
         }
     }
 
+    private void setupMenuBar()
+    {
+        JMenuBar menuBar = new JMenuBar();
+        
+        JMenu viewMenu = new JMenu("View");
+        FrameMenuBuilder.createMenuItem(viewMenu, "Zoom In", evt -> {
+            viewer.setZoom(viewer.getZoom() * Math.sqrt(2.0));
+            viewer.repaint();
+        });
+        FrameMenuBuilder.createMenuItem(viewMenu, "Zoom Out", evt -> {
+            viewer.setZoom(viewer.getZoom() / Math.sqrt(2.0));
+            viewer.repaint();
+        });
+        FrameMenuBuilder.createMenuItem(viewMenu, "Zoom 1:1", evt -> {
+            viewer.setZoom(1.0);
+            viewer.repaint();
+        });
+        menuBar.add(viewMenu);
+        
+        this.jFrame.setJMenuBar(menuBar);
+    }
+    
     private void setupLayout() 
     {
-//        this.displayOptionsPanel.setPreferredSize(new Dimension(0, 0));
-//        this.displayOptionsPanel.setMinimumSize(new Dimension(0, 0));
-        
         // put into global layout
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.add((JPanel) viewer.getWidget(), BorderLayout.CENTER);
-//        mainPanel.add(this.statusBar, BorderLayout.SOUTH);
-        
-//        // setup the layout for the option panel:
-//        // uses JSplitPanel, initial visibility depends on image dimensionality
-//        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, displayOptionsPanel, mainPanel);
-//        splitPane.setResizeWeight(0.4);
-//        splitPane.setOneTouchExpandable(true);
-//        splitPane.setContinuousLayout(true);
 
         this.jFrame.setContentPane(mainPanel);
     }
@@ -166,5 +168,4 @@ public class SingleImageDisplayFrame extends ImagoFrame
     {
         return this.viewer;
     }
-
 }
