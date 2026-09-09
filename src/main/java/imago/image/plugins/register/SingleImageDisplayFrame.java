@@ -168,4 +168,9 @@ public class SingleImageDisplayFrame extends ImagoFrame
     {
         return this.viewer;
     }
+    
+    public JFrame getWidget()
+    {
+        return this.jFrame;
+    }
 }

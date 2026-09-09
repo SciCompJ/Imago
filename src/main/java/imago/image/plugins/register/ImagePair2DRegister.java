@@ -9,6 +9,8 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -312,6 +314,14 @@ public class ImagePair2DRegister implements FramePlugin
         if (resultDisplay == null)
         {
             this.resultDisplay = SingleImageDisplayFrame.create(resultImage, this.parentFrame);
+            this.resultDisplay.getWidget().addWindowListener(new WindowAdapter()
+            {
+                @Override
+                public void windowClosing(WindowEvent evt)
+                {
+                    ImagePair2DRegister.this.resultDisplay = null;
+                }           
+            });
         } 
         else
         {
