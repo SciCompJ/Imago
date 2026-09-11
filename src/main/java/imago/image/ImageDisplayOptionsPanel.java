@@ -3,11 +3,6 @@
  */
 package imago.image;
 
-import imago.gui.panels.CollapsiblePanel;
-import imago.image.render.VectorImageChannelRenderer;
-import imago.image.render.VectorImageMaxNormRenderer;
-import imago.image.render.VectorImageNormRenderer;
-
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -22,12 +17,12 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeListener;
 
-
+import imago.gui.panels.CollapsiblePanel;
+import imago.image.render.VectorImageChannelRenderer;
+import imago.image.render.VectorImageMaxNormRenderer;
+import imago.image.render.VectorImageNormRenderer;
 import net.sci.array.Array;
-import net.sci.array.color.RGB16;
-import net.sci.array.color.RGB8;
 import net.sci.array.numeric.Vector;
-import net.sci.array.numeric.VectorArray;
 import net.sci.image.Calibration;
 import net.sci.image.Image;
 
@@ -62,7 +57,8 @@ public class ImageDisplayOptionsPanel extends JPanel
      */
     Image image;
 
-    
+    int currentChannelIndex = 0;
+
     ValueSliderPanel channelIndexPanel;
     
     ValueSliderPanel zSlicePanel;
@@ -123,11 +119,12 @@ public class ImageDisplayOptionsPanel extends JPanel
             int index = cb.getSelectedIndex();
             ImageDataRenderer renderer = switch(index)
             {
-                case 0 -> new VectorImageChannelRenderer().setChannel(imageViewer.getCurrentChannelIndex());
+                case 0 -> new VectorImageChannelRenderer().setChannelIndex(currentChannelIndex);
                 case 1 -> new VectorImageNormRenderer();
                 case 2 -> new VectorImageMaxNormRenderer();
                 default -> throw new RuntimeException("Out of Bound index: " + index);
             };
+            channelIndexPanel.setEnabled(index == 0);
             imageViewer.setRenderer(renderer);
             imageViewer.refreshDisplay();
         });
@@ -138,11 +135,15 @@ public class ImageDisplayOptionsPanel extends JPanel
     {
         int nChannels = countChannels(image.getData());
         
-        int channelIndex = imageViewer.getCurrentChannelIndex();
-        if (channelIndex >= nChannels)
+        int channelIndex = 0;
+        if (imageViewer.getRenderer() instanceof VectorImageChannelRenderer vicr)
         {
-            channelIndex = nChannels - 1;
-            imageViewer.setCurrentChannelIndex(channelIndex);
+            currentChannelIndex  = vicr.getChannelIndex();
+        }
+        if (currentChannelIndex >= nChannels)
+        {
+            currentChannelIndex = nChannels - 1;
+            setCurrentChannelIndex(currentChannelIndex);
         }
         this.channelIndexPanel = new ValueSliderPanel("Channel", 0, nChannels - 1, channelIndex);
         
@@ -151,7 +152,7 @@ public class ImageDisplayOptionsPanel extends JPanel
             int index = this.channelIndexPanel.slider.getValue();
             String text = String.format("%d", index);
             channelIndexPanel.textField.setText(text);
-            imageViewer.setCurrentChannelIndex(index);
+            setCurrentChannelIndex(index);
             imageViewer.refreshDisplay();
         });
         
@@ -160,22 +161,27 @@ public class ImageDisplayOptionsPanel extends JPanel
             String text = this.channelIndexPanel.textField.getText();
             int index = Integer.parseInt(text);
             this.channelIndexPanel.slider.setValue(index);
-            imageViewer.setCurrentChannelIndex(index);
+            setCurrentChannelIndex(index);
             imageViewer.refreshDisplay();
         });
         
         return this.channelIndexPanel;
     }
     
+    private void setCurrentChannelIndex(int index)
+    {
+        this.currentChannelIndex = index;
+        if (imageViewer.getRenderer() instanceof VectorImageChannelRenderer vicr)
+        {
+            vicr.setChannelIndex(currentChannelIndex);
+        }
+    }
+    
     private int countChannels(Array<?> array)
     {
-        if (array instanceof VectorArray) return ((VectorArray<?,?>) array).channelCount();
-        Class<?> elementClass = array.elementClass();
-        if (elementClass.equals(RGB8.class)) return 3;
-        if (elementClass.equals(RGB16.class)) return 3;
-        if (Vector.class.isAssignableFrom(elementClass))
+        if (array.sampleElement() instanceof Vector vect)
         {
-            return ((Vector<?,?>) array.sampleElement()).size();
+            return vect.size();
         }
                 
         throw new RuntimeException("Unable to count channels...");
@@ -220,13 +226,12 @@ public class ImageDisplayOptionsPanel extends JPanel
          */
         private static final long serialVersionUID = 1L;
         
-        JPanel panel;
-        
         int value;
         
         int minValue;
         int maxValue;
         
+        JLabel label;
         JTextField textField;
         
         JSlider slider;
@@ -241,6 +246,10 @@ public class ImageDisplayOptionsPanel extends JPanel
             this.value = currentValue;
             
             // creates widgets
+            
+            String text = String.format(Locale.ENGLISH, "%s (%d->%d)     ", title, minValue, maxValue);
+            this.label = new JLabel(text);
+            
             textField = new JTextField(String.format("%d",  this.value), 5);
             textField.setMaximumSize(new Dimension(80, 20));
             
@@ -253,16 +262,23 @@ public class ImageDisplayOptionsPanel extends JPanel
 
             // setup global layout
             this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-            String text = String.format(Locale.ENGLISH, "%s (%d->%d)     ", title, minValue, maxValue);
             JPanel textLine = new JPanel();
             textLine.setLayout(new BoxLayout(textLine, BoxLayout.X_AXIS));
-            textLine.add(new JLabel(text));
+            textLine.add(label);
             textLine.add(textField);
             textLine.add(Box.createHorizontalGlue());
 
             this.add(textLine);
             this.add(slider);
+        }
+        
+        public void setEnabled(boolean b)
+        {
+            super.setEnabled(b);
+            
+            this.label.setEnabled(b);
+            this.textField.setEnabled(b);
+            this.slider.setEnabled(b);
         }
     }
 }

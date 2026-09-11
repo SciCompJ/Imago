@@ -5,7 +5,6 @@ package imago.image;
 
 
 import imago.image.ImageHandle.Event;
-import imago.image.render.VectorImageChannelRenderer;
 import net.sci.geom.Geometry;
 import net.sci.image.Image;
 
@@ -91,9 +90,6 @@ public abstract class ImageViewer implements ImageHandle.Listener
         }
         
         this.renderer = ImageDataRenderer.createRenderer(image);
-
-        
-//        this.imageHandle.addImageHandleListener(this);
     }
 
     
@@ -280,28 +276,7 @@ public abstract class ImageViewer implements ImageHandle.Listener
         return this.slicingPosition[dim];
     }
 
-    /**
-     * @return the currentChannelIndex
-     */
-    public int getCurrentChannelIndex()
-    {
-        return currentChannelIndex;
-    }
-
-    /**
-     * @param currentChannelIndex
-     *            the currentChannelIndex to set
-     */
-    public void setCurrentChannelIndex(int currentChannelIndex)
-    {
-        this.currentChannelIndex = currentChannelIndex;
-        if (renderer instanceof VectorImageChannelRenderer)
-        {
-            ((VectorImageChannelRenderer) renderer).setChannel(currentChannelIndex);
-        }
-    }
-
-
+    
     // ===================================================================
     // Display management methods
 

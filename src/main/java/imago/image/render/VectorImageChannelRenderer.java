@@ -24,7 +24,12 @@ public class VectorImageChannelRenderer extends IndexedColorMapImageRenderer
         this.colorModel = ImageDataRenderer.createIndexColorModel(lut);  
     }
     
-    public VectorImageChannelRenderer setChannel(int channelIndex)
+    public int getChannelIndex()
+    {
+        return this.channelIndex;
+    }
+    
+    public VectorImageChannelRenderer setChannelIndex(int channelIndex)
     {
         this.channelIndex = channelIndex;  
         return this;   
@@ -34,7 +39,7 @@ public class VectorImageChannelRenderer extends IndexedColorMapImageRenderer
     public VectorImageChannelRenderer duplicate()
     {
         return (VectorImageChannelRenderer) new VectorImageChannelRenderer()
-                .setChannel(this.channelIndex)
+                .setChannelIndex(this.channelIndex)
                 .setColorMap(this.colorMap)
                 .setDisplayRange(this.displayRange);
     }
