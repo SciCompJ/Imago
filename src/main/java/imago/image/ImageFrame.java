@@ -24,6 +24,7 @@ import imago.image.tools.DisplayCurrentValueTool;
 import imago.image.viewers.Image5DXYSliceViewer;
 import imago.image.viewers.PlanarImageViewer;
 import imago.image.viewers.StackSliceViewer;
+import imago.image.viewers.XYImageViewer;
 import imago.util.imagej.ImagejRoi;
 import imago.util.imagej.ImagejRoiDecoder;
 import net.sci.algo.Algo;
@@ -169,9 +170,9 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
     {
         super(gui, "Image Frame");
 
-        // First, create the viewer (used to build option panel and initialize
-        // menu bar)
-        this.imageViewer = createImageViewer(imageHandle);
+        // First, create the viewer (used to build options panel and to
+        // initialize the menu bar)
+        createImageViewer(imageHandle);
         importImageMetaData(imageHandle.getImage());
 
         // add listener to changes in ImageHandler
@@ -212,43 +213,31 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         putFrameMiddleScreen();
     }
 
-    private ImageViewer createImageViewer(ImageHandle imageHandle)
+    private void createImageViewer(ImageHandle imageHandle)
     {
         // create the image viewer depending on image type
         Image image = imageHandle.getImage();
-        if (image.getDimension() == 2)
+        imageViewer = switch (image.getDimension())
         {
-            PlanarImageViewer viewer = new PlanarImageViewer(imageHandle);
-
-            viewer.getImageDisplay().setShapes(imageHandle.getShapes());
-            
-            ImageTool cursorDisplay = new DisplayCurrentValueTool(this, "showValue");
-            viewer.getImageDisplay().addMouseListener(cursorDisplay);
-            viewer.getImageDisplay().addMouseMotionListener(cursorDisplay);
-
-            return viewer;
+            case 2 -> {
+                PlanarImageViewer viewer2d = new PlanarImageViewer(imageHandle);
+                viewer2d.getImageDisplay().setShapes(imageHandle.getShapes());
+                yield viewer2d;
+            }
+            case 3 -> new StackSliceViewer(imageHandle);
+            default -> new Image5DXYSliceViewer(imageHandle);
+        };
+        
+        if (image.getDimension() > 2)
+        {
+            imageViewer.setSlicingPosition(2, imageHandle.getCurrentSliceIndex());
         }
-        else if (image.getDimension() == 3) 
+        
+        if (imageViewer instanceof XYImageViewer viewer2d)
         {
-            StackSliceViewer sliceViewer = new StackSliceViewer(imageHandle);
-            sliceViewer.setSlicingPosition(2, imageHandle.getCurrentSliceIndex());
-            
             ImageTool cursorDisplay = new DisplayCurrentValueTool(this, "showValue");
-            sliceViewer.getImageDisplay().addMouseListener(cursorDisplay);
-            sliceViewer.getImageDisplay().addMouseMotionListener(cursorDisplay);
-
-            return sliceViewer;
-        }
-        else 
-        {
-            Image5DXYSliceViewer sliceViewer = new Image5DXYSliceViewer(imageHandle);
-            sliceViewer.setSlicingPosition(2, imageHandle.getCurrentSliceIndex());
-            
-            ImageTool cursorDisplay = new DisplayCurrentValueTool(this, "showValue");
-            sliceViewer.getImageDisplay().addMouseListener(cursorDisplay);
-            sliceViewer.getImageDisplay().addMouseMotionListener(cursorDisplay);
-
-            return sliceViewer;
+            viewer2d.getImageDisplay().addMouseListener(cursorDisplay);
+            viewer2d.getImageDisplay().addMouseMotionListener(cursorDisplay);
         }
     }
     
