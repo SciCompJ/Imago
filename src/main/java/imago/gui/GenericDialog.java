@@ -15,8 +15,6 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.FocusEvent;
@@ -77,6 +75,8 @@ public class GenericDialog
 
     // =============================================================
     // Class variables
+    
+    ImagoFrame parentFrame;
 
     /** The dialog instance containing widgets */
     private Dialog dialog;
@@ -116,10 +116,6 @@ public class GenericDialog
     ArrayList<JScrollBar> scrollBars;
     int[] sliderIndexes;
     double[] sliderScales;
-    
-    boolean buttonsCreated = false;
-    JButton okButton;
-    JButton cancelButton;
     
     boolean updateWidgets = false;
    
@@ -163,8 +159,7 @@ public class GenericDialog
             @Override
             public void windowClosing(WindowEvent arg0) 
             {
-                output = Output.CANCEL;
-                dialog.dispose();
+                cancelDialog();
             }
         });
         
@@ -179,17 +174,6 @@ public class GenericDialog
         }
     }
 
-    /**
-     * Kept for compatibility, but it is better to specify parent frame.
-     * 
-     * @Deprected use GenericDialog(ImagoFrame, String) instead
-     */
-    @Deprecated
-    public GenericDialog(String title)
-    {
-        this((JFrame) null, title);
-    }
-    
 
     // =============================================================
     // General methods
@@ -1111,7 +1095,6 @@ public class GenericDialog
         // if (IJ.isLinux())
         // tf.setBackground(Color.white);
 
-        tf.addActionListener(this.controller);
         tf.addCaretListener(this.controller);
         tf.addFocusListener(this.controller);
         tf.addKeyListener(this.controller);
@@ -1185,12 +1168,9 @@ public class GenericDialog
     /**
      * Shows the dialog.
      */
-    public void showDialog()
+    public Output showDialog()
     {
-        if (!buttonsCreated)
-        {
-            createButtonPanel();
-        }
+        createButtonPanel();
 
         // computes optimal size of each subcomponent
         this.dialog.pack();
@@ -1201,8 +1181,12 @@ public class GenericDialog
         this.dialog.setPreferredSize(dim2);
         this.dialog.setSize(dim2);
 
+        // show the dialog, waiting for dispose
         this.dialog.setVisible(true);
+        
+        // prepare for reading results
         resetCounters();
+        return output;
     }
 
     /**
@@ -1211,8 +1195,10 @@ public class GenericDialog
     private void createButtonPanel()
     {
         // Create buttons
-        okButton = addButton("OK");
-        cancelButton = addButton("Cancel");
+        JButton okButton = new JButton("OK");
+        okButton.addActionListener(evt -> validateDialog());
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(evt -> cancelDialog());
 
         // add buttons to a row panel
         JPanel buttons = new JPanel();
@@ -1228,8 +1214,6 @@ public class GenericDialog
         c.insets = new Insets(15, 0, 0, 0);
         gridLayout.setConstraints(buttons, c);
         this.dialog.add(buttons);
-
-        buttonsCreated = true;
     }
 
     /** Resets the counters before reading the dialog parameters. */
@@ -1244,25 +1228,24 @@ public class GenericDialog
         // invalidNumber = false;
     }
 
-    /**
-     * Adds a button and add this as action and key listener.
-     * 
-     * @param label
-     */
-    private JButton addButton(String label)
-    {
-        JButton button = new JButton(label);
-        button.addActionListener(this.controller);
-        button.addKeyListener(this.controller);
-        return button;
-    }
-
     /** Returns true if the user clicked on "Cancel". */
     public boolean wasCanceled()
     {
         // if (wasCanceled)
         // Macro.abort();
         return output == Output.CANCEL;
+    }
+    
+    public void validateDialog()
+    {
+        output = Output.OK;
+        dialog.dispose();
+    }
+
+    public void cancelDialog()
+    {
+        output = Output.CANCEL;
+        dialog.dispose();
     }
 
     /** Returns true if the user has clicked on "OK" or a macro is running. */
@@ -1479,7 +1462,7 @@ public class GenericDialog
         return index;
     }
 
-    private class Controller implements ActionListener, AdjustmentListener, CaretListener,
+    private class Controller implements AdjustmentListener, CaretListener,
             FocusListener, InputMethodListener, KeyListener
     {
         Dialog dialog;
@@ -1548,24 +1531,6 @@ public class GenericDialog
             {
                 ((JTextField) c).select(0, 0);
             }
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent evt)
-        {
-            Object source = evt.getSource();
-            if (source == okButton)
-            {
-                output = Output.OK;
-                this.dialog.dispose();
-            }
-            else if (source == cancelButton)
-            {
-                output = Output.CANCEL;
-                this.dialog.dispose();
-            }
-            // } else
-            // notifyListeners(evt);
         }
 
         @Override
@@ -1652,9 +1617,9 @@ public class GenericDialog
         gd.addTextField("New name:", "Truc");
         gd.addSlider("Slider:", 0, 100, 37);
         gd.addCheckBox("Show Result", true);
-        gd.showDialog();
+//        gd.showDialog();
 
-        if (gd.wasCanceled())
+        if (gd.showDialog() == Output.CANCEL)
         {
             System.out.println("canceled...");
         }
