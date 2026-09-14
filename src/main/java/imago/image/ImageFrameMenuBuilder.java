@@ -434,7 +434,7 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         menu.add(geometryMenu);
         
         JMenu transformsMenu = new JMenu("Geometric transforms");
-        addPlugin(transformsMenu, imago.image.plugins.register.ImagePair2DRegister.class, "Simple Image Registration", hasScalarImage);
+        addPlugin(transformsMenu, imago.image.plugins.register.RegisterImagePair2D.class, "Simple Image Registration", hasScalarImage);
         addPlugin(transformsMenu, imago.image.plugins.register.ApplyExistingTransformToImage.class, "Apply Transform To Image", hasScalarImage);
         addPlugin(transformsMenu, imago.image.plugins.register.CreateTransformedImageView.class, "Create Transformed Image View", hasScalarImage);
         transformsMenu.addSeparator();

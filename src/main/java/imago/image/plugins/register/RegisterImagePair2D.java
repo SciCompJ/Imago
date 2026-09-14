@@ -49,6 +49,7 @@ import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray2D;
 import net.sci.array.numeric.UInt8Array;
 import net.sci.array.numeric.interp.LinearInterpolatedArray2D;
+import net.sci.array.numeric.interp.ScalarFunction2D;
 import net.sci.geom.geom2d.AffineTransform2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.Transform2D;
@@ -61,7 +62,7 @@ import net.sci.register.transform.TranslationModel2D;
 /**
  * Provides a simple interface to quickly register two 2D images. 
  */
-public class ImagePair2DRegister implements FramePlugin
+public class RegisterImagePair2D implements FramePlugin
 {
     // ===================================================================
     // Enumerations
@@ -99,7 +100,6 @@ public class ImagePair2DRegister implements FramePlugin
     
     Image movingImage;
     
-    int[] outputImageDims;
     ScalarArray.Factory<?> outputArrayFactory = UInt8Array.defaultFactory;
     
     protected DisplayType displayType = DisplayType.MAGENTA_GREEN;
@@ -177,13 +177,6 @@ public class ImagePair2DRegister implements FramePlugin
             this.pluginFrame.setLocation(pos.x + 30, pos.y + 20);
         }
         
-        // initialize size of output image from size of current image
-        if (frame instanceof ImageFrame)
-        {
-            Image img = ((ImageFrame) frame).getImageHandle().getImage();
-            this.outputImageDims = img.getSize();
-        }
-        
         // create frame
         initWidgets();
         setupLayout(pluginFrame);
@@ -238,11 +231,11 @@ public class ImagePair2DRegister implements FramePlugin
     public void updateTransform()
     {
         // pre-compute center
-        double sizeX = this.refImage.getSize(0);
-        double sizeY = this.refImage.getSize(1);
+        double sizeX = this.movingImage.getSize(0);
+        double sizeY = this.movingImage.getSize(1);
         Point2D center = new Point2D(sizeX / 2, sizeY / 2);
         
-        // parse translation params
+        // parse translation vector
         this.xShift = xShiftWidget.getValue();
         this.yShift = yShiftWidget.getValue();
         
@@ -284,12 +277,18 @@ public class ImagePair2DRegister implements FramePlugin
         ScalarArray2D<?> moving2d = ScalarArray2D.wrap(ScalarArray.wrap((Array<Scalar>) movingImage.getData()));
         TransformedImage2D tim2 = new TransformedImage2D(new LinearInterpolatedArray2D(moving2d, Double.NaN), transform);
         
-        outputImageDims[0] = (int) outputSizeXWidget.getValue();
-        outputImageDims[1] = (int) outputSizeYWidget.getValue();
+        FunctionPairRenderer2D compositer = createCompositer();
+
+        Array<?> resultArray = compositer.combine(tim1, tim2);
+        this.resultImage = new Image(resultArray, refImage);
+    }
+    
+    private FunctionPairRenderer2D createCompositer()
+    {
         int sizeX = (int) outputSizeXWidget.getValue();
         int sizeY = (int) outputSizeYWidget.getValue();
         
-        FunctionPairRenderer2D compositer = switch (displayType)
+        return switch (displayType)
         {
             case MAGENTA_GREEN -> new FunctionPairRenderer2D.MagentaGreen(sizeX, sizeY);
             case MAX_INTENSITY -> new FunctionPairRenderer2D.MaxIntensity(sizeX, sizeY);
@@ -301,8 +300,6 @@ public class ImagePair2DRegister implements FramePlugin
             default -> throw new IllegalArgumentException("Unexpected value: " + displayType);
         };
 
-        Array<?> resultArray = compositer.combine(tim1, tim2);
-        this.resultImage = new Image(resultArray, refImage);
     }
     
     /**
@@ -319,7 +316,7 @@ public class ImagePair2DRegister implements FramePlugin
                 @Override
                 public void windowClosing(WindowEvent evt)
                 {
-                    ImagePair2DRegister.this.resultDisplay = null;
+                    RegisterImagePair2D.this.resultDisplay = null;
                 }           
             });
         } 
@@ -343,6 +340,40 @@ public class ImagePair2DRegister implements FramePlugin
         Image res = this.resultDisplay.getViewer().getImage();
         res.setName(movingImage.getName() + "regCompo");
         ImageFrame.create(res, parentFrame);
+    }
+    
+    private void onCreateRegisteredImage1Frame()
+    {
+        // apply transform on fixed image
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        ScalarArray2D<?> ref2d = ScalarArray2D.wrap(ScalarArray.wrap((Array<Scalar>) refImage.getData()));
+        TransformedImage2D tim1 = new TransformedImage2D(new LinearInterpolatedArray2D(ref2d, Double.NaN), AffineTransform2D.IDENTITY);
+        
+        // consider an "empty" moving image
+        ScalarFunction2D tim2 = (x,y) -> Double.NaN;
+
+        FunctionPairRenderer2D compositer = createCompositer();
+
+        Array<?> resultArray = compositer.combine(tim1, tim2);
+        Image resImage = new Image(resultArray, refImage);
+        ImageFrame.create(resImage, parentFrame);
+    }
+    
+    private void onCreateRegisteredImage2Frame()
+    {
+        // consider an "empty" fixed image
+        ScalarFunction2D tim1 = (x,y) -> Double.NaN;
+
+        // apply transform on moving image
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        ScalarArray2D<?> moving2d = ScalarArray2D.wrap(ScalarArray.wrap((Array<Scalar>) movingImage.getData()));
+        TransformedImage2D tim2 = new TransformedImage2D(new LinearInterpolatedArray2D(moving2d, Double.NaN), transform);
+        
+        FunctionPairRenderer2D compositer = createCompositer();
+
+        Array<?> resultArray = compositer.combine(tim1, tim2);
+        Image resImage = new Image(resultArray, refImage);
+        ImageFrame.create(resImage, parentFrame);
     }
     
     /**
@@ -419,15 +450,20 @@ public class ImagePair2DRegister implements FramePlugin
             }
         });
         
+        // use first image to compute default size of result image
+        ImageFrame sampleImageFrame = ImageFrame.getImageFrame(this.parentFrame.getGui(), imageNames[0]); 
+        Image sampleImage = sampleImageFrame.getImageHandle().getImage();
+        int defaultSizeX = sampleImage.getSize(0);
+        int defaultSizeY = sampleImage.getSize(1);
         
-        this.outputSizeXWidget = new NumericValueTextField(this.outputImageDims[0]);
+        this.outputSizeXWidget = new NumericValueTextField(defaultSizeX, 0);
         this.outputSizeXWidget.addWidgetListener(evt -> {
             if (this.autoUpdateCheckBox.isSelected())
             {
                 runRegistration();
             }
         });
-        this.outputSizeYWidget = new NumericValueTextField(this.outputImageDims[1]);
+        this.outputSizeYWidget = new NumericValueTextField(defaultSizeY, 0);
         this.outputSizeYWidget.addWidgetListener(evt -> {
             if (this.autoUpdateCheckBox.isSelected())
             {
@@ -478,7 +514,7 @@ public class ImagePair2DRegister implements FramePlugin
         this.rotationAngleWidget.addWidgetListener(listener);
 
         this.logScalingLabel = new JLabel("Log_2 of scaling factor:");
-        this.logScalingWidget = new NumericValueTextIncDecWidget(0.0, 0.01);
+        this.logScalingWidget = new NumericValueTextIncDecWidget(0.0, 0.01, 3);
         this.logScalingWidget.addWidgetListener(listener);
         
         this.autoUpdateCheckBox = new JCheckBox("Auto-Update", false);
@@ -565,8 +601,8 @@ public class ImagePair2DRegister implements FramePlugin
         
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
-        addMenuItem(fileMenu, "Display Registered Image 1", evt -> ImageFrame.create(registeredImage1, parentFrame));
-        addMenuItem(fileMenu, "Display Registered Image 2", evt -> ImageFrame.create(registeredImage2, parentFrame));
+        addMenuItem(fileMenu, "Display Registered Image 1", evt -> onCreateRegisteredImage1Frame());
+        addMenuItem(fileMenu, "Display Registered Image 2", evt -> onCreateRegisteredImage2Frame());
         addMenuItem(fileMenu, "Create Registration Composite Image", evt -> onCreateComboImage());
         fileMenu.addSeparator();
         addMenuItem(fileMenu, "Save Registration...", evt -> onSaveRegistration());
