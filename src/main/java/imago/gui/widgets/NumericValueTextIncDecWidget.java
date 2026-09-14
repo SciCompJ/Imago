@@ -24,6 +24,7 @@ public class NumericValueTextIncDecWidget extends AbstractWidget
 {
     double value;
     double increment = 1.0;
+    String format;
     
     JTextField textField;
     JButton decButton;
@@ -53,11 +54,29 @@ public class NumericValueTextIncDecWidget extends AbstractWidget
      */
     public NumericValueTextIncDecWidget(double initialValue, double incrementValue)
     {
+        this(initialValue, 1.0, 2);
+    }
+    
+    /**
+     * Creates a new value initialized with the specified value and an
+     * increment/decrement value.
+     * 
+     * @param initialValue
+     *            the initial value for this widget.
+     * @param incrementValue
+     *            the value for incrementing or decrementing the widget value
+     *            when clicking on the corresponding button.
+     * @param nDigits
+     *            the number of decimal digits (0 for integer number)
+     */
+    public NumericValueTextIncDecWidget(double initialValue, double incrementValue, int nDigits)
+    {
         this.value = initialValue;
         this.increment = incrementValue;
+        this.format = "%." + nDigits + "f";
         
         // create widgets
-        this.textField = new JTextField(doubleToString(initialValue), 10);
+        this.textField = new JTextField(formatNumber(initialValue), 10);
         textField.addKeyListener(new KeyAdapter()
         {
             @Override
@@ -85,17 +104,18 @@ public class NumericValueTextIncDecWidget extends AbstractWidget
         // decrement value button
         this.decButton = createPlusMinusButton("-", evt -> {
             this.value = this.value - increment;
-            this.textField.setText(doubleToString(this.value));
+            this.textField.setText(formatNumber(this.value));
             this.fireWidgetValueChangeEvent(new WidgetEvent(this));
         });
         
         // increment value button
         this.incButton = createPlusMinusButton("+", evt -> {
             this.value = this.value + increment;
-            this.textField.setText(doubleToString(this.value));
+            this.textField.setText(formatNumber(this.value));
             this.fireWidgetValueChangeEvent(new WidgetEvent(this));
         });
         
+        // setup layout -> single line
         this.panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panel.add(textField);
         panel.add(decButton);
@@ -128,8 +148,8 @@ public class NumericValueTextIncDecWidget extends AbstractWidget
         this.incButton.setEnabled(b);
     }
 
-    private static final String doubleToString(double value)
+    private String formatNumber(double value)
     {
-        return String.format(Locale.ENGLISH, "%.2f", value);
+        return String.format(Locale.ENGLISH, format, value);
     }
 }

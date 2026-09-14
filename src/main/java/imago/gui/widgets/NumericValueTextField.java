@@ -20,20 +20,37 @@ public class NumericValueTextField extends AbstractWidget
 {
     double value;
     
+    String format;
+    
     JTextField textField;
     
     /**
-     * Creates a new value initialized with the specified value.
+     * Creates a new numeric textfield initialized with the specified value.
      * 
      * @param initialValue
      *            the initial value for this widget.
      */
     public NumericValueTextField(double initialValue)
     {
+        this(initialValue, 2);
+    }
+    
+    /**
+     * Creates a new numeric textfield initialized with the specified value, and
+     * using the specified number of digits for representing the numeric value.
+     * 
+     * @param initialValue
+     *            the initial value for this widget.
+     * @param nDigits
+     *            the number of decimal digits (0 for integer number)
+     */
+    public NumericValueTextField(double initialValue, int nDigits)
+    {
         this.value = initialValue;
+        this.format = "%." + nDigits + "f";
         
         // create widgets
-        this.textField = new JTextField(doubleToString(initialValue), 10);
+        this.textField = new JTextField(formatNumber(initialValue), 10);
         textField.addKeyListener(new KeyAdapter()
         {
             @Override
@@ -76,8 +93,8 @@ public class NumericValueTextField extends AbstractWidget
         this.textField.setEnabled(b);
     }
 
-    private static final String doubleToString(double value)
+    private String formatNumber(double value)
     {
-        return String.format(Locale.ENGLISH, "%.2f", value);
+        return String.format(Locale.ENGLISH, format, value);
     }
 }
