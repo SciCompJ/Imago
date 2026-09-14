@@ -466,6 +466,7 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         menu.addSeparator();
         JMenu segmentationMenu = new JMenu("Segmentation");
         addPlugin(segmentationMenu, imago.image.plugins.process.ImageOtsuThreshold.class, "Otsu Auto Threshold", hasScalarImage);
+        addPlugin(segmentationMenu, imago.image.plugins.process.ImageOtsuThresholdWithMask.class, "Otsu Threshold Within Mask", hasScalarImage);
         addPlugin(segmentationMenu, imago.image.plugins.process.ImageIsodataThreshold.class, "Isodata Auto Threshold", hasScalarImage);
         addPlugin(segmentationMenu, imago.image.plugins.process.ImageManualThreshold.class, "Manual Threshold", hasScalarImage);
         addPlugin(segmentationMenu, imago.image.plugins.process.ImageHysteresisThreshold.class, "Hysteresis Threshold", hasScalarImage);

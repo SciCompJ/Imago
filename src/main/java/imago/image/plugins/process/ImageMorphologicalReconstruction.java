@@ -27,6 +27,9 @@ import net.sci.image.morphology.MorphologicalReconstruction;
  */
 public class ImageMorphologicalReconstruction implements FramePlugin
 {
+    /**
+     * Default empty constructor.
+     */
 	public ImageMorphologicalReconstruction()
 	{
 	}

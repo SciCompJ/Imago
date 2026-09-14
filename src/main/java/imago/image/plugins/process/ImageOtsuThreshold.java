@@ -17,9 +17,18 @@ import net.sci.image.segmentation.OtsuThreshold;
  * Principle of Otsu method is to identify threshold value that maximizes the
  * variance between the classes, or equivalently to minimize the sum of
  * variances within each class.
+ * 
+ * @see ImageOtsuThresholdWithMask
  */
 public class ImageOtsuThreshold implements FramePlugin
 {
+    /**
+     * Default empty constructor.
+     */
+    public ImageOtsuThreshold()
+    {
+    }
+    
     /*
      * (non-Javadoc)
      * 
