@@ -1168,7 +1168,7 @@ public class GenericDialog
     /**
      * Shows the dialog.
      */
-    public Output showDialog()
+    public void showDialog()
     {
         createButtonPanel();
 
@@ -1186,7 +1186,6 @@ public class GenericDialog
         
         // prepare for reading results
         resetCounters();
-        return output;
     }
 
     /**
@@ -1617,9 +1616,9 @@ public class GenericDialog
         gd.addTextField("New name:", "Truc");
         gd.addSlider("Slider:", 0, 100, 37);
         gd.addCheckBox("Show Result", true);
-//        gd.showDialog();
+        gd.showDialog();
 
-        if (gd.showDialog() == Output.CANCEL)
+        if (gd.wasCanceled())
         {
             System.out.println("canceled...");
         }
