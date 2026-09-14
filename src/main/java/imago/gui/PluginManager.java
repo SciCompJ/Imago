@@ -12,6 +12,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -233,28 +236,45 @@ public class PluginManager
      */
     public void loadPlugins() throws ClassNotFoundException, IOException
     {
-        String baseDirName = System.getProperty("user.dir");
-        String pluginsDirName = baseDirName + File.separator + "plugins";
-        File pluginsDir = new File(pluginsDirName);
-        if (!pluginsDir.exists())
+        String currentDir = System.getProperty("user.dir");
+        Path pluginsDir = Paths.get(currentDir, "plugins");
+        if (Files.exists(pluginsDir))
         {
-            System.out.println("Could not find plugins directory, abort.");
+            System.out.println("import plugins from directory: " + pluginsDir);
+            loadPluginsFromDirectory(pluginsDir);
+        }
+        
+        String homeDir = System.getProperty("user.home");
+        Path userPluginsDir = Paths.get(homeDir, ".imago", "addons", "plugins");
+        if (Files.exists(userPluginsDir))
+        {
+            System.out.println("import plugins from directory: " + userPluginsDir);
+            loadPluginsFromDirectory(userPluginsDir);
+        }
+    }
+    
+    private void loadPluginsFromDirectory(Path pluginsDirPath) throws IOException
+    {
+        if (!Files.exists(pluginsDirPath))
+        {
             return;
         }
-
-        // Find all jar files
-        File[] jarFiles = pluginsDir.listFiles((file, name) -> name.endsWith(".jar"));
-
-        // For each jar, find the plugins within
-        for (File file : jarFiles)
+        
+        // iterate over jar files within the directory
+        for (Path path : Files.newDirectoryStream(pluginsDirPath))
         {
+            if (!path.getFileName().toString().endsWith(".jar"))
+            {
+                continue;
+            }
+            
             try
             {
-                loadPluginsFromJarFile(file);
+                loadPluginsFromJarFile(path);
             }
             catch (Exception ex)
             {
-                System.err.println("Failed to load plugin: " + file);
+                System.err.println("Failed to load plugin from file: " + path);
                 ex.printStackTrace();
                 continue;
             }
@@ -266,10 +286,10 @@ public class PluginManager
      * populates the "pluginHandlers" variable.
      * 
      * @param file
-     *            the jar file containing the plugin(s) and the configuration
-     *            file.
+     *            the path to the jar file containing the plugin(s) and the
+     *            configuration file.
      */
-    private void loadPluginsFromJarFile(File file) throws IOException, ClassNotFoundException
+    private void loadPluginsFromJarFile(Path file) throws IOException, ClassNotFoundException
     {
         ArrayList<String> entries = readPluginEntries(file);
 
@@ -297,21 +317,21 @@ public class PluginManager
      * Opens the configuration file ("plugins.config") from a JAR file and
      * returns the list of plugin entries it contains.
      * 
-     * @param fileName
-     *            the name of the file containing plugins and configuration
+     * @param pathToFile
+     *            the path to the file containing plugins and configuration
      *            file.
      * @throws IOException
      */
-    private ArrayList<String> readPluginEntries(File file) throws IOException
+    private ArrayList<String> readPluginEntries(Path pathToFile) throws IOException
     {
         ArrayList<String> entries = new ArrayList<String>();
 
-        try (JarFile jarFile = new JarFile(file))
+        try (JarFile jarFile = new JarFile(pathToFile.toFile()))
         {
             JarEntry entry = jarFile.getJarEntry("plugins.config");
             if (entry == null)
             {
-                throw new RuntimeException("Could not find configuration file into jar file: " + file);
+                throw new RuntimeException("Could not find configuration file into jar file: " + pathToFile);
             }
 
             InputStream is = jarFile.getInputStream(entry);
@@ -354,7 +374,7 @@ public class PluginManager
      * @return a new PluginHandler
      * @throws IOException
      */
-    private PluginHandler createPluginHandler(File jarFile, String entry) throws IOException
+    private PluginHandler createPluginHandler(Path jarFile, String entry) throws IOException
     {
         entry = entry.trim();
         String[] tokens = entry.split(",", 3);
@@ -376,7 +396,7 @@ public class PluginManager
 
         // create the plugin from its class name
         String className = tokens[2].trim();
-        FramePlugin plugin = loadPluginFromJar(jarFile, className);
+        FramePlugin plugin = loadPluginFromJar(jarFile.toFile(), className);
 
         // encapsulate the plugin within a Handler
         return new PluginHandler(plugin, label, menuPath);
