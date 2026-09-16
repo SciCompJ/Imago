@@ -5,6 +5,7 @@ package imago.image.plugins.register;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
@@ -199,19 +200,18 @@ public class SingleImageViewer
         imageDisplay.updateOffset();        
     }
 
-//    /**
-//     * Computes the zoom factor that best fits the image within the limits of
-//     * the panel.
-//     */
-//    public void setBestZoom() 
-//    {
-//        Dimension dim0 = scroll.getSize();
-//        double ratioX = ((double) dim0.width - 5) / ((double) (refImage.getSize(0)));
-//        double ratioY = ((double) dim0.height - 5) / ((double) (refImage.getSize(1)));
-//        double zoom = Math.min(ratioX, ratioY);
-//        setZoom(zoom);
-//    }
-
+    /**
+     * Computes the zoom factor that best fits the image within the limits of
+     * the panel.
+     */
+    public void setBestZoom()
+    {
+        Dimension dim0 = scroll.getSize();
+        double ratioX = ((double) dim0.width - 5) / ((double) (image.getSize(0)));
+        double ratioY = ((double) dim0.height - 5) / ((double) (image.getSize(1)));
+        double zoom = Math.min(ratioX, ratioY);
+        setZoom(zoom);
+    }
 
     /**
      * Changes the current reference point for displaying a multi-dimensional

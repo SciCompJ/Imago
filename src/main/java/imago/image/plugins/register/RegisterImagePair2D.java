@@ -126,7 +126,7 @@ public class RegisterImagePair2D implements FramePlugin
     /** The result of the transform applied on the moving image */
     Image registeredImage2; 
     
-    SingleImageDisplayFrame resultDisplay = null;
+    SingleImageDisplayFrame resultImageFrame = null;
     
     Image resultImage = null;
     
@@ -311,25 +311,30 @@ public class RegisterImagePair2D implements FramePlugin
      */
     public void updateResultDisplay()
     {
-        if (resultDisplay == null)
+        if (resultImageFrame == null)
         {
-            this.resultDisplay = SingleImageDisplayFrame.create(resultImage, this.parentFrame);
-            this.resultDisplay.getWidget().addWindowListener(new WindowAdapter()
-            {
-                @Override
-                public void windowClosing(WindowEvent evt)
-                {
-                    RegisterImagePair2D.this.resultDisplay = null;
-                }           
-            });
+            createResultImageFrame();
         } 
         else
         {
-            SingleImageViewer viewer = this.resultDisplay.getViewer();
+            SingleImageViewer viewer = this.resultImageFrame.getViewer();
             viewer.setImage(resultImage);
             viewer.refreshDisplay();
-            this.resultDisplay.repaint();
+            this.resultImageFrame.repaint();
         }
+    }
+    
+    private void createResultImageFrame()
+    {
+        this.resultImageFrame = SingleImageDisplayFrame.create(resultImage, this.parentFrame);
+        this.resultImageFrame.getWidget().addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent evt)
+            {
+                RegisterImagePair2D.this.resultImageFrame = null;
+            }           
+        });
     }
     
     /**
@@ -340,7 +345,7 @@ public class RegisterImagePair2D implements FramePlugin
         updateResultImage();
         updateResultDisplay();
         
-        Image res = this.resultDisplay.getViewer().getImage();
+        Image res = this.resultImageFrame.getViewer().getImage();
         res.setName(movingImage.getName() + "regCompo");
         ImageFrame.create(res, parentFrame);
     }
@@ -631,6 +636,15 @@ public class RegisterImagePair2D implements FramePlugin
         addMenuItem(fileMenu, "Create Registration Composite Image", evt -> onCreateComboImage());
         fileMenu.addSeparator();
         addMenuItem(fileMenu, "Save Registration...", evt -> onSaveRegistration());
+        fileMenu.addSeparator();
+        addMenuItem(fileMenu, "Close", evt -> 
+        {
+            if (this.resultImageFrame != null)
+            {
+                this.resultImageFrame.close();
+            }
+            this.pluginFrame.dispose();
+        });
         menuBar.add(fileMenu);
         
         frame.setJMenuBar(menuBar);

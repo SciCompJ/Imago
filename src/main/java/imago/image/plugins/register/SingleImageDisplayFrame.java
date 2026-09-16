@@ -131,6 +131,10 @@ public class SingleImageDisplayFrame extends ImagoFrame
             viewer.setZoom(1.0);
             viewer.repaint();
         });
+        FrameMenuBuilder.createMenuItem(viewMenu, "Zoom Best Fit", evt -> {
+            viewer.setBestZoom();
+            viewer.repaint();
+        });
         menuBar.add(viewMenu);
         
         this.jFrame.setJMenuBar(menuBar);
