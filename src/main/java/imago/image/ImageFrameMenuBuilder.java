@@ -219,9 +219,6 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         addPlugin(editMenu, imago.image.plugins.edit.AddPointShapeFromTable.class, "Add Point Shapes...");
         
         editMenu.addSeparator();
-        addPlugin(editMenu, imago.image.plugins.edit.ImageFillBinaryMask.class, "Fill Mask With Value...");
-        
-        editMenu.addSeparator();
         JMenu settingsMenu = new JMenu("Settings");
         addPlugin(settingsMenu, imago.image.plugins.edit.ChooseFileDialogWidgetToolkit.class, "Choose File Dialog Widget Toolkits...");
         settingsMenu.addSeparator();
@@ -338,9 +335,11 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         addArrayOperatorPlugin(menu, new ImageInverter(), "Invert", "%s-inv");
         
         // submenu for creation of phantoms
-        JMenu phantomMenu = new JMenu("Phantoms");
+        JMenu phantomMenu = new JMenu("Draw & Fill");
         addPlugin(phantomMenu, imago.image.plugins.edit.ImageSelectionToMask.class, "Selection To Mask");
         addPlugin(phantomMenu, imago.image.plugins.edit.ImageSelectionToDistanceMap.class, "Selection To Distance Map");
+        phantomMenu.addSeparator();
+        addPlugin(phantomMenu, imago.image.plugins.edit.ImageFillBinaryMask.class, "Fill Mask With Value...");
         phantomMenu.addSeparator();
         addPlugin(phantomMenu, imago.image.plugins.edit.ImageFillDisk.class, "Fill Disk...");
         addPlugin(phantomMenu, imago.image.plugins.edit.ImageFillEllipse.class, "Fill Ellipse...");
