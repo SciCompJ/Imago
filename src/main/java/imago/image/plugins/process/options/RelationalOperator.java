@@ -11,7 +11,7 @@ import java.util.function.BiFunction;
  * 
  * @see SingleValueFunction
  */
-public enum LogicalOperator
+public enum RelationalOperator
 {
     EQUAL("Equal", "eq", (a, b) -> Double.compare(a, b) == 0),
     NOT_EQUAL("Not Equal", "ne", (a, b) -> Double.compare(a, b) != 0),
@@ -20,11 +20,23 @@ public enum LogicalOperator
     LOWER_THAN("Greater Than", "lt", (a, b) -> a < b),
     LOWER_THAN_OR_EQUAL("Greater Than or Equal", "le", (a, b) -> a <= b);
     
+    public static final RelationalOperator fromName(String name)
+    {
+        for (RelationalOperator op : RelationalOperator.values())
+        {
+            if (op.getName().equalsIgnoreCase(name))
+            {
+                return op;
+            }
+        }
+        throw new RuntimeException("Could not identify any logical operator with name: " + name);
+    }
+    
     private String name;
     private String shortName;
     private BiFunction<Double,Double,Boolean> function;
     
-    private LogicalOperator(String name, String shortName, BiFunction<Double,Double,Boolean> function)
+    private RelationalOperator(String name, String shortName, BiFunction<Double,Double,Boolean> function)
     {
         this.name = name;
         this.shortName = shortName;
