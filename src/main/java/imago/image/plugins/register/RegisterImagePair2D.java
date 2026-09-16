@@ -44,6 +44,7 @@ import imago.gui.widgets.WidgetListener;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import net.sci.array.Array;
+import net.sci.array.numeric.Float32Array;
 import net.sci.array.numeric.Scalar;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray2D;
@@ -102,7 +103,7 @@ public class RegisterImagePair2D implements FramePlugin
     
     ScalarArray.Factory<?> outputArrayFactory = UInt8Array.defaultFactory;
     
-    protected DisplayType displayType = DisplayType.MAGENTA_GREEN;
+    DisplayType displayType = DisplayType.MAGENTA_GREEN;
   
     /** the translation vector (in pixels) */
     double xShift = 0.0;
@@ -145,6 +146,7 @@ public class RegisterImagePair2D implements FramePlugin
     NumericValueTextField outputSizeXWidget;
     NumericValueTextField outputSizeYWidget;
     JComboBox<DisplayType> displayTypeCombo;
+    JComboBox<String> outputTypeCombo;
     
     JLabel xShiftLabel;
     NumericValueTextIncDecWidget xShiftWidget;
@@ -181,6 +183,8 @@ public class RegisterImagePair2D implements FramePlugin
         initWidgets();
         setupLayout(pluginFrame);
         setupMenu(pluginFrame);
+        
+        updateInputImages();
         
         pluginFrame.pack();
         pluginFrame.setVisible(true);
@@ -291,15 +295,14 @@ public class RegisterImagePair2D implements FramePlugin
         return switch (displayType)
         {
             case MAGENTA_GREEN -> new FunctionPairRenderer2D.MagentaGreen(sizeX, sizeY);
-            case MAX_INTENSITY -> new FunctionPairRenderer2D.MaxIntensity(sizeX, sizeY);
-            case AVERAGE -> new FunctionPairRenderer2D.AverageIntensity(sizeX, sizeY);
-            case DIFFERENCE -> new FunctionPairRenderer2D.Difference(sizeX, sizeY);
-            case ABSOLUTE_DIFFERENCE -> new FunctionPairRenderer2D.AbsoluteDifference(sizeX, sizeY);
-            case SUM -> new FunctionPairRenderer2D.IntensitySum(sizeX, sizeY);
-            case CHECKERBOARD -> new FunctionPairRenderer2D.CheckerBoard(sizeX, sizeY);
+            case MAX_INTENSITY -> new FunctionPairRenderer2D.MaxIntensity(sizeX, sizeY, outputArrayFactory);
+            case AVERAGE -> new FunctionPairRenderer2D.AverageIntensity(sizeX, sizeY, outputArrayFactory);
+            case DIFFERENCE -> new FunctionPairRenderer2D.Difference(sizeX, sizeY, outputArrayFactory);
+            case ABSOLUTE_DIFFERENCE -> new FunctionPairRenderer2D.AbsoluteDifference(sizeX, sizeY, outputArrayFactory);
+            case SUM -> new FunctionPairRenderer2D.IntensitySum(sizeX, sizeY, outputArrayFactory);
+            case CHECKERBOARD -> new FunctionPairRenderer2D.CheckerBoard(sizeX, sizeY, outputArrayFactory);
             default -> throw new IllegalArgumentException("Unexpected value: " + displayType);
         };
-
     }
     
     /**
@@ -483,6 +486,26 @@ public class RegisterImagePair2D implements FramePlugin
             updateResultDisplay();
         });
 
+        // create widget for choosing data type of result image
+        String[] outputTypes = new String[] {"UInt8", "Float32"};
+        outputTypeCombo = new JComboBox<String>(outputTypes);
+        outputTypeCombo.setSelectedItem(outputTypes[0]);
+        outputTypeCombo.addItemListener(evt ->
+        {
+            if (evt.getStateChange() != ItemEvent.SELECTED) return;
+            this.outputArrayFactory = switch (outputTypeCombo.getSelectedIndex())
+            {
+                case 0 -> UInt8Array.defaultFactory;
+                case 1 -> Float32Array.defaultFactory;
+                default -> {
+                    throw new RuntimeException(
+                            "Unknonw value for output type: " + outputTypeCombo.getSelectedItem());
+                }
+            };
+            updateResultImage();
+            updateResultDisplay();
+        });
+
         this.transformModelCombo = new JComboBox<String>();
         this.transformModelCombo.addItem("Translation");
         this.transformModelCombo.addItem("Motion (Trans.+Rot.)");
@@ -563,13 +586,15 @@ public class RegisterImagePair2D implements FramePlugin
         imagesPanel.add(this.imageNames2Combo);
 
         JPanel outputImagePanel = GuiHelper.createOptionsPanel("Output Image");
-        outputImagePanel.setLayout(new GridLayout(3, 2));
+        outputImagePanel.setLayout(new GridLayout(4, 2));
         outputImagePanel.add(new JLabel("Size X: "));
         outputImagePanel.add(outputSizeXWidget.getComponent());
         outputImagePanel.add(new JLabel("Size Y: "));
         outputImagePanel.add(outputSizeYWidget.getComponent());
         outputImagePanel.add(new JLabel("Display Type: "));
         outputImagePanel.add(displayTypeCombo);
+        outputImagePanel.add(new JLabel("Output Data Type: "));
+        outputImagePanel.add(outputTypeCombo);
 
         JPanel registrationPanel = GuiHelper.createOptionsPanel("Registration");
         registrationPanel.setLayout(new GridLayout(5, 2));

@@ -11,7 +11,8 @@ import net.sci.array.numeric.UInt8Array;
 import net.sci.array.numeric.interp.ScalarFunction2D;
 
 /**
- * 
+ * A collection of classes that combines two 2D functions to generate a 2D
+ * array. The size of the result array is defined at creation of the renderer.
  */
 public abstract class FunctionPairRenderer2D
 {
@@ -27,6 +28,10 @@ public abstract class FunctionPairRenderer2D
     public abstract Array2D<?> combine(ScalarFunction2D fun1, ScalarFunction2D fun2);
     
     
+    /**
+     * Combines two array to generate a color array, using magenta and green
+     * colors to render the first and second function, respectively.
+     */
     public static class MagentaGreen extends FunctionPairRenderer2D
     {
         public MagentaGreen(int sizeX, int sizeY)
@@ -101,6 +106,11 @@ public abstract class FunctionPairRenderer2D
         abstract double combine(double v1, double v2);
     }
     
+    /**
+     * Combines two functions by generating a checker-board pattern. "even" tiles
+     * are associated to the first function, while odd tiles are associated to
+     * second function.
+     */
     public static class CheckerBoard extends FunctionPairRenderer2D
     {
         ScalarArray.Factory<?> factory;
@@ -150,6 +160,11 @@ public abstract class FunctionPairRenderer2D
         }
     }
     
+    /**
+     * Combines two functions by keeping the maximum value from the two
+     * functions. If one of the function returns NaN, the value of the other
+     * function is returned.
+     */
     public static class MaxIntensity extends ScalarFunctionPairRenderer2D
     {
         ScalarArray.Factory<?> factory;
@@ -178,6 +193,10 @@ public abstract class FunctionPairRenderer2D
         }
     }
     
+    /**
+     * Combines two functions by keeping the sum of the two values. If one of
+     * the function returns NaN, the value of the other function is returned.
+     */
     public static class IntensitySum extends ScalarFunctionPairRenderer2D
     {
         ScalarArray.Factory<?> factory;
@@ -206,6 +225,10 @@ public abstract class FunctionPairRenderer2D
         }
     }
     
+    /**
+     * Combines two functions by keeping the average of the two values. If one of
+     * the function returns NaN, the value of the other function is returned.
+     */
     public static class AverageIntensity extends ScalarFunctionPairRenderer2D
     {
         ScalarArray.Factory<?> factory;
@@ -234,6 +257,10 @@ public abstract class FunctionPairRenderer2D
         }
     }
     
+    /**
+     * Combines two functions by keeping the difference of the two values. If one of
+     * the function returns NaN, the value of the other function is returned.
+     */
     public static class Difference extends ScalarFunctionPairRenderer2D
     {
         ScalarArray.Factory<?> factory;
@@ -262,6 +289,11 @@ public abstract class FunctionPairRenderer2D
         }
     }
     
+    /**
+     * Combines two functions by keeping the absolute difference of the two
+     * values. If one of the function returns NaN, the value of the other
+     * function is returned.
+     */
     public static class AbsoluteDifference extends ScalarFunctionPairRenderer2D
     {
         ScalarArray.Factory<?> factory;
