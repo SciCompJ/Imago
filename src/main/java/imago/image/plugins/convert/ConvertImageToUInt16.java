@@ -57,6 +57,9 @@ public class ConvertImageToUInt16 implements FramePlugin
         Image resultImage = new Image(result, image);
         resultImage.setDisplaySettings(image.getDisplaySettings().duplicate());
 
+        // add data type to image name
+        resultImage.setName(image.getName() + "-uint16");
+
         // add the image document to GUI
         ImageFrame.create(resultImage, frame);
     }

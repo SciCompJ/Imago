@@ -53,6 +53,9 @@ public class ConvertImageToFloat64 implements FramePlugin
         Image resultImage = new Image(result, image);
         resultImage.setDisplaySettings(image.getDisplaySettings().duplicate());
 
+        // add data type to image name
+        resultImage.setName(image.getName() + "-float64");
+
         // add the image document to GUI
         ImageFrame.create(resultImage, frame);
     }

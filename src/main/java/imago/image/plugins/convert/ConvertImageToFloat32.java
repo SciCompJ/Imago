@@ -52,6 +52,9 @@ public class ConvertImageToFloat32 implements FramePlugin
         Float32Array result = Float32Array.convert((ScalarArray<?>) array);
         Image resultImage = new Image(result, image);
         resultImage.setDisplaySettings(image.getDisplaySettings().duplicate());
+        
+        // add data type to image name
+        resultImage.setName(image.getName() + "-float32");
 
         // add the image document to GUI
         ImageFrame.create(resultImage, frame);

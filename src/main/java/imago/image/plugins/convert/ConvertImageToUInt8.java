@@ -78,8 +78,10 @@ public class ConvertImageToUInt8 implements FramePlugin
         resultImage.setType(ImageType.GRAYSCALE);
         resultImage.getDisplaySettings().setDisplayRange(new double[] { 0, 255 });
         
-        // add the image document to GUI
+        // add data type to image name
         resultImage.setName(image.getName() + "-uint8");
+
+        // add the image document to GUI
         ImageFrame.create(resultImage, frame);
     }
     
