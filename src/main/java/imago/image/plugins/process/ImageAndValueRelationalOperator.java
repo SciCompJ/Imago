@@ -4,6 +4,7 @@
 package imago.image.plugins.process;
 
 import java.util.function.Function;
+import java.util.prefs.Preferences;
 
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
@@ -11,7 +12,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
-import imago.image.plugins.process.options.LogicalOperator;
+import imago.image.plugins.process.options.RelationalOperator;
 import net.sci.array.Array;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.numeric.Scalar;
@@ -28,6 +29,9 @@ import net.sci.image.Image;
  */
 public class ImageAndValueRelationalOperator implements FramePlugin
 {
+    private static final String comparisonValueKey = "ComparisonValue";
+    private static final String comparisonOperatorKey = "ComparisonOperatorName";
+    
     /**
      * Default empty constructor.
      */
@@ -52,10 +56,16 @@ public class ImageAndValueRelationalOperator implements FramePlugin
             index = findStringIndex(imageName, imageNames);
         }
 
+        // retrieve or define default values
+        Preferences prefs = Preferences.userRoot().node("imago/image/math");
+        double defaultValue = prefs.getDouble(comparisonValueKey, 0);
+        RelationalOperator defaultOp = RelationalOperator.fromName(prefs.get(comparisonOperatorKey, RelationalOperator.GREATER_THAN.getName()));
+
+        // open dialog to choose parameters
         GenericDialog gd = new GenericDialog(frame, "Math Binary Operator");
         gd.addChoice("Image", imageNames, imageNames[index]);
-        gd.addEnumChoice("Operation", LogicalOperator.class, LogicalOperator.GREATER_THAN);
-        gd.addNumericField("Value", 100.0, 2, "The scalar value to use as operand");
+        gd.addEnumChoice("Operation", RelationalOperator.class, defaultOp);
+        gd.addNumericField("Value", defaultValue, 2, "The scalar value to compare with");
         gd.showDialog();
 
         if (gd.getOutput() == GenericDialog.Output.CANCEL)
@@ -63,9 +73,12 @@ public class ImageAndValueRelationalOperator implements FramePlugin
 
         // parse dialog results
         String imageName = gd.getNextChoice();
-        LogicalOperator op = (LogicalOperator) gd.getNextEnumChoice();
+        RelationalOperator op = (RelationalOperator) gd.getNextEnumChoice();
         double value = gd.getNextNumber();
-        System.out.println("value = " + value);
+        
+        // store choices for future use
+        prefs.putDouble(comparisonValueKey, value);
+        prefs.put(comparisonOperatorKey, op.getName());
 
         // identify source image
         Image image = ImageHandle.findFromName(frame.getGui().getAppli(), imageName).getImage();
