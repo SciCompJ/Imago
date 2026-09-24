@@ -63,16 +63,17 @@ public class ImageFillBinaryMask implements ImageFramePlugin
         String[] imageNameArray = binaryImageNames.toArray(new String[]{});
         String firstImageName = imageNameArray[0];
 
-        Preferences prefs = Preferences.userRoot().node("imago/image/draw");
-        double defaultValue = prefs.getDouble("DrawValue", 0);
-        boolean defaultFillNaN = prefs.getBoolean("FillNaN", false);
+        Preferences prefs = Preferences.userRoot().node("imago/image/draw/ImageFillBinaryMask");
+        double defaultValue = prefs.getDouble("FillValue", 0);
+        boolean defaultFillNaN = prefs.getBoolean("FillWithNaN", false);
+        boolean createNewImage = prefs.getBoolean("CreateNewImage", false);
         
         // Creates the dialog
         GenericDialog gd = new GenericDialog(frame, "Fill Binary Mask");
         gd.addChoice("Mask Image: ", imageNameArray, firstImageName);
         gd.addNumericField("Value", defaultValue, 2);
         gd.addCheckBox("Fill with NaN values", defaultFillNaN);
-        gd.addCheckBox("Create Result Image", true);
+        gd.addCheckBox("Create Result Image", createNewImage);
         gd.showDialog();
         
         if (gd.wasCanceled()) 
@@ -86,13 +87,13 @@ public class ImageFillBinaryMask implements ImageFramePlugin
         boolean fillWithNaN  = gd.getNextBoolean();
         boolean createResult = gd.getNextBoolean();
         
-        prefs.putDouble("DrawValue", value);
-        prefs.putBoolean("FillNaN", fillWithNaN);
+        prefs.putDouble("FillValue", value);
+        prefs.putBoolean("FillWithNaN", fillWithNaN);
+        prefs.putBoolean("CreateNewImage", createResult);
         
         if (fillWithNaN) value = Double.NaN;
         
         // extract mask array and check validity
-        System.out.println("mask image: " + maskImage.getName());
         Array<?> mask = maskImage.getData();
         if (mask.elementClass() != Binary.class)
         {
