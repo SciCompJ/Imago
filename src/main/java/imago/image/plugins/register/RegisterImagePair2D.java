@@ -122,18 +122,6 @@ public class RegisterImagePair2D implements FramePlugin
 
         DisplayType displayType = DisplayType.MAGENTA_GREEN;
 
-        /** the translation vector (in pixels) */
-        double xShift = 0.0;
-        double yShift = 0.0;
-
-        /** rotation angle (degrees) */
-        double rotationAngle = 0.0;
-
-        /** binary logarithm of the scaling factor (for Similarity transform) */
-        double logScaling = 0.0;
-
-        boolean validParams = true;
-
         /** The transform model from reference space to moving image space */
         Transform2D transform = new TranslationModel2D();
 
@@ -251,29 +239,18 @@ public class RegisterImagePair2D implements FramePlugin
             double sizeY = this.movingImage.getSize(1);
             Point2D center = new Point2D(sizeX / 2, sizeY / 2);
 
-            // parse translation vector
-            this.xShift = xShiftWidget.getValue();
-            this.yShift = yShiftWidget.getValue();
-
-            // parse rotation angle (degrees)
-            if (this.transformModelCombo.getSelectedIndex() > 0)
-            {
-                this.rotationAngle = rotationAngleWidget.getValue();
-            }
-
-            // parse scaling factor
-            if (this.transformModelCombo.getSelectedIndex() > 1)
-            {
-                this.logScaling = logScalingWidget.getValue();
-            }
+            // parse transform parameters
+            double xShift = xShiftWidget.getValue();
+            double yShift = yShiftWidget.getValue();
+            double rotationAngle = rotationAngleWidget.getValue();
+            double logScaling = logScalingWidget.getValue();
 
             int transfoIndex = this.transformModelCombo.getSelectedIndex();
             this.transform = switch (transfoIndex)
             {
-                case 0 -> new TranslationModel2D(this.xShift, this.yShift);
-                case 1 -> new CenteredMotion2D(center, this.rotationAngle, this.xShift, this.yShift);
-                case 2 -> new CenteredSimilarity2D(center, this.logScaling, this.rotationAngle,
-                        this.xShift, this.yShift);
+                case 0 -> new TranslationModel2D(xShift, yShift).inverse();
+                case 1 -> new CenteredMotion2D(center, rotationAngle, xShift, yShift).inverse();
+                case 2 -> new CenteredSimilarity2D(center, logScaling, rotationAngle, xShift, yShift).inverse();
                 default -> throw new RuntimeException("This transformation is not implemented: "
                         + this.transform.getClass().getName());
             };
