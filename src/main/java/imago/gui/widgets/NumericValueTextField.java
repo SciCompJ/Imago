@@ -58,7 +58,12 @@ public class NumericValueTextField extends AbstractWidget
             {
                 try
                 {
+                    double oldValue = value;
                     value = Double.parseDouble(textField.getText());
+                    if (value != oldValue)
+                    {
+                        fireWidgetValueChangeEvent(new WidgetEvent(NumericValueTextField.this));
+                    }
                 }
                 catch (NumberFormatException ex)
                 {
