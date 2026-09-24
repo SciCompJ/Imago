@@ -91,77 +91,7 @@ public class RegisterImagePair2D implements FramePlugin
             return label;
         }
     }
-    
-    // ===================================================================
-    // Class properties
-    
-    ImagoFrame parentFrame;
-    
-    Image refImage;
-    
-    Image movingImage;
-    
-    ScalarArray.Factory<?> outputArrayFactory = UInt8Array.defaultFactory;
-    
-    DisplayType displayType = DisplayType.MAGENTA_GREEN;
-  
-    /** the translation vector (in pixels) */
-    double xShift = 0.0;
-    double yShift = 0.0;
-    
-    /** rotation angle (degrees)*/
-    double rotationAngle = 0.0;
-    
-    /** binary logarithm of the scaling factor (for Similarity transform) */
-    double logScaling = 0.0;
-    
-    boolean validParams = true;
-
-    /** The transform model from reference space to moving image space */
-    Transform2D transform = new TranslationModel2D();
-    
-    /** The reference image displayed in the new basis */
-    Image registeredImage1;
-    
-    /** The result of the transform applied on the moving image */
-    Image registeredImage2; 
-    
-    SingleImageDisplayFrame resultImageFrame = null;
-    
-    Image resultImage = null;
-    
-    JFrame pluginFrame = null;
-
-    JFileChooser saveWindow = null;
-    
-    
-    // ----------------------------------------------------
-    // GUI Widgets
-    
-    JComboBox<String> imageNames1Combo;
-    JComboBox<String> imageNames2Combo;
-    
-    JComboBox<String> transformModelCombo;
-
-    NumericValueTextField outputSizeXWidget;
-    NumericValueTextField outputSizeYWidget;
-    JComboBox<DisplayType> displayTypeCombo;
-    JComboBox<String> outputTypeCombo;
-    
-    JLabel xShiftLabel;
-    NumericValueTextIncDecWidget xShiftWidget;
-    JLabel yShiftLabel;
-    NumericValueTextIncDecWidget yShiftWidget;
-    JLabel rotationAngleLabel;
-    NumericValueTextIncDecWidget rotationAngleWidget;
-    JLabel logScalingLabel;
-    NumericValueTextIncDecWidget logScalingWidget;
-    
-    JCheckBox autoUpdateCheckBox;
-    JButton runButton;
-
-    boolean isComputing = false;
-    
+   
     
     // ===================================================================
     // Implementation of the Plugin interface    
@@ -169,491 +99,584 @@ public class RegisterImagePair2D implements FramePlugin
     @Override
     public void run(ImagoFrame frame, String args)
     {
-        this.parentFrame = frame;
-        
-        // build control frame
-        this.pluginFrame = new JFrame("Simple Registration");
-        if (parentFrame != null)
-        {
-            Point pos = parentFrame.getWidget().getLocation();
-            this.pluginFrame.setLocation(pos.x + 30, pos.y + 20);
-        }
-        
-        // create frame
-        initWidgets();
-        setupLayout(pluginFrame);
-        setupMenu(pluginFrame);
-        
-        updateInputImages();
-        
-        pluginFrame.pack();
-        pluginFrame.setVisible(true);
+        RegistrationFrame regFrame = new RegistrationFrame(frame, args);
+        regFrame.setVisible(true);
     }
     
-
-    // ====================================================
-    // Main processing methods
- 
-    /**
-     * The main processing method. It applies several processing steps:
-     * <ul>
-     * <li> Retrieve input arguments </li>
-     * <li> Compute the transform </li>
-     * <li> Apply transform to moving image</li>
-     * <li> Compute result image showing result</li>
-     * </ul>
-     */
-    private void runRegistration()
+    
+    // ===================================================================
+    // Encapsulate the logic of parameter settings within a specific frame
+    
+    static class RegistrationFrame
     {
-        updateInputImages();
-        
-        // need to update transform after updating images (to compute center)
-        updateTransform();
-        
-        // avoid running heavy computation many times
-        if (!isComputing)
+        // ===================================================================
+        // Class properties
+
+        ImagoFrame parentFrame;
+
+        Image refImage;
+
+        Image movingImage;
+
+        ScalarArray.Factory<?> outputArrayFactory = UInt8Array.defaultFactory;
+
+        DisplayType displayType = DisplayType.MAGENTA_GREEN;
+
+        /** the translation vector (in pixels) */
+        double xShift = 0.0;
+        double yShift = 0.0;
+
+        /** rotation angle (degrees) */
+        double rotationAngle = 0.0;
+
+        /** binary logarithm of the scaling factor (for Similarity transform) */
+        double logScaling = 0.0;
+
+        boolean validParams = true;
+
+        /** The transform model from reference space to moving image space */
+        Transform2D transform = new TranslationModel2D();
+
+        /** The reference image displayed in the new basis */
+        Image registeredImage1;
+
+        /** The result of the transform applied on the moving image */
+        Image registeredImage2;
+
+        SingleImageDisplayFrame resultImageFrame = null;
+
+        Image resultImage = null;
+
+        JFrame pluginFrame = null;
+
+        JFileChooser saveWindow = null;
+
+        // ----------------------------------------------------
+        // GUI Widgets
+
+        JComboBox<String> imageNames1Combo;
+        JComboBox<String> imageNames2Combo;
+
+        JComboBox<String> transformModelCombo;
+
+        NumericValueTextField outputSizeXWidget;
+        NumericValueTextField outputSizeYWidget;
+        JComboBox<DisplayType> displayTypeCombo;
+        JComboBox<String> outputTypeCombo;
+
+        JLabel xShiftLabel;
+        NumericValueTextIncDecWidget xShiftWidget;
+        JLabel yShiftLabel;
+        NumericValueTextIncDecWidget yShiftWidget;
+        JLabel rotationAngleLabel;
+        NumericValueTextIncDecWidget rotationAngleWidget;
+        JLabel logScalingLabel;
+        NumericValueTextIncDecWidget logScalingWidget;
+
+        JCheckBox autoUpdateCheckBox;
+        JButton runButton;
+
+        boolean isComputing = false;
+
+        public RegistrationFrame(ImagoFrame frame, String args)
         {
-            isComputing = true;
-            updateResultImage();
-            updateResultDisplay();
+            this.parentFrame = frame;
+
+            // build control frame
+            this.pluginFrame = new JFrame("Simple Registration");
+            if (parentFrame != null)
+            {
+                Point pos = parentFrame.getWidget().getLocation();
+                this.pluginFrame.setLocation(pos.x + 30, pos.y + 20);
+            }
+
+            // create frame
+            initWidgets();
+            setupLayout(pluginFrame);
+            setupMenu(pluginFrame);
+
+            updateInputImages();
+
+            pluginFrame.pack();
+            pluginFrame.setVisible(true);
             isComputing = false;
         }
-    }
-    
-    private void updateInputImages()
-    {
-        // retrieve name of images
-        String imageName1 = (String) this.imageNames1Combo.getSelectedItem();
-        String imageName2 = (String) this.imageNames2Combo.getSelectedItem();
-        
-        // retrieve image data
-        ImagoApp app = this.parentFrame.getGui().getAppli();
-        this.refImage = ImageHandle.findFromName(app, imageName1).getImage();
-        this.movingImage = ImageHandle.findFromName(app, imageName2).getImage();
-    }
-    
-    public void updateTransform()
-    {
-        // pre-compute center
-        double sizeX = this.movingImage.getSize(0);
-        double sizeY = this.movingImage.getSize(1);
-        Point2D center = new Point2D(sizeX / 2, sizeY / 2);
-        
-        // parse translation vector
-        this.xShift = xShiftWidget.getValue();
-        this.yShift = yShiftWidget.getValue();
-        
-        // parse rotation angle (degrees)
-        if (this.transformModelCombo.getSelectedIndex() > 0)
-        {
-            this.rotationAngle = rotationAngleWidget.getValue();
-        }
 
-        // parse scaling factor
-        if (this.transformModelCombo.getSelectedIndex() > 1)
-        {
-            this.logScaling = logScalingWidget.getValue();
-        }
+        // ====================================================
+        // Main processing methods
 
-        int transfoIndex = this.transformModelCombo.getSelectedIndex();
-        this.transform = switch (transfoIndex)
+        /**
+         * The main processing method. It applies several processing steps:
+         * <ul>
+         * <li>Retrieve input arguments</li>
+         * <li>Compute the transform</li>
+         * <li>Apply transform to moving image</li>
+         * <li>Compute result image showing result</li>
+         * </ul>
+         */
+        private void runRegistration()
         {
-            case 0 -> new TranslationModel2D(this.xShift, this.yShift);
-            case 1 -> new CenteredMotion2D(center, this.rotationAngle, this.xShift, this.yShift);
-            case 2 -> new CenteredSimilarity2D(center, this.logScaling, this.rotationAngle, this.xShift, this.yShift);
-            default -> throw new RuntimeException(
-                    "This transformation is not implemented: " + this.transform.getClass().getName());
-        };
-    }
+            updateInputImages();
 
-    /**
-     * Creates a new empty result image from the two input images.
-     */
-    public void updateResultImage()
-    {
-        // apply transform on fixed image
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        ScalarArray2D<?> ref2d = ScalarArray2D.wrap(ScalarArray.wrap((Array<Scalar>) refImage.getData()));
-        TransformedImage2D tim1 = new TransformedImage2D(new LinearInterpolatedArray2D(ref2d, Double.NaN), AffineTransform2D.IDENTITY);
-        
-        // apply transform on moving image
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        ScalarArray2D<?> moving2d = ScalarArray2D.wrap(ScalarArray.wrap((Array<Scalar>) movingImage.getData()));
-        TransformedImage2D tim2 = new TransformedImage2D(new LinearInterpolatedArray2D(moving2d, Double.NaN), transform);
-        
-        FunctionPairRenderer2D compositer = createCompositer();
+            // need to update transform after updating images (to compute
+            // center)
+            updateTransform();
 
-        Array<?> resultArray = compositer.combine(tim1, tim2);
-        this.resultImage = new Image(resultArray, refImage);
-    }
-    
-    private FunctionPairRenderer2D createCompositer()
-    {
-        int sizeX = (int) outputSizeXWidget.getValue();
-        int sizeY = (int) outputSizeYWidget.getValue();
-        
-        return switch (displayType)
-        {
-            case MAGENTA_GREEN -> new FunctionPairRenderer2D.MagentaGreen(sizeX, sizeY);
-            case MAX_INTENSITY -> new FunctionPairRenderer2D.MaxIntensity(sizeX, sizeY, outputArrayFactory);
-            case AVERAGE -> new FunctionPairRenderer2D.AverageIntensity(sizeX, sizeY, outputArrayFactory);
-            case DIFFERENCE -> new FunctionPairRenderer2D.Difference(sizeX, sizeY, outputArrayFactory);
-            case ABSOLUTE_DIFFERENCE -> new FunctionPairRenderer2D.AbsoluteDifference(sizeX, sizeY, outputArrayFactory);
-            case SUM -> new FunctionPairRenderer2D.IntensitySum(sizeX, sizeY, outputArrayFactory);
-            case CHECKERBOARD -> new FunctionPairRenderer2D.CheckerBoard(sizeX, sizeY, outputArrayFactory);
-            default -> throw new IllegalArgumentException("Unexpected value: " + displayType);
-        };
-    }
-    
-    /**
-     * Updates the current display of result, by combining the result of
-     * registration with the reference image.
-     */
-    public void updateResultDisplay()
-    {
-        if (resultImageFrame == null)
-        {
-            createResultImageFrame();
-        } 
-        else
-        {
-            SingleImageViewer viewer = this.resultImageFrame.getViewer();
-            viewer.setImage(resultImage);
-            viewer.refreshDisplay();
-            this.resultImageFrame.repaint();
-        }
-    }
-    
-    private void createResultImageFrame()
-    {
-        this.resultImageFrame = SingleImageDisplayFrame.create(resultImage, this.parentFrame);
-        this.resultImageFrame.getWidget().addWindowListener(new WindowAdapter()
-        {
-            @Override
-            public void windowClosing(WindowEvent evt)
+            // avoid running heavy computation many times
+            if (!isComputing)
             {
-                RegisterImagePair2D.this.resultImageFrame = null;
-            }           
-        });
-    }
-    
-    /**
-     * Callback for the creating a composite image.
-     */
-    private void onCreateComboImage()
-    {
-        updateResultImage();
-        updateResultDisplay();
-        
-        Image res = this.resultImageFrame.getViewer().getImage();
-        res.setName(movingImage.getName() + "regCompo");
-        ImageFrame.create(res, parentFrame);
-    }
-    
-    private void onCreateRegisteredImage1Frame()
-    {
-        // apply transform on fixed image
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        ScalarArray2D<?> ref2d = ScalarArray2D.wrap(ScalarArray.wrap((Array<Scalar>) refImage.getData()));
-        TransformedImage2D tim1 = new TransformedImage2D(new LinearInterpolatedArray2D(ref2d, Double.NaN), AffineTransform2D.IDENTITY);
-        
-        // consider an "empty" moving image
-        ScalarFunction2D tim2 = (x,y) -> Double.NaN;
-
-        FunctionPairRenderer2D compositer = createCompositer();
-
-        Array<?> resultArray = compositer.combine(tim1, tim2);
-        Image resImage = new Image(resultArray, refImage);
-        ImageFrame.create(resImage, parentFrame);
-    }
-    
-    private void onCreateRegisteredImage2Frame()
-    {
-        // consider an "empty" fixed image
-        ScalarFunction2D tim1 = (x,y) -> Double.NaN;
-
-        // apply transform on moving image
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        ScalarArray2D<?> moving2d = ScalarArray2D.wrap(ScalarArray.wrap((Array<Scalar>) movingImage.getData()));
-        TransformedImage2D tim2 = new TransformedImage2D(new LinearInterpolatedArray2D(moving2d, Double.NaN), transform);
-        
-        FunctionPairRenderer2D compositer = createCompositer();
-
-        Array<?> resultArray = compositer.combine(tim1, tim2);
-        Image resImage = new Image(resultArray, refImage);
-        ImageFrame.create(resImage, parentFrame);
-    }
-    
-    /**
-     * Callback for the "Save Registration" menu item.
-     */
-    private void onSaveRegistration()
-    {
-        // create file dialog using last save path
-        String pattern = "register_%s_to_%s.json";
-        String defaultName = String.format(pattern, movingImage.getName(), refImage.getName());
-        JFileChooser saveWindow = new JFileChooser(new File(defaultName));
-        saveWindow.setDialogTitle("Save Registration Data");
-        FileFilter jsonFileFilter = new FileNameExtensionFilter("JSON files (*.json)", "json");
-        saveWindow.addChoosableFileFilter(jsonFileFilter);
-        saveWindow.addChoosableFileFilter(new FileNameExtensionFilter("All files (*.*)", "*"));
-        saveWindow.setFileFilter(jsonFileFilter);
-
-        // Open dialog to choose the file
-        int ret = saveWindow.showSaveDialog(pluginFrame);
-        if (ret != JFileChooser.APPROVE_OPTION) 
-        {
-            return;
+                isComputing = true;
+                updateResultImage();
+                updateResultDisplay();
+                isComputing = false;
+            }
         }
 
-        // Check the chosen file is valid
-        File file = saveWindow.getSelectedFile();
-        if (!file.getName().endsWith(".json"))
+        private void updateInputImages()
         {
-            File parent = file.getParentFile();
-            file = new File(parent, file.getName() + ".json");
+            // retrieve name of images
+            String imageName1 = (String) this.imageNames1Combo.getSelectedItem();
+            String imageName2 = (String) this.imageNames2Combo.getSelectedItem();
+
+            // retrieve image data
+            ImagoApp app = this.parentFrame.getGui().getAppli();
+            this.refImage = ImageHandle.findFromName(app, imageName1).getImage();
+            this.movingImage = ImageHandle.findFromName(app, imageName2).getImage();
         }
-        
-        try 
+
+        public void updateTransform()
         {
-            // open a text file to write JSON data
-            FileWriter fileWriter = new FileWriter(file.getAbsoluteFile());
-            JsonWriter jsonWriter = new JsonWriter(new PrintWriter(fileWriter));
-            jsonWriter.setIndent("  ");
+            // pre-compute center
+            double sizeX = this.movingImage.getSize(0);
+            double sizeY = this.movingImage.getSize(1);
+            Point2D center = new Point2D(sizeX / 2, sizeY / 2);
+
+            // parse translation vector
+            this.xShift = xShiftWidget.getValue();
+            this.yShift = yShiftWidget.getValue();
+
+            // parse rotation angle (degrees)
+            if (this.transformModelCombo.getSelectedIndex() > 0)
+            {
+                this.rotationAngle = rotationAngleWidget.getValue();
+            }
+
+            // parse scaling factor
+            if (this.transformModelCombo.getSelectedIndex() > 1)
+            {
+                this.logScaling = logScalingWidget.getValue();
+            }
+
+            int transfoIndex = this.transformModelCombo.getSelectedIndex();
+            this.transform = switch (transfoIndex)
+            {
+                case 0 -> new TranslationModel2D(this.xShift, this.yShift);
+                case 1 -> new CenteredMotion2D(center, this.rotationAngle, this.xShift, this.yShift);
+                case 2 -> new CenteredSimilarity2D(center, this.logScaling, this.rotationAngle,
+                        this.xShift, this.yShift);
+                default -> throw new RuntimeException("This transformation is not implemented: "
+                        + this.transform.getClass().getName());
+            };
+        }
+
+        /**
+         * Creates a new empty result image from the two input images.
+         */
+        public void updateResultImage()
+        {
+            // apply transform on fixed image
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            ScalarArray2D<?> ref2d = ScalarArray2D
+                    .wrap(ScalarArray.wrap((Array<Scalar>) refImage.getData()));
+            TransformedImage2D tim1 = new TransformedImage2D(
+                    new LinearInterpolatedArray2D(ref2d, Double.NaN), AffineTransform2D.IDENTITY);
+
+            // apply transform on moving image
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            ScalarArray2D<?> moving2d = ScalarArray2D
+                    .wrap(ScalarArray.wrap((Array<Scalar>) movingImage.getData()));
+            TransformedImage2D tim2 = new TransformedImage2D(
+                    new LinearInterpolatedArray2D(moving2d, Double.NaN), transform);
+
+            this.resultImage = createCompositeImage(tim1, tim2);
+        }
+
+        private Image createCompositeImage(ScalarFunction2D tim1, ScalarFunction2D tim2)
+        {
+            int sizeX = (int) outputSizeXWidget.getValue();
+            int sizeY = (int) outputSizeYWidget.getValue();
+
+            FunctionPairRenderer2D compositer = switch (displayType)
+            {
+                case MAGENTA_GREEN -> new FunctionPairRenderer2D.MagentaGreen(sizeX, sizeY);
+                case MAX_INTENSITY -> new FunctionPairRenderer2D.MaxIntensity(sizeX, sizeY, outputArrayFactory);
+                case AVERAGE -> new FunctionPairRenderer2D.AverageIntensity(sizeX, sizeY, outputArrayFactory);
+                case DIFFERENCE -> new FunctionPairRenderer2D.Difference(sizeX, sizeY, outputArrayFactory);
+                case ABSOLUTE_DIFFERENCE -> new FunctionPairRenderer2D.AbsoluteDifference(sizeX, sizeY, outputArrayFactory);
+                case SUM -> new FunctionPairRenderer2D.IntensitySum(sizeX, sizeY, outputArrayFactory);
+                case CHECKERBOARD -> new FunctionPairRenderer2D.CheckerBoard(sizeX, sizeY, outputArrayFactory);
+                default -> throw new IllegalArgumentException("Unexpected value: " + displayType);
+            };
             
-            // wrap into a Registration writer
-            JsonRegistrationWriter writer = new JsonRegistrationWriter(jsonWriter);
-            writer.writeRegistrationInfo(refImage, movingImage, transform);
-
-            fileWriter.close();
-       }
-        catch (IOException ex)
-        {
-            throw new RuntimeException(ex);
+            Array<?> resultArray = compositer.combine(tim1, tim2);
+            return new Image(resultArray, refImage);
         }
-    }
 
-
-    // ===================================================================
-    // Implementation of the Plugin interface    
-
-    private void initWidgets()
-    {
-        ImagoApp app = this.parentFrame.getGui().getAppli();
-        String[] imageNames = ImageHandle.getAllNames(app).toArray(new String[]{});
-        this.imageNames1Combo = new JComboBox<String>(imageNames);
-        this.imageNames1Combo.addItemListener(evt -> {
-            if (evt.getStateChange() == ItemEvent.SELECTED)
-            {
-                updateInputImages();
-                if (this.autoUpdateCheckBox.isSelected()) runRegistration();
-            }
-        });
-        this.imageNames2Combo = new JComboBox<String>(imageNames);
-        this.imageNames2Combo.addItemListener(evt -> {
-            if (evt.getStateChange() == ItemEvent.SELECTED)
-            {
-                updateInputImages();
-                if (this.autoUpdateCheckBox.isSelected()) runRegistration();
-            }
-        });
-        
-        // use first image to compute default size of result image
-        ImageFrame sampleImageFrame = ImageFrame.getImageFrame(this.parentFrame.getGui(), imageNames[0]); 
-        Image sampleImage = sampleImageFrame.getImageHandle().getImage();
-        int defaultSizeX = sampleImage.getSize(0);
-        int defaultSizeY = sampleImage.getSize(1);
-        
-        this.outputSizeXWidget = new NumericValueTextField(defaultSizeX, 0);
-        this.outputSizeXWidget.addWidgetListener(evt -> {
-            if (this.autoUpdateCheckBox.isSelected())
-            {
-                runRegistration();
-            }
-        });
-        this.outputSizeYWidget = new NumericValueTextField(defaultSizeY, 0);
-        this.outputSizeYWidget.addWidgetListener(evt -> {
-            if (this.autoUpdateCheckBox.isSelected())
-            {
-                runRegistration();
-            }
-        });
-        
-        // create widget for choosing composite type
-        DisplayType[] items = EnumSet.allOf(DisplayType.class).toArray(new DisplayType[] {});
-        displayTypeCombo = new JComboBox<DisplayType>(items);
-        displayTypeCombo.setSelectedItem(DisplayType.MAGENTA_GREEN);
-        displayTypeCombo.addItemListener(evt ->
+        /**
+         * Updates the current display of result, by combining the result of
+         * registration with the reference image.
+         */
+        public void updateResultDisplay()
         {
-            if (evt.getStateChange() != ItemEvent.SELECTED) return;
-            this.displayType = (DisplayType) evt.getItem();
+            if (resultImageFrame == null)
+            {
+                createResultImageFrame();
+            }
+            else
+            {
+                SingleImageViewer viewer = this.resultImageFrame.getViewer();
+                viewer.setImage(resultImage);
+                viewer.refreshDisplay();
+                this.resultImageFrame.repaint();
+            }
+        }
+
+        private void createResultImageFrame()
+        {
+            this.resultImageFrame = SingleImageDisplayFrame.create(resultImage, this.parentFrame);
+            this.resultImageFrame.getWidget().addWindowListener(new WindowAdapter()
+            {
+                @Override
+                public void windowClosing(WindowEvent evt)
+                {
+                    RegistrationFrame.this.resultImageFrame = null;
+                }
+            });
+        }
+        
+        public void setVisible(boolean b)
+        {
+            if  (pluginFrame != null)
+            {
+                pluginFrame.setVisible(b);
+                if (resultImageFrame != null)
+                {
+                    resultImageFrame.setVisible(b);
+                }
+            }
+        }
+
+        /**
+         * Callback for the creating a composite image.
+         */
+        private void onCreateComboImage()
+        {
             updateResultImage();
             updateResultDisplay();
-        });
 
-        // create widget for choosing data type of result image
-        String[] outputTypes = new String[] {"UInt8", "Float32"};
-        outputTypeCombo = new JComboBox<String>(outputTypes);
-        outputTypeCombo.setSelectedItem(outputTypes[0]);
-        outputTypeCombo.addItemListener(evt ->
+            Image res = this.resultImageFrame.getViewer().getImage();
+            res.setName(movingImage.getName() + "regCompo");
+            ImageFrame.create(res, parentFrame);
+        }
+
+        private void onCreateRegisteredImage1Frame()
         {
-            if (evt.getStateChange() != ItemEvent.SELECTED) return;
-            this.outputArrayFactory = switch (outputTypeCombo.getSelectedIndex())
+            // apply transform on fixed image
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            ScalarArray2D<?> ref2d = ScalarArray2D
+                    .wrap(ScalarArray.wrap((Array<Scalar>) refImage.getData()));
+            TransformedImage2D tim1 = new TransformedImage2D(
+                    new LinearInterpolatedArray2D(ref2d, Double.NaN), AffineTransform2D.IDENTITY);
+
+            // consider an "empty" moving image
+            ScalarFunction2D tim2 = (x, y) -> Double.NaN;
+
+            Image resImage = createCompositeImage(tim1, tim2);
+            ImageFrame.create(resImage, parentFrame);
+        }
+
+        private void onCreateRegisteredImage2Frame()
+        {
+            // consider an "empty" fixed image
+            ScalarFunction2D tim1 = (x, y) -> Double.NaN;
+
+            // apply transform on moving image
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            ScalarArray2D<?> moving2d = ScalarArray2D
+                    .wrap(ScalarArray.wrap((Array<Scalar>) movingImage.getData()));
+            TransformedImage2D tim2 = new TransformedImage2D(
+                    new LinearInterpolatedArray2D(moving2d, Double.NaN), transform);
+
+            Image resImage = createCompositeImage(tim1, tim2);
+            ImageFrame.create(resImage, parentFrame);
+        }
+        
+        /**
+         * Callback for the "Save Registration" menu item.
+         */
+        private void onSaveRegistration()
+        {
+            // create file dialog using last save path
+            String pattern = "register_%s_to_%s.json";
+            String defaultName = String.format(pattern, movingImage.getName(), refImage.getName());
+            JFileChooser saveWindow = new JFileChooser(new File(defaultName));
+            saveWindow.setDialogTitle("Save Registration Data");
+            FileFilter jsonFileFilter = new FileNameExtensionFilter("JSON files (*.json)", "json");
+            saveWindow.addChoosableFileFilter(jsonFileFilter);
+            saveWindow.addChoosableFileFilter(new FileNameExtensionFilter("All files (*.*)", "*"));
+            saveWindow.setFileFilter(jsonFileFilter);
+
+            // Open dialog to choose the file
+            int ret = saveWindow.showSaveDialog(pluginFrame);
+            if (ret != JFileChooser.APPROVE_OPTION)
+            { return; }
+
+            // Check the chosen file is valid
+            File file = saveWindow.getSelectedFile();
+            if (!file.getName().endsWith(".json"))
             {
-                case 0 -> UInt8Array.defaultFactory;
-                case 1 -> Float32Array.defaultFactory;
-                default -> {
-                    throw new RuntimeException(
-                            "Unknonw value for output type: " + outputTypeCombo.getSelectedItem());
+                File parent = file.getParentFile();
+                file = new File(parent, file.getName() + ".json");
+            }
+
+            try
+            {
+                // open a text file to write JSON data
+                FileWriter fileWriter = new FileWriter(file.getAbsoluteFile());
+                JsonWriter jsonWriter = new JsonWriter(new PrintWriter(fileWriter));
+                jsonWriter.setIndent("  ");
+
+                // wrap into a Registration writer
+                JsonRegistrationWriter writer = new JsonRegistrationWriter(jsonWriter);
+                writer.writeRegistrationInfo(refImage, movingImage, transform);
+
+                fileWriter.close();
+            }
+            catch (IOException ex)
+            {
+                throw new RuntimeException(ex);
+            }
+        }
+
+        // ===================================================================
+        // Implementation of the Plugin interface
+
+        private void initWidgets()
+        {
+            ImagoApp app = this.parentFrame.getGui().getAppli();
+            String[] imageNames = ImageHandle.getAllNames(app).toArray(new String[] {});
+            this.imageNames1Combo = new JComboBox<String>(imageNames);
+            this.imageNames1Combo.addItemListener(evt -> {
+                if (evt.getStateChange() == ItemEvent.SELECTED)
+                {
+                    updateInputImages();
+                    if (this.autoUpdateCheckBox.isSelected()) runRegistration();
+                }
+            });
+            this.imageNames2Combo = new JComboBox<String>(imageNames);
+            this.imageNames2Combo.addItemListener(evt -> {
+                if (evt.getStateChange() == ItemEvent.SELECTED)
+                {
+                    updateInputImages();
+                    if (this.autoUpdateCheckBox.isSelected()) runRegistration();
+                }
+            });
+
+            // use first image to compute default size of result image
+            ImageFrame sampleImageFrame = ImageFrame.getImageFrame(this.parentFrame.getGui(),
+                    imageNames[0]);
+            Image sampleImage = sampleImageFrame.getImageHandle().getImage();
+            int defaultSizeX = sampleImage.getSize(0);
+            int defaultSizeY = sampleImage.getSize(1);
+
+            this.outputSizeXWidget = new NumericValueTextField(defaultSizeX, 0);
+            this.outputSizeXWidget.addWidgetListener(evt -> {
+                if (this.autoUpdateCheckBox.isSelected())
+                {
+                    runRegistration();
+                }
+            });
+            this.outputSizeYWidget = new NumericValueTextField(defaultSizeY, 0);
+            this.outputSizeYWidget.addWidgetListener(evt -> {
+                if (this.autoUpdateCheckBox.isSelected())
+                {
+                    runRegistration();
+                }
+            });
+
+            // create widget for choosing composite type
+            DisplayType[] items = EnumSet.allOf(DisplayType.class).toArray(new DisplayType[] {});
+            displayTypeCombo = new JComboBox<DisplayType>(items);
+            displayTypeCombo.setSelectedItem(DisplayType.MAGENTA_GREEN);
+            displayTypeCombo.addItemListener(evt -> {
+                if (evt.getStateChange() != ItemEvent.SELECTED) return;
+                this.displayType = (DisplayType) evt.getItem();
+                updateResultImage();
+                updateResultDisplay();
+            });
+
+            // create widget for choosing data type of result image
+            String[] outputTypes = new String[] { "UInt8", "Float32" };
+            outputTypeCombo = new JComboBox<String>(outputTypes);
+            outputTypeCombo.setSelectedItem(outputTypes[0]);
+            outputTypeCombo.addItemListener(evt -> {
+                if (evt.getStateChange() != ItemEvent.SELECTED) return;
+                this.outputArrayFactory = switch (outputTypeCombo.getSelectedIndex())
+                {
+                    case 0 -> UInt8Array.defaultFactory;
+                    case 1 -> Float32Array.defaultFactory;
+                    default -> {
+                        throw new RuntimeException("Unknonw value for output type: "
+                                + outputTypeCombo.getSelectedItem());
+                    }
+                };
+                updateResultImage();
+                updateResultDisplay();
+            });
+
+            this.transformModelCombo = new JComboBox<String>();
+            this.transformModelCombo.addItem("Translation");
+            this.transformModelCombo.addItem("Motion (Trans.+Rot.)");
+            this.transformModelCombo.addItem("Similarity (Trans.+Rot.+Scal.)");
+            this.transformModelCombo.addItemListener(evt -> {
+                if (evt.getStateChange() == ItemEvent.SELECTED)
+                {
+                    updateEnabledRegistrationWidgets();
+                    if (this.autoUpdateCheckBox.isSelected()) runRegistration();
+                }
+            });
+
+            WidgetListener listener = evt -> {
+                if (this.autoUpdateCheckBox.isSelected())
+                {
+                    runRegistration();
                 }
             };
-            updateResultImage();
-            updateResultDisplay();
-        });
+            this.xShiftLabel = new JLabel("Shift X (pixels):");
+            this.xShiftWidget = new NumericValueTextIncDecWidget(0.0, 1.0);
+            this.xShiftWidget.addWidgetListener(listener);
 
-        this.transformModelCombo = new JComboBox<String>();
-        this.transformModelCombo.addItem("Translation");
-        this.transformModelCombo.addItem("Motion (Trans.+Rot.)");
-        this.transformModelCombo.addItem("Similarity (Trans.+Rot.+Scal.)");
-        this.transformModelCombo.addItemListener(evt -> {
-            if (evt.getStateChange() == ItemEvent.SELECTED) 
-            {
-                updateEnabledRegistrationWidgets();
-                if (this.autoUpdateCheckBox.isSelected()) runRegistration();
-            }
-        });
-        
-        WidgetListener listener = evt -> {
-            if (this.autoUpdateCheckBox.isSelected())
-            {
-                runRegistration();
-            }
-        };
-        this.xShiftLabel = new JLabel("Shift X (pixels):");
-        this.xShiftWidget = new NumericValueTextIncDecWidget(0.0, 1.0);
-        this.xShiftWidget.addWidgetListener(listener);
+            this.yShiftLabel = new JLabel("Shift Y (pixels):");
+            this.yShiftWidget = new NumericValueTextIncDecWidget(0.0, 1.0);
+            this.yShiftWidget.addWidgetListener(listener);
 
-        this.yShiftLabel = new JLabel("Shift Y (pixels):");
-        this.yShiftWidget = new NumericValueTextIncDecWidget(0.0, 1.0);
-        this.yShiftWidget.addWidgetListener(listener);
+            this.rotationAngleLabel = new JLabel("Rotation angle (degrees):");
+            this.rotationAngleWidget = new NumericValueTextIncDecWidget(0.0, 1.0);
+            this.rotationAngleWidget.addWidgetListener(listener);
 
-        this.rotationAngleLabel = new JLabel("Rotation angle (degrees):");
-        this.rotationAngleWidget = new NumericValueTextIncDecWidget(0.0, 1.0);
-        this.rotationAngleWidget.addWidgetListener(listener);
+            this.logScalingLabel = new JLabel("Log_2 of scaling factor:");
+            this.logScalingWidget = new NumericValueTextIncDecWidget(0.0, 0.01, 3);
+            this.logScalingWidget.addWidgetListener(listener);
 
-        this.logScalingLabel = new JLabel("Log_2 of scaling factor:");
-        this.logScalingWidget = new NumericValueTextIncDecWidget(0.0, 0.01, 3);
-        this.logScalingWidget.addWidgetListener(listener);
-        
-        this.autoUpdateCheckBox = new JCheckBox("Auto-Update", false);
-        this.autoUpdateCheckBox.addActionListener(evt -> runRegistration());
+            this.autoUpdateCheckBox = new JCheckBox("Auto-Update", false);
+            this.autoUpdateCheckBox.addActionListener(evt -> runRegistration());
 
-        this.runButton = new JButton("Run");
-        this.runButton.addActionListener(evt -> runRegistration());
-    }
-    
-    private void updateEnabledRegistrationWidgets()
-    {
-        if (transformModelCombo.getSelectedIndex() == 0)
-        {
-            this.rotationAngleLabel.setEnabled(false);
-            this.rotationAngleWidget.setEnabled(false);
-            this.logScalingLabel.setEnabled(false);
-            this.logScalingWidget.setEnabled(false);
+            this.runButton = new JButton("Run");
+            this.runButton.addActionListener(evt -> runRegistration());
         }
-        else if (transformModelCombo.getSelectedIndex() == 1)
-        {
-            this.rotationAngleLabel.setEnabled(true);
-            this.rotationAngleWidget.setEnabled(true);
-            this.logScalingLabel.setEnabled(false);
-            this.logScalingWidget.setEnabled(false);
-        }
-        else if (transformModelCombo.getSelectedIndex() == 2)
-        {
-            this.rotationAngleLabel.setEnabled(true);
-            this.rotationAngleWidget.setEnabled(true);
-            this.logScalingLabel.setEnabled(true);
-            this.logScalingWidget.setEnabled(true);
-        }
-    }
-    
-    private void setupLayout(JFrame frame)
-    {
-        JPanel mainPanel = new JPanel();
-        mainPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
-        
-        JPanel imagesPanel = GuiHelper.createOptionsPanel("Images");
-        imagesPanel.setLayout(new GridLayout(2, 2));
-        imagesPanel.add(new JLabel("Reference Image: "));
-        imagesPanel.add(this.imageNames1Combo);
-        imagesPanel.add(new JLabel("Moving Image: "));
-        imagesPanel.add(this.imageNames2Combo);
 
-        JPanel outputImagePanel = GuiHelper.createOptionsPanel("Output Image");
-        outputImagePanel.setLayout(new GridLayout(4, 2));
-        outputImagePanel.add(new JLabel("Size X: "));
-        outputImagePanel.add(outputSizeXWidget.getComponent());
-        outputImagePanel.add(new JLabel("Size Y: "));
-        outputImagePanel.add(outputSizeYWidget.getComponent());
-        outputImagePanel.add(new JLabel("Display Type: "));
-        outputImagePanel.add(displayTypeCombo);
-        outputImagePanel.add(new JLabel("Output Data Type: "));
-        outputImagePanel.add(outputTypeCombo);
-
-        JPanel registrationPanel = GuiHelper.createOptionsPanel("Registration");
-        registrationPanel.setLayout(new GridLayout(5, 2));
-        registrationPanel.add(new JLabel("Registration Type:"));
-        registrationPanel.add(transformModelCombo);
-        registrationPanel.add(xShiftLabel);
-        registrationPanel.add(xShiftWidget.getComponent());
-        registrationPanel.add(yShiftLabel);
-        registrationPanel.add(yShiftWidget.getComponent());
-        registrationPanel.add(rotationAngleLabel);
-        registrationPanel.add(rotationAngleWidget.getComponent());
-        registrationPanel.add(logScalingLabel);
-        registrationPanel.add(logScalingWidget.getComponent());
-        updateEnabledRegistrationWidgets();
-        
-        mainPanel.add(imagesPanel);
-        mainPanel.add(outputImagePanel);
-        mainPanel.add(registrationPanel);
-         
-        GuiHelper.addInLine(mainPanel, FlowLayout.CENTER, autoUpdateCheckBox, runButton);
-        
-        frame.setLayout(new BorderLayout());
-        frame.add(mainPanel, BorderLayout.CENTER);
-    }
-    
-    private void setupMenu(JFrame frame)
-    {
-        // init menu items
-        
-        JMenuBar menuBar = new JMenuBar();
-        JMenu fileMenu = new JMenu("File");
-        addMenuItem(fileMenu, "Display Registered Image 1", evt -> onCreateRegisteredImage1Frame());
-        addMenuItem(fileMenu, "Display Registered Image 2", evt -> onCreateRegisteredImage2Frame());
-        addMenuItem(fileMenu, "Create Registration Composite Image", evt -> onCreateComboImage());
-        fileMenu.addSeparator();
-        addMenuItem(fileMenu, "Save Registration...", evt -> onSaveRegistration());
-        fileMenu.addSeparator();
-        addMenuItem(fileMenu, "Close", evt -> 
+        private void updateEnabledRegistrationWidgets()
         {
-            if (this.resultImageFrame != null)
+            switch (transformModelCombo.getSelectedIndex())
             {
-                this.resultImageFrame.close();
-            }
-            this.pluginFrame.dispose();
-        });
-        menuBar.add(fileMenu);
-        
-        frame.setJMenuBar(menuBar);
-    }
-    
-    private void addMenuItem(JMenu menu, String label, ActionListener listener)
-    {
-        JMenuItem item = new JMenuItem(label);
-        item.addActionListener(listener);
-        menu.add(item);
+                case 0 -> {
+                    this.rotationAngleLabel.setEnabled(false);
+                    this.rotationAngleWidget.setEnabled(false);
+                    this.logScalingLabel.setEnabled(false);
+                    this.logScalingWidget.setEnabled(false);
+                }
+                case 1 -> {
+                    this.rotationAngleLabel.setEnabled(true);
+                    this.rotationAngleWidget.setEnabled(true);
+                    this.logScalingLabel.setEnabled(false);
+                    this.logScalingWidget.setEnabled(false);
+                }
+                case 2 -> {
+                    this.rotationAngleLabel.setEnabled(true);
+                    this.rotationAngleWidget.setEnabled(true);
+                    this.logScalingLabel.setEnabled(true);
+                    this.logScalingWidget.setEnabled(true);
+                }
+            };
+        }
+
+        private void setupLayout(JFrame frame)
+        {
+            JPanel mainPanel = new JPanel();
+            mainPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+            mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
+
+            JPanel imagesPanel = GuiHelper.createOptionsPanel("Images");
+            imagesPanel.setLayout(new GridLayout(2, 2));
+            imagesPanel.add(new JLabel("Reference Image: "));
+            imagesPanel.add(this.imageNames1Combo);
+            imagesPanel.add(new JLabel("Moving Image: "));
+            imagesPanel.add(this.imageNames2Combo);
+
+            JPanel outputImagePanel = GuiHelper.createOptionsPanel("Output Image");
+            outputImagePanel.setLayout(new GridLayout(4, 2));
+            outputImagePanel.add(new JLabel("Size X: "));
+            outputImagePanel.add(outputSizeXWidget.getComponent());
+            outputImagePanel.add(new JLabel("Size Y: "));
+            outputImagePanel.add(outputSizeYWidget.getComponent());
+            outputImagePanel.add(new JLabel("Display Type: "));
+            outputImagePanel.add(displayTypeCombo);
+            outputImagePanel.add(new JLabel("Output Data Type: "));
+            outputImagePanel.add(outputTypeCombo);
+
+            JPanel registrationPanel = GuiHelper.createOptionsPanel("Registration");
+            registrationPanel.setLayout(new GridLayout(5, 2));
+            registrationPanel.add(new JLabel("Registration Type:"));
+            registrationPanel.add(transformModelCombo);
+            registrationPanel.add(xShiftLabel);
+            registrationPanel.add(xShiftWidget.getComponent());
+            registrationPanel.add(yShiftLabel);
+            registrationPanel.add(yShiftWidget.getComponent());
+            registrationPanel.add(rotationAngleLabel);
+            registrationPanel.add(rotationAngleWidget.getComponent());
+            registrationPanel.add(logScalingLabel);
+            registrationPanel.add(logScalingWidget.getComponent());
+            updateEnabledRegistrationWidgets();
+
+            mainPanel.add(imagesPanel);
+            mainPanel.add(outputImagePanel);
+            mainPanel.add(registrationPanel);
+
+            GuiHelper.addInLine(mainPanel, FlowLayout.CENTER, autoUpdateCheckBox, runButton);
+
+            frame.setLayout(new BorderLayout());
+            frame.add(mainPanel, BorderLayout.CENTER);
+        }
+
+        private void setupMenu(JFrame frame)
+        {
+            // init menu items
+
+            JMenuBar menuBar = new JMenuBar();
+            JMenu fileMenu = new JMenu("File");
+            addMenuItem(fileMenu, "Display Registered Image 1", evt -> onCreateRegisteredImage1Frame());
+            addMenuItem(fileMenu, "Display Registered Image 2", evt -> onCreateRegisteredImage2Frame());
+            addMenuItem(fileMenu, "Create Registration Composite Image", evt -> onCreateComboImage());
+            fileMenu.addSeparator();
+            addMenuItem(fileMenu, "Save Registration...", evt -> onSaveRegistration());
+            fileMenu.addSeparator();
+            addMenuItem(fileMenu, "Close", evt -> {
+                if (this.resultImageFrame != null)
+                {
+                    this.resultImageFrame.close();
+                }
+                this.pluginFrame.dispose();
+            });
+            menuBar.add(fileMenu);
+
+            frame.setJMenuBar(menuBar);
+        }
+
+        private void addMenuItem(JMenu menu, String label, ActionListener listener)
+        {
+            JMenuItem item = new JMenuItem(label);
+            item.addActionListener(listener);
+            menu.add(item);
+        }
     }
 }
