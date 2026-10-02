@@ -12,9 +12,9 @@ import com.google.gson.stream.JsonReader;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.polygon2d.LineString2D;
-import net.sci.geom.polygon2d.LinearRing2D;
-import net.sci.geom.polygon2d.Polygon2D;
+import net.sci.geom.poly2d.LineString2D;
+import net.sci.geom.poly2d.LinearRing2D;
+import net.sci.geom.poly2d.Polygon2D;
 
 /**
  * Reads the content of a {@code Geometry} from a text file in JSON format.

@@ -19,8 +19,8 @@ import imago.shape.ShapeDrawer;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.polygon2d.PolygonalDomain2D;
-import net.sci.geom.polygon2d.Polyline2D;
+import net.sci.geom.poly2d.PolygonalDomain2D;
+import net.sci.geom.poly2d.Polyline2D;
 
 
 /**

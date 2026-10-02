@@ -35,9 +35,9 @@ import net.sci.geom.geom2d.curve.Ellipse2D;
 import net.sci.geom.geom2d.curve.MultiCurve2D;
 import net.sci.geom.graph.Graph2D;
 import net.sci.geom.mesh2d.Mesh2D;
-import net.sci.geom.polygon2d.LinearRing2D;
-import net.sci.geom.polygon2d.PolygonalDomain2D;
-import net.sci.geom.polygon2d.Polyline2D;
+import net.sci.geom.poly2d.LinearRing2D;
+import net.sci.geom.poly2d.PolygonalDomain2D;
+import net.sci.geom.poly2d.Polyline2D;
 
 /**
  * An helper class that draws geometric shapes or geometries onto a Graphics2D.

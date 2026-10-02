@@ -9,9 +9,9 @@ import imago.shape.ShapeManager;
 import imago.shape.plugins.ShapeManagerPlugin;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.PointShape2D;
-import net.sci.geom.polygon2d.Polygon2D;
-import net.sci.geom.polygon2d.Polygons2D;
-import net.sci.geom.polygon2d.Polyline2D;
+import net.sci.geom.poly2d.Polygon2D;
+import net.sci.geom.poly2d.Polygons2D;
+import net.sci.geom.poly2d.Polyline2D;
 
 /**
  * Computes the convex hull of of the selected geometry, and creates a new

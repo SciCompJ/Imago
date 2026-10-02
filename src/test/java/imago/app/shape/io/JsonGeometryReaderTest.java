@@ -14,8 +14,8 @@ import org.junit.jupiter.api.Test;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.polygon2d.LinearRing2D;
-import net.sci.geom.polygon2d.Polygon2D;
+import net.sci.geom.poly2d.LinearRing2D;
+import net.sci.geom.poly2d.Polygon2D;
 
 /**
  * 

@@ -15,8 +15,8 @@ import imago.image.viewers.XYImageViewer;
 import net.sci.geom.geom2d.AffineTransform2D;
 import net.sci.geom.geom2d.Point2D;
 import net.sci.geom.geom2d.Vector2D;
-import net.sci.geom.polygon2d.DefaultPolygon2D;
-import net.sci.geom.polygon2d.Polygon2D;
+import net.sci.geom.poly2d.DefaultPolygon2D;
+import net.sci.geom.poly2d.Polygon2D;
 
 /**
  * Select a polygon region of interest on a planar viewer.

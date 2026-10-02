@@ -10,7 +10,7 @@ import imago.image.ImageFrame;
 import imago.image.ImageTool;
 import imago.image.viewers.ImageDisplay;
 import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.polygon2d.Box2D;
+import net.sci.geom.poly2d.Box2D;
 
 /**
  * Select a rectangular box on current viewer. Can be used for slice viewer of

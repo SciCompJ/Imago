@@ -15,8 +15,8 @@ import com.google.gson.stream.JsonWriter;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.polygon2d.Polygon2D;
-import net.sci.geom.polygon2d.Polyline2D;
+import net.sci.geom.poly2d.Polygon2D;
+import net.sci.geom.poly2d.Polyline2D;
 
 /**
  * Writes an instance of {@code Geometry} into a text file using the JSON

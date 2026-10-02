@@ -16,7 +16,7 @@ import imago.image.ImageHandle;
 import imago.table.TableFrame;
 import net.sci.array.Array;
 import net.sci.array.numeric.IntArray2D;
-import net.sci.geom.polygon2d.OrientedBox2D;
+import net.sci.geom.poly2d.OrientedBox2D;
 import net.sci.image.Calibration;
 import net.sci.image.Image;
 import net.sci.image.analyze.RegionAnalyzer;

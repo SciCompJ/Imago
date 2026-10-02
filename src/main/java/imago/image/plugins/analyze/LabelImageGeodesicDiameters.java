@@ -13,7 +13,7 @@ import imago.image.ImageHandle;
 import imago.table.TableFrame;
 import net.sci.array.Array;
 import net.sci.array.numeric.IntArray2D;
-import net.sci.geom.polygon2d.Polyline2D;
+import net.sci.geom.poly2d.Polyline2D;
 import net.sci.image.Image;
 import net.sci.image.analyze.region2d.GeodesicDiameter;
 import net.sci.image.binary.distmap.ChamferMask2D;

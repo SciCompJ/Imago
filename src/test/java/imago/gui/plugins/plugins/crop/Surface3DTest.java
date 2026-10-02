@@ -21,7 +21,7 @@ import imago.app.scene.Node;
 import imago.app.scene.ShapeNode;
 import imago.app.scene.io.JsonSceneReader;
 import net.sci.geom.Geometry;
-import net.sci.geom.polygon2d.Polyline2D;
+import net.sci.geom.poly2d.Polyline2D;
 
 /**
  * @author dlegland

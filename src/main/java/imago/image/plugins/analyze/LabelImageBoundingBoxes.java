@@ -19,7 +19,7 @@ import net.sci.array.numeric.IntArray2D;
 import net.sci.array.numeric.IntArray3D;
 import net.sci.geom.geom2d.Bounds2D;
 import net.sci.geom.geom3d.Bounds3D;
-import net.sci.geom.polygon2d.Polygon2D;
+import net.sci.geom.poly2d.Polygon2D;
 import net.sci.image.Calibration;
 import net.sci.image.Image;
 import net.sci.image.analyze.RegionAnalysis3D;

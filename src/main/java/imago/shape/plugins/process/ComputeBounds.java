@@ -11,7 +11,7 @@ import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.Geometry2D;
 import net.sci.geom.geom3d.Geometry3D;
 import net.sci.geom.mesh3d.Meshes3D;
-import net.sci.geom.polygon2d.Polygon2D;
+import net.sci.geom.poly2d.Polygon2D;
 
 /**
  * Computes the bounds of of the selected geometry, and creates a new geometry

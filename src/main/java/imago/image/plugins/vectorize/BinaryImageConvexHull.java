@@ -33,8 +33,8 @@ import net.sci.geom.mesh3d.Mesh3D;
 import net.sci.geom.mesh3d.Meshes3D;
 import net.sci.geom.mesh3d.TriMesh3D;
 import net.sci.geom.mesh3d.process.QuickHull3D;
-import net.sci.geom.polygon2d.Polygon2D;
-import net.sci.geom.polygon2d.Polygons2D;
+import net.sci.geom.poly2d.Polygon2D;
+import net.sci.geom.poly2d.Polygons2D;
 import net.sci.image.Image;
 import net.sci.image.vectorize.BinaryImageBoundaryFacetMidPoints;
 

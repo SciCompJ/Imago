@@ -46,7 +46,7 @@ import imago.image.tools.SelectPolygonTool;
 import imago.image.viewers.StackSliceViewer;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.curve.Ellipse2D;
-import net.sci.geom.polygon2d.Polygon2D;
+import net.sci.geom.poly2d.Polygon2D;
 import net.sci.image.Image;
 import net.sci.image.io.TiffImageReader;
 

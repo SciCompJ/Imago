@@ -20,7 +20,7 @@ import net.sci.array.Array;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.binary.BinaryArray2D;
 import net.sci.geom.geom2d.curve.MultiCurve2D;
-import net.sci.geom.polygon2d.Polyline2D;
+import net.sci.geom.poly2d.Polyline2D;
 import net.sci.image.Image;
 import net.sci.image.ImageType;
 import net.sci.image.vectorize.BinaryImage2DChangComponentsLabeling;

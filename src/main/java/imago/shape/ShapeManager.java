@@ -29,7 +29,7 @@ import imago.gui.ImagoGui;
 import net.sci.geom.Geometry;
 import net.sci.geom.geom2d.LineSegment2D;
 import net.sci.geom.geom2d.Point2D;
-import net.sci.geom.polygon2d.LineString2D;
+import net.sci.geom.poly2d.LineString2D;
 
 /**
  * A frame, unique within the GUI, that allows to display and edit all the
@@ -216,8 +216,8 @@ public class ShapeManager extends ImagoFrame
         {
             case net.sci.geom.Point p -> "Point";
             case net.sci.geom.MultiPoint p -> "MultiPoint";
-            case net.sci.geom.polygon2d.Polygon2D p -> "Polygon";
-            case net.sci.geom.polygon2d.Polyline2D p -> "Polyline";
+            case net.sci.geom.poly2d.Polygon2D p -> "Polygon";
+            case net.sci.geom.poly2d.Polyline2D p -> "Polyline";
             case net.sci.geom.geom2d.curve.Circle2D c -> "Circle";
             case net.sci.geom.geom2d.curve.Ellipse2D elli -> "Ellipse";
             case net.sci.geom.geom2d.LineSegment2D seg -> "Segment";

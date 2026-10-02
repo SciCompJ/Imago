@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
-import net.sci.geom.polygon2d.LinearRing2D;
+import net.sci.geom.poly2d.LinearRing2D;
 
 /**
  * The data necessary for cropping a region within a 3D image.

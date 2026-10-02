@@ -29,8 +29,8 @@ public class PrintGeometryInfo implements ShapeManagerPlugin
         switch (handle.getGeometry())
         {
             case net.sci.geom.geom2d.Point2D p -> System.out.printf("%s\n", p.toString());
-            case net.sci.geom.polygon2d.Polygon2D poly -> System.out.printf("polygon with %d vertices\n", poly.vertexCount());
-            case net.sci.geom.polygon2d.Polyline2D poly -> System.out.printf("polyline with %d vertices\n", poly.vertexCount());
+            case net.sci.geom.poly2d.Polygon2D poly -> System.out.printf("polygon with %d vertices\n", poly.vertexCount());
+            case net.sci.geom.poly2d.Polyline2D poly -> System.out.printf("polyline with %d vertices\n", poly.vertexCount());
             case net.sci.geom.mesh3d.Mesh3D mesh -> System.out.printf("mesh with %d vertices and %d faces\n", mesh.vertexCount(), mesh.faceCount());
             default -> System.out.printf("%s\n", geom.toString()); 
         }
