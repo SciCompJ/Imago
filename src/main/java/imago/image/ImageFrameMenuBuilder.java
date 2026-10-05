@@ -382,7 +382,6 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         addPlugin(filtersMenu, imago.image.plugins.process.BoxFilter3x3FloatPlugin.class, "Box Filter 2D 3x3 (float)", hasScalarImage);
         addArrayOperatorPlugin(filtersMenu, net.sci.image.filtering.GaussianFilter5x5.class, "Gaussian Filter 5x5", hasScalarImage && hasImage2D);
         addPlugin(filtersMenu, imago.image.plugins.process.ImageMedianFilterBox.class, "Median Filter...");
-        addPlugin(filtersMenu, imago.image.plugins.binary.BinaryImageBoxMedianFilter.class, "Binary Median Filter...");
         addPlugin(filtersMenu, imago.image.plugins.process.ImageMinMaxFilterBox.class, "Min/Max Filter...");
         filtersMenu.addSeparator();
         addPlugin(filtersMenu, imago.image.plugins.process.ImageVarianceFilterBox.class, "Variance Filter...");
@@ -397,21 +396,16 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         
         JMenu morphologyMenu = new JMenu("Mathematical Morphology");
         addPlugin(morphologyMenu, imago.image.plugins.process.ImageMorphologicalFilter.class, "Morphological Filters...");
-        addPlugin(morphologyMenu, imago.image.plugins.binary.BinaryImageMorphologicalFilter.class, "Binary Morphological Filters...");
-        addPlugin(morphologyMenu, imago.image.plugins.binary.BinaryImageMorphologicalFilterBall.class, "Ball Binary Morphological Filters...");
         morphologyMenu.addSeparator();
         addPlugin(morphologyMenu, imago.image.plugins.process.ImageRegionalExtrema.class, "Regional Min./Max...", hasScalarImage);
         addPlugin(morphologyMenu, imago.image.plugins.process.ImageExtendedExtrema.class, "Extended Min./Max...", hasScalarImage);
         addPlugin(morphologyMenu, imago.image.plugins.process.ImageImposeExtrema.class, "Impose Min./Max...", hasScalarImage);
         morphologyMenu.addSeparator();
         addPlugin(morphologyMenu, imago.image.plugins.process.ImageMorphologicalReconstruction.class, "Morphological Reconstruction...");
-        addPlugin(morphologyMenu, imago.image.plugins.binary.BinaryImageMorphologicalReconstruction.class, "Binary Morphological Reconstruction...");
         addPlugin(morphologyMenu, imago.image.plugins.process.ImageIteratedGeodesicDilations.class, "Iterated Geodesic Dilation...");
         morphologyMenu.addSeparator();
         addPlugin(morphologyMenu, imago.image.plugins.process.ImageFillHoles.class, "Fill Holes");
-        addPlugin(morphologyMenu, imago.image.plugins.binary.BinaryImageFillHoles.class, "Binary Fill Holes");
         addPlugin(morphologyMenu, imago.image.plugins.process.ImageKillBorders.class, "Kill Borders");
-        addPlugin(morphologyMenu, imago.image.plugins.binary.BinaryImageKillBorders.class, "Binary Kill Borders");
         menu.add(morphologyMenu);
         
         // Change the geometry of image, and and extract slices
@@ -489,6 +483,15 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
     private JMenu createProcessBinaryImagesMenu()
     {
         JMenu binaryMenu = new JMenu("Binary-Images");
+        addPlugin(binaryMenu, imago.image.plugins.binary.BinaryImageMorphologicalFilter.class, "Binary Morphological Filters...");
+        addPlugin(binaryMenu, imago.image.plugins.binary.BinaryImageMorphologicalFilterBall.class, "Ball Binary Morphological Filters...");
+        addPlugin(binaryMenu, imago.image.plugins.binary.BinaryImageBoxMedianFilter.class, "Binary Median Filter...");
+        addPlugin(binaryMenu, imago.image.plugins.binary.BinaryImageMorphologicalReconstruction.class, "Binary Morphological Reconstruction...");
+        binaryMenu.addSeparator();
+        addPlugin(binaryMenu, imago.image.plugins.binary.BinaryImageSizeOpening.class, "Size Filtering...");
+        addPlugin(binaryMenu, imago.image.plugins.binary.BinaryImageFillHoles.class, "Binary Fill Holes");
+        addPlugin(binaryMenu, imago.image.plugins.binary.BinaryImageKillBorders.class, "Binary Kill Borders");
+        binaryMenu.addSeparator();
         addPlugin(binaryMenu, imago.image.plugins.binary.BinaryImageConnectedComponentsLabeling.class, "Connected Components Labeling");
         addPlugin(binaryMenu, imago.image.plugins.binary.BinaryImageComponentsLabelingAndContouring.class, "Components Labeling and Contouring");
         binaryMenu.addSeparator();
@@ -497,18 +500,16 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         addPlugin(binaryMenu, imago.image.plugins.binary.BinaryImage3DDepthMap.class, "3D Binary Image Depth Map");
         addPlugin(binaryMenu, imago.image.plugins.binary.ImageGeodesicDistanceMap.class, "Geodesic Distance Map...");
         binaryMenu.addSeparator();
-        addPlugin(binaryMenu, imago.image.plugins.binary.BinaryImageSizeOpening.class, "Size Filtering...");
-        binaryMenu.addSeparator();
-        addPlugin(binaryMenu, imago.image.plugins.binary.BinaryImageSkeleton.class, "IJ Skeleton");
+        addPlugin(binaryMenu, imago.image.plugins.binary.BinaryImageSkeleton.class, "Skeleton (2D)");
         addPlugin(binaryMenu, imago.image.plugins.binary.ClassifySkeletonPixels.class, "Classify Skeleton Pixels");
         addPlugin(binaryMenu, imago.image.plugins.binary.BinaryImageSplitCoalescentParticles.class, "Split Particles...");
         binaryMenu.addSeparator();
         addPlugin(binaryMenu, imago.image.plugins.binary.BinaryImageOverlay.class, "Binary Overlay...");
         addPlugin(binaryMenu, imago.image.plugins.binary.ApplyBinaryMask.class, "Apply Binary Mask...");
         binaryMenu.addSeparator();
-        addPlugin(binaryMenu, imago.image.plugins.vectorize.BinaryImageBoundaryPoints.class, "Boundary Points", hasBinaryImage);
-        addPlugin(binaryMenu, imago.image.plugins.vectorize.BinaryImageBoundaryGraph.class, "Boundary Graph", hasImage2D && hasBinaryImage);
-        addPlugin(binaryMenu, imago.image.plugins.vectorize.LabelMapToBoundaryPolygons.class, "Region Boundaries to Polygons", hasImage2D && hasLabelImage);
+        addPlugin(binaryMenu, imago.image.plugins.vectorize.BinaryImageBoundaryPoints.class, "Boundary Points");
+        addPlugin(binaryMenu, imago.image.plugins.vectorize.BinaryImageBoundaryGraph.class, "Boundary Graph", hasImage2D);
+        addPlugin(binaryMenu, imago.image.plugins.vectorize.LabelMapToBoundaryPolygons.class, "Region Boundaries to Polygons", hasImage2D);
         addPlugin(binaryMenu, imago.image.plugins.vectorize.BinaryImageConvexHull.class, "Binary Image Convex Hull", hasBinaryImage);
         
         return binaryMenu;
@@ -518,12 +519,12 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
     {
         // operators specific to binary images
         JMenu labelMenu = new JMenu("Label-Images");
-        addPlugin(labelMenu, imago.image.plugins.process.LabelMapCropLabel.class, "Crop Label...", hasLabelImage);
-        addPlugin(labelMenu, imago.image.plugins.process.LabelMapSizeOpening.class, "Size Opening...", hasLabelImage);
+        addPlugin(labelMenu, imago.image.plugins.process.LabelMapCropLabel.class, "Crop Label...");
+        addPlugin(labelMenu, imago.image.plugins.process.LabelMapSizeOpening.class, "Size Opening...");
         labelMenu.addSeparator();
         addPlugin(labelMenu, imago.image.plugins.process.LabelMapSkeleton.class, "Skeleton (2D)");
         labelMenu.addSeparator();
-        addPlugin(labelMenu, imago.image.plugins.vectorize.LabelMapToBoundaryPolygons.class, "Region Boundaries to Polygons", hasImage2D && hasLabelImage);
+        addPlugin(labelMenu, imago.image.plugins.vectorize.LabelMapToBoundaryPolygons.class, "Region Boundaries to Polygons", hasImage2D);
         
         return labelMenu;
     }
