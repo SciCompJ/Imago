@@ -8,7 +8,6 @@ import javax.swing.JMenuBar;
 
 import imago.gui.FrameMenuBuilder;
 import imago.gui.ImagoFrame;
-import imago.gui.frames.ImagoEmptyFrame;
 import imago.table.plugins.file.OpenDemoTable;
 
 /**
@@ -54,7 +53,8 @@ public class TableFrameMenuBuilder extends FrameMenuBuilder
         addPlugin(fileMenu, imago.table.plugins.file.SaveTable.class, "Save Table...");
 
         fileMenu.addSeparator();
-        addPlugin(fileMenu, imago.gui.plugins.file.CloseCurrentFrame.class, "Close", !(frame instanceof ImagoEmptyFrame));
+        addPlugin(fileMenu, imago.gui.plugins.file.CloseCurrentFrame.class, "Close");
+        addPlugin(fileMenu, imago.gui.plugins.file.CloseAllFrames.class, "Close All");
         addPlugin(fileMenu, imago.gui.plugins.file.QuitApplication.class, "Quit");
 
         return fileMenu;

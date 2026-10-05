@@ -60,6 +60,12 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
     // ===================================================================
     // Constructor
     
+    /**
+     * Default constructor.
+     * 
+     * @param frame
+     *            the frame to build the menu of.
+     */
     public ImageFrameMenuBuilder(ImageFrame frame)
     {
         super(frame);
@@ -172,6 +178,7 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         fileMenu.addSeparator();
         addPlugin(fileMenu, imago.gui.plugins.file.CloseCurrentFrame.class, "Close");
         addPlugin(fileMenu, imago.gui.plugins.file.CloseWithChildren.class, "Close With Children");
+        addPlugin(fileMenu, imago.gui.plugins.file.CloseAllFrames.class, "Close All");
         addPlugin(fileMenu, imago.gui.plugins.file.QuitApplication.class, "Quit");
         return fileMenu;
     }
