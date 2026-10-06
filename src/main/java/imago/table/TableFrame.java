@@ -302,31 +302,64 @@ public class TableFrame extends ImagoFrame
         int nCols = table.columnCount();
         
         // retrieve and check row axis
+        boolean hasRowNames = hasRowNames(table);
+        CategoricalAxis rowAxis = hasRowNames ? (CategoricalAxis) table.getRowAxis() : null;
+
+        // create array containing column names
+        String[] colNames = retrieveColumnNames(table);
+        // If row names are specified, add another column as first column
+        if (hasRowNames)
+        {
+            String firstName = rowAxis.getName();
+            if (firstName == null || firstName.isBlank())
+            {
+                firstName = "Row Names";
+            }
+            colNames = concat(new String[] {firstName}, colNames);
+        }
+        
+        // Convert table values to array of Object
+        Object[][] data = new Object[nRows][];
+        for (int iRow = 0; iRow < nRows; iRow++)
+        {
+            Object[] row = new Object[nCols];
+            for (int iCol = 0; iCol < nCols; iCol++)
+            {
+                row[iCol] = table.get(iRow, iCol);
+            }
+
+            // add row name if necessary
+            if (hasRowNames)
+            {
+                row = concat(new Object[] {rowAxis.itemName(iRow)}, row);
+            }
+            
+            data[iRow] = row;
+        };
+        
+        // create model
+        return new DefaultTableModel(data, colNames);
+    }
+    
+    private static final boolean hasRowNames(Table table)
+    {
+        // retrieve and check row axis
         Axis rowAxis = table.getRowAxis();
-        boolean hasValidRowAxis = false;
         if (rowAxis != null)
         {
             if (((CategoricalAxis) rowAxis).itemNames() != null)
             {
-                hasValidRowAxis = true;
+                return true;
             }
         }
-
-        // If row names are specified, add another column as first column
-        int columnOffset = hasValidRowAxis ? 1 : 0;
-        int nCols2 = nCols + columnOffset;
-        
-        // Ensure the table has valid column names
-        String[] colNames = new String[nCols2];
-        if (hasValidRowAxis)
-        {
-            colNames[0] = "Row Names";
-            if (rowAxis.getName() != null && !rowAxis.getName().isBlank())
-            {
-                colNames[0] = rowAxis.getName();
-            }
-        }
-        for (int iCol = 0; iCol < table.columnCount(); iCol++)
+        return false;
+    }
+    
+    private static final String[] retrieveColumnNames(Table table)
+    {
+        int nc = table.columnCount();
+        String[] colNames = new String[nc];
+        for (int iCol = 0; iCol < nc; iCol++)
         {
             String colName = table.getColumnName(iCol);
             
@@ -340,28 +373,15 @@ public class TableFrame extends ImagoFrame
                     colName = String.format("<html><center>%s<br>(%s)</center></html>", colName, numCol.getUnitName());
                 }
             }
-            colNames[iCol + columnOffset] = colName;
+            colNames[iCol] = colName;
         }
-        
-        // Convert numeric values to table of objects
-        Object[][] data = new Object[nRows][nCols + columnOffset];
-        for (int iRow = 0; iRow < nRows; iRow++)
-        {
-            Object[] row = data[iRow];
-            
-            if (hasValidRowAxis)
-            {
-                row[0] = ((CategoricalAxis) rowAxis).itemName(iRow);
-            }
-            
-            for (int iCol = 0; iCol < nCols; iCol++)
-            {
-                row[iCol + columnOffset] = table.get(iRow, iCol);
-            }
-            data[iRow] = row;
-        };
-        
-        // create model
-        return new DefaultTableModel(data, colNames);
+        return colNames;
+    }
+    
+    private static final <T> T[] concat(T[] array1, T[] array2)
+    {
+        T[] result = java.util.Arrays.copyOf(array1, array1.length + array2.length);
+        System.arraycopy(array2, 0, result, array1.length, array2.length);
+        return result;
     }
 }
