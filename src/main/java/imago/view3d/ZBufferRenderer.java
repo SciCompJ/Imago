@@ -41,12 +41,15 @@ public class ZBufferRenderer
     double[] zBuffer = null;
     
     // world to image transform parameters (in degrees)
+    Point3D lookat = new Point3D();
     double heading = 0;
     double pitch = 0;
     double zoom = 1.0;
     
-    // centered world-to-image transform
-    AffineTransform3D transform = AffineTransform3D.IDENTITY;
+    // centered world-to-image transform.
+    // set to null when modifying transform parameters.
+    // the rendering methods need to check if transform need to be recomputed.
+    AffineTransform3D transform = null;
 
     /**
      * The shading parameter for rendering of mesh faces.
@@ -72,21 +75,38 @@ public class ZBufferRenderer
         return this;
     }
     
+    /**
+     * Sets the point located in the middle of the 3D viewer.
+     * 
+     * @param point
+     *            the point to look at.
+     * @return a reference to this renderer.
+     */
+    public ZBufferRenderer setLookAt(Point3D point)
+    {
+        this.lookat = point;
+        this.transform = null;
+        return this;
+    }
+    
     public ZBufferRenderer setZoom(double zoom)
     {
         this.zoom = zoom;
+        this.transform = null;
         return this;
     }
     
     public ZBufferRenderer setHeading(double heading)
     {
         this.heading = heading;
+        this.transform = null;
         return this;
     }
     
     public ZBufferRenderer setPitch(double pitch)
     {
         this.pitch = pitch;
+        this.transform = null;
         return this;
     }
     
@@ -116,6 +136,7 @@ public class ZBufferRenderer
         this.height = height;
         this.img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         this.zBuffer = new double[width * height];
+        this.transform = null;
     }
     
     public AffineTransform3D updateTransform()
@@ -124,18 +145,24 @@ public class ZBufferRenderer
         double pitch2 = Math.toRadians(this.pitch);
         
         // apply a rotation to have z pointing upward
+        AffineTransform3D centering = AffineTransform3D.createTranslation(this.lookat).inverse();
         AffineTransform3D rotInit = AffineTransform3D.createRotationOx(Math.PI/2);
         AffineTransform3D scaling = AffineTransform3D.createScaling(zoom, zoom, zoom);
         
         AffineTransform3D rotHeading = AffineTransform3D.createRotationOy(heading2);
         AffineTransform3D rotPitch = AffineTransform3D.createRotationOx(pitch2);
         AffineTransform3D translate = AffineTransform3D.createTranslation(width / 2, height / 2, 0);
-        this.transform = translate.compose(rotHeading).compose(rotPitch).compose(scaling).compose(rotInit);
+        this.transform = translate.compose(rotHeading).compose(rotPitch).compose(scaling).compose(rotInit).compose(centering);
         return transform;
     }
     
     public void renderMesh(TriMesh3D mesh, Color faceColor)
     {
+        if (transform == null)
+        {
+            updateTransform();
+        }
+        
         for (Mesh3D.Face face : mesh.faces())
         {
             // transform vertex coords

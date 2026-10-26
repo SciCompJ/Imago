@@ -59,8 +59,8 @@ public class ZBufferRendererFrame extends ImagoFrame
             }
         });
         
-        this.jFrame.setSize(600, 600);
-        this.jFrame.setVisible(true);
+        this.jFrame.setSize(400, 400);
+//        this.jFrame.setVisible(true);
     }
     
     private void initializeWidgets()
@@ -177,6 +177,8 @@ public class ZBufferRendererFrame extends ImagoFrame
         
         ZBufferRendererFrame frame = new ZBufferRendererFrame(gui);
         frame.renderPanel.mesh = createTetrahedron();
+        
+        frame.setVisible(true);
     }
     
     private static TriMesh3D createTetrahedron()
