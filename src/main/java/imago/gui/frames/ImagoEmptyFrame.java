@@ -57,6 +57,8 @@ public class ImagoEmptyFrame extends ImagoFrame implements AlgoListener
         menuBuilder.addPlugin(demoMenu, imago.image.plugins.file.OpenDemoStack.class, "Demo Stack");
         menuBuilder.addPlugin(demoMenu, imago.image.plugins.edit.CreateDistanceToOctahedronImage3D.class, "Octahedron Distance Map");
         menuBuilder.addPlugin(demoMenu, imago.image.plugins.edit.CreateColorCubeImage3D.class, "3D Color Cube");
+        demoMenu.addSeparator();
+        menuBuilder.addPlugin(demoMenu, imago.view3d.plugins.file.CreateNewZBufferRendererFrame.class, "Open New 3D Viewer");
         fileMenu.add(demoMenu);
         
         // Import less common file formats
