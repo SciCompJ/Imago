@@ -16,9 +16,12 @@ import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import imago.shape.GeometryHandle;
 import imago.shape.ShapeManager;
+import imago.view3d.ZBufferRendererFrame;
 import net.sci.array.Array;
+import net.sci.array.numeric.Scalar;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray3D;
+import net.sci.geom.geom3d.Point3D;
 import net.sci.geom.mesh3d.DefaultTriMesh3D;
 import net.sci.image.Image;
 import net.sci.image.vectorize.MorphologicalMarchingCubes;
@@ -44,9 +47,9 @@ public class Image3DIsosurface implements FramePlugin
         
         // check input data type and dimensions
         Array<?> array = image.getData();
-        if (!(array instanceof ScalarArray))
+        if (!(array.elementInstanceOf(Scalar.class)))
         {
-            frame.showErrorDialog("Requires a scalar image input", "Data Type Error");
+            frame.showErrorDialog("Requires an array of scalar data as input", "Data Type Error");
             return;
         }
         int nd = array.dimensionality();
@@ -57,8 +60,8 @@ public class Image3DIsosurface implements FramePlugin
         }
 
         // wrap array into a 3D scalar array
-        ScalarArray3D<?> scalar = ScalarArray3D.wrap((ScalarArray<?>) array);
-        
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        ScalarArray3D<?> scalar = ScalarArray3D.wrap(ScalarArray.wrap((Array<? extends Scalar>) array));
 
         // Open a dialog to choose the iso-surface value
         GenericDialog dlg = new GenericDialog(frame, "Isosurface");
@@ -69,6 +72,7 @@ public class Image3DIsosurface implements FramePlugin
         String[] imageNameArray = imageNames.toArray(new String[]{});
         String firstImageName = handle.getName();
         dlg.addChoice("Image to Overlay ", imageNameArray, firstImageName);
+        dlg.addCheckBox("Display in New Viewer 3D", true);
         dlg.addCheckBox("Add to Shape Manager", false);
         dlg.showDialog();
         
@@ -79,6 +83,7 @@ public class Image3DIsosurface implements FramePlugin
         double value = dlg.getNextNumber();
         boolean addToImage = dlg.getNextBoolean();
         String imageToOverlayName = dlg.getNextChoice();
+        boolean displayInViewer3d = dlg.getNextBoolean();
         boolean addToShapeManager = dlg.getNextBoolean();
 
         
@@ -110,6 +115,17 @@ public class Image3DIsosurface implements FramePlugin
         long t1 = System.nanoTime();
         iFrame.getStatusBar().setCurrentStepLabel("");
         iFrame.showElapsedTime("Compute Isosurface", (t1 - t0) / 1_000_000.0, image);
+        
+        if (displayInViewer3d)
+        {
+            ImagoGui gui = frame.getGui();
+            ZBufferRendererFrame newFrame = new ZBufferRendererFrame(gui);
+            newFrame.setMesh(mesh);
+            Point3D imageCenter = Point3D.of(array.size(0) * 0.5, array.size(1) * 0.5, array.size(2) * 0.5);
+            newFrame.getRenderer().setLookAt(imageCenter);
+            gui.updateFrameLocation(newFrame, frame);
+            newFrame.setVisible(true);
+        }
         
         if (addToShapeManager)
         {

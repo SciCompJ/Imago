@@ -318,6 +318,8 @@ public class ShapeManager extends ImagoFrame
             addPlugin(processMenu, imago.shape.plugins.process.ComputeDelaunayTriangulation2D.class, "Delaunay Triangulation 2D");
             processMenu.addSeparator();
             addPlugin(processMenu, imago.shape.plugins.process.SmoothMesh3D.class, "Smooth Mesh 3D");
+            processMenu.addSeparator();
+            addPlugin(processMenu, imago.shape.plugins.process.DisplayMeshInViewer3D.class, "Show in 3D Viewer");
             menuBar.add(processMenu);
 
             frame.getWidget().setJMenuBar(menuBar);
