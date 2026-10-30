@@ -15,7 +15,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
-import imago.app.ImagoApp;
 import imago.app.shape.Shape;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
@@ -77,28 +76,21 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
     public static final ImageFrame create(Image image, ImagoFrame parentFrame)
     {
         // retrieve gui, or create one if necessary
-        ImagoGui gui = parentFrame != null ? parentFrame.getGui() : new ImagoGui(new ImagoApp());
-        ImagoApp app = gui.getAppli();
+        ImagoGui gui = ImagoGui.of(parentFrame);
         
         // create a handle for the image
-        ImageHandle parentHandle = null;
-        if (parentFrame != null && parentFrame instanceof ImageFrame)
-        {
-            parentHandle = ((ImageFrame) parentFrame).getImageHandle();
-        }
-        ImageHandle handle = ImageHandle.create(app, image, parentHandle);
+        ImageHandle handle = ImageHandle.create(gui.getAppli(), image, imageHandle(parentFrame));
 
         // Create the frame
         ImageFrame frame = new ImageFrame(gui, handle);
         gui.updateFrameLocation(frame, parentFrame);
         
         // if parent image has same type, duplicate the renderer of parent frame 
-        if (parentFrame != null && parentFrame instanceof ImageFrame)
+        if (parentFrame instanceof ImageFrame iFrame)
         {
-            ImageFrame parentImageFrame = ((ImageFrame) parentFrame);
-            if (image.getType() == parentImageFrame.getImageHandle().getImage().getType())
+            if (image.getType() == iFrame.getImageHandle().getImage().getType())
             {
-                frame.getImageViewer().setRenderer(parentImageFrame.getImageViewer().getRenderer().duplicate());
+                frame.getImageViewer().setRenderer(iFrame.getImageViewer().getRenderer().duplicate());
             }
         }
         
@@ -141,6 +133,25 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
             }
         }
         
+        return null;
+    }
+    
+    /**
+     * If the specified frame is an instance of the {@code ImageFrame} class,
+     * returns the reference to its inner {@code ImageHandle}. Otherwise,
+     * returns null.
+     * 
+     * @param frame
+     *            frame in the Imago application
+     * @return a reference to an {@code ImageHandle} if the frame is a
+     *         {@code ImageFrame}, or null.
+     */
+    public static final ImageHandle imageHandle(ImagoFrame frame)
+    {
+        if (frame instanceof ImageFrame iFrame)
+        {
+            return iFrame.getImageHandle();
+        }
         return null;
     }
     
