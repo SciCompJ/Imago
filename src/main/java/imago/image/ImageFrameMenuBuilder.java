@@ -142,7 +142,7 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         addPlugin(demoMenu, imago.image.plugins.file.OpenDemoStack.class, "Demo Stack");
         addPlugin(demoMenu, imago.image.plugins.edit.CreateDistanceToOctahedronImage3D.class, "Octahedron Distance Map");
         addPlugin(demoMenu, imago.image.plugins.edit.CreateColorCubeImage3D.class, "3D Color Cube");
-        addPlugin(demoMenu, imago.view3d.plugins.file.CreateNewZBufferRendererFrame.class, "Open New 3D Viewer");
+        addPlugin(demoMenu, imago.mesh3d.plugins.file.CreateEmptyMesh3DFrame.class, "Open New 3D Viewer");
         fileMenu.add(demoMenu);
         
         // Import less common file formats

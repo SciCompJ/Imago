@@ -17,6 +17,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
+import imago.mesh3d.Mesh3DViewer;
 import imago.shape.GeometryHandle;
 import imago.shape.ShapeManager;
 import net.sci.algo.AlgoEvent;
@@ -67,6 +68,8 @@ public class BinaryImageConvexHull extends AlgoStub implements FramePlugin
             return;
         }
         
+        int nd = array.dimensionality();
+        
         // Open a dialog to choose the iso-surface value
         GenericDialog dlg = new GenericDialog(frame, "Convex Hull");
         dlg.addCheckBox("Add to Image shapes", true);
@@ -75,6 +78,10 @@ public class BinaryImageConvexHull extends AlgoStub implements FramePlugin
         String firstImageName = handle.getName();
         dlg.addChoice("Image to Overlay ", imageNameArray, firstImageName);
         dlg.addCheckBox("Add to Shape Manager", false);
+        if (nd == 3)
+        {
+            dlg.addCheckBox("Display in New Viewer 3D", false);
+        }
         dlg.showDialog();
         
         if (dlg.wasCanceled())
@@ -84,8 +91,8 @@ public class BinaryImageConvexHull extends AlgoStub implements FramePlugin
         boolean addToImage = dlg.getNextBoolean();
         String imageToOverlayName = dlg.getNextChoice();
         boolean addToShapeManager = dlg.getNextBoolean();
+        boolean view3d = nd == 3 ? dlg.getNextBoolean() : false;
 
-        int nd = array.dimensionality();
         if (nd == 2)
         {
             BinaryArray2D array3d = BinaryArray2D.wrap(BinaryArray.wrap(array));
@@ -172,6 +179,15 @@ public class BinaryImageConvexHull extends AlgoStub implements FramePlugin
                 manager.setVisible(true);
             }
 
+            if (view3d)
+            {
+                ImagoGui gui = frame.getGui();
+                Mesh3DViewer newFrame = new Mesh3DViewer(gui, trimesh);
+                Point3D imageCenter = Point3D.of(array.size(0) * 0.5, array.size(1) * 0.5, array.size(2) * 0.5);
+                newFrame.getRenderer().setLookAt(imageCenter);
+                gui.updateFrameLocation(newFrame, frame);
+                newFrame.setVisible(true);
+            }
         }
         else
         {

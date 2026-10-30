@@ -14,9 +14,9 @@ import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
+import imago.mesh3d.Mesh3DViewer;
 import imago.shape.GeometryHandle;
 import imago.shape.ShapeManager;
-import imago.view3d.ZBufferRendererFrame;
 import net.sci.array.Array;
 import net.sci.array.numeric.Scalar;
 import net.sci.array.numeric.ScalarArray;
@@ -119,12 +119,11 @@ public class Image3DIsosurface implements FramePlugin
         if (displayInViewer3d)
         {
             ImagoGui gui = frame.getGui();
-            ZBufferRendererFrame newFrame = new ZBufferRendererFrame(gui);
-            newFrame.setMesh(mesh);
+            Mesh3DViewer meshViewer = new Mesh3DViewer(gui, mesh);
             Point3D imageCenter = Point3D.of(array.size(0) * 0.5, array.size(1) * 0.5, array.size(2) * 0.5);
-            newFrame.getRenderer().setLookAt(imageCenter);
-            gui.updateFrameLocation(newFrame, frame);
-            newFrame.setVisible(true);
+            meshViewer.getRenderer().setLookAt(imageCenter);
+            gui.updateFrameLocation(meshViewer, frame);
+            meshViewer.setVisible(true);
         }
         
         if (addToShapeManager)

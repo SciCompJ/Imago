@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.view3d;
+package imago.mesh3d;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -20,32 +20,70 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
 
-import imago.app.ImagoApp;
 import imago.gui.FrameMenuBuilder;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
-import net.sci.geom.geom3d.Point3D;
-import net.sci.geom.mesh3d.Mesh3D;
-import net.sci.geom.mesh3d.SimpleTriMesh3D;
+import imago.view3d.ZBufferRenderer;
 import net.sci.geom.mesh3d.TriMesh3D;
 
 /**
- * 
+ * A frame the renders a single mesh, and provides a number of operators for
+ * transforming this mesh.
  */
-public class ZBufferRendererFrame extends ImagoFrame 
+public class Mesh3DViewer extends ImagoFrame 
 {
+    public static final Mesh3DViewer create(TriMesh3D mesh, ImagoFrame parentFrame)
+    {
+        // retrieve gui, or create one if necessary
+        ImagoGui gui = ImagoGui.of(parentFrame);
+//        ImagoGui gui = parentFrame != null ? parentFrame.getGui() : new ImagoGui(new ImagoApp());
+//        ImagoApp app = gui.getAppli();
+        
+//        // create a handle for the image
+//        ImageHandle parentHandle = null;
+//        if (parentFrame != null && parentFrame instanceof ImageFrame)
+//        {
+//            parentHandle = ((ImageFrame) parentFrame).getImageHandle();
+//        }
+//        ImageHandle handle = ImageHandle.create(app, image, parentHandle);
+
+        // Create the frame
+        Mesh3DViewer frame = new Mesh3DViewer(gui, mesh);
+        gui.updateFrameLocation(frame, parentFrame);
+        
+//        // if parent image has same type, duplicate the renderer of parent frame 
+//        if (parentFrame != null && parentFrame instanceof ImageFrame)
+//        {
+//            ImageFrame parentImageFrame = ((ImageFrame) parentFrame);
+//            if (image.getType() == parentImageFrame.getImageHandle().getImage().getType())
+//            {
+//                frame.getImageViewer().setRenderer(parentImageFrame.getImageViewer().getRenderer().duplicate());
+//            }
+//        }
+        
+        // link the frames
+        gui.addFrame(frame);
+        if (parentFrame != null)
+        {
+            parentFrame.addChild(frame);
+        }
+        
+        frame.setVisible(true);
+        return frame;
+    }
+    
     ZBufferPanel renderPanel;
     JSlider headingSlider;
     JSlider pitchSlider;
     JSlider zoomSlider;
     
     
-    public ZBufferRendererFrame(ImagoGui gui)
+    public Mesh3DViewer(ImagoGui gui, TriMesh3D mesh)
     {
-        super(gui, "ZBuffer Renderer Frame");
+        super(gui, "Mesh3D Viewer");
         
         setupMenuBar();
-        initializeWidgets();
+        initializeWidgets(mesh);
         setupLayout();
         
         // setup window listener
@@ -60,12 +98,11 @@ public class ZBufferRendererFrame extends ImagoFrame
         });
         
         this.jFrame.setSize(400, 400);
-//        this.jFrame.setVisible(true);
     }
     
-    private void initializeWidgets()
+    private void initializeWidgets(TriMesh3D mesh)
     {
-        renderPanel = new ZBufferPanel();
+        renderPanel = new ZBufferPanel(mesh);
         renderPanel.addComponentListener(new ComponentAdapter()
         {
             public void componentResized(ComponentEvent e)
@@ -108,7 +145,7 @@ public class ZBufferRendererFrame extends ImagoFrame
         FrameMenuBuilder fmb = new FrameMenuBuilder(this);
         
         JMenu fileMenu = new JMenu("File");
-        fmb.addPlugin(fileMenu, imago.view3d.plugins.file.ImportMeshFromOffFile.class, "Read OFF Mesh...");
+        fmb.addPlugin(fileMenu, imago.mesh3d.plugins.file.ImportMeshFromOffFile.class, "Read OFF Mesh...");
         fileMenu.addSeparator();
         fmb.addPlugin(fileMenu, imago.gui.plugins.file.CloseCurrentFrame.class, "Close");
         menuBar.add(fileMenu);
@@ -129,8 +166,19 @@ public class ZBufferRendererFrame extends ImagoFrame
         pane.add(pitchSlider, BorderLayout.EAST);
         pane.add(zoomSlider, BorderLayout.WEST);
     }
-
-    static class ZBufferPanel extends JPanel
+    
+    public ZBufferRenderer getRenderer()
+    {
+        return this.renderPanel.renderer;
+    }
+    
+    public void setMesh(TriMesh3D mesh)
+    {
+        System.out.println("update mesh");
+        renderPanel.mesh = mesh;
+    }
+    
+    private static class ZBufferPanel extends JPanel
     {
         /**
          * 
@@ -141,8 +189,9 @@ public class ZBufferRendererFrame extends ImagoFrame
         
         TriMesh3D mesh = null;
         
-        public ZBufferPanel()
+        public ZBufferPanel(TriMesh3D mesh)
         {
+            this.mesh = mesh;
             renderer = new ZBufferRenderer(100, 100);
         }
         
@@ -158,41 +207,5 @@ public class ZBufferRendererFrame extends ImagoFrame
 
             g2.drawImage(renderer.getImage(), 0, 0, null);
         }
-    }
-    
-    public ZBufferRenderer getRenderer()
-    {
-        return this.renderPanel.renderer;
-    }
-    
-    public void setMesh(TriMesh3D mesh)
-    {
-        renderPanel.mesh = mesh;
-    }
-    
-    public static void main(String[] args)
-    {
-        System.out.println("hi!");
-        ImagoGui gui = new ImagoGui(new ImagoApp());
-        
-        ZBufferRendererFrame frame = new ZBufferRendererFrame(gui);
-        frame.renderPanel.mesh = createTetrahedron();
-        
-        frame.setVisible(true);
-    }
-    
-    private static TriMesh3D createTetrahedron()
-    {
-        SimpleTriMesh3D mesh = new SimpleTriMesh3D();
-        Mesh3D.Vertex v1 = mesh.addVertex(new Point3D(100, 100, 100));
-        Mesh3D.Vertex v2 = mesh.addVertex(new Point3D(-100, -100, 100));
-        Mesh3D.Vertex v3 = mesh.addVertex(new Point3D(-100, 100, -100));
-        Mesh3D.Vertex v4 = mesh.addVertex(new Point3D(100, -100, -100));
-        mesh.addFace(v1, v2, v3);
-        mesh.addFace(v1, v2, v4);
-        mesh.addFace(v3, v4, v1);
-        mesh.addFace(v3, v4, v2);
-
-        return mesh;
-    }
+    }   
 }

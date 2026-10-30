@@ -156,6 +156,14 @@ public class ZBufferRenderer
         return transform;
     }
     
+    /**
+     * Renders a triangle mesh, using the specified color.
+     * 
+     * @param mesh
+     *            the mesh to render
+     * @param faceColor
+     *            the color used to render the mesh
+     */
     public void renderMesh(TriMesh3D mesh, Color faceColor)
     {
         if (transform == null)
