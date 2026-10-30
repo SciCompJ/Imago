@@ -42,6 +42,21 @@ import imago.image.ImageHandle;
  */
 public class ImagoGui
 {
+    /**
+     * Retrieves the {@code ImagoGui} instance associated to the specified
+     * frame, or creates a new one if the frame is null.
+     * 
+     * @param frame
+     *            a frame from the Imago application
+     * @return the {@code ImagoGui} instance associated to the specified frame,
+     *         or a new instance if the frame is null.
+     */
+    public static final ImagoGui of(ImagoFrame frame)
+    {
+        return frame != null ? frame.getGui() : new ImagoGui(new ImagoApp());
+    }
+    
+    
     // ===================================================================
     // Static methods
 
