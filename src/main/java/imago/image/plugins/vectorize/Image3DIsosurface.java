@@ -23,6 +23,7 @@ import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray3D;
 import net.sci.geom.geom3d.Point3D;
 import net.sci.geom.mesh3d.DefaultTriMesh3D;
+import net.sci.geom.mesh3d.TriMesh3D;
 import net.sci.image.Image;
 import net.sci.image.vectorize.MorphologicalMarchingCubes;
 
@@ -96,7 +97,7 @@ public class Image3DIsosurface implements FramePlugin
         
         // run isosurface computation
         long t0 = System.nanoTime();
-        DefaultTriMesh3D mesh = DefaultTriMesh3D.convert(mc.process(scalar));
+        TriMesh3D mesh = mc.process(scalar);
         
         // cleanup listener and status bar
         iFrame.getStatusBar().setProgressBarPercent(0);
@@ -107,7 +108,7 @@ public class Image3DIsosurface implements FramePlugin
             ImageHandle targetHandle = ImageHandle.findFromName(app, imageToOverlayName);
 
             Style style = new Style().setLineWidth(2.5).setLineColor(Color.MAGENTA);
-            targetHandle.addGeometryNode("isosurface", mesh, style);
+            targetHandle.addGeometryNode("isosurface", DefaultTriMesh3D.convert(mesh), style);
             targetHandle.notifyImageHandleChange(ImageHandle.Event.SHAPES_MASK | ImageHandle.Event.CHANGE_MASK);
         }
         

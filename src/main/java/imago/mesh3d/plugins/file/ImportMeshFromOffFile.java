@@ -46,6 +46,7 @@ public class ImportMeshFromOffFile implements FramePlugin
             try
             {
                 OffMeshReader reader = new OffMeshReader(file);
+                reader.addAlgoListener(meshFrame);
                 mesh = reader.readMesh();
             }
             catch (IOException ex)
