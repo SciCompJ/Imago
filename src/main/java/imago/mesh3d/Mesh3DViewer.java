@@ -12,6 +12,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Locale;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -23,7 +24,10 @@ import javax.swing.SwingConstants;
 import imago.gui.FrameMenuBuilder;
 import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
+import imago.gui.panels.StatusBar;
 import imago.view3d.ZBufferRenderer;
+import net.sci.algo.AlgoEvent;
+import net.sci.geom.mesh3d.Mesh3D;
 import net.sci.geom.mesh3d.TriMesh3D;
 
 /**
@@ -72,18 +76,20 @@ public class Mesh3DViewer extends ImagoFrame
         return frame;
     }
     
-    ZBufferPanel renderPanel;
+    MeshRenderPanel renderPanel;
     JSlider headingSlider;
     JSlider pitchSlider;
     JSlider zoomSlider;
     
-    
+    /** Used to display information about mesh, cursor, current process... */
+    StatusBar statusBar;
+
     public Mesh3DViewer(ImagoGui gui, TriMesh3D mesh)
     {
         super(gui, "Mesh3D Viewer");
         
         setupMenuBar();
-        initializeWidgets(mesh);
+        initializeWidgets();
         setupLayout();
         
         // setup window listener
@@ -97,12 +103,14 @@ public class Mesh3DViewer extends ImagoFrame
             }
         });
         
+        setMesh(mesh);
+        
         this.jFrame.setSize(400, 400);
     }
     
-    private void initializeWidgets(TriMesh3D mesh)
+    private void initializeWidgets()
     {
-        renderPanel = new ZBufferPanel(mesh);
+        renderPanel = new MeshRenderPanel();
         renderPanel.addComponentListener(new ComponentAdapter()
         {
             public void componentResized(ComponentEvent e)
@@ -137,6 +145,8 @@ public class Mesh3DViewer extends ImagoFrame
             renderPanel.renderer.updateTransform();
             renderPanel.repaint();
         });
+        
+        this.statusBar = new StatusBar();
     }
 
     private void setupMenuBar()
@@ -150,6 +160,10 @@ public class Mesh3DViewer extends ImagoFrame
         fmb.addPlugin(fileMenu, imago.gui.plugins.file.CloseCurrentFrame.class, "Close");
         menuBar.add(fileMenu);
         
+        JMenu processMenu = new JMenu("Process");
+        fmb.addPlugin(processMenu, imago.mesh3d.plugins.process.SmoothMesh.class, "Smooth Mesh");
+        menuBar.add(processMenu);
+        
         fmb.addSharedMenus(menuBar);
         
         this.jFrame.setJMenuBar(menuBar);
@@ -157,14 +171,24 @@ public class Mesh3DViewer extends ImagoFrame
     
     private void setupLayout()
     {
+        // put into global layout
+        JPanel meshViewPanel = new JPanel(new BorderLayout());
+        
         Container pane = this.jFrame.getContentPane();
         pane.setLayout(new BorderLayout());
 
-        pane.add(renderPanel, BorderLayout.CENTER);
+        meshViewPanel.add(renderPanel, BorderLayout.CENTER);
         
-        pane.add(headingSlider, BorderLayout.SOUTH);
-        pane.add(pitchSlider, BorderLayout.EAST);
-        pane.add(zoomSlider, BorderLayout.WEST);
+        meshViewPanel.add(headingSlider, BorderLayout.SOUTH);
+        meshViewPanel.add(pitchSlider, BorderLayout.EAST);
+        meshViewPanel.add(zoomSlider, BorderLayout.WEST);
+        
+        // put into global layout
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.add(meshViewPanel, BorderLayout.CENTER);
+        mainPanel.add(statusBar, BorderLayout.SOUTH);
+        
+        this.jFrame.setContentPane(mainPanel);
     }
     
     public ZBufferRenderer getRenderer()
@@ -172,13 +196,71 @@ public class Mesh3DViewer extends ImagoFrame
         return this.renderPanel.renderer;
     }
     
-    public void setMesh(TriMesh3D mesh)
+    public Mesh3D getMesh()
     {
-        System.out.println("update mesh");
-        renderPanel.mesh = mesh;
+        return renderPanel.mesh;
     }
     
-    private static class ZBufferPanel extends JPanel
+    public void setMesh(TriMesh3D mesh)
+    {
+        renderPanel.mesh = mesh;
+        
+        String msg = "(no mesh)";
+        if (mesh != null)
+        {
+            msg = String.format("%d vertices, %d faces", mesh.vertexCount(), mesh.faceCount());
+        }
+        this.statusBar.setToolLabel(msg);
+    }
+    
+    /**
+     * Completes the default implementation to display the progression in the
+     * status bar.
+     * 
+     * @param evt
+     *            the algorithm event
+     */
+    @Override
+    public void algoProgressChanged(AlgoEvent evt)
+    {
+        super.algoProgressChanged(evt);
+        int progress = (int) (evt.getProgressRatio() * 100);
+        this.statusBar.setProgressBarPercent(progress);
+    }
+
+    /**
+     * Completes the default implementation to display the algorithm status in
+     * the status bar.
+     * 
+     * @param evt
+     *            the algorithm event
+     */
+    @Override
+    public void algoStatusChanged(AlgoEvent evt)
+    {
+        super.algoProgressChanged(evt);
+        System.out.println("status: " + evt.getStatus());
+        this.statusBar.setCurrentStepLabel(evt.getStatus());
+    }
+    
+    @Override
+    public void algoTerminated(String opName, double timeInMillis)
+    {
+        // compute number of processed elements per unit time
+        double timeInSecs = timeInMillis / 1000.0;
+       
+        // format display
+        String pattern = "%s: %.3f seconds";
+        String status = String.format(Locale.ENGLISH, pattern, opName, timeInSecs);
+        
+        // display message
+        System.out.println(status);
+        this.statusBar.setCurrentStepLabel(status);
+        // also reset progress bar
+        this.statusBar.setProgressBarPercent(0);
+    }
+
+    private static class MeshRenderPanel extends JPanel
     {
         /**
          * 
@@ -189,9 +271,8 @@ public class Mesh3DViewer extends ImagoFrame
         
         TriMesh3D mesh = null;
         
-        public ZBufferPanel(TriMesh3D mesh)
+        public MeshRenderPanel()
         {
-            this.mesh = mesh;
             renderer = new ZBufferRenderer(100, 100);
         }
         
