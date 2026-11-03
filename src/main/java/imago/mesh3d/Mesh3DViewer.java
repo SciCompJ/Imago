@@ -157,6 +157,8 @@ public class Mesh3DViewer extends ImagoFrame
         JMenu fileMenu = new JMenu("File");
         fmb.addPlugin(fileMenu, imago.mesh3d.plugins.file.ImportMeshFromOffFile.class, "Read OFF Mesh...");
         fileMenu.addSeparator();
+        fmb.addPlugin(fileMenu, imago.mesh3d.plugins.file.ExportMeshToOffFile.class, "Write OFF Mesh...");
+        fileMenu.addSeparator();
         fmb.addPlugin(fileMenu, imago.mesh3d.plugins.file.CreateOctahedronMesh.class, "Create Octahedron");
         fileMenu.addSeparator();
         fmb.addPlugin(fileMenu, imago.gui.plugins.file.CloseCurrentFrame.class, "Close");
@@ -200,6 +202,11 @@ public class Mesh3DViewer extends ImagoFrame
     public ZBufferRenderer getRenderer()
     {
         return this.renderPanel.renderer;
+    }
+    
+    public StatusBar getStatusBar()
+    {
+        return this.statusBar;
     }
     
     public Mesh3D getMesh()
