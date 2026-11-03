@@ -160,6 +160,7 @@ public class Mesh3DViewer extends ImagoFrame
         fmb.addPlugin(fileMenu, imago.mesh3d.plugins.file.ExportMeshToOffFile.class, "Write OFF Mesh...");
         fileMenu.addSeparator();
         fmb.addPlugin(fileMenu, imago.mesh3d.plugins.file.CreateOctahedronMesh.class, "Create Octahedron");
+        fmb.addPlugin(fileMenu, imago.mesh3d.plugins.file.CreateIcosahedronMesh.class, "Create Icosahedron");
         fileMenu.addSeparator();
         fmb.addPlugin(fileMenu, imago.gui.plugins.file.CloseCurrentFrame.class, "Close");
         menuBar.add(fileMenu);
