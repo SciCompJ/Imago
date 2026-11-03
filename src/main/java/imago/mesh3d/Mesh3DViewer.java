@@ -162,6 +162,10 @@ public class Mesh3DViewer extends ImagoFrame
         fmb.addPlugin(fileMenu, imago.gui.plugins.file.CloseCurrentFrame.class, "Close");
         menuBar.add(fileMenu);
         
+        JMenu editMenu = new JMenu("Edit");
+        fmb.addPlugin(editMenu, imago.mesh3d.plugins.edit.AddMeshToShapeManager.class, "Add Mesh To Shape Manager");
+        menuBar.add(editMenu);
+        
         JMenu processMenu = new JMenu("Process");
         fmb.addPlugin(processMenu, imago.mesh3d.plugins.process.SmoothMesh.class, "Smooth Mesh");
         menuBar.add(processMenu);
