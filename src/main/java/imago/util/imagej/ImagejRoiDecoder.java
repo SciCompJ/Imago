@@ -215,8 +215,8 @@ public class ImagejRoiDecoder
             case oval:
                 Box2D box = info.subPixelRect ? readSubPixelBounds(buffer) : readPixelBounds(buffer);
                 Point2D center = box.centroid();
-                double boxWidth = box.bounds().xExtent();
-                double boxHeight = box.bounds().yExtent();
+                double boxWidth = box.bounds().extentX();
+                double boxHeight = box.bounds().extentY();
                 return new ImagejRoi(new Ellipse2D(center, boxWidth * 0.5, boxHeight * 0.5, 0));
                 
             case line:

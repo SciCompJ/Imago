@@ -653,8 +653,8 @@ public class Crop3D extends AlgoStub implements AlgoListener
             {
                 // compute bounds in Y direction
                 Bounds2D box = ring.bounds();
-                int ymin = (int) Math.max(0, Math.ceil(box.yMin()));
-                int ymax = (int) Math.min(sizeY, Math.floor(box.yMax()));
+                int ymin = (int) Math.max(0, Math.ceil(box.minY()));
+                int ymax = (int) Math.min(sizeY, Math.floor(box.maxY()));
 
                 // iterate over lines inside bounding box
                 for (int y = ymin; y < ymax; y++)

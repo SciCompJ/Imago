@@ -230,10 +230,10 @@ public class ImageAnalyzeWithinROI implements FramePlugin
     private static final double averageWithinRoi(ScalarArray2D<?> array, Geometry2D roi)
     {
         Bounds2D bounds = roi.bounds();
-        int xmin = Math.max((int) bounds.xMin(), 0);
-        int xmax = Math.max((int) bounds.xMax(), array.size(0) - 1);
-        int ymin = Math.max((int) bounds.yMin(), 0);
-        int ymax = Math.max((int) bounds.yMax(), array.size(1) - 1);
+        int xmin = Math.max((int) bounds.minX(), 0);
+        int xmax = Math.max((int) bounds.maxX(), array.size(0) - 1);
+        int ymin = Math.max((int) bounds.minY(), 0);
+        int ymax = Math.max((int) bounds.maxY(), array.size(1) - 1);
 
         return switch (roi)
         {
@@ -277,10 +277,10 @@ public class ImageAnalyzeWithinROI implements FramePlugin
     private static final double[] averageWithinRoi(VectorArray2D<?, ?> array, Geometry2D roi)
     {
         Bounds2D bounds = roi.bounds();
-        int xmin = Math.max((int) bounds.xMin(), 0);
-        int xmax = Math.max((int) bounds.xMax(), array.size(0) - 1);
-        int ymin = Math.max((int) bounds.yMin(), 0);
-        int ymax = Math.max((int) bounds.yMax(), array.size(1) - 1);
+        int xmin = Math.max((int) bounds.minX(), 0);
+        int xmax = Math.max((int) bounds.maxX(), array.size(0) - 1);
+        int ymin = Math.max((int) bounds.minY(), 0);
+        int ymax = Math.max((int) bounds.maxY(), array.size(1) - 1);
 
         int nc = array.channelCount();
         return switch (roi)
