@@ -11,6 +11,7 @@ import net.sci.geom.geom3d.AffineTransform3D;
 import net.sci.geom.geom3d.Point3D;
 import net.sci.geom.geom3d.Vector3D;
 import net.sci.geom.mesh3d.Mesh3D;
+import net.sci.geom.mesh3d.Meshes3D;
 import net.sci.geom.mesh3d.TriMesh3D;
 
 /**
@@ -128,6 +129,9 @@ public class ZBufferRenderer
         {
             zBuffer[q] = Double.NEGATIVE_INFINITY;
         }
+        
+        // drawBasis
+        renderBasisCylinders(10, 1);
     }
     
     public void resize(int width, int height)
@@ -139,6 +143,33 @@ public class ZBufferRenderer
         this.transform = null;
     }
     
+    /**
+     * Renders three cylinders with same length and same radius that start at
+     * origin, and that span the three principal directions.
+     * 
+     * @param length
+     *            the length of the cylinders
+     * @param radius
+     *            the radius of the cylinders
+     */
+    public void renderBasisCylinders(double length, double radius)
+    {
+        Point3D p0 = new Point3D(0, 0, 0);
+        Point3D p1 = new Point3D(length, 0, 0);
+        Point3D p2 = new Point3D(0, length, 0);
+        Point3D p3 = new Point3D(0, 0, length);
+        renderCylinder(p0, p1, radius, Color.RED);
+        renderCylinder(p0, p2, radius, Color.GREEN);
+        renderCylinder(p0, p3, radius, Color.BLUE);
+    }
+    
+    public void renderCylinder(Point3D p1, Point3D p2, double r, Color color)
+    {
+        Cylinder3D cyl = new Cylinder3D(p1, p2, r);
+        TriMesh3D mesh = Meshes3D.triangulate(cyl.createMesh(36));
+        renderMesh(mesh, color);
+    }
+
     public AffineTransform3D updateTransform()
     {
         double heading2 = Math.toRadians(this.heading);
