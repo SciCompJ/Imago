@@ -3,6 +3,8 @@
  */
 package imago.image.plugins.process;
 
+import java.util.prefs.Preferences;
+
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
@@ -42,10 +44,12 @@ public class ImageBoxFilter implements FramePlugin
 		int nd = array.dimensionality();
 		
 		// create a dialog for the user to choose options
-		GenericDialog gd = new GenericDialog(frame, "Flat Blur");
+		GenericDialog gd = new GenericDialog(frame, "Box Filter");
+        Preferences prefs = Preferences.userNodeForPackage(this.getClass());
 		for (int d = 0; d < nd; d++)
 		{
-			gd.addIntegerField("Size dim. " + (d+1), 3);
+		    int size = prefs.getInt("ImageBoxFilterSize" + (d+1), 3);
+			gd.addIntegerField("Size dim. " + (d+1), size);
 		}
         gd.addEnumChoice("Output Type", ScalarOutputTypes.class, ScalarOutputTypes.SAME_AS_INPUT);
 		
@@ -64,6 +68,13 @@ public class ImageBoxFilter implements FramePlugin
 		}
 		ScalarArray.Factory<?> factory = ((ScalarOutputTypes) gd.getNextEnumChoice()).factory();
 
+        // keep preferences for future calls to plugin
+        for (int d = 0; d < nd; d++)
+        {
+            prefs.putInt("ImageBoxFilterSize" + (d+1), diameters[d]);
+        }
+
+        
 		// create box filtering operator from user settings
 		BoxFilter filter = new BoxFilter(diameters);
 		filter.setFactory(factory);

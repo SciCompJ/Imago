@@ -4,6 +4,7 @@
 package imago.image.plugins.process;
 
 import java.util.Locale;
+import java.util.prefs.Preferences;
 import java.util.stream.Stream;
 
 import imago.gui.FramePlugin;
@@ -187,108 +188,114 @@ public class ImageMorphologicalFilter implements FramePlugin
             }
             throw new IllegalArgumentException("Unable to parse Operation with label: " + opLabel);
         }
+        
+        /**
+         * Determines the operation type from its label, returning a default
+         * value if label does not correspond to a known value.
+         * 
+         * @param opLabel
+         *            the label of the operation
+         * @param defaultOp
+         *            the operation to return in case of error
+         * @return the parsed Operation
+         */
+        public static Operation fromLabel(String opLabel, Operation defaultOp)
+        {
+            try
+            {
+                return fromLabel(opLabel);
+            }
+            catch(IllegalArgumentException ex)
+            {
+                System.err.println("Unable to parse Operation with label: " + opLabel);
+                return defaultOp;
+            }
+        }
     }
     
 
     // =============================================================
-    // Class variables
-    
-   /**
-     * The operation to apply to the image.
-     */
-	Operation op = Operation.DILATION;
-
-	/**
-     * The shape of the structuring element for 2D images.
-     */
-    Strel2D.Shape shape2d = Strel2D.Shape.SQUARE;
-
-    /**
-     * The shape of the structuring element for 3D images.
-     */
-    Strel3D.Shape shape3d = Strel3D.Shape.CUBE;
-    
-    /**
-     * The radius of the structuring element, in pixels.
-     */
-	int radius = 2;
-
-	
-    // =============================================================
     // Implements Plugin interface
     
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
-	public void run(ImagoFrame frame, String args)
-	{
-		// get current image data
-		ImageFrame imageFrame = (ImageFrame) frame;
-		Image image	= imageFrame.getImageHandle().getImage();
-		Array<?> array = image.getData();
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void run(ImagoFrame frame, String args)
+    {
+        // get current image data
+        ImageFrame imageFrame = (ImageFrame) frame;
+        Image image = imageFrame.getImageHandle().getImage();
+        Array<?> array = image.getData();
 
-		int nd = array.dimensionality();
-		if (nd != 2 && nd != 3)
-		{
-			System.err.println("Requires image of dimensionality equal to 2 or 3");
-			return;
-		}
-		
-		// Create dialog for entering parameters
-		GenericDialog gd = new GenericDialog(frame, "Morphological Filter");
-		gd.addEnumChoice("Operation", Operation.class, this.op);
-        if (nd == 2)
-		{
-            gd.addEnumChoice("Element", Strel2D.Shape.class, this.shape2d);
-	        gd.addIntegerField("Radius (in pixels)", this.radius);
-		}
-		else
-		{
-            gd.addEnumChoice("Element", Strel3D.Shape.class, this.shape3d);
-	        gd.addIntegerField("Radius (in voxels)", this.radius);
+        int nd = array.dimensionality();
+        if (nd != 2 && nd != 3)
+        {
+            System.err.println("Requires image of dimensionality equal to 2 or 3");
+            return;
         }
-		gd.showDialog();
-		
-		if (gd.getOutput() == GenericDialog.Output.CANCEL) 
-		{
-			return;
-		}
-		
-		// parse dialog results
-		// extract chosen parameters
-        this.op = (Operation) gd.getNextEnumChoice();
-		String shapeSuffix = "";
-		Strel strel;
-		if (nd == 2)
-		{
-            this.shape2d = (Strel2D.Shape) gd.getNextEnumChoice();
-            shapeSuffix = this.shape2d.suffix();
-	        this.radius  = gd.getNextInteger();
-		    strel = shape2d.fromRadius(radius);
-		}
-		else
-		{
-            this.shape3d = (Strel3D.Shape) gd.getNextEnumChoice();
-            shapeSuffix = this.shape3d.suffix();
-	        this.radius  = gd.getNextInteger();
-		    strel = shape3d.fromRadius(radius);
-		}
 
-		// Create the morphological filter
-		MorphologicalFilter algo = op.createOperator(strel);
-		
+        // determine default values for dialog
+        Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+        Operation op = Operation.fromLabel(prefs.get("MorphologicalFilterOperationName", "Dilation"), Operation.DILATION);
+        int radius = prefs.getInt("MorphologicalFilterStrelRadius", 2);
+                
+        // Create dialog for entering parameters
+        GenericDialog gd = new GenericDialog(frame, "Morphological Filter");
+        gd.addEnumChoice("Operation", Operation.class, op);
+        if (nd == 2)
+        {
+            gd.addEnumChoice("Element", Strel2D.Shape.class, Strel2D.Shape.SQUARE);
+            gd.addIntegerField("Radius (in pixels)", radius);
+        }
+        else
+        {
+            gd.addEnumChoice("Element", Strel3D.Shape.class, Strel3D.Shape.CUBE);
+            gd.addIntegerField("Radius (in voxels)", radius);
+        }
+        gd.showDialog();
+
+        if (gd.getOutput() == GenericDialog.Output.CANCEL)
+        { return; }
+
+        // parse dialog results
+        // extract chosen parameters
+        op = (Operation) gd.getNextEnumChoice();
+        String shapeSuffix = "";
+        Strel strel;
+        if (nd == 2)
+        {
+            Strel2D.Shape shape2d = (Strel2D.Shape) gd.getNextEnumChoice();
+            shapeSuffix = shape2d.suffix();
+            radius = gd.getNextInteger();
+            strel = shape2d.fromRadius(radius);
+        }
+        else
+        {
+            Strel3D.Shape shape3d = (Strel3D.Shape) gd.getNextEnumChoice();
+            shapeSuffix = shape3d.suffix();
+            radius = gd.getNextInteger();
+            strel = shape3d.fromRadius(radius);
+        }
+        
+        // keep preferences for future calls to plugin
+        prefs.put("MorphologicalFilterOperationName", op.label);
+        prefs.putInt("MorphologicalFilterStrelRadius", radius);
+
+        // Create the morphological filter
+        MorphologicalFilter algo = op.createOperator(strel);
+
         // Execute core of the plugin on the array of original image
-		Image resultImage = imageFrame.runOperator(algo, image);
+        Image resultImage = imageFrame.runOperator(algo, image);
 
-		// setup name of result image
+        // setup name of result image
         String suffix = String.format(Locale.ENGLISH, "%s%s%02d", op.suffix(), shapeSuffix, radius);
-		resultImage.setName(image.getName() + "-" + suffix);
-		
-		// add the image document to GUI
+        resultImage.setName(image.getName() + "-" + suffix);
+
+        // add the image document to GUI
         ImageFrame.create(resultImage, frame);
-	}
+    }
 }

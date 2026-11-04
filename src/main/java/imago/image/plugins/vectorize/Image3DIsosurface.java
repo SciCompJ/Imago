@@ -5,6 +5,7 @@ package imago.image.plugins.vectorize;
 
 import java.awt.Color;
 import java.util.Collection;
+import java.util.prefs.Preferences;
 
 import imago.app.ImagoApp;
 import imago.app.shape.Style;
@@ -65,16 +66,17 @@ public class Image3DIsosurface implements FramePlugin
         ScalarArray3D<?> scalar = ScalarArray3D.wrap(ScalarArray.wrap((Array<? extends Scalar>) array));
 
         // Open a dialog to choose the iso-surface value
+        Preferences prefs = Preferences.userNodeForPackage(this.getClass());
         GenericDialog dlg = new GenericDialog(frame, "Isosurface");
         double[] extent = image.getDisplaySettings().getDisplayRange(); 
         dlg.addSlider("Isosurface Value", extent[0], extent[1], (extent[0] + extent[1]) / 2);
-        dlg.addCheckBox("Add to Image shapes", true);
+        dlg.addCheckBox("Add to Image Shapes", prefs.getBoolean("ComputeIsosurfaceAddToImageShape", true));
         Collection<String> imageNames = ImageHandle.getAllNames(app);
         String[] imageNameArray = imageNames.toArray(new String[]{});
         String firstImageName = handle.getName();
         dlg.addChoice("Image to Overlay ", imageNameArray, firstImageName);
-        dlg.addCheckBox("Display in New Viewer 3D", true);
-        dlg.addCheckBox("Add to Shape Manager", false);
+        dlg.addCheckBox("Display in New Viewer 3D", prefs.getBoolean("ComputeIsosurfaceShow3D", true));
+        dlg.addCheckBox("Add to Shape Manager", prefs.getBoolean("ComputeIsosurfaceAddToShapeManager", false));
         dlg.showDialog();
         
         if (dlg.wasCanceled())
@@ -87,7 +89,11 @@ public class Image3DIsosurface implements FramePlugin
         boolean displayInViewer3d = dlg.getNextBoolean();
         boolean addToShapeManager = dlg.getNextBoolean();
 
-        
+        // keep preferences for future calls to plugin
+        prefs.putBoolean("ComputeIsosurfaceAddToImageShape", addToImage);
+        prefs.putBoolean("ComputeIsosurfaceShow3D", displayInViewer3d);
+        prefs.putBoolean("ComputeIsosurfaceAddToShapeManager", addToShapeManager);
+
         // Call the morphological marching cube algorithm to compute a triangular mesh
         MorphologicalMarchingCubes mc = new MorphologicalMarchingCubes(value);
         

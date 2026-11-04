@@ -3,6 +3,8 @@
  */
 package imago.image.plugins.file;
 
+import java.util.prefs.Preferences;
+
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
@@ -151,14 +153,23 @@ public class CreateNewImage implements FramePlugin
     @Override
     public void run(ImagoFrame frame, String args)
     {
-        System.out.println("create new image");
-
         // determine default values for dialog
-        String baseName = frame.getGui().getAppli().getWorkspace().createHandleName("NoName");
-        int sizeX_init = 200;
-        int sizeY_init = 200;
-        int sizeZ_init = 1;
+        Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+        String baseName = prefs.get("CreateImageName", "NoName");
+        int sizeX_init = prefs.getInt("CreateImageSizeX", 200);
+        int sizeY_init = prefs.getInt("CreateImageSizeY", 200);
+        int sizeZ_init = prefs.getInt("CreateImageSizeZ", 1);
         Type type_init = Type.GRAY8;
+        String typeString = prefs.get("CreateImageType", Type.GRAY8.label);
+        try 
+        {
+            type_init = Type.fromLabel(typeString);
+        }
+        catch(Exception ex)
+        {
+            System.err.println("Unable to identify image type from preference string: " + typeString);
+        }
+        int fill_init = prefs.getInt("CreateImageFillValue", 0);
 
         // if the plugin is run from an image frame, use default values
         // corresponding to the image
@@ -167,10 +178,7 @@ public class CreateNewImage implements FramePlugin
             Image image = ((ImageFrame) frame).getImageHandle().getImage();
             sizeX_init = image.getSize(0);
             sizeY_init = image.getSize(1);
-            if (image.getDimension() > 2)
-            {
-                sizeZ_init = image.getSize(2);
-            }
+            sizeZ_init = image.getDimension() > 2 ? image.getSize(2) : 1;
             type_init = Type.fromArray(image.getData());
         }
 
@@ -181,7 +189,7 @@ public class CreateNewImage implements FramePlugin
         gd.addIntegerField("Size Y: ", sizeY_init);
         gd.addIntegerField("Size Z: ", sizeZ_init);
         gd.addChoice("Image Type: ", Type.getAllLabels(), type_init.toString());
-        gd.addNumericField("Fill Value: ", 0, 0);
+        gd.addNumericField("Fill Value: ", fill_init, 0);
         gd.showDialog();
 
         if (gd.getOutput() == GenericDialog.Output.CANCEL)
@@ -196,6 +204,16 @@ public class CreateNewImage implements FramePlugin
         int sizeZ = gd.getNextInteger();
         Type type = Type.fromLabel(gd.getNextChoice());
         double fillValue = gd.getNextNumber();
+
+        
+        // keep preferences for future calls to plugin
+        prefs.put("CreateImageName", imageName);
+        prefs.putInt("CreateImageSizeX", sizeX);
+        prefs.putInt("CreateImageSizeY", sizeY);
+        prefs.putInt("CreateImageSizeZ", sizeZ);
+        prefs.put("CreateImageType", type.label);
+        prefs.putInt("CreateImageFillValue", (int) fillValue);
+        
 
         // create dimension vector for the new array
         int[] dims = sizeZ <= 1 ? new int[] { sizeX, sizeY } : new int[] { sizeX, sizeY, sizeZ };
