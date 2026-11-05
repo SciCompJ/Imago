@@ -28,6 +28,7 @@ import imago.gui.panels.StatusBar;
 import imago.view3d.ZBufferRenderer;
 import net.sci.algo.AlgoEvent;
 import net.sci.geom.mesh3d.Mesh3D;
+import net.sci.geom.mesh3d.Meshes3D;
 import net.sci.geom.mesh3d.TriMesh3D;
 
 /**
@@ -215,9 +216,16 @@ public class Mesh3DViewer extends ImagoFrame
         return renderPanel.mesh;
     }
     
-    public void setMesh(TriMesh3D mesh)
+    public void setMesh(Mesh3D mesh)
     {
-        renderPanel.mesh = mesh;
+        if (mesh != null)
+        {
+            if (!(mesh instanceof TriMesh3D))
+            {
+                mesh = Meshes3D.triangulate(mesh);
+            }
+        }
+        renderPanel.mesh = (TriMesh3D) mesh;
         
         String msg = "(no mesh)";
         if (mesh != null)
@@ -225,6 +233,7 @@ public class Mesh3DViewer extends ImagoFrame
             msg = String.format("%d vertices, %d faces", mesh.vertexCount(), mesh.faceCount());
         }
         this.statusBar.setToolLabel(msg);
+        
     }
     
     /**

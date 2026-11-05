@@ -42,6 +42,7 @@ public class ImportMeshFromOffFile implements FramePlugin
                 return;
             }
 
+            long t0 = System.nanoTime();
             Mesh3D mesh;
             try
             {
@@ -65,8 +66,15 @@ public class ImportMeshFromOffFile implements FramePlugin
             {
                 mesh = Meshes3D.triangulate(mesh);
             }
+            long t1 = System.nanoTime();
+            double dt = (t1 - t0) / 1_000_000_000.0;
+
+            meshFrame.getStatusBar().setProgressBarPercent(0);
+            String msg = String.format("Read OFF Mesh: %.3f seconds", dt);
+            meshFrame.getStatusBar().setCurrentStepLabel(msg);
 
             System.out.println(String.format("read mesh with %d vertices and %d faces", mesh.vertexCount(), mesh.faceCount()));
+            System.out.println(msg);
 
             // replace mesh in current frame
             meshFrame.setMesh((TriMesh3D) mesh);
