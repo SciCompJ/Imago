@@ -19,12 +19,19 @@ import net.sci.geom.mesh3d.TriMesh3D;
  */
 public class ZBufferRenderer
 {
+    // =============================================================
+    // Public enumeration
+
     public enum Shading
     {
         NONE,
         FLAT;
     }
     
+    
+    // =============================================================
+    // Class fields
+
     /** the width of the rendering image */
     int width;
     
@@ -57,6 +64,16 @@ public class ZBufferRenderer
      */
     Shading shading = Shading.FLAT;
 
+
+    // =============================================================
+    // private constants
+
+    private static final double EDGE_RENDERING_TOLERANCE = 1;
+    
+
+    // =============================================================
+    // Constructors
+
     /**
      * Creates a new z-buffer with the specified size.
      * 
@@ -70,6 +87,10 @@ public class ZBufferRenderer
         resize(width, height);
     }
     
+    
+    // =============================================================
+    // Modifiers
+
     public ZBufferRenderer setShading(Shading shading)
     {
         this.shading = shading;
@@ -111,6 +132,33 @@ public class ZBufferRenderer
         return this;
     }
     
+    
+    // =============================================================
+    // General methods
+
+    public void resize(int width, int height)
+    {
+        this.width = width;
+        this.height = height;
+        this.img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        this.zBuffer = new double[width * height];
+        this.transform = null;
+    }
+
+    /**
+     * Retrieves the image used to render the scene.
+     * 
+     * @return the image used to render the scene.
+     */
+    public BufferedImage getImage()
+    {
+        return img;
+    }
+
+    
+    // =============================================================
+    // Rendering management
+
     public void reset()
     {
         // fill background using a gradient
@@ -130,17 +178,47 @@ public class ZBufferRenderer
             zBuffer[q] = Double.NEGATIVE_INFINITY;
         }
         
+        updateTransform();
+        
         // drawBasis
-        renderBasisCylinders(10, 1);
+//        renderBasisCylinders(10, 1);
+        renderBasisEdges(10.0);
     }
     
-    public void resize(int width, int height)
+    public AffineTransform3D updateTransform()
     {
-        this.width = width;
-        this.height = height;
-        this.img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        this.zBuffer = new double[width * height];
-        this.transform = null;
+        double heading2 = Math.toRadians(this.heading);
+        double pitch2 = Math.toRadians(this.pitch);
+        
+        // apply a rotation to have z pointing upward
+        AffineTransform3D centering = AffineTransform3D.createTranslation(this.lookat).inverse();
+        AffineTransform3D rotInit = AffineTransform3D.createRotationOx(Math.PI/2);
+        AffineTransform3D scaling = AffineTransform3D.createScaling(zoom, zoom, zoom);
+        
+        AffineTransform3D rotHeading = AffineTransform3D.createRotationOy(heading2);
+        AffineTransform3D rotPitch = AffineTransform3D.createRotationOx(pitch2);
+        AffineTransform3D translate = AffineTransform3D.createTranslation(width / 2, height / 2, 0);
+        this.transform = translate.compose(rotHeading).compose(rotPitch).compose(scaling).compose(rotInit).compose(centering);
+        return transform;
+    }
+
+    /**
+     * Draw three mutually orthogonal edges starting at the origin and parallel
+     * to one of the main axes. All edges have the same length.
+     * 
+     * @param length
+     *            the length of the edges
+     */
+    public void renderBasisEdges(double length)
+    {
+        // draw three orthogonal edges from the ori
+        Point3D p0 = transform.transform(Point3D.of(0, 0, 0));
+        Point3D p1 = transform.transform(Point3D.of(length, 0, 0));
+        Point3D p2 = transform.transform(Point3D.of(0, length, 0));
+        Point3D p3 = transform.transform(Point3D.of(0, 0, length));
+        renderTransformedEdge(p0, p1, Color.RED);
+        renderTransformedEdge(p0, p2, Color.GREEN);
+        renderTransformedEdge(p0, p3, Color.BLUE);
     }
     
     /**
@@ -170,23 +248,6 @@ public class ZBufferRenderer
         renderMesh(mesh, color);
     }
 
-    public AffineTransform3D updateTransform()
-    {
-        double heading2 = Math.toRadians(this.heading);
-        double pitch2 = Math.toRadians(this.pitch);
-        
-        // apply a rotation to have z pointing upward
-        AffineTransform3D centering = AffineTransform3D.createTranslation(this.lookat).inverse();
-        AffineTransform3D rotInit = AffineTransform3D.createRotationOx(Math.PI/2);
-        AffineTransform3D scaling = AffineTransform3D.createScaling(zoom, zoom, zoom);
-        
-        AffineTransform3D rotHeading = AffineTransform3D.createRotationOy(heading2);
-        AffineTransform3D rotPitch = AffineTransform3D.createRotationOx(pitch2);
-        AffineTransform3D translate = AffineTransform3D.createTranslation(width / 2, height / 2, 0);
-        this.transform = translate.compose(rotHeading).compose(rotPitch).compose(scaling).compose(rotInit).compose(centering);
-        return transform;
-    }
-    
     /**
      * Renders a triangle mesh, using the specified color.
      * 
@@ -197,11 +258,11 @@ public class ZBufferRenderer
      */
     public void renderMesh(TriMesh3D mesh, Color faceColor)
     {
-        if (transform == null)
-        {
-            updateTransform();
-        }
-        
+        renderMeshFaces(mesh, faceColor);
+    }
+    
+    private void renderMeshFaces(TriMesh3D mesh, Color faceColor)
+    {
         for (Mesh3D.Face face : mesh.faces())
         {
             // transform vertex coords
@@ -290,15 +351,108 @@ public class ZBufferRenderer
     }
     
     /**
-     * Retrieves the image used to render the scene.
+     * Renders the edges of a triangle mesh, using the specified color.
      * 
-     * @return the image used to render the scene.
+     * @param mesh
+     *            the mesh to render
+     * @param edgeColor
+     *            the color used to render the mesh edges
      */
-    public BufferedImage getImage()
+    public void renderWireframeMesh(TriMesh3D mesh, Color edgeColor)
     {
-        return img;
+        for (Mesh3D.Face face : mesh.faces())
+        {
+            // transform vertex coords
+            Iterator<? extends Mesh3D.Vertex> iter = face.vertices().iterator();
+            Point3D v1 = transform.transform(iter.next().position());
+            Point3D v2 = transform.transform(iter.next().position());
+            Point3D v3 = transform.transform(iter.next().position());
+            renderTransformedEdge(v1, v2, edgeColor);
+            renderTransformedEdge(v2, v3, edgeColor);
+            renderTransformedEdge(v3, v1, edgeColor);
+        }        
+    }
+
+    private void renderTransformedEdge(Point3D p1, Point3D p2, Color color)
+    {
+        int rgb = color.getRGB();
+        
+        Vector3D v12 = Vector3D.of(p1, p2);
+        double[] deltas = new double[] {Math.abs(v12.x()), Math.abs(v12.y()), Math.abs(v12.z())};
+        int dim = 0;
+        if (deltas[1] > deltas[dim]) dim = 1;
+        
+        // make sure delta in the largest direction is positive
+        if (dim == 0 && v12.x() < 0 || dim == 1 && v12.y() < 0)
+        {
+            Point3D tmp = p1;
+            p1 = p2;
+            p2 = tmp;
+            v12 = v12.opposite();
+        }
+        
+        if (dim == 0)
+        {
+            double dy = v12.y() / deltas[0];
+            double dz = v12.z() / deltas[0];
+            // compute the range to process
+            int minX = (int) Math.max(0, Math.ceil(p1.x()));
+            int maxX = (int) Math.min(width - 1, Math.floor(p2.x()));
+            
+            double t0 = minX - 1 - p1.x();
+            double yf = p1.y() + t0 * dy;
+            double zf = p1.z() + t0 * dz;
+            for (int x = minX; x <= maxX; x++)
+            {
+                yf += dy;
+                zf += dz;
+                int y = (int) yf;
+                if (y >= 0 && y < height)
+                {
+                    int zIndex = y * width + x;
+                    if (zBuffer[zIndex] < zf + EDGE_RENDERING_TOLERANCE)
+                    {
+                        img.setRGB(x, y, rgb);
+                        zBuffer[zIndex] = zf;
+                    }
+                }
+            }
+        }
+        else
+        {
+            double dx = v12.x() / deltas[1];
+            double dz = v12.z() / deltas[1];
+            // compute the range to process
+            int minY = (int) Math.max(0, Math.ceil(p1.y()));
+            int maxY = (int) Math.min(height - 1, Math.floor(p2.y()));
+            
+            double t0 = minY - 1 - p1.y();
+            double xf = p1.x() + t0 * dx;
+            double zf = p1.z() + t0 * dz;
+            for (int y = minY; y <= maxY; y++)
+            {
+//              double xf = p1.x() + (y - p1.y()) * dx;
+//              double zf = p1.z() + (y - p1.y()) * dz;
+                xf += dx;
+                zf += dz;
+                int x = (int) xf;
+                if (x >= 0 && x < width)
+                {
+                    int zIndex = y * width + x;
+                    if (zBuffer[zIndex] < zf + EDGE_RENDERING_TOLERANCE)
+                    {
+                        img.setRGB(x, y, rgb);
+                        zBuffer[zIndex] = zf;
+                    }
+                }
+            }
+        }
     }
     
+    
+    // =============================================================
+    // Computation helper methods
+
     /**
      * Returns the minimum of three values
      * @param v1 the first value
