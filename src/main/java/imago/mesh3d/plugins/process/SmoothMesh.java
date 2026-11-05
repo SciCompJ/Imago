@@ -32,14 +32,23 @@ public class SmoothMesh implements FramePlugin
             
             Smooth op = new Smooth();
             op.addAlgoListener(meshFrame);
+
+            long t0 = System.nanoTime();
             mesh = op.process(mesh);
-            
+
             // ensure mesh is a triangle mesh
             if (!(mesh instanceof TriMesh3D))
             {
                 mesh = Meshes3D.triangulate(mesh);
             }
 
+            long t1 = System.nanoTime();
+            double dt = (t1 - t0) / 1_000_000_000.0;
+
+            meshFrame.getStatusBar().setProgressBarPercent(0);
+            String msg = String.format("Read OFF Mesh: %.3f seconds", dt);
+            meshFrame.getStatusBar().setCurrentStepLabel(msg);
+            
             // replace mesh in current frame
             meshFrame.setMesh((TriMesh3D) mesh);
             meshFrame.repaint();
