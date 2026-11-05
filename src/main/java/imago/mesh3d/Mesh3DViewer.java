@@ -167,6 +167,8 @@ public class Mesh3DViewer extends ImagoFrame
         menuBar.add(fileMenu);
         
         JMenu editMenu = new JMenu("Edit");
+        fmb.addPlugin(editMenu, imago.mesh3d.plugins.edit.LookAtMeshCentroid.class, "Look at mesh centroid");
+        editMenu.addSeparator();
         fmb.addPlugin(editMenu, imago.mesh3d.plugins.edit.AddMeshToShapeManager.class, "Add Mesh To Shape Manager");
         menuBar.add(editMenu);
         

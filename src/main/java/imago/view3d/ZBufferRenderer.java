@@ -107,28 +107,28 @@ public class ZBufferRenderer
     public ZBufferRenderer setLookAt(Point3D point)
     {
         this.lookat = point;
-        this.transform = null;
+        updateTransform();
         return this;
     }
     
     public ZBufferRenderer setZoom(double zoom)
     {
         this.zoom = zoom;
-        this.transform = null;
+        updateTransform();
         return this;
     }
     
     public ZBufferRenderer setHeading(double heading)
     {
         this.heading = heading;
-        this.transform = null;
+        updateTransform();
         return this;
     }
     
     public ZBufferRenderer setPitch(double pitch)
     {
         this.pitch = pitch;
-        this.transform = null;
+        updateTransform();
         return this;
     }
     
@@ -142,7 +142,7 @@ public class ZBufferRenderer
         this.height = height;
         this.img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         this.zBuffer = new double[width * height];
-        this.transform = null;
+        updateTransform();
     }
 
     /**

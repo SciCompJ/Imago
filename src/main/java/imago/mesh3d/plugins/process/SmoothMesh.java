@@ -29,6 +29,7 @@ public class SmoothMesh implements FramePlugin
         if (frame instanceof Mesh3DViewer meshFrame)
         {
             Mesh3D mesh = meshFrame.getMesh();
+            if (mesh == null) return;
             
             Smooth op = new Smooth();
             op.addAlgoListener(meshFrame);
