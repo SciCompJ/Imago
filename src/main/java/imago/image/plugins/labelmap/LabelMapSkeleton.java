@@ -1,7 +1,7 @@
 /**
  * 
  */
-package imago.image.plugins.process;
+package imago.image.plugins.labelmap;
 
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;

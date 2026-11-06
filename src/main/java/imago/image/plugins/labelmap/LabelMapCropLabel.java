@@ -1,19 +1,20 @@
 /**
  * 
  */
-package imago.image.plugins.process;
+package imago.image.plugins.labelmap;
 
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
+import net.sci.array.numeric.IntArray;
 import net.sci.image.Image;
+import net.sci.image.label.LabelImages;
 
 /**
- * Applies size opening on a label map: creates a new label map that contains
- * only regions with at least the specified number of elements.
+ * 
  */
-public class LabelMapSizeOpening implements FramePlugin
+public class LabelMapCropLabel implements FramePlugin
 {
 
     @Override
@@ -29,10 +30,12 @@ public class LabelMapSizeOpening implements FramePlugin
         {
             return;
         }
+        IntArray<?> array = (IntArray<?>) image.getData();
         
         // Create dialog for entering parameters
-        GenericDialog gd = new GenericDialog(frame, "Size Opening");
-        gd.addIntegerField("Min Pixel/Voxel Count:", 100);
+        GenericDialog gd = new GenericDialog(frame, "Crop Label");
+        gd.addIntegerField("Region Label", 1);
+        gd.addIntegerField("Add Border (pixels)", 0);
         gd.showDialog();
         
         if (gd.getOutput() == GenericDialog.Output.CANCEL) 
@@ -41,10 +44,12 @@ public class LabelMapSizeOpening implements FramePlugin
         }
         
         // retrieve option values
-        int minCount = gd.getNextInteger();
+        int label = gd.getNextInteger();
+        int border = gd.getNextInteger();
         
-        Image resImage = new net.sci.image.label.filters.LabelMapSizeOpening(minCount).process(image);
-        resImage.setName(image.getName() + "-sizeOp" + minCount);
+        IntArray<?> res = LabelImages.cropLabel(array, label, border);
+        Image resImage = new Image(res, image);
+        resImage.setName(image.getName() + "-crop");
 
         // add the image document to GUI
         ImageFrame.create(resImage, frame);

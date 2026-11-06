@@ -520,10 +520,10 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
     {
         // operators specific to binary images
         JMenu labelMenu = new JMenu("Label-Images");
-        addPlugin(labelMenu, imago.image.plugins.process.LabelMapCropLabel.class, "Crop Label...");
-        addPlugin(labelMenu, imago.image.plugins.process.LabelMapSizeOpening.class, "Size Opening...");
+        addPlugin(labelMenu, imago.image.plugins.labelmap.LabelMapCropLabel.class, "Crop Label...");
+        addPlugin(labelMenu, imago.image.plugins.labelmap.LabelMapSizeOpening.class, "Size Opening...");
         labelMenu.addSeparator();
-        addPlugin(labelMenu, imago.image.plugins.process.LabelMapSkeleton.class, "Skeleton (2D)");
+        addPlugin(labelMenu, imago.image.plugins.labelmap.LabelMapSkeleton.class, "Skeleton (2D)");
         labelMenu.addSeparator();
         addPlugin(labelMenu, imago.image.plugins.vectorize.LabelMapToBoundaryPolygons.class, "Region Boundaries to Polygons", hasImage2D);
         

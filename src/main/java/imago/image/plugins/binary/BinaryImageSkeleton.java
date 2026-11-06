@@ -18,7 +18,7 @@ import net.sci.image.binary.skeleton.ImageJSkeleton;
  * 
  * Uses an adaptation of ImageJ's algorithm.
  * 
- * @see imago.image.plugins.process.LabelMapSkeleton
+ * @see imago.image.plugins.labelmap.LabelMapSkeleton
  * 
  * @author David Legland
  */
