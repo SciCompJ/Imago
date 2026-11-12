@@ -8,6 +8,7 @@ import imago.image.ImageDataRenderer;
 import net.sci.array.Array;
 import net.sci.array.color.ColorMaps;
 import net.sci.array.color.RGB8;
+import net.sci.array.numeric.Int;
 import net.sci.array.numeric.IntArray;
 import net.sci.array.numeric.IntArray2D;
 import net.sci.array.numeric.ScalarArray2D;
@@ -38,11 +39,12 @@ public class LabelMapImageRenderer extends IndexedColorMapImageRenderer
     @Override
     public BufferedImage render(Array<?> array)
     {
-        if (!(array instanceof IntArray))
+        if (!array.elementInstanceOf(Int.class))
         {
             throw new RuntimeException("Label images assume inner array implements IntArray");
         }
-        IntArray2D<?> intArray = IntArray2D.wrap((IntArray<?>) array);
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        IntArray2D<?> intArray = IntArray2D.wrap(IntArray.wrap((Array<? extends Int>) array));
 
         int sizeX = array.size(0);
         int sizeY = array.size(1);
@@ -81,10 +83,12 @@ public class LabelMapImageRenderer extends IndexedColorMapImageRenderer
     @Override
     public ScalarArray2D<?> computeRenderableArray(Array<?> array)
     {
-        if (!(array instanceof IntArray))
+        if (!array.elementInstanceOf(Int.class))
         {
             throw new RuntimeException("Label images assume inner array implements IntArray");
         }
-        return IntArray2D.wrap((IntArray<?>) array);
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        IntArray2D<?> intArray = IntArray2D.wrap(IntArray.wrap((Array<? extends Int>) array));
+        return intArray;
     }
 }
