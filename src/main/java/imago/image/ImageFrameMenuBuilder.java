@@ -526,6 +526,7 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         addPlugin(labelMenu, imago.image.plugins.labelmap.LabelMapSkeleton.class, "Skeleton (2D)");
         labelMenu.addSeparator();
         addPlugin(labelMenu, imago.image.plugins.vectorize.LabelMapToBoundaryPolygons.class, "Region Boundaries to Polygons", hasImage2D);
+        addPlugin(labelMenu, imago.image.plugins.vectorize.LabelMap3DIsosurfaces.class, "Region Isosurfaces", hasImage3D);
         
         return labelMenu;
     }
