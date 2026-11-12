@@ -30,6 +30,7 @@ import imago.gui.panels.StatusBar;
 import imago.view3d.ZBufferRenderer;
 import net.sci.algo.AlgoEvent;
 import net.sci.array.Array;
+import net.sci.array.color.ColorMap;
 import net.sci.geom.geom3d.Point3D;
 import net.sci.geom.mesh3d.TriMesh3D;
 import net.sci.image.Image;
@@ -110,10 +111,11 @@ public class LabelMapViewer3D extends ImagoFrame
             }
         });
         
-        System.out.print("compute region meshes...");
+        // convert 3D label map image to a map of binary regions 
         LabelMapToRegions3D regionBuilder = new LabelMapToRegions3D();
         Map<Integer, BinaryRegion3D> regions = regionBuilder.process(labelMapImage.getData());
         
+        // convert each binary regions into a 3D mesh 
         Map<Integer, TriMesh3D> meshes = new HashMap<Integer, TriMesh3D>(); 
         Region3DIsosurface mesher = new Region3DIsosurface();
         for (int label : regions.keySet())
@@ -122,13 +124,28 @@ public class LabelMapViewer3D extends ImagoFrame
             meshes.put(label, mesh);
         }
         this.renderPanel.meshes = meshes;
-        System.out.println(" done!");
         
+        // compute the color associated to each mesh
+        ColorMap colorMap = labelMapImage.getDisplaySettings().getColorMap();
+        Map<Integer, Color> meshColors = new HashMap<Integer, Color>();
+        for (int label : regions.keySet())
+        {
+            Color color = convertColor(colorMap.getColor(label - 1 % 255));
+            meshColors.put(label, color);
+        }
+        this.renderPanel.meshColors = meshColors;
+        
+        // look at the center of the image
         Array<?> array = labelMapImage.getData();
         Point3D imageCenter = Point3D.of(array.size(0) * 0.5, array.size(1) * 0.5, array.size(2) * 0.5);
         getRenderer().setLookAt(imageCenter);
         
         this.jFrame.setSize(400, 400);
+    }
+    
+    private static final Color convertColor(net.sci.array.color.Color color)
+    {
+        return new Color((float) color.red(), (float) color.green(), (float) color.blue());
     }
     
     private void initializeWidgets()
@@ -275,10 +292,12 @@ public class LabelMapViewer3D extends ImagoFrame
         ZBufferRenderer renderer;
         
         Map<Integer, TriMesh3D> meshes = null;
+        Map<Integer, Color> meshColors = null;
         
         public RenderPanel()
         {
             this.meshes = new HashMap<Integer, TriMesh3D>();
+            this.meshColors = new HashMap<Integer, Color>();
             renderer = new ZBufferRenderer(100, 100);
         }
         
@@ -290,7 +309,8 @@ public class LabelMapViewer3D extends ImagoFrame
                 for (int label : meshes.keySet())
                 {
                     TriMesh3D mesh = meshes.get(label);
-                    renderer.renderMesh(mesh, Color.WHITE);    
+                    Color color = meshColors.getOrDefault(label, Color.WHITE);
+                    renderer.renderMesh(mesh, color);    
                 }
             }
             
