@@ -32,7 +32,9 @@ import net.sci.algo.AlgoEvent;
 import net.sci.array.Array;
 import net.sci.array.color.ColorMap;
 import net.sci.geom.geom3d.Point3D;
+import net.sci.geom.mesh3d.Mesh3D;
 import net.sci.geom.mesh3d.TriMesh3D;
+import net.sci.geom.mesh3d.process.Smooth;
 import net.sci.image.Image;
 import net.sci.image.region.BinaryRegion3D;
 import net.sci.image.region.process.LabelMapToRegions3D;
@@ -118,10 +120,12 @@ public class LabelMapViewer3D extends ImagoFrame
         // convert each binary regions into a 3D mesh 
         Map<Integer, TriMesh3D> meshes = new HashMap<Integer, TriMesh3D>(); 
         Region3DIsosurface mesher = new Region3DIsosurface();
+        Smooth smooth = new Smooth();
         for (int label : regions.keySet())
         {
             TriMesh3D mesh = mesher.process(regions.get(label));
-            meshes.put(label, mesh);
+            Mesh3D smoothed = smooth.process(smooth.process(mesh));
+            meshes.put(label, TriMesh3D.convert(smoothed));
         }
         this.renderPanel.meshes = meshes;
         
