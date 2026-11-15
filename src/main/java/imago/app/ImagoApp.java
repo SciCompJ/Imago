@@ -3,9 +3,15 @@
  */
 package imago.app;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.HashMap;
+
 import imago.image.ImageHandle;
 import imago.shape.GeometryHandle;
 import imago.table.TableHandle;
+import net.sci.array.color.ColorMap;
 import net.sci.geom.Geometry;
 import net.sci.image.Image;
 import net.sci.table.Table;
@@ -28,7 +34,16 @@ public class ImagoApp
      */
     Workspace workspace = new Workspace();
 
-	
+    /**
+     * The list of colormap handles managed by the application, in the order of addition.
+     */
+    private ArrayList<ColorMapHandle> colorMapHandles = new ArrayList<ColorMapHandle>();
+    /**
+     * The colormap handles, indexed by their tag, for faster retrieval
+     */
+    private HashMap<String, ColorMapHandle> colorMapHandleMap = new HashMap<String, ColorMapHandle>();
+    
+    
 	// =============================================================
 	// Constructor
 
@@ -87,6 +102,18 @@ public class ImagoApp
         workspace.removeHandle(handle.tag);
     }
     
+    
+    // =============================================================
+    // Management of workspace
+    
+    /**
+     * @return the workspace
+     */
+    public Workspace getWorkspace()
+    {
+        return workspace;
+    }
+
     /**
      * Creates a unique name for a handle, given a base name (typically a file name). If
      * application already contains a document with same base name, an index is
@@ -101,15 +128,67 @@ public class ImagoApp
         return workspace.createHandleName(name);
     }
     
-
+    
     // =============================================================
-    // Management of workspace
-
-    /**
-     * @return the workspace
-     */
-    public Workspace getWorkspace()
+    // Management of color maps
+    
+    
+    public void addColorMap(String name, ColorMap colorMap)
     {
-        return workspace;
+        String tag = findNextFreeColorMapTag();
+        ColorMapHandle handle = new ColorMapHandle(tag, colorMap, name);
+        this.colorMapHandles.add(handle);
+        this.colorMapHandleMap.put(handle.tag, handle);
+    }
+    
+    /**
+     * Returns the colormap corresponding to the specified name, or {@code null}
+     * if no such colormap exist.
+     * 
+     * @param name
+     *            the name of the colormap
+     * @eturn the corresponding colormap, or {@code null} if no such colormap
+     *        exist.
+     */
+    public ColorMap getColorMap(String name)
+    {
+        return this.colorMapHandles.stream()
+                .filter(handle -> handle.getName().equals(name))
+                .findFirst()
+                .map(ColorMapHandle::getObject).orElse(null);
+    }
+    
+    /**
+     * Returns an unmodifiable view on the list of colormap handles.
+     * 
+     * @return an unmodifiable view on the list of colormap handles.
+     */
+    public List<ColorMapHandle> colorMapHandles()
+    {
+        return Collections.unmodifiableList(this.colorMapHandles);
+    }
+    
+    /**
+     * Creates a unique tag for an item, given a base name (file name). If
+     * application already contains an item with same base tag, an index is
+     * added to make the tag unique.
+     * 
+     * @param baseTag
+     *            a base tag for the item, for example based on its class.
+     * @return a unique tag.
+     */
+    private String findNextFreeColorMapTag()
+    {
+        String baseTag = "cmap";
+        
+        // create names with the pattern until we found a non existing one
+        String tag;
+        int index = 0;
+        do
+        {
+            tag = String.format(baseTag + "%02d", index++);
+        } while (colorMapHandleMap.containsKey(tag));
+        
+        return tag;
     }
 }
