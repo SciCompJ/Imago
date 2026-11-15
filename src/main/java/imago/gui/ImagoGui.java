@@ -32,6 +32,7 @@ import imago.app.Workspace;
 import imago.gui.frames.ImagoEmptyFrame;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
+import net.sci.array.color.ColorMaps;
 
 /**
  * The GUI Manager, that create frames, stores the set of open frames, and keeps
@@ -224,6 +225,8 @@ public class ImagoGui
         this.app = app;
         
         setupLookAndFeel();
+        
+        initColorMaps();
 
         pluginManager = new PluginManager();
         try
@@ -254,6 +257,22 @@ public class ImagoGui
         // set up default font
         UIManager.put("swing.boldMetal", Boolean.FALSE);
         UIManager.put("ComboBox.background", UIManager.get("TextArea.background"));
+    }
+    
+    private void initColorMaps()
+    {
+        app.addColorMap("Red", ColorMaps.RED.createColorMap(256));
+        app.addColorMap("Green", ColorMaps.GREEN.createColorMap(256));
+        app.addColorMap("Blue", ColorMaps.BLUE.createColorMap(256));
+        app.addColorMap("Gray", ColorMaps.GRAY.createColorMap(256));
+        app.addColorMap("Blue-Gray-Red", ColorMaps.BLUE_GRAY_RED.createColorMap(256));
+        app.addColorMap("Jet", ColorMaps.JET.createColorMap(256));
+        app.addColorMap("Fire", ColorMaps.FIRE.createColorMap(256));
+        app.addColorMap("Spectrum", ColorMaps.HSV.createColorMap(256));
+        app.addColorMap("Blue-White-Red", ColorMaps.BLUE_WHITE_RED.createColorMap(256));
+        app.addColorMap("Glasbey", ColorMaps.GLASBEY.createColorMap(256));
+        app.addColorMap("Glasbey (Dark)", ColorMaps.GLASBEY_DARK.createColorMap(256));
+        app.addColorMap("Glasbey (Bright)", ColorMaps.GLASBEY_BRIGHT.createColorMap(256));
     }
     
 
