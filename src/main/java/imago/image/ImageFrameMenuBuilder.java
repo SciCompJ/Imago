@@ -380,9 +380,14 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         // Noise reduction filters
         JMenu filtersMenu = new JMenu("Filters");
         addPlugin(filtersMenu, imago.image.plugins.process.ImageBoxFilter.class, "Box Filter...");
-        addPlugin(filtersMenu, imago.image.plugins.process.BoxFilter3x3FloatPlugin.class, "Box Filter 2D 3x3 (float)", hasScalarImage);
-        addArrayOperatorPlugin(filtersMenu, net.sci.image.filtering.GaussianFilter5x5.class, "Gaussian Filter 5x5", hasScalarImage && hasImage2D);
+        addPlugin(filtersMenu, imago.image.plugins.process.ImageGaussianFilter.class, "Gaussian Filter...");
         addPlugin(filtersMenu, imago.image.plugins.process.ImageMedianFilterBox.class, "Median Filter...");
+        JMenu moreFiltersMenu = new JMenu("More");
+        addPlugin(moreFiltersMenu, imago.image.plugins.process.BoxFilter3x3FloatPlugin.class, "Box Filter 2D 3x3 (float)", hasScalarImage);
+        addArrayOperatorPlugin(moreFiltersMenu, net.sci.image.filtering.GaussianFilter3x3.class, "Gaussian Filter 3x3", hasScalarImage && hasImage2D);
+        addArrayOperatorPlugin(moreFiltersMenu, net.sci.image.filtering.GaussianFilter5x5.class, "Gaussian Filter 5x5", hasScalarImage && hasImage2D);
+        filtersMenu.add(moreFiltersMenu);
+        filtersMenu.addSeparator();
         addPlugin(filtersMenu, imago.image.plugins.process.ImageMinMaxFilterBox.class, "Min/Max Filter...");
         filtersMenu.addSeparator();
         addPlugin(filtersMenu, imago.image.plugins.process.ImageVarianceFilterBox.class, "Variance Filter...");

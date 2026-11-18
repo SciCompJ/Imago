@@ -9,7 +9,6 @@ import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
-import imago.image.ImageHandle;
 import net.sci.array.Array;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.image.Image;
@@ -23,72 +22,75 @@ import net.sci.image.filtering.BoxFilter;
  */
 public class ImageBoxFilter implements FramePlugin
 {
+    /**
+     * Default empty constructor.
+     */
     public ImageBoxFilter()
-	{
-	}
+    {
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
-	public void run(ImagoFrame frame, String args)
-	{
-		// get current image data
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void run(ImagoFrame frame, String args)
+    {
+        // get current image data
         ImageFrame imageFrame = (ImageFrame) frame;
         Image image = imageFrame.getImageHandle().getImage();
-		Array<?> array = image.getData();
+        Array<?> array = image.getData();
 
-		int nd = array.dimensionality();
-		
-		// create a dialog for the user to choose options
-		GenericDialog gd = new GenericDialog(frame, "Box Filter");
+        int nd = array.dimensionality();
+
+        // create a dialog for the user to choose options
+        GenericDialog gd = new GenericDialog(frame, "Box Filter");
         Preferences prefs = Preferences.userNodeForPackage(this.getClass());
-		for (int d = 0; d < nd; d++)
-		{
-		    int size = prefs.getInt("ImageBoxFilterSize" + (d+1), 3);
-			gd.addIntegerField("Size dim. " + (d+1), size);
-		}
+        for (int d = 0; d < nd; d++)
+        {
+            int size = prefs.getInt("ImageBoxFilterSize" + (d + 1), 3);
+            gd.addIntegerField("Size dim. " + (d + 1), size);
+        }
         gd.addEnumChoice("Output Type", ScalarOutputTypes.class, ScalarOutputTypes.SAME_AS_INPUT);
-		
-		// wait the user to choose
-		gd.showDialog();
-		if (gd.getOutput() == GenericDialog.Output.CANCEL) 
-		{
-			return;
-		}
-		
-		// parse dialog results
-		int[] diameters = new int[nd];
-		for (int d = 0; d < nd; d++)
-		{
-			diameters[d] = gd.getNextInteger();
-		}
-		ScalarArray.Factory<?> factory = ((ScalarOutputTypes) gd.getNextEnumChoice()).factory();
+
+        // wait the user to choose
+        gd.showDialog();
+        if (gd.getOutput() == GenericDialog.Output.CANCEL)
+        {
+            return;
+        }
+
+        // parse dialog results
+        int[] diameters = new int[nd];
+        for (int d = 0; d < nd; d++)
+        {
+            diameters[d] = gd.getNextInteger();
+        }
+        ScalarArray.Factory<?> factory = ((ScalarOutputTypes) gd.getNextEnumChoice()).factory();
 
         // keep preferences for future calls to plugin
         for (int d = 0; d < nd; d++)
         {
-            prefs.putInt("ImageBoxFilterSize" + (d+1), diameters[d]);
+            prefs.putInt("ImageBoxFilterSize" + (d + 1), diameters[d]);
         }
 
-        
-		// create box filtering operator from user settings
-		BoxFilter filter = new BoxFilter(diameters);
-		filter.setFactory(factory);
-		
-		// apply operator on current image
-		Image result = imageFrame.runOperator(filter, image);
-		result.setName(image.getName() + "-boxFilt");
-		
-		// add the image document to GUI
+        // create box filtering operator from user settings
+        BoxFilter filter = new BoxFilter(diameters);
+        filter.setFactory(factory);
+
+        // apply operator on current image
+        Image result = imageFrame.runOperator(filter, image);
+        result.setName(image.getName() + "-boxFilt");
+
+        // add the image document to GUI
         ImageFrame.create(result, frame);
-	}
-	
+    }
+
     /**
-     * Returns true if the current frame contains a scalar image or a vector image.
+     * Returns true if the current frame contains a scalar image or a vector
+     * image.
      * 
      * @param frame
      *            the frame containing reference to this plugin
@@ -97,16 +99,14 @@ public class ImageBoxFilter implements FramePlugin
     @Override
     public boolean isEnabled(ImagoFrame frame)
     {
-        // check frame class
-        if (!(frame instanceof ImageFrame))
-            return false;
-        
-        // check image
-        ImageHandle doc = ((ImageFrame) frame).getImageHandle();
-        Image image = doc.getImage();
-        if (image == null)
-            return false;
+        if (frame instanceof ImageFrame imageFrame)
+        {
+            Image image = imageFrame.getImageHandle().getImage();
+            if (image == null) return false;
 
-        return image.isScalarImage() || image.isVectorImage();
+            return image.isScalarImage() || image.isVectorImage();
+        }
+        
+        return false;
     }
 }
