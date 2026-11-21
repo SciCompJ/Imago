@@ -397,6 +397,7 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         JMenu gradientFiltersMenu = new JMenu("Gradient Filters");
         addImageOperatorPlugin(gradientFiltersMenu, net.sci.image.filtering.SobelGradient.class, "Sobel Gradient", hasScalarImage);
         addImageOperatorPlugin(gradientFiltersMenu, net.sci.image.filtering.SobelGradientNorm.class, "Sobel Gradient Norm", hasScalarImage);
+        addPlugin(gradientFiltersMenu, imago.image.plugins.process.ImageAxisGradientFilter.class, "Axis Gradient Filter...");
         addImageOperatorPlugin(gradientFiltersMenu, net.sci.image.contrast.VectorArrayNorm.class, "Vector Image Norm", hasVectorImage);
         menu.add(gradientFiltersMenu);
         
