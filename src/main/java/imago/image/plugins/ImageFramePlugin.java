@@ -9,10 +9,15 @@ import imago.gui.FramePlugin;
 import net.sci.image.Image;
 
 /**
- * Specialization of the Plugin interface for Image plugins.
+ * Specialization of the {@code FramePlugin} interface, that expect the parent
+ * frame to be an instance of {@code ImageFrame}.
  * 
- * Simply consists in providing a default implementation for the isEnabled
- * method, that returns true if the parent frame contains an image.
+ * Simply consists in providing a default implementation for the
+ * {@code isEnabled} method, that returns true if the parent frame contains an
+ * image.
+ * 
+ * 
+ * @see ImageFrame
  * 
  * @author dlegland
  *
@@ -31,13 +36,12 @@ public interface ImageFramePlugin extends FramePlugin
      */
     public default boolean isEnabled(ImagoFrame frame)
     {
-        if (!(frame instanceof ImageFrame))
+        if (frame instanceof ImageFrame imageFrame)
         {
-            return false;
+            Image image = imageFrame.getImageHandle().getImage();
+            return image != null;
         }
-        
-        Image image = ((ImageFrame) frame).getImageHandle().getImage();
-        
-        return image != null;
+
+        return false;
     }
 }
