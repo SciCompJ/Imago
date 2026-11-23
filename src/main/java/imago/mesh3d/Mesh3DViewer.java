@@ -28,8 +28,6 @@ import imago.gui.panels.StatusBar;
 import imago.view3d.ZBufferRenderer;
 import net.sci.algo.AlgoEvent;
 import net.sci.geom.mesh3d.Mesh3D;
-import net.sci.geom.mesh3d.Meshes3D;
-import net.sci.geom.mesh3d.TriMesh3D;
 
 /**
  * A frame the renders a single mesh, and provides a number of operators for
@@ -37,7 +35,7 @@ import net.sci.geom.mesh3d.TriMesh3D;
  */
 public class Mesh3DViewer extends ImagoFrame 
 {
-    public static final Mesh3DViewer create(TriMesh3D mesh, ImagoFrame parentFrame)
+    public static final Mesh3DViewer create(Mesh3D mesh, ImagoFrame parentFrame)
     {
         // retrieve gui, or create one if necessary
         ImagoGui gui = ImagoGui.of(parentFrame);
@@ -85,7 +83,7 @@ public class Mesh3DViewer extends ImagoFrame
     /** Used to display information about mesh, cursor, current process... */
     StatusBar statusBar;
 
-    public Mesh3DViewer(ImagoGui gui, TriMesh3D mesh)
+    public Mesh3DViewer(ImagoGui gui, Mesh3D mesh)
     {
         super(gui, "Mesh3D Viewer");
         
@@ -160,6 +158,7 @@ public class Mesh3DViewer extends ImagoFrame
         fileMenu.addSeparator();
         fmb.addPlugin(fileMenu, imago.mesh3d.plugins.file.ExportMeshToOffFile.class, "Write OFF Mesh...");
         fileMenu.addSeparator();
+        fmb.addPlugin(fileMenu, imago.mesh3d.plugins.file.CreateCubeMesh.class, "Create Cuboid");
         fmb.addPlugin(fileMenu, imago.mesh3d.plugins.file.CreateOctahedronMesh.class, "Create Octahedron");
         fmb.addPlugin(fileMenu, imago.mesh3d.plugins.file.CreateIcosahedronMesh.class, "Create Icosahedron");
         fileMenu.addSeparator();
@@ -220,14 +219,14 @@ public class Mesh3DViewer extends ImagoFrame
     
     public void setMesh(Mesh3D mesh)
     {
-        if (mesh != null)
-        {
-            if (!(mesh instanceof TriMesh3D))
-            {
-                mesh = Meshes3D.triangulate(mesh);
-            }
-        }
-        renderPanel.mesh = (TriMesh3D) mesh;
+//        if (mesh != null)
+//        {
+//            if (!(mesh instanceof TriMesh3D))
+//            {
+//                mesh = Meshes3D.triangulate(mesh);
+//            }
+//        }
+        renderPanel.mesh = mesh;
         
         String msg = "(no mesh)";
         if (mesh != null)
@@ -294,7 +293,7 @@ public class Mesh3DViewer extends ImagoFrame
         
         ZBufferRenderer renderer;
         
-        TriMesh3D mesh = null;
+        Mesh3D mesh = null;
         
         public MeshRenderPanel()
         {

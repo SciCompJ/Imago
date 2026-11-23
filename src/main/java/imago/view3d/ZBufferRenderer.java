@@ -249,19 +249,32 @@ public class ZBufferRenderer
     }
 
     /**
-     * Renders a triangle mesh, using the specified color.
+     * Renders a polygon mesh, using the specified color.
      * 
      * @param mesh
      *            the mesh to render
      * @param faceColor
      *            the color used to render the mesh
      */
-    public void renderMesh(TriMesh3D mesh, Color faceColor)
+    public void renderMesh(Mesh3D mesh, Color faceColor)
     {
         renderMeshFaces(mesh, faceColor);
     }
     
-    private void renderMeshFaces(TriMesh3D mesh, Color faceColor)
+//    /**
+//     * Renders a triangle mesh, using the specified color.
+//     * 
+//     * @param mesh
+//     *            the mesh to render
+//     * @param faceColor
+//     *            the color used to render the mesh
+//     */
+//    private void renderTriMesh(TriMesh3D mesh, Color faceColor)
+//    {
+//        renderMeshFaces(mesh, faceColor);
+//    }
+    
+    private void renderMeshFaces(Mesh3D mesh, Color faceColor)
     {
         for (Mesh3D.Face face : mesh.faces())
         {
@@ -269,12 +282,18 @@ public class ZBufferRenderer
             Iterator<? extends Mesh3D.Vertex> iter = face.vertices().iterator();
             Point3D v1 = transform.transform(iter.next().position());
             Point3D v2 = transform.transform(iter.next().position());
-            Point3D v3 = transform.transform(iter.next().position());
             
-            switch(shading)
+            while (iter.hasNext())
             {
-                case NONE -> renderTriangle_shadingNone(v1, v2, v3, faceColor);
-                case FLAT -> renderTriangle_shadingFlat(v1, v2, v3, faceColor);
+                Point3D v3 = transform.transform(iter.next().position());
+                switch(shading)
+                {
+                    case NONE -> renderTriangle_shadingNone(v1, v2, v3, faceColor);
+                    case FLAT -> renderTriangle_shadingFlat(v1, v2, v3, faceColor);
+                }
+                
+                // prepare for next triangle
+                v2 = v3;
             }
         }        
     }
