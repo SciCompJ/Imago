@@ -63,4 +63,18 @@ public class BinaryImageBoundaryGraph implements FramePlugin
         handle.addShape(new Shape(graph));
         handle.notifyImageHandleChange();
 	}
+	
+    @Override
+    public boolean isEnabled(ImagoFrame frame)
+    {
+        if (frame instanceof ImageFrame imageFrame)
+        {
+            Image image = imageFrame.getImageHandle().getImage();
+            if (image == null) return false;
+
+            return image.isBinaryImage() && image.getDimension() == 2;
+        }
+        
+        return false;
+    }
 }

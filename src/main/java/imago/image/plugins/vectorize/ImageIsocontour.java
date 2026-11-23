@@ -96,4 +96,18 @@ public class ImageIsocontour implements FramePlugin
             manager.setVisible(true);
         }
 	}
+    
+    @Override
+    public boolean isEnabled(ImagoFrame frame)
+    {
+        if (frame instanceof ImageFrame imageFrame)
+        {
+            Image image = imageFrame.getImageHandle().getImage();
+            if (image == null) return false;
+
+            return image.isScalarImage() && image.getDimension() == 2;
+        }
+        
+        return false;
+    }
 }

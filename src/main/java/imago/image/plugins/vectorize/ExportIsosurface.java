@@ -112,4 +112,18 @@ public class ExportIsosurface implements FramePlugin
         long t1 = System.nanoTime();
         iFrame.showElapsedTime("Save Isosurface", (t1 - t0) / 1_000_000.0, image);
     }
+    
+    @Override
+    public boolean isEnabled(ImagoFrame frame)
+    {
+        if (frame instanceof ImageFrame imageFrame)
+        {
+            Image image = imageFrame.getImageHandle().getImage();
+            if (image == null) return false;
+
+            return image.isScalarImage() && image.getDimension() == 3;
+        }
+        
+        return false;
+    }
 }

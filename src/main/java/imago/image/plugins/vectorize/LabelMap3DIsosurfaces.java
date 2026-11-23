@@ -17,6 +17,7 @@ import net.sci.image.Image;
  * 
  * @author dlegland
  *
+ * @see LabelMapViewer3D
  */
 public class LabelMap3DIsosurfaces implements FramePlugin
 {
@@ -28,7 +29,6 @@ public class LabelMap3DIsosurfaces implements FramePlugin
         ImageFrame iFrame = (ImageFrame) frame;
         ImageHandle handle = iFrame.getImageHandle();
         Image image = handle.getImage();
-//        ImagoApp app = frame.getGui().getAppli();
         
         // check input data type and dimensions
         Array<?> array = image.getData();
@@ -44,9 +44,21 @@ public class LabelMap3DIsosurfaces implements FramePlugin
             return;
         }
 
-//        // wrap array into a 3D scalar array
-//        @SuppressWarnings({ "unchecked", "rawtypes" })
-//        IntArray3D<?> labelMap = IntArray3D.wrap(IntArray.wrap((Array<? extends Int>) array));
+        // delegates most of the processing to the static factory within the LabelMapViewer class
         LabelMapViewer3D.create(image, frame);
+    }
+    
+    @Override
+    public boolean isEnabled(ImagoFrame frame)
+    {
+        if (frame instanceof ImageFrame imageFrame)
+        {
+            Image image = imageFrame.getImageHandle().getImage();
+            if (image == null) return false;
+
+            return image.isLabelImage() && image.getDimension() == 3;
+        }
+        
+        return false;
     }
 }

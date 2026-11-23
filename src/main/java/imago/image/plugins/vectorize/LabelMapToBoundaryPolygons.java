@@ -71,4 +71,18 @@ public class LabelMapToBoundaryPolygons implements FramePlugin
 		// update viewer associated to the ImageHandle
 		handle.notifyImageHandleChange();
 	}
+	
+    @Override
+    public boolean isEnabled(ImagoFrame frame)
+    {
+        if (frame instanceof ImageFrame imageFrame)
+        {
+            Image image = imageFrame.getImageHandle().getImage();
+            if (image == null) return false;
+
+            return image.isLabelImage();
+        }
+        
+        return false;
+    }
 }
