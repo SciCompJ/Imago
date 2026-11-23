@@ -518,6 +518,7 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         binaryMenu.addSeparator();
         addPlugin(binaryMenu, imago.image.plugins.vectorize.BinaryImageBoundaryPoints.class, "Boundary Points");
         addPlugin(binaryMenu, imago.image.plugins.vectorize.BinaryImageBoundaryGraph.class, "Boundary Graph", hasImage2D);
+        addPlugin(binaryMenu, imago.image.plugins.vectorize.BinaryImage3DBoundaryMesh.class, "Boundary Mesh 3D");
         addPlugin(binaryMenu, imago.image.plugins.vectorize.LabelMapToBoundaryPolygons.class, "Region Boundaries to Polygons", hasImage2D);
         addPlugin(binaryMenu, imago.image.plugins.vectorize.BinaryImageConvexHull.class, "Binary Image Convex Hull", hasBinaryImage);
         
