@@ -19,6 +19,8 @@ public enum SingleValueFunction
     FLOOR("Floor", Math::floor),
     CEIL("Ceil", Math::ceil),
     SQRT("Sqrt", Math::sqrt),
+    SQUARE("Square", x -> x * x),
+    CUBE("Cube", x -> x * x * x),
     LOG("Log", Math::log),
     LOG2("Log2", (x) -> Math.log(x) / Math.log(2.0)),
     LOG10("Log10", Math::log10),
