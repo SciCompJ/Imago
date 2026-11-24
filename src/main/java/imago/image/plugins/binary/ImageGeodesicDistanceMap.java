@@ -12,7 +12,7 @@ import imago.gui.ImagoGui;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import imago.gui.FramePlugin;
-import net.sci.array.Arrays;
+import net.sci.array.ArrayUtils;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.binary.BinaryArray2D;
 import net.sci.array.binary.BinaryArray3D;
@@ -118,13 +118,13 @@ public class ImageGeodesicDistanceMap implements FramePlugin
         BinaryArray maskArray = BinaryArray.wrap(maskImage.getData());
         
 		// check inputs dimensionality and size 
-		if (!Arrays.isSameDimensionality(marker, maskArray))
+		if (!ArrayUtils.isSameDimensionality(marker, maskArray))
 		{
 			frame.showErrorDialog("Both arrays must have same dimensionality", "Dimensionality Error");
 			return;
 		}
 		
-		if (!Arrays.isSameSize(marker, maskArray))
+		if (!ArrayUtils.isSameSize(marker, maskArray))
 		{
 			frame.showErrorDialog("Both arrays must have same size", "Image Size Error");
 			return;

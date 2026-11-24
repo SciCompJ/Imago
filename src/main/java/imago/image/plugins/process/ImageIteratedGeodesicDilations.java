@@ -13,7 +13,7 @@ import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
-import net.sci.array.Arrays;
+import net.sci.array.ArrayUtils;
 import net.sci.array.numeric.ScalarArray;
 import net.sci.array.numeric.ScalarArray2D;
 import net.sci.array.numeric.ScalarArray3D;
@@ -78,7 +78,7 @@ public class ImageIteratedGeodesicDilations implements FramePlugin
 		// extract arrays and check dimensions
 		Array<?> marker = markerImage.getData();
 		Array<?> mask = maskImage.getData();
-        if (!Arrays.isSameSize(marker, mask))
+        if (!ArrayUtils.isSameSize(marker, mask))
         {
             ImagoGui.showErrorDialog(frame, "Both arrays must have same dimensions", "Dimension Error");
             return;

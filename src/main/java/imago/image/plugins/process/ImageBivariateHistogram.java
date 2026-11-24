@@ -13,7 +13,7 @@ import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
-import net.sci.array.Arrays;
+import net.sci.array.ArrayUtils;
 import net.sci.array.color.ColorMaps;
 import net.sci.array.numeric.Float32Array2D;
 import net.sci.array.numeric.Int32Array2D;
@@ -92,7 +92,7 @@ public class ImageBivariateHistogram implements FramePlugin
 		// extract arrays and check dimensions
 		Array<?> array1 = image1.getData();
 		Array<?> array2 = image2.getData();
-        if (!Arrays.isSameSize(array1, array2))
+        if (!ArrayUtils.isSameSize(array1, array2))
         {
             ImagoGui.showErrorDialog(frame, "Both arrays should have same dimensions", "Dimension Error");
             return;

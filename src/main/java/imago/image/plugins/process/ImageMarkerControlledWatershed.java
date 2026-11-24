@@ -13,7 +13,7 @@ import imago.gui.ImagoGui;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import net.sci.array.Array;
-import net.sci.array.Arrays;
+import net.sci.array.ArrayUtils;
 import net.sci.array.binary.Binary;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.binary.BinaryArray2D;
@@ -72,7 +72,7 @@ public class ImageMarkerControlledWatershed implements FramePlugin
         // extract arrays and check dimensions
         Array<?> relief = reliefImage.getData();
         Array<?> marker = markerImage.getData();
-        if (!Arrays.isSameSize(marker, relief))
+        if (!ArrayUtils.isSameSize(marker, relief))
         {
             ImagoGui.showErrorDialog(frame, "Both arrays must have same dimensions", "Dimension Error");
             return;

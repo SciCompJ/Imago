@@ -14,7 +14,7 @@ import imago.app.ImagoApp;
 import imago.gui.FramePlugin;
 import imago.gui.GenericDialog;
 import net.sci.array.Array;
-import net.sci.array.Arrays;
+import net.sci.array.ArrayUtils;
 import net.sci.array.binary.Binary;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.numeric.Scalar;
@@ -91,7 +91,7 @@ public class ImageOtsuThresholdWithMask implements FramePlugin
         @SuppressWarnings({ "unchecked", "rawtypes" })
         ScalarArray array = ScalarArray.wrap((Array<Scalar>) inputImage.getData());
         BinaryArray mask = BinaryArray.wrap(maskImage.getData());
-        if (!Arrays.isSameSize(array, mask))
+        if (!ArrayUtils.isSameSize(array, mask))
         {
             ImagoGui.showErrorDialog(frame, "Both arrays should have same dimensions", "Dimension Error");
             return;

@@ -12,7 +12,7 @@ import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import net.sci.array.Array;
-import net.sci.array.Arrays;
+import net.sci.array.ArrayUtils;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.binary.process.BinaryMask;
 import net.sci.image.Image;
@@ -62,12 +62,12 @@ public class ApplyBinaryMask implements FramePlugin
         Array<?> mask = maskImage.getData();
 
         // check input validity
-        if (!Arrays.isSameDimensionality(array, mask))
+        if (!ArrayUtils.isSameDimensionality(array, mask))
         {
             frame.showErrorDialog("Both images must have same dimensionality", "Dimensionality Error");
             return;
         }
-        if (!Arrays.isSameSize(array, mask))
+        if (!ArrayUtils.isSameSize(array, mask))
         {
             frame.showErrorDialog("Both images must have same size", "Image Size Error");
             return;

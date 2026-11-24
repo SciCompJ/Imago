@@ -13,7 +13,7 @@ import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import imago.gui.FramePlugin;
 import net.sci.array.Array;
-import net.sci.array.Arrays;
+import net.sci.array.ArrayUtils;
 import net.sci.array.binary.Binary;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.binary.BinaryArray2D;
@@ -86,7 +86,7 @@ public class ImageImposeExtrema implements FramePlugin
 		// extract arrays and check dimensions
 		Array<?> array = refImage.getData();
 		Array<?> marker = markerImage.getData();
-        if (!Arrays.isSameSize(array, marker))
+        if (!ArrayUtils.isSameSize(array, marker))
         {
             ImagoGui.showErrorDialog(frame, "Both arrays should have same dimensions", "Image Size Error");
             return;

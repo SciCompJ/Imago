@@ -9,7 +9,7 @@ import imago.gui.ImagoFrame;
 import imago.gui.ImagoGui;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
-import net.sci.array.Arrays;
+import net.sci.array.ArrayUtils;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.binary.process.LogicalBinaryOperator;
 import net.sci.image.Image;
@@ -86,7 +86,7 @@ public class ImageApplyLogicalBinaryOperator implements FramePlugin
         BinaryArray array2 = (BinaryArray) image2.getData();
 
         // check dimensions
-        if (!Arrays.isSameSize(array1, array2))
+        if (!ArrayUtils.isSameSize(array1, array2))
         {
             ImagoGui.showErrorDialog(frame, "Both image arrays must have same dimensions");
             return;

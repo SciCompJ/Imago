@@ -12,7 +12,7 @@ import imago.gui.ImagoFrame;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import net.sci.array.Array;
-import net.sci.array.Arrays;
+import net.sci.array.ArrayUtils;
 import net.sci.array.binary.Binary;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.color.BinaryOverlayRGB8Array;
@@ -69,12 +69,12 @@ public class BinaryImageOverlay implements FramePlugin
 		Array<?> binaryMask = maskImage.getData();
 		
 		// check validity of input images
-		if (!Arrays.isSameDimensionality(baseArray, binaryMask))
+		if (!ArrayUtils.isSameDimensionality(baseArray, binaryMask))
 		{
 			frame.showErrorDialog("Both arrays must have same dimensionality", "Dimensionality Error");
 			return;
 		}
-		if (!Arrays.isSameSize(baseArray, binaryMask))
+		if (!ArrayUtils.isSameSize(baseArray, binaryMask))
 		{
 			frame.showErrorDialog("Both arrays must have same size", "Image Size Error");
 			return;

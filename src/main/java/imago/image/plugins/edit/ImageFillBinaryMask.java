@@ -14,7 +14,7 @@ import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import imago.image.plugins.ImageFramePlugin;
 import net.sci.array.Array;
-import net.sci.array.Arrays;
+import net.sci.array.ArrayUtils;
 import net.sci.array.binary.Binary;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.numeric.Scalar;
@@ -100,7 +100,7 @@ public class ImageFillBinaryMask implements ImageFramePlugin
             ImagoGui.showErrorDialog(frame, "Mask image must be binary", "Image Type Error");
             return;
         }
-        if (!Arrays.isSameSize(array, mask))
+        if (!ArrayUtils.isSameSize(array, mask))
         {
             ImagoGui.showErrorDialog(frame, "Both arrays should have same dimensions", "Image Size Error");
             return;

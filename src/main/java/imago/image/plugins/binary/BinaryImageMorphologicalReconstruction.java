@@ -13,7 +13,7 @@ import imago.gui.ImagoGui;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
 import net.sci.array.Array;
-import net.sci.array.Arrays;
+import net.sci.array.ArrayUtils;
 import net.sci.array.binary.BinaryArray;
 import net.sci.array.binary.BinaryArray2D;
 import net.sci.array.binary.BinaryArray3D;
@@ -83,7 +83,7 @@ public class BinaryImageMorphologicalReconstruction implements FramePlugin
 		// extract arrays and check dimensions
 		Array<?> marker = markerImage.getData();
 		Array<?> mask = maskImage.getData();
-        if (!Arrays.isSameSize(marker, mask))
+        if (!ArrayUtils.isSameSize(marker, mask))
         {
             ImagoGui.showErrorDialog(frame, "Both arrays should have same dimensions", "Dimension Error");
             return;
