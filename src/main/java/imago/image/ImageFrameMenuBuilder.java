@@ -330,7 +330,7 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         
         JMenu vectorMenu = new JMenu("Vector");
         addPlugin(vectorMenu, imago.image.plugins.process.VectorImageChannelView.class, "Channel View", hasVectorImage);
-        addPlugin(vectorMenu, imago.image.plugins.convert.CreateVectorImageNorm.class, "Vector Image Norm", hasVectorImage);
+        addPlugin(vectorMenu, imago.image.plugins.convert.CreateVectorImageNorm.class, "Vector Image Norm");
         addPlugin(vectorMenu, imago.image.plugins.process.VectorImageAngle.class, "Vector Image Angle");
         addPlugin(vectorMenu, imago.image.plugins.convert.VectorImageConvertToRGB.class, "Convert to RGB", hasVectorImage);
         addPlugin(vectorMenu, imago.image.plugins.convert.CreateVectorImageRGB8View.class, "Create RGB View", hasVectorImage);
@@ -400,7 +400,6 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         addPlugin(gradientFiltersMenu, imago.image.plugins.process.ImageGradientFilter.class, "Gradient Filter...");
         addPlugin(gradientFiltersMenu, imago.image.plugins.process.ImageAxisGradientFilter.class, "Axis Gradient Filter...");
         addPlugin(gradientFiltersMenu, imago.image.plugins.process.ImageFiniteDifferences.class, "Finite Differences...");
-        addImageOperatorPlugin(gradientFiltersMenu, net.sci.image.contrast.VectorArrayNorm.class, "Vector Image Norm", hasVectorImage);
         menu.add(gradientFiltersMenu);
         
         JMenu morphologyMenu = new JMenu("Mathematical Morphology");

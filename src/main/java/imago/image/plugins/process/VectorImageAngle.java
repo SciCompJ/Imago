@@ -11,6 +11,7 @@ import imago.image.ImageHandle;
 import net.sci.array.Array;
 import net.sci.array.numeric.Float32Array;
 import net.sci.array.numeric.ScalarArray;
+import net.sci.array.numeric.Vector;
 import net.sci.array.numeric.VectorArray;
 import net.sci.image.Image;
 import net.sci.image.ImageType;
@@ -54,17 +55,18 @@ public class VectorImageAngle implements FramePlugin
         {
             return;
         }
-        if (!(array instanceof VectorArray))
+        if (!(array.elementInstanceOf(Vector.class)))
         {
             ImagoGui.showErrorDialog(frame, "Requires a Vector image", "Data Type Error");
             return;
         }
         
-        VectorArray<?, ?> vectorArray = (VectorArray<?, ?>) array;
-        int nChannels = vectorArray.channelCount();
-        if (nChannels < 2)
+        // wrap into a VectorArray
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        VectorArray<?,?> vectorArray = (VectorArray<?,?>) VectorArray.wrap((Array<Vector>) array);
+        if (vectorArray.channelCount() < 2)
         {
-            ImagoGui.showErrorDialog(frame, "Requires at least two channels", "Data Type Error");
+            ImagoGui.showErrorDialog(frame, "Requires vectors to contain at least two elements", "Data Type Error");
             return;
         }
         
@@ -88,5 +90,26 @@ public class VectorImageAngle implements FramePlugin
         
         // add the image document to GUI
         ImageFrame.create(resultImage, frame);
+    }
+    
+    /**
+     * Returns true if the current frame contains a vector image.
+     * 
+     * @param frame
+     *            the frame containing reference to this plugin
+     * @return true if the frame contains a scalar image.
+     */
+    @Override
+    public boolean isEnabled(ImagoFrame frame)
+    {
+        if (frame instanceof ImageFrame imageFrame)
+        {
+            Image image = imageFrame.getImageHandle().getImage();
+            if (image == null) return false;
+
+            return image.isVectorImage();
+        }
+        
+        return false;
     }
 }
