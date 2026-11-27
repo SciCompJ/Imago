@@ -531,6 +531,7 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         // operators specific to binary images
         JMenu labelMenu = new JMenu("Label-Images");
         addPlugin(labelMenu, imago.image.plugins.labelmap.ReplaceLabelValues.class, "Replace Labels...");
+        addPlugin(labelMenu, imago.image.plugins.labelmap.LabelMapSelectLabels.class, "Select Labels...");
         addPlugin(labelMenu, imago.image.plugins.labelmap.LabelMapCropLabel.class, "Crop Label...");
         addPlugin(labelMenu, imago.image.plugins.labelmap.LabelMapSizeOpening.class, "Size Opening...");
         labelMenu.addSeparator();
