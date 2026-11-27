@@ -284,16 +284,7 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
 
         // Several options for converting images
         menu.addSeparator();
-        JMenu convertImageTypeMenu = new JMenu("Change Image Type");
-        convertImageTypeMenu.setEnabled(hasImage);
-        addPlugin(convertImageTypeMenu, imago.image.plugins.edit.SetImageType.class, "Set Image Display Type...", hasImage);
-        addPlugin(convertImageTypeMenu, imago.image.plugins.edit.SetImageTypeToLabel.class, "Set Image Type to Label Image", hasScalarImage);
-        convertImageTypeMenu.addSeparator();
-        addPlugin(convertImageTypeMenu, imago.image.plugins.convert.ConvertImageToBinary.class, "Convert to Binary");
-        addPlugin(convertImageTypeMenu, imago.image.plugins.convert.ConvertImageToLabel.class, "Convert to Label");
-        menu.add(convertImageTypeMenu);
-        
-        JMenu convertDataTypeMenu = new JMenu("Convert Data Type");
+        JMenu convertDataTypeMenu = new JMenu("Convert To");
         convertDataTypeMenu.setEnabled(hasImage);
         addPlugin(convertDataTypeMenu, imago.image.plugins.convert.ConvertImageToUInt8.class, "UInt8");
         addPlugin(convertDataTypeMenu, imago.image.plugins.convert.CreateScaledUInt8View.class, "UInt8 (adjust dynamic)", hasScalarImage);
@@ -304,7 +295,18 @@ public class ImageFrameMenuBuilder extends FrameMenuBuilder
         convertDataTypeMenu.addSeparator();
         addPlugin(convertDataTypeMenu, imago.image.plugins.convert.ConvertImageToFloat32.class, "Float32", hasImage);
         addPlugin(convertDataTypeMenu, imago.image.plugins.convert.ConvertImageToFloat64.class, "Float64", hasImage);
+        convertDataTypeMenu.addSeparator();
+        addPlugin(convertDataTypeMenu, imago.image.plugins.convert.ConvertImageToRGB8.class, "RGB8");
         menu.add(convertDataTypeMenu);
+        
+        JMenu convertImageTypeMenu = new JMenu("Change Image Type");
+        convertImageTypeMenu.setEnabled(hasImage);
+        addPlugin(convertImageTypeMenu, imago.image.plugins.edit.SetImageType.class, "Set Image Display Type...", hasImage);
+        addPlugin(convertImageTypeMenu, imago.image.plugins.edit.SetImageTypeToLabel.class, "Set Image Type to Label Image", hasScalarImage);
+        convertImageTypeMenu.addSeparator();
+        addPlugin(convertImageTypeMenu, imago.image.plugins.convert.ConvertImageToBinary.class, "Convert to Binary");
+        addPlugin(convertImageTypeMenu, imago.image.plugins.convert.ConvertImageToLabel.class, "Convert to Label");
+        menu.add(convertImageTypeMenu);
         
         // image dimensionality conversion plugins
         JMenu convertDimensionMenu = new JMenu("Convert Dimension(s)");
