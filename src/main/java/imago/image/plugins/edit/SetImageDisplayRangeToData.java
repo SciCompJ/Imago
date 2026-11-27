@@ -63,6 +63,10 @@ public class SetImageDisplayRangeToData implements FramePlugin
         double[] extent = scalarArray.finiteValueRange();
         System.out.println("Array value range: [" + extent[0] + " ; " + extent[1] + "]");
 
+        // update display settings of current frame
+        iFrame.getImageViewer().getDisplaySettings().setDisplayRange(extent);
+        
+        // also updates the renderer
         ImageDataRenderer renderer = iFrame.getImageViewer().getRenderer();
         if (renderer instanceof IndexedColorMapImageRenderer r)
         {

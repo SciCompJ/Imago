@@ -181,11 +181,6 @@ public class Image5DXYSliceViewer extends XYImageViewer
     public void refreshDisplay()
     {
         imageDisplay.updateOffset();
-        // Image image = this.getImageToDisplay();
-        //// System.out.println("refresh StackSLiceViewer display");
-        //
-        // this.awtImage = BufferedImageUtils.createAwtImage(image,
-        // this.zSliceIndex);
         recomputeAwtImage();
         this.imageDisplay.setBufferedImage(this.awtImage);
         this.imageDisplay.repaint();

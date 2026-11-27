@@ -9,6 +9,7 @@ import imago.gui.ImagoFrame;
 import imago.image.ImageDataRenderer;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
+import imago.image.ImageViewer;
 import imago.image.render.IndexedColorMapImageRenderer;
 import net.sci.array.color.Color;
 import net.sci.array.color.CommonColors;
@@ -50,8 +51,12 @@ public class ImageSetBackgroundColor implements FramePlugin
         // parse dialog results
         Color bgColor = CommonColors.fromLabel(gd.getNextChoice()).getColor();
 
-        // update image renderer
-        ImageDataRenderer renderer = iFrame.getImageViewer().getRenderer();
+        // update display settings of current frame
+        ImageViewer viewer = ((ImageFrame) frame).getImageViewer();
+        viewer.getDisplaySettings().setBackgroundColor(bgColor);
+        
+        // also updates the renderer
+        ImageDataRenderer renderer = viewer.getRenderer();
         if (renderer instanceof IndexedColorMapImageRenderer r)
         {
             r.setBackgroundColor(bgColor);

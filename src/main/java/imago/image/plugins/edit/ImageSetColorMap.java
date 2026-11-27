@@ -50,6 +50,10 @@ public class ImageSetColorMap implements FramePlugin
 	            return;
 	        }
 	        
+	        // update display settings of current frame
+	        iframe.getImageViewer().getDisplaySettings().setColorMap(colorMap);
+	        
+	        // also updates the renderer
 	        ImageDataRenderer renderer = iframe.getImageViewer().getRenderer();
 	        switch (renderer)
 	        {

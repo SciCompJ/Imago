@@ -120,9 +120,10 @@ public interface ImageDataRenderer
 
 
     /**
-     * Convert the specified colormap into an IndexColorModel.
+     * Converts the specified colormap into an IndexColorModel.
      * 
-     * @param colormap the colormap as 256 array of 3 components
+     * @param colormap
+     *            the colormap as 256 array of 3 components
      * @return the corresponding IndexColorModel
      */
     public static IndexColorModel createIndexColorModel(ColorMap colormap)
@@ -144,10 +145,12 @@ public interface ImageDataRenderer
     }
     
     /**
-     * Convert the colormap given as N-by-3 array into an IndexColorModel.
+     * Converts the colormap given as N-by-3 array into an IndexColorModel.
      * 
-     * @param colormap the colormap instance
-     * @param background the background color
+     * @param colormap
+     *            the colormap instance
+     * @param background
+     *            the background color
      * @return the corresponding IndexColorModel, with 256 colors max.
      */
     public static IndexColorModel createIndexColorModel(ColorMap colormap, Color background)

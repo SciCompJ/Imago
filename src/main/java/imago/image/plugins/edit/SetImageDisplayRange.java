@@ -72,11 +72,7 @@ public class SetImageDisplayRange implements FramePlugin
         double[] extent = computeValueExtent(array);
 
         // retrieve current value from viewer
-        double[] newRange = switch (renderer)
-        {
-            case IndexedColorMapImageRenderer r -> r.getDisplayRange();
-            default -> throw new IllegalArgumentException("Unexpected value: " + renderer);
-        };
+        double[] newRange = viewer.getDisplaySettings().getDisplayRange();
 
         // Create new dialog populated with widgets
         GenericDialog gd = new GenericDialog(frame, "Set Display Range");
@@ -97,7 +93,10 @@ public class SetImageDisplayRange implements FramePlugin
         double maxRange = gd.getNextNumber();
         extent = new double[] { minRange, maxRange };
 
-        // update display settings
+        // update display settings of current frame
+        viewer.getDisplaySettings().setDisplayRange(extent);
+        
+        // also updates the renderer
         if (renderer instanceof IndexedColorMapImageRenderer r)
         {
             r.setDisplayRange(extent);

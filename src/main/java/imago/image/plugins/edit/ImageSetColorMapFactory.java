@@ -8,7 +8,6 @@ import imago.gui.ImagoFrame;
 import imago.image.ImageDataRenderer;
 import imago.image.ImageFrame;
 import imago.image.ImageHandle;
-import imago.image.ImageViewer;
 import imago.image.render.BinaryImageRenderer;
 import imago.image.render.IndexedColorMapImageRenderer;
 import net.sci.array.color.ColorMap;
@@ -58,8 +57,11 @@ public class ImageSetColorMapFactory implements FramePlugin
 		// compute a new colormap using the current factory
 		ColorMap colorMap = factory.createColorMap(nColors);
 		
-		ImageViewer viewer = iframe.getImageViewer();
-        ImageDataRenderer renderer = viewer.getRenderer();
+        // update display settings of current frame
+        iframe.getImageViewer().getDisplaySettings().setColorMap(colorMap);
+        
+        // also updates the renderer
+        ImageDataRenderer renderer = iframe.getImageViewer().getRenderer();
         switch (renderer)
         {
             case BinaryImageRenderer r -> r.setColorMap(colorMap);

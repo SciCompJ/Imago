@@ -4,8 +4,11 @@
 package imago.image;
 
 
+import java.util.Arrays;
+
 import imago.image.ImageHandle.Event;
 import net.sci.geom.Geometry;
+import net.sci.image.DisplaySettings;
 import net.sci.image.Image;
 
 /**
@@ -38,6 +41,13 @@ public abstract class ImageViewer implements ImageHandle.Listener
     protected ImageHandle imageHandle;
 
     protected Image image;
+    
+    /**
+     * The display settings used to represent the image within this view.
+     * Initialized with the display settings of the image, but can be modified
+     * afterwards.
+     */
+    protected DisplaySettings displaySettings;
 
     /**
      * An instance of Image that can be used for preview, or null of no preview
@@ -89,6 +99,7 @@ public abstract class ImageViewer implements ImageHandle.Listener
             this.slicingPosition[d] = (int) Math.floor(image.getSize(d) / 2);
         }
         
+        this.displaySettings = this.image.getDisplaySettings().duplicate();
         this.renderer = ImageDataRenderer.createRenderer(image);
     }
 
@@ -139,6 +150,8 @@ public abstract class ImageViewer implements ImageHandle.Listener
     }
 
     /**
+     * Returns the {@code Image} associated to this viewer.
+     * 
      * @return the base image stored in this view
      */
     public Image getImage()
@@ -147,6 +160,8 @@ public abstract class ImageViewer implements ImageHandle.Listener
     }
 
     /**
+     * Returns the {@code ImageHandle} associated to this viewer.
+     * 
      * @return the ImageHandle of the image stored within this view.
      */
     public ImageHandle getImageHandle()
@@ -198,6 +213,27 @@ public abstract class ImageViewer implements ImageHandle.Listener
     // ===================================================================
     // Setters and getters for display options
 
+    /**
+     * Returns the display settings associated to this viewer.
+     * 
+     * @return the displaySettings
+     */
+    public DisplaySettings getDisplaySettings()
+    {
+        return displaySettings;
+    }
+    
+    /**
+     * Changes the display settings associated to this viewer.
+     * 
+     * @param displaySettings
+     *            the displaySettings to set
+     */
+    public void setDisplaySettings(DisplaySettings displaySettings)
+    {
+        this.displaySettings = displaySettings;
+    }
+    
     public double getZoom()
     {
         return this.zoom;
@@ -259,6 +295,12 @@ public abstract class ImageViewer implements ImageHandle.Listener
         this.slicingPosition[dim] = pos;
     }
 
+    public int[] getSlicingPosition()
+    {
+        return Arrays.copyOf(this.slicingPosition, this.slicingPosition.length);
+    }
+    
+    
     /**
      * Returns the reference position for the given dimension. For example, to
      * retrieve the z-slice index:

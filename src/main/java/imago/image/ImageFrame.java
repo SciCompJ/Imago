@@ -90,6 +90,7 @@ public class ImageFrame extends ImagoFrame implements AlgoListener
         {
             if (image.getType() == iFrame.getImageHandle().getImage().getType())
             {
+                frame.getImageViewer().setDisplaySettings(iFrame.getImageViewer().getDisplaySettings().duplicate());
                 frame.getImageViewer().setRenderer(iFrame.getImageViewer().getRenderer().duplicate());
             }
         }

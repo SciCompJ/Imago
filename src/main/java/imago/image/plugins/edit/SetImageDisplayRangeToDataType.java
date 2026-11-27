@@ -59,6 +59,10 @@ public class SetImageDisplayRangeToDataType implements FramePlugin
         };
 		System.out.println("  New value range: [" + extent[0] + " ; " + extent[1] + "]");
 		
+        // update display settings of current frame
+        iFrame.getImageViewer().getDisplaySettings().setDisplayRange(extent);
+        
+        // also updates the renderer
         ImageDataRenderer renderer = iFrame.getImageViewer().getRenderer();
         if (renderer instanceof IndexedColorMapImageRenderer r)
         {

@@ -10,8 +10,11 @@ import imago.image.ImageDataRenderer;
 import imago.image.ImageFrame;
 import imago.image.ImageFrameMenuBuilder;
 import imago.image.ImageHandle;
+import imago.image.ImageViewer;
+import imago.image.render.LabelMapImageRenderer;
 import net.sci.array.Array;
 import net.sci.array.binary.BinaryArray;
+import net.sci.array.numeric.Int;
 import net.sci.array.numeric.IntArray;
 import net.sci.image.Image;
 import net.sci.image.ImageType;
@@ -36,6 +39,7 @@ public class SetImageTypeToLabel implements FramePlugin
     {
         // get current frame
         ImageFrame imageFrame = (ImageFrame) frame;
+        ImageViewer viewer = imageFrame.getImageViewer();
         ImageHandle handle = imageFrame.getImageHandle();
         Image image = handle.getImage();
 
@@ -48,9 +52,9 @@ public class SetImageTypeToLabel implements FramePlugin
         {
             return;
         }
-        if (!(array instanceof IntArray))
+        if (!array.elementInstanceOf(Int.class))
         {
-            ImagoGui.showErrorDialog(frame, "Requires a image containing int values", "Data Type Error");
+            ImagoGui.showErrorDialog(frame, "Requires a image containing int values, not " + array.elementClass().getName(), "Data Type Error");
             return;
         }
 
@@ -59,10 +63,14 @@ public class SetImageTypeToLabel implements FramePlugin
 
         // recompute display range to ensure labels are displayed with full colormap range
         int[] minMax = array instanceof BinaryArray ? new int[] {0, 1} : ((IntArray<?>) array).intRange();
-        image.getDisplaySettings().setDisplayRange(new double[] {0, minMax[1]});
+        double[] displayRange = new double[] {0, minMax[1]};
+        image.getDisplaySettings().setDisplayRange(displayRange);
+        viewer.getDisplaySettings().setDisplayRange(displayRange);
         
-        // update image viewer
-        imageFrame.getImageViewer().setRenderer(ImageDataRenderer.createRenderer(image));
+        // update image renderer
+        LabelMapImageRenderer renderer = (LabelMapImageRenderer) ImageDataRenderer.createRenderer(image);
+        viewer.setRenderer(renderer);
+        viewer.getDisplaySettings().setBackgroundColor(renderer.getBackgroundColor());
 
         // notify changes
         handle.notifyImageHandleChange(ImageHandle.Event.IMAGE_MASK | ImageHandle.Event.CHANGE_MASK);
